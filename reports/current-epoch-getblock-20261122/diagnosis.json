@@ -1,0 +1,352 @@
+{
+  "schema": "blockzilla-current-epoch-getblock-diagnosis-v1",
+  "observedAtUtc": "2026-11-22T18:33:48Z",
+  "slot": 472608000,
+  "epoch": 1094,
+  "publicUrl": "https://getblock.blockzilla.dev/block/472608000.json",
+  "publicResult": {
+    "status": 502,
+    "headers": {
+      "date": "Sun, 22 Nov 2026 18:33:48 GMT",
+      "content-type": "application/json",
+      "access-control-allow-origin": "*",
+      "cache-control": "no-store",
+      "access-control-expose-headers": "*",
+      "x-blockzilla-archive-backend": "s3",
+      "x-blockzilla-archive-edge-hits": "0",
+      "x-blockzilla-archive-layout": "compact-v2",
+      "x-blockzilla-archive-memory-hits": "0",
+      "x-blockzilla-auth-cache": "PUBLIC",
+      "x-blockzilla-auth-cache-tier": "NONE",
+      "x-blockzilla-auth-kv-reads": "0",
+      "x-blockzilla-billable-reads": "0",
+      "x-blockzilla-cache": "MISS",
+      "x-blockzilla-cache-fill": "LEADER",
+      "x-blockzilla-foundation-lookup-http-requests": "0",
+      "x-blockzilla-foundation-r2-bytes": "0",
+      "x-blockzilla-foundation-r2-get-successes": "0",
+      "x-blockzilla-foundation-r2-gets": "0",
+      "x-blockzilla-foundation-r2-heads": "0",
+      "x-blockzilla-foundation-recent-http-requests": "0",
+      "x-blockzilla-foundation-resolve-http-requests": "0",
+      "x-blockzilla-foundation-result": "RECENT_ONLY",
+      "x-blockzilla-r2-bytes": "0",
+      "x-blockzilla-r2-get-successes": "0",
+      "x-blockzilla-r2-gets": "0",
+      "x-blockzilla-r2-head-successes": "0",
+      "x-blockzilla-r2-heads": "0",
+      "x-blockzilla-r2-reads": "0",
+      "x-blockzilla-reader": "none",
+      "x-blockzilla-reader-http-requests": "0",
+      "x-blockzilla-s3-bytes": "0",
+      "x-blockzilla-s3-get-successes": "0",
+      "x-blockzilla-s3-gets": "1",
+      "x-blockzilla-s3-head-successes": "0",
+      "x-blockzilla-s3-heads": "0",
+      "x-blockzilla-s3-reads": "1",
+      "cf-ray": "a5ea064b0bb62a08-CDG"
+    },
+    "body": {
+      "error": {
+        "code": -32000,
+        "message": "failed to fetch slot 472608000: S3 GET compact-v2/blockzilla-20261004/epoch-1094/archive-v2-blocks.index returned HTTP 404 for bytes=0-35; an exact partial response is required"
+      },
+      "id": 1,
+      "jsonrpc": "2.0"
+    }
+  },
+  "routing": {
+    "productionLookupMode": "recent-only",
+    "ordinaryJsonAndBinaryUseRecentFrames": false,
+    "recentRoute": ".compact with expected blockhash",
+    "legacyLookupResult": {
+      "status": 404,
+      "result": "not_cached",
+      "source": null
+    },
+    "catalogEpochs": [
+      0,
+      1,
+      2,
+      100,
+      300,
+      500,
+      700,
+      900,
+      1047,
+      1057,
+      1089,
+      1091
+    ]
+  },
+  "native": {
+    "sourceSession": "000000000000000018ea5078fdda19df-13e843",
+    "runtimeGeneration": "c1739ce6fcee61291f41548b1960aa27",
+    "state": "RUNNING",
+    "observedRetainedBanks": {
+      "minimumSlot": 472642281,
+      "maximumSlot": 472643307,
+      "rows": 1027,
+      "targetRows": 0
+    },
+    "laterObservedLatestSlot": 472643532,
+    "targetPresentInBankEvents": false,
+    "targetPresentInProcessedBanks": false,
+    "targetPresentInProcessedRetiredBanks": false,
+    "targetPresentInProcessedInputCustody": false,
+    "configuredRetainedBanks": 1024,
+    "configuredMaxRetainedBanks": 4096,
+    "rpcDisabled": true,
+    "localRpc8899": "connection refused",
+    "publicStreamHeadStatus": 502,
+    "retentionAuthority": {
+      "mode": "local-beam-v1",
+      "frontier": "full-committed-native-feed-tip",
+      "consumer_ack_required": false,
+      "sourceMatchesCurrentSession": true,
+      "verifiedCloudCustodyRequiredForRetirement": false,
+      "evidence": "Independent live read of bank-v2/RETENTION-AUTHORITY.json and continuous_runtime.py command plan"
+    },
+    "controllerRetentionFlags": {
+      "processed": "--release-checkpoint bank-v2/PROCESSED-RELEASE.json",
+      "banks": "--local-beam-retention",
+      "origin": "--direct-beam",
+      "ackConsumer": false
+    }
+  },
+  "existingCloudMetadata": {
+    "bucket": "solana-archive-data",
+    "currentSessionCustodyPrefix": {
+      "prefix": "native-custody/processed-v1/000000000000000018ea5078fdda19df-13e843/",
+      "httpStatus": 200,
+      "keyCount": 0,
+      "isTruncated": false
+    },
+    "processedStreamPrefix": {
+      "prefix": "native-stream/processed/direct-agave-live-v1/",
+      "httpStatus": 200,
+      "sessionPrefixCount": 14,
+      "isTruncated": false,
+      "currentSessionPresent": false,
+      "latestListedSession": "000000000000000018e8393573609aad-2d5a08"
+    },
+    "oldStorageRegistryMatchesCurrentSource": false,
+    "oldRegisteredArchiveDatabasePathsPresent": [
+      false,
+      false,
+      false
+    ],
+    "runningNativeColdStorageUnitFound": false,
+    "currentControllerHasUploadOrPublisherConfiguration": false,
+    "scope": "Known existing native custody and processed-stream namespaces only. No claim of a complete bucket inventory or global data loss.",
+    "R2PayloadDownloads": 0
+  },
+  "protectedProcesses": {
+    "validator": 1304643,
+    "banks": 3381564,
+    "origin": 3381565,
+    "processed": 3381566,
+    "recentReader": 321829,
+    "restartsPerformed": 0,
+    "serviceChangesPerformed": 0
+  },
+  "limits": [
+    "Public RPC response bodies were inspected in memory only. No block payload files or R2 bundle payloads were downloaded to disk, and no second serving copy was created.",
+    "No validator RPC was enabled.",
+    "No service or configuration was changed.",
+    "Changing lookup mode to all would not create missing source coverage."
+  ],
+  "independentBlockCheckVersion0": {
+    "checkedAtUtc": "2026-11-22T18:40:06.244586+00:00",
+    "provider": "Solana public mainnet RPC",
+    "slot": 472608000,
+    "requests": 1,
+    "payloadStored": false,
+    "maxSupportedTransactionVersion": 0,
+    "httpStatus": 200,
+    "responseBytes": 239,
+    "rpcError": {
+      "code": -32015,
+      "message": "Transaction version (1) is not supported by the requesting client. Please try the request again with the following configuration parameter: \"maxSupportedTransactionVersion\": 1"
+    },
+    "verification": "unknown"
+  },
+  "independentBlockCheckVersion1": {
+    "checkedAtUtc": "2026-11-22T18:40:43.478255+00:00",
+    "provider": "Solana public mainnet RPC",
+    "slot": 472608000,
+    "requests": 1,
+    "payloadStored": false,
+    "maxSupportedTransactionVersion": 1,
+    "httpStatus": 200,
+    "responseBytes": 391513,
+    "verification": "finalized non-skipped block returned",
+    "blockhash": "DMvymXRdtFwkR26HW2rwMJpVfhsbqyypYmptq91Aasgj",
+    "previousBlockhash": "ELvbqp7k1YgC2HmJYy8n7g26BvkcALtX1cwC84xqJtb6",
+    "parentSlot": 472607999,
+    "transactionCount": 81,
+    "transactionVersions": [
+      "0",
+      "1",
+      "legacy"
+    ]
+  },
+  "workerTransactionVersions": {
+    "legacy": true,
+    "v0": true,
+    "v1": true,
+    "existingTest": "preserves_legacy_v0_and_v1_wire_versions_and_standard_failure_metadata",
+    "testRunInThisDiagnosis": false
+  },
+  "preservedGenerationCheck": {
+    "method": "Independent read-only SQLite mode=ro plus PRAGMA query_only; metadata queries only",
+    "runEntries": 9,
+    "feedDatabases": 18,
+    "payloadReads": 0,
+    "queryErrors": 0,
+    "targetRows": 0,
+    "processedAdditionalTablesChecked": [
+      "feed_events",
+      "retired_banks",
+      "input_custody"
+    ],
+    "additionalTableTargetRows": 0,
+    "runs": [
+      {
+        "generationPrefix": "1b8fc095",
+        "bankV2": {
+          "minimumSlot": 472359689,
+          "maximumSlot": 472360714,
+          "rows": 1026,
+          "targetRows": 0
+        },
+        "processed": {
+          "minimumSlot": 472359689,
+          "maximumSlot": 472360715,
+          "rows": 1027,
+          "targetRows": 0
+        }
+      },
+      {
+        "generationPrefix": "3b2f54e4",
+        "bankV2": {
+          "minimumSlot": 472373307,
+          "maximumSlot": 472374331,
+          "rows": 1025,
+          "targetRows": 0
+        },
+        "processed": {
+          "minimumSlot": 472373307,
+          "maximumSlot": 472374332,
+          "rows": 1026,
+          "targetRows": 0
+        }
+      },
+      {
+        "generationPrefix": "4a1d7014",
+        "bankV2": {
+          "minimumSlot": 472286117,
+          "maximumSlot": 472286142,
+          "rows": 26,
+          "targetRows": 0
+        },
+        "processed": {
+          "minimumSlot": 472286115,
+          "maximumSlot": 472286143,
+          "rows": 29,
+          "targetRows": 0
+        }
+      },
+      {
+        "generationPrefix": "b6818e8d",
+        "bankV2": {
+          "minimumSlot": 472471781,
+          "maximumSlot": 472472805,
+          "rows": 1025,
+          "targetRows": 0
+        },
+        "processed": {
+          "minimumSlot": 472471779,
+          "maximumSlot": 472472807,
+          "rows": 1029,
+          "targetRows": 0
+        }
+      },
+      {
+        "generationPrefix": "c1739ce6",
+        "bankV2": {
+          "minimumSlot": 472643979,
+          "maximumSlot": 472645003,
+          "rows": 1025,
+          "targetRows": 0
+        },
+        "processed": {
+          "minimumSlot": 472643979,
+          "maximumSlot": 472645004,
+          "rows": 1026,
+          "targetRows": 0
+        }
+      },
+      {
+        "generationPrefix": "d3f4cd30",
+        "bankV2": {
+          "minimumSlot": 472405219,
+          "maximumSlot": 472405833,
+          "rows": 615,
+          "targetRows": 0
+        },
+        "processed": {
+          "minimumSlot": 472405217,
+          "maximumSlot": 472405834,
+          "rows": 618,
+          "targetRows": 0
+        }
+      },
+      {
+        "generationPrefix": "e5dedf00",
+        "bankV2": {
+          "minimumSlot": 472404188,
+          "maximumSlot": 472405213,
+          "rows": 1026,
+          "targetRows": 0
+        },
+        "processed": {
+          "minimumSlot": 472404188,
+          "maximumSlot": 472405214,
+          "rows": 1027,
+          "targetRows": 0
+        }
+      },
+      {
+        "generationPrefix": "edf6cae0",
+        "bankV2": {
+          "minimumSlot": 472420550,
+          "maximumSlot": 472421582,
+          "rows": 1025,
+          "targetRows": 0
+        },
+        "processed": {
+          "minimumSlot": 472420548,
+          "maximumSlot": 472421583,
+          "rows": 1028,
+          "targetRows": 0
+        }
+      },
+      {
+        "generationPrefix": "f9b96548",
+        "bankV2": {
+          "minimumSlot": 472465033,
+          "maximumSlot": 472466059,
+          "rows": 1027,
+          "targetRows": 0
+        },
+        "processed": {
+          "minimumSlot": 472465033,
+          "maximumSlot": 472466060,
+          "rows": 1028,
+          "targetRows": 0
+        }
+      }
+    ]
+  }
+}

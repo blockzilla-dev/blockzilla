@@ -1,0 +1,9 @@
+{
+  "$schema": "https://unpkg.com/wrangler@4.129.0/config-schema.json",
+  "name": "blockzilla-getblock-cdn-canary",
+  "compatibility_date": "2026-11-22",
+  "pages_build_output_dir": "./public",
+  "services": [
+    { "binding": "GET_BLOCK", "service": "blockzilla-get-block" }
+  ]
+}

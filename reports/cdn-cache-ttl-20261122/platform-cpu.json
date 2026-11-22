@@ -1,0 +1,910 @@
+{
+  "schema": "blockzilla-pages-cdn-platform-cpu-v1",
+  "fetchedAt": "2026-11-22T18:42:44.869545Z",
+  "receipts": [
+    {
+      "path": ".codex-tmp/cdn-cache-ttl-20261122/post.json",
+      "passed": false,
+      "failure": "run_deadline_before_phase_guard"
+    }
+  ],
+  "pages": {
+    "project": "blockzilla-getblock-cdn-canary",
+    "production_script_name": "pages-worker--24711630-production",
+    "canonical_deployment_id": "85fdb391-70a1-444c-8131-72d9fe563476",
+    "uses_functions": true,
+    "services": {
+      "GET_BLOCK": {
+        "service": "blockzilla-get-block",
+        "environment": ""
+      }
+    }
+  },
+  "worker": {
+    "id": "2f70ccbb-b946-47d9-bf5b-713dfa34469a",
+    "created_on": "2026-11-22T18:02:05.417011Z",
+    "versions": [
+      {
+        "version_id": "4d1b4d55-31f1-4e30-a287-717846eeff3c",
+        "percentage": 100
+      }
+    ]
+  },
+  "windows": {
+    "Fill": {
+      "start": "2026-11-22T18:38:31.000Z",
+      "end": "2026-11-22T18:38:40.786Z",
+      "httpRequests": 16,
+      "expectedPagesInvocations": 14,
+      "expectedGetBlockInvocations": 14,
+      "beforePositiveControl": false,
+      "afterPositiveControl": false
+    },
+    "HitBin": {
+      "start": "2026-11-22T18:38:42.005Z",
+      "end": "2026-11-22T18:38:43.036Z",
+      "httpRequests": 32,
+      "expectedPagesInvocations": 0,
+      "expectedGetBlockInvocations": 0,
+      "beforePositiveControl": false,
+      "afterPositiveControl": false
+    },
+    "HitJson": {
+      "start": "2026-11-22T18:38:45.005Z",
+      "end": "2026-11-22T18:38:59.215Z",
+      "httpRequests": 32,
+      "expectedPagesInvocations": 0,
+      "expectedGetBlockInvocations": 0,
+      "beforePositiveControl": false,
+      "afterPositiveControl": false
+    },
+    "BeforeControl": {
+      "start": "2026-11-22T18:36:23Z",
+      "end": "2026-11-22T18:36:28Z",
+      "httpRequests": 2,
+      "expectedPagesInvocations": 2,
+      "expectedGetBlockInvocations": 2,
+      "beforePositiveControl": true,
+      "afterPositiveControl": false,
+      "source": "Root recorded direct pre-rule JSON control; collector sent no requests."
+    }
+  },
+  "discoveredPagesDimensions": [],
+  "queries": {
+    "discovery": "query { viewer { accounts(filter:{accountTag:\"8df0426c80fcd1a04ed439f441db9ff8\"}) { pages: pagesFunctionsInvocationsAdaptiveGroups(limit:20,filter:{scriptName:\"pages-worker--24711630-production\",datetime_geq:\"2026-11-22T18:36:23Z\",datetime_leq:\"2026-11-22T18:38:59.215000Z\"}) { dimensions { scriptName } sum { requests } } } } }",
+    "cohorts": "query { viewer { accounts(filter:{accountTag:\"8df0426c80fcd1a04ed439f441db9ff8\"}) {w0ExactPages:pagesFunctionsInvocationsAdaptiveGroups(limit:1,filter:{scriptName:\"pages-worker--24711630-production\",datetime_geq:\"2026-11-22T18:38:31Z\",datetime_leq:\"2026-11-22T18:38:40.786000Z\"}){sum { requests errors subrequests duration wallTime responseBodySize } avg { sampleInterval } confidence(level:0.95) { sum { requests { estimate lower upper sampleSize isValid } } }}\nw0ExactGetBlock:workersInvocationsAdaptive(limit:1,filter:{scriptName:\"blockzilla-get-block\",datetime_geq:\"2026-11-22T18:38:31Z\",datetime_leq:\"2026-11-22T18:38:40.786000Z\",scriptVersion:\"4d1b4d55-31f1-4e30-a287-717846eeff3c\"}){sum { requests errors cpuTimeUs startupCpuTimeUs subrequests } avg { sampleInterval } confidence(level:0.95) { sum { requests { estimate lower upper sampleSize isValid } cpuTimeUs { estimate lower upper sampleSize isValid } } }}\nw0WholePages:pagesFunctionsInvocationsAdaptiveGroups(limit:1,filter:{scriptName:\"pages-worker--24711630-production\",datetime_geq:\"2026-11-22T18:38:31Z\",datetime_leq:\"2026-11-22T18:38:41Z\"}){sum { requests errors subrequests duration wallTime responseBodySize } avg { sampleInterval } confidence(level:0.95) { sum { requests { estimate lower upper sampleSize isValid } } }}\nw0WholeGetBlock:workersInvocationsAdaptive(limit:1,filter:{scriptName:\"blockzilla-get-block\",datetime_geq:\"2026-11-22T18:38:31Z\",datetime_leq:\"2026-11-22T18:38:41Z\",scriptVersion:\"4d1b4d55-31f1-4e30-a287-717846eeff3c\"}){sum { requests errors cpuTimeUs startupCpuTimeUs subrequests } avg { sampleInterval } confidence(level:0.95) { sum { requests { estimate lower upper sampleSize isValid } cpuTimeUs { estimate lower upper sampleSize isValid } } }}\nw1ExactPages:pagesFunctionsInvocationsAdaptiveGroups(limit:1,filter:{scriptName:\"pages-worker--24711630-production\",datetime_geq:\"2026-11-22T18:38:42.005000Z\",datetime_leq:\"2026-11-22T18:38:43.036000Z\"}){sum { requests errors subrequests duration wallTime responseBodySize } avg { sampleInterval } confidence(level:0.95) { sum { requests { estimate lower upper sampleSize isValid } } }}\nw1ExactGetBlock:workersInvocationsAdaptive(limit:1,filter:{scriptName:\"blockzilla-get-block\",datetime_geq:\"2026-11-22T18:38:42.005000Z\",datetime_leq:\"2026-11-22T18:38:43.036000Z\",scriptVersion:\"4d1b4d55-31f1-4e30-a287-717846eeff3c\"}){sum { requests errors cpuTimeUs startupCpuTimeUs subrequests } avg { sampleInterval } confidence(level:0.95) { sum { requests { estimate lower upper sampleSize isValid } cpuTimeUs { estimate lower upper sampleSize isValid } } }}\nw1WholePages:pagesFunctionsInvocationsAdaptiveGroups(limit:1,filter:{scriptName:\"pages-worker--24711630-production\",datetime_geq:\"2026-11-22T18:38:42Z\",datetime_leq:\"2026-11-22T18:38:44Z\"}){sum { requests errors subrequests duration wallTime responseBodySize } avg { sampleInterval } confidence(level:0.95) { sum { requests { estimate lower upper sampleSize isValid } } }}\nw1WholeGetBlock:workersInvocationsAdaptive(limit:1,filter:{scriptName:\"blockzilla-get-block\",datetime_geq:\"2026-11-22T18:38:42Z\",datetime_leq:\"2026-11-22T18:38:44Z\",scriptVersion:\"4d1b4d55-31f1-4e30-a287-717846eeff3c\"}){sum { requests errors cpuTimeUs startupCpuTimeUs subrequests } avg { sampleInterval } confidence(level:0.95) { sum { requests { estimate lower upper sampleSize isValid } cpuTimeUs { estimate lower upper sampleSize isValid } } }}\nw2ExactPages:pagesFunctionsInvocationsAdaptiveGroups(limit:1,filter:{scriptName:\"pages-worker--24711630-production\",datetime_geq:\"2026-11-22T18:38:45.005000Z\",datetime_leq:\"2026-11-22T18:38:59.215000Z\"}){sum { requests errors subrequests duration wallTime responseBodySize } avg { sampleInterval } confidence(level:0.95) { sum { requests { estimate lower upper sampleSize isValid } } }}\nw2ExactGetBlock:workersInvocationsAdaptive(limit:1,filter:{scriptName:\"blockzilla-get-block\",datetime_geq:\"2026-11-22T18:38:45.005000Z\",datetime_leq:\"2026-11-22T18:38:59.215000Z\",scriptVersion:\"4d1b4d55-31f1-4e30-a287-717846eeff3c\"}){sum { requests errors cpuTimeUs startupCpuTimeUs subrequests } avg { sampleInterval } confidence(level:0.95) { sum { requests { estimate lower upper sampleSize isValid } cpuTimeUs { estimate lower upper sampleSize isValid } } }}\nw2WholePages:pagesFunctionsInvocationsAdaptiveGroups(limit:1,filter:{scriptName:\"pages-worker--24711630-production\",datetime_geq:\"2026-11-22T18:38:45Z\",datetime_leq:\"2026-11-22T18:39:00Z\"}){sum { requests errors subrequests duration wallTime responseBodySize } avg { sampleInterval } confidence(level:0.95) { sum { requests { estimate lower upper sampleSize isValid } } }}\nw2WholeGetBlock:workersInvocationsAdaptive(limit:1,filter:{scriptName:\"blockzilla-get-block\",datetime_geq:\"2026-11-22T18:38:45Z\",datetime_leq:\"2026-11-22T18:39:00Z\",scriptVersion:\"4d1b4d55-31f1-4e30-a287-717846eeff3c\"}){sum { requests errors cpuTimeUs startupCpuTimeUs subrequests } avg { sampleInterval } confidence(level:0.95) { sum { requests { estimate lower upper sampleSize isValid } cpuTimeUs { estimate lower upper sampleSize isValid } } }}\nw3ExactPages:pagesFunctionsInvocationsAdaptiveGroups(limit:1,filter:{scriptName:\"pages-worker--24711630-production\",datetime_geq:\"2026-11-22T18:36:23Z\",datetime_leq:\"2026-11-22T18:36:28Z\"}){sum { requests errors subrequests duration wallTime responseBodySize } avg { sampleInterval } confidence(level:0.95) { sum { requests { estimate lower upper sampleSize isValid } } }}\nw3ExactGetBlock:workersInvocationsAdaptive(limit:1,filter:{scriptName:\"blockzilla-get-block\",datetime_geq:\"2026-11-22T18:36:23Z\",datetime_leq:\"2026-11-22T18:36:28Z\",scriptVersion:\"4d1b4d55-31f1-4e30-a287-717846eeff3c\"}){sum { requests errors cpuTimeUs startupCpuTimeUs subrequests } avg { sampleInterval } confidence(level:0.95) { sum { requests { estimate lower upper sampleSize isValid } cpuTimeUs { estimate lower upper sampleSize isValid } } }}\nw3WholePages:pagesFunctionsInvocationsAdaptiveGroups(limit:1,filter:{scriptName:\"pages-worker--24711630-production\",datetime_geq:\"2026-11-22T18:36:23Z\",datetime_leq:\"2026-11-22T18:36:29Z\"}){sum { requests errors subrequests duration wallTime responseBodySize } avg { sampleInterval } confidence(level:0.95) { sum { requests { estimate lower upper sampleSize isValid } } }}\nw3WholeGetBlock:workersInvocationsAdaptive(limit:1,filter:{scriptName:\"blockzilla-get-block\",datetime_geq:\"2026-11-22T18:36:23Z\",datetime_leq:\"2026-11-22T18:36:29Z\",scriptVersion:\"4d1b4d55-31f1-4e30-a287-717846eeff3c\"}){sum { requests errors cpuTimeUs startupCpuTimeUs subrequests } avg { sampleInterval } confidence(level:0.95) { sum { requests { estimate lower upper sampleSize isValid } cpuTimeUs { estimate lower upper sampleSize isValid } } }}} } }"
+  },
+  "aliases": {
+    "w0ExactPages": {
+      "window": "Fill",
+      "boundary": "Exact",
+      "script": "Pages",
+      "dataset": "pagesFunctionsInvocationsAdaptiveGroups",
+      "filters": {
+        "scriptName": "pages-worker--24711630-production",
+        "datetime_geq": "2026-11-22T18:38:31Z",
+        "datetime_leq": "2026-11-22T18:38:40.786000Z"
+      },
+      "expected": 14
+    },
+    "w0ExactGetBlock": {
+      "window": "Fill",
+      "boundary": "Exact",
+      "script": "GetBlock",
+      "dataset": "workersInvocationsAdaptive",
+      "filters": {
+        "scriptName": "blockzilla-get-block",
+        "datetime_geq": "2026-11-22T18:38:31Z",
+        "datetime_leq": "2026-11-22T18:38:40.786000Z",
+        "scriptVersion": "4d1b4d55-31f1-4e30-a287-717846eeff3c"
+      },
+      "expected": 14
+    },
+    "w0WholePages": {
+      "window": "Fill",
+      "boundary": "Whole",
+      "script": "Pages",
+      "dataset": "pagesFunctionsInvocationsAdaptiveGroups",
+      "filters": {
+        "scriptName": "pages-worker--24711630-production",
+        "datetime_geq": "2026-11-22T18:38:31Z",
+        "datetime_leq": "2026-11-22T18:38:41Z"
+      },
+      "expected": 14
+    },
+    "w0WholeGetBlock": {
+      "window": "Fill",
+      "boundary": "Whole",
+      "script": "GetBlock",
+      "dataset": "workersInvocationsAdaptive",
+      "filters": {
+        "scriptName": "blockzilla-get-block",
+        "datetime_geq": "2026-11-22T18:38:31Z",
+        "datetime_leq": "2026-11-22T18:38:41Z",
+        "scriptVersion": "4d1b4d55-31f1-4e30-a287-717846eeff3c"
+      },
+      "expected": 14
+    },
+    "w1ExactPages": {
+      "window": "HitBin",
+      "boundary": "Exact",
+      "script": "Pages",
+      "dataset": "pagesFunctionsInvocationsAdaptiveGroups",
+      "filters": {
+        "scriptName": "pages-worker--24711630-production",
+        "datetime_geq": "2026-11-22T18:38:42.005000Z",
+        "datetime_leq": "2026-11-22T18:38:43.036000Z"
+      },
+      "expected": 0
+    },
+    "w1ExactGetBlock": {
+      "window": "HitBin",
+      "boundary": "Exact",
+      "script": "GetBlock",
+      "dataset": "workersInvocationsAdaptive",
+      "filters": {
+        "scriptName": "blockzilla-get-block",
+        "datetime_geq": "2026-11-22T18:38:42.005000Z",
+        "datetime_leq": "2026-11-22T18:38:43.036000Z",
+        "scriptVersion": "4d1b4d55-31f1-4e30-a287-717846eeff3c"
+      },
+      "expected": 0
+    },
+    "w1WholePages": {
+      "window": "HitBin",
+      "boundary": "Whole",
+      "script": "Pages",
+      "dataset": "pagesFunctionsInvocationsAdaptiveGroups",
+      "filters": {
+        "scriptName": "pages-worker--24711630-production",
+        "datetime_geq": "2026-11-22T18:38:42Z",
+        "datetime_leq": "2026-11-22T18:38:44Z"
+      },
+      "expected": 0
+    },
+    "w1WholeGetBlock": {
+      "window": "HitBin",
+      "boundary": "Whole",
+      "script": "GetBlock",
+      "dataset": "workersInvocationsAdaptive",
+      "filters": {
+        "scriptName": "blockzilla-get-block",
+        "datetime_geq": "2026-11-22T18:38:42Z",
+        "datetime_leq": "2026-11-22T18:38:44Z",
+        "scriptVersion": "4d1b4d55-31f1-4e30-a287-717846eeff3c"
+      },
+      "expected": 0
+    },
+    "w2ExactPages": {
+      "window": "HitJson",
+      "boundary": "Exact",
+      "script": "Pages",
+      "dataset": "pagesFunctionsInvocationsAdaptiveGroups",
+      "filters": {
+        "scriptName": "pages-worker--24711630-production",
+        "datetime_geq": "2026-11-22T18:38:45.005000Z",
+        "datetime_leq": "2026-11-22T18:38:59.215000Z"
+      },
+      "expected": 0
+    },
+    "w2ExactGetBlock": {
+      "window": "HitJson",
+      "boundary": "Exact",
+      "script": "GetBlock",
+      "dataset": "workersInvocationsAdaptive",
+      "filters": {
+        "scriptName": "blockzilla-get-block",
+        "datetime_geq": "2026-11-22T18:38:45.005000Z",
+        "datetime_leq": "2026-11-22T18:38:59.215000Z",
+        "scriptVersion": "4d1b4d55-31f1-4e30-a287-717846eeff3c"
+      },
+      "expected": 0
+    },
+    "w2WholePages": {
+      "window": "HitJson",
+      "boundary": "Whole",
+      "script": "Pages",
+      "dataset": "pagesFunctionsInvocationsAdaptiveGroups",
+      "filters": {
+        "scriptName": "pages-worker--24711630-production",
+        "datetime_geq": "2026-11-22T18:38:45Z",
+        "datetime_leq": "2026-11-22T18:39:00Z"
+      },
+      "expected": 0
+    },
+    "w2WholeGetBlock": {
+      "window": "HitJson",
+      "boundary": "Whole",
+      "script": "GetBlock",
+      "dataset": "workersInvocationsAdaptive",
+      "filters": {
+        "scriptName": "blockzilla-get-block",
+        "datetime_geq": "2026-11-22T18:38:45Z",
+        "datetime_leq": "2026-11-22T18:39:00Z",
+        "scriptVersion": "4d1b4d55-31f1-4e30-a287-717846eeff3c"
+      },
+      "expected": 0
+    },
+    "w3ExactPages": {
+      "window": "BeforeControl",
+      "boundary": "Exact",
+      "script": "Pages",
+      "dataset": "pagesFunctionsInvocationsAdaptiveGroups",
+      "filters": {
+        "scriptName": "pages-worker--24711630-production",
+        "datetime_geq": "2026-11-22T18:36:23Z",
+        "datetime_leq": "2026-11-22T18:36:28Z"
+      },
+      "expected": 2
+    },
+    "w3ExactGetBlock": {
+      "window": "BeforeControl",
+      "boundary": "Exact",
+      "script": "GetBlock",
+      "dataset": "workersInvocationsAdaptive",
+      "filters": {
+        "scriptName": "blockzilla-get-block",
+        "datetime_geq": "2026-11-22T18:36:23Z",
+        "datetime_leq": "2026-11-22T18:36:28Z",
+        "scriptVersion": "4d1b4d55-31f1-4e30-a287-717846eeff3c"
+      },
+      "expected": 2
+    },
+    "w3WholePages": {
+      "window": "BeforeControl",
+      "boundary": "Whole",
+      "script": "Pages",
+      "dataset": "pagesFunctionsInvocationsAdaptiveGroups",
+      "filters": {
+        "scriptName": "pages-worker--24711630-production",
+        "datetime_geq": "2026-11-22T18:36:23Z",
+        "datetime_leq": "2026-11-22T18:36:29Z"
+      },
+      "expected": 2
+    },
+    "w3WholeGetBlock": {
+      "window": "BeforeControl",
+      "boundary": "Whole",
+      "script": "GetBlock",
+      "dataset": "workersInvocationsAdaptive",
+      "filters": {
+        "scriptName": "blockzilla-get-block",
+        "datetime_geq": "2026-11-22T18:36:23Z",
+        "datetime_leq": "2026-11-22T18:36:29Z",
+        "scriptVersion": "4d1b4d55-31f1-4e30-a287-717846eeff3c"
+      },
+      "expected": 2
+    }
+  },
+  "rawResults": {
+    "w0ExactGetBlock": [
+      {
+        "avg": {
+          "sampleInterval": 1
+        },
+        "confidence": {
+          "sum": {
+            "cpuTimeUs": {
+              "estimate": 644020,
+              "isValid": false,
+              "lower": 644020,
+              "sampleSize": 14,
+              "upper": 644020
+            },
+            "requests": {
+              "estimate": 14,
+              "isValid": false,
+              "lower": 14,
+              "sampleSize": 14,
+              "upper": 14
+            }
+          }
+        },
+        "sum": {
+          "cpuTimeUs": 644020,
+          "errors": 0,
+          "requests": 14,
+          "startupCpuTimeUs": 62883,
+          "subrequests": 14
+        }
+      }
+    ],
+    "w0ExactPages": [],
+    "w0WholeGetBlock": [
+      {
+        "avg": {
+          "sampleInterval": 1
+        },
+        "confidence": {
+          "sum": {
+            "cpuTimeUs": {
+              "estimate": 644020,
+              "isValid": false,
+              "lower": 644020,
+              "sampleSize": 14,
+              "upper": 644020
+            },
+            "requests": {
+              "estimate": 14,
+              "isValid": false,
+              "lower": 14,
+              "sampleSize": 14,
+              "upper": 14
+            }
+          }
+        },
+        "sum": {
+          "cpuTimeUs": 644020,
+          "errors": 0,
+          "requests": 14,
+          "startupCpuTimeUs": 62883,
+          "subrequests": 14
+        }
+      }
+    ],
+    "w0WholePages": [],
+    "w1ExactGetBlock": [],
+    "w1ExactPages": [],
+    "w1WholeGetBlock": [],
+    "w1WholePages": [],
+    "w2ExactGetBlock": [],
+    "w2ExactPages": [],
+    "w2WholeGetBlock": [],
+    "w2WholePages": [],
+    "w3ExactGetBlock": [
+      {
+        "avg": {
+          "sampleInterval": 1
+        },
+        "confidence": {
+          "sum": {
+            "cpuTimeUs": {
+              "estimate": 115967,
+              "isValid": false,
+              "lower": 115967,
+              "sampleSize": 2,
+              "upper": 115967
+            },
+            "requests": {
+              "estimate": 2,
+              "isValid": false,
+              "lower": 2,
+              "sampleSize": 2,
+              "upper": 2
+            }
+          }
+        },
+        "sum": {
+          "cpuTimeUs": 115967,
+          "errors": 0,
+          "requests": 2,
+          "startupCpuTimeUs": 25061,
+          "subrequests": 0
+        }
+      }
+    ],
+    "w3ExactPages": [],
+    "w3WholeGetBlock": [
+      {
+        "avg": {
+          "sampleInterval": 1
+        },
+        "confidence": {
+          "sum": {
+            "cpuTimeUs": {
+              "estimate": 115967,
+              "isValid": false,
+              "lower": 115967,
+              "sampleSize": 2,
+              "upper": 115967
+            },
+            "requests": {
+              "estimate": 2,
+              "isValid": false,
+              "lower": 2,
+              "sampleSize": 2,
+              "upper": 2
+            }
+          }
+        },
+        "sum": {
+          "cpuTimeUs": 115967,
+          "errors": 0,
+          "requests": 2,
+          "startupCpuTimeUs": 25061,
+          "subrequests": 0
+        }
+      }
+    ],
+    "w3WholePages": []
+  },
+  "derived": {
+    "w0ExactPages": {
+      "observedRequests": 0,
+      "expectedRequests": 14,
+      "countMatchesPlan": false,
+      "cpuTimeUs": 0,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": null,
+      "startupCpuMs": 0,
+      "errors": 0,
+      "sampleSize": 0,
+      "adaptiveSampleInterval": null,
+      "unsampledPositiveCount": false,
+      "validEmptyResult": true
+    },
+    "w0ExactGetBlock": {
+      "observedRequests": 14,
+      "expectedRequests": 14,
+      "countMatchesPlan": true,
+      "cpuTimeUs": 644020,
+      "startupCpuTimeUs": 62883,
+      "meanCpuMs": 46.00142857142857,
+      "startupCpuMs": 4.491642857142857,
+      "errors": 0,
+      "subrequests": 14,
+      "sampleSize": 14,
+      "adaptiveSampleInterval": 1,
+      "unsampledPositiveCount": true,
+      "validEmptyResult": false,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 644020,
+          "isValid": false,
+          "lower": 644020,
+          "sampleSize": 14,
+          "upper": 644020
+        },
+        "requests": {
+          "estimate": 14,
+          "isValid": false,
+          "lower": 14,
+          "sampleSize": 14,
+          "upper": 14
+        }
+      }
+    },
+    "w0WholePages": {
+      "observedRequests": 0,
+      "expectedRequests": 14,
+      "countMatchesPlan": false,
+      "cpuTimeUs": 0,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": null,
+      "startupCpuMs": 0,
+      "errors": 0,
+      "sampleSize": 0,
+      "adaptiveSampleInterval": null,
+      "unsampledPositiveCount": false,
+      "validEmptyResult": true
+    },
+    "w0WholeGetBlock": {
+      "observedRequests": 14,
+      "expectedRequests": 14,
+      "countMatchesPlan": true,
+      "cpuTimeUs": 644020,
+      "startupCpuTimeUs": 62883,
+      "meanCpuMs": 46.00142857142857,
+      "startupCpuMs": 4.491642857142857,
+      "errors": 0,
+      "subrequests": 14,
+      "sampleSize": 14,
+      "adaptiveSampleInterval": 1,
+      "unsampledPositiveCount": true,
+      "validEmptyResult": false,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 644020,
+          "isValid": false,
+          "lower": 644020,
+          "sampleSize": 14,
+          "upper": 644020
+        },
+        "requests": {
+          "estimate": 14,
+          "isValid": false,
+          "lower": 14,
+          "sampleSize": 14,
+          "upper": 14
+        }
+      }
+    },
+    "w1ExactPages": {
+      "observedRequests": 0,
+      "expectedRequests": 0,
+      "countMatchesPlan": true,
+      "cpuTimeUs": 0,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": null,
+      "startupCpuMs": 0,
+      "errors": 0,
+      "sampleSize": 0,
+      "adaptiveSampleInterval": null,
+      "unsampledPositiveCount": false,
+      "validEmptyResult": true
+    },
+    "w1ExactGetBlock": {
+      "observedRequests": 0,
+      "expectedRequests": 0,
+      "countMatchesPlan": true,
+      "cpuTimeUs": 0,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": null,
+      "startupCpuMs": 0,
+      "errors": 0,
+      "sampleSize": 0,
+      "adaptiveSampleInterval": null,
+      "unsampledPositiveCount": false,
+      "validEmptyResult": true
+    },
+    "w1WholePages": {
+      "observedRequests": 0,
+      "expectedRequests": 0,
+      "countMatchesPlan": true,
+      "cpuTimeUs": 0,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": null,
+      "startupCpuMs": 0,
+      "errors": 0,
+      "sampleSize": 0,
+      "adaptiveSampleInterval": null,
+      "unsampledPositiveCount": false,
+      "validEmptyResult": true
+    },
+    "w1WholeGetBlock": {
+      "observedRequests": 0,
+      "expectedRequests": 0,
+      "countMatchesPlan": true,
+      "cpuTimeUs": 0,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": null,
+      "startupCpuMs": 0,
+      "errors": 0,
+      "sampleSize": 0,
+      "adaptiveSampleInterval": null,
+      "unsampledPositiveCount": false,
+      "validEmptyResult": true
+    },
+    "w2ExactPages": {
+      "observedRequests": 0,
+      "expectedRequests": 0,
+      "countMatchesPlan": true,
+      "cpuTimeUs": 0,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": null,
+      "startupCpuMs": 0,
+      "errors": 0,
+      "sampleSize": 0,
+      "adaptiveSampleInterval": null,
+      "unsampledPositiveCount": false,
+      "validEmptyResult": true
+    },
+    "w2ExactGetBlock": {
+      "observedRequests": 0,
+      "expectedRequests": 0,
+      "countMatchesPlan": true,
+      "cpuTimeUs": 0,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": null,
+      "startupCpuMs": 0,
+      "errors": 0,
+      "sampleSize": 0,
+      "adaptiveSampleInterval": null,
+      "unsampledPositiveCount": false,
+      "validEmptyResult": true
+    },
+    "w2WholePages": {
+      "observedRequests": 0,
+      "expectedRequests": 0,
+      "countMatchesPlan": true,
+      "cpuTimeUs": 0,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": null,
+      "startupCpuMs": 0,
+      "errors": 0,
+      "sampleSize": 0,
+      "adaptiveSampleInterval": null,
+      "unsampledPositiveCount": false,
+      "validEmptyResult": true
+    },
+    "w2WholeGetBlock": {
+      "observedRequests": 0,
+      "expectedRequests": 0,
+      "countMatchesPlan": true,
+      "cpuTimeUs": 0,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": null,
+      "startupCpuMs": 0,
+      "errors": 0,
+      "sampleSize": 0,
+      "adaptiveSampleInterval": null,
+      "unsampledPositiveCount": false,
+      "validEmptyResult": true
+    },
+    "w3ExactPages": {
+      "observedRequests": 0,
+      "expectedRequests": 2,
+      "countMatchesPlan": false,
+      "cpuTimeUs": 0,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": null,
+      "startupCpuMs": 0,
+      "errors": 0,
+      "sampleSize": 0,
+      "adaptiveSampleInterval": null,
+      "unsampledPositiveCount": false,
+      "validEmptyResult": true
+    },
+    "w3ExactGetBlock": {
+      "observedRequests": 2,
+      "expectedRequests": 2,
+      "countMatchesPlan": true,
+      "cpuTimeUs": 115967,
+      "startupCpuTimeUs": 25061,
+      "meanCpuMs": 57.9835,
+      "startupCpuMs": 12.5305,
+      "errors": 0,
+      "subrequests": 0,
+      "sampleSize": 2,
+      "adaptiveSampleInterval": 1,
+      "unsampledPositiveCount": true,
+      "validEmptyResult": false,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 115967,
+          "isValid": false,
+          "lower": 115967,
+          "sampleSize": 2,
+          "upper": 115967
+        },
+        "requests": {
+          "estimate": 2,
+          "isValid": false,
+          "lower": 2,
+          "sampleSize": 2,
+          "upper": 2
+        }
+      }
+    },
+    "w3WholePages": {
+      "observedRequests": 0,
+      "expectedRequests": 2,
+      "countMatchesPlan": false,
+      "cpuTimeUs": 0,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": null,
+      "startupCpuMs": 0,
+      "errors": 0,
+      "sampleSize": 0,
+      "adaptiveSampleInterval": null,
+      "unsampledPositiveCount": false,
+      "validEmptyResult": true
+    },
+    "w3WholeGetBlock": {
+      "observedRequests": 2,
+      "expectedRequests": 2,
+      "countMatchesPlan": true,
+      "cpuTimeUs": 115967,
+      "startupCpuTimeUs": 25061,
+      "meanCpuMs": 57.9835,
+      "startupCpuMs": 12.5305,
+      "errors": 0,
+      "subrequests": 0,
+      "sampleSize": 2,
+      "adaptiveSampleInterval": 1,
+      "unsampledPositiveCount": true,
+      "validEmptyResult": false,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 115967,
+          "isValid": false,
+          "lower": 115967,
+          "sampleSize": 2,
+          "upper": 115967
+        },
+        "requests": {
+          "estimate": 2,
+          "isValid": false,
+          "lower": 2,
+          "sampleSize": 2,
+          "upper": 2
+        }
+      }
+    }
+  },
+  "selectedPhases": {
+    "Fill": {
+      "Pages": {
+        "selectedQuery": "w0ExactPages",
+        "observedRequests": 0,
+        "expectedRequests": 14,
+        "countMatchesPlan": false,
+        "cpuTimeUs": 0,
+        "startupCpuTimeUs": 0,
+        "meanCpuMs": null,
+        "startupCpuMs": 0,
+        "errors": 0,
+        "sampleSize": 0,
+        "adaptiveSampleInterval": null,
+        "unsampledPositiveCount": false,
+        "validEmptyResult": true,
+        "bothBoundariesZero": true
+      },
+      "GetBlock": {
+        "selectedQuery": "w0ExactGetBlock",
+        "observedRequests": 14,
+        "expectedRequests": 14,
+        "countMatchesPlan": true,
+        "cpuTimeUs": 644020,
+        "startupCpuTimeUs": 62883,
+        "meanCpuMs": 46.00142857142857,
+        "startupCpuMs": 4.491642857142857,
+        "errors": 0,
+        "subrequests": 14,
+        "sampleSize": 14,
+        "adaptiveSampleInterval": 1,
+        "unsampledPositiveCount": true,
+        "validEmptyResult": false,
+        "confidence95": {
+          "cpuTimeUs": {
+            "estimate": 644020,
+            "isValid": false,
+            "lower": 644020,
+            "sampleSize": 14,
+            "upper": 644020
+          },
+          "requests": {
+            "estimate": 14,
+            "isValid": false,
+            "lower": 14,
+            "sampleSize": 14,
+            "upper": 14
+          }
+        },
+        "bothBoundariesZero": false
+      }
+    },
+    "HitBin": {
+      "Pages": {
+        "selectedQuery": "w1ExactPages",
+        "observedRequests": 0,
+        "expectedRequests": 0,
+        "countMatchesPlan": true,
+        "cpuTimeUs": 0,
+        "startupCpuTimeUs": 0,
+        "meanCpuMs": null,
+        "startupCpuMs": 0,
+        "errors": 0,
+        "sampleSize": 0,
+        "adaptiveSampleInterval": null,
+        "unsampledPositiveCount": false,
+        "validEmptyResult": true,
+        "bothBoundariesZero": true
+      },
+      "GetBlock": {
+        "selectedQuery": "w1ExactGetBlock",
+        "observedRequests": 0,
+        "expectedRequests": 0,
+        "countMatchesPlan": true,
+        "cpuTimeUs": 0,
+        "startupCpuTimeUs": 0,
+        "meanCpuMs": null,
+        "startupCpuMs": 0,
+        "errors": 0,
+        "sampleSize": 0,
+        "adaptiveSampleInterval": null,
+        "unsampledPositiveCount": false,
+        "validEmptyResult": true,
+        "bothBoundariesZero": true
+      }
+    },
+    "HitJson": {
+      "Pages": {
+        "selectedQuery": "w2ExactPages",
+        "observedRequests": 0,
+        "expectedRequests": 0,
+        "countMatchesPlan": true,
+        "cpuTimeUs": 0,
+        "startupCpuTimeUs": 0,
+        "meanCpuMs": null,
+        "startupCpuMs": 0,
+        "errors": 0,
+        "sampleSize": 0,
+        "adaptiveSampleInterval": null,
+        "unsampledPositiveCount": false,
+        "validEmptyResult": true,
+        "bothBoundariesZero": true
+      },
+      "GetBlock": {
+        "selectedQuery": "w2ExactGetBlock",
+        "observedRequests": 0,
+        "expectedRequests": 0,
+        "countMatchesPlan": true,
+        "cpuTimeUs": 0,
+        "startupCpuTimeUs": 0,
+        "meanCpuMs": null,
+        "startupCpuMs": 0,
+        "errors": 0,
+        "sampleSize": 0,
+        "adaptiveSampleInterval": null,
+        "unsampledPositiveCount": false,
+        "validEmptyResult": true,
+        "bothBoundariesZero": true
+      }
+    },
+    "BeforeControl": {
+      "Pages": {
+        "selectedQuery": "w3ExactPages",
+        "observedRequests": 0,
+        "expectedRequests": 2,
+        "countMatchesPlan": false,
+        "cpuTimeUs": 0,
+        "startupCpuTimeUs": 0,
+        "meanCpuMs": null,
+        "startupCpuMs": 0,
+        "errors": 0,
+        "sampleSize": 0,
+        "adaptiveSampleInterval": null,
+        "unsampledPositiveCount": false,
+        "validEmptyResult": true,
+        "bothBoundariesZero": true
+      },
+      "GetBlock": {
+        "selectedQuery": "w3ExactGetBlock",
+        "observedRequests": 2,
+        "expectedRequests": 2,
+        "countMatchesPlan": true,
+        "cpuTimeUs": 115967,
+        "startupCpuTimeUs": 25061,
+        "meanCpuMs": 57.9835,
+        "startupCpuMs": 12.5305,
+        "errors": 0,
+        "subrequests": 0,
+        "sampleSize": 2,
+        "adaptiveSampleInterval": 1,
+        "unsampledPositiveCount": true,
+        "validEmptyResult": false,
+        "confidence95": {
+          "cpuTimeUs": {
+            "estimate": 115967,
+            "isValid": false,
+            "lower": 115967,
+            "sampleSize": 2,
+            "upper": 115967
+          },
+          "requests": {
+            "estimate": 2,
+            "isValid": false,
+            "lower": 2,
+            "sampleSize": 2,
+            "upper": 2
+          }
+        },
+        "bothBoundariesZero": false
+      }
+    }
+  },
+  "checks": {
+    "workerVersionUnchanged": true,
+    "pagesScriptDiscovered": false,
+    "pagesDeploymentPinned": true,
+    "beforePagesControlUnsampled": false,
+    "afterPagesControlUnsampled": false,
+    "bothHitFormatsPresent": true,
+    "pagesZeroInBothHitBoundaryVariants": true,
+    "getBlockZeroInBothHitBoundaryVariants": true
+  },
+  "workerDataRequests": 0,
+  "mutations": 0,
+  "secretValuesWritten": false,
+  "notes": [
+    "Empty results are valid zero observations only after successful GraphQL responses; positive controls establish visibility.",
+    "Adaptive weighted counts are not exact sample counts. Zero observations have no CPU mean or sampling interval.",
+    "The Pages project is isolated. Other public getBlock traffic can affect its window totals.",
+    "Service-bound callee invocations and billable request counts are different quantities. This is not an invoice.",
+    "Pages uses pagesFunctionsInvocationsAdaptiveGroups. Its schema has no summed CPU or startup CPU field; null mean CPU is unavailable, not zero.",
+    "Pages has no scriptVersion analytics filter. The project canonical deployment is checked before and after collection.",
+    "Only completed successful receipt windows are queried; an overall deadline failure is retained in receipt metadata."
+  ],
+  "supportedZeroInvocationObservation": false
+}

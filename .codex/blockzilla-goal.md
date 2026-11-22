@@ -680,3 +680,30 @@ headers; compact recovery retains its exact pins and no-store policy. All
 232 local actual-WASM checks and nine live keyless checks passed. No new
 live recent-frame test or zero Cloudflare request-cost claim is made. See
 the [public GET deployment record](../reports/public-getblock-20261122/README.md).
+
+## CDN test and current-epoch coverage, 22 November 2026
+
+An isolated Pages proxy now tests normal zone CDN caching on
+`getblock-cdn-test.blockzilla.dev`. It streams existing getBlock responses
+through a service binding; it uploads no block files. A hostname-scoped
+Cache Rule makes JSON and binary GETs eligible and respects the origin
+cache headers. All 64 repeated hits kept the same per-invocation proxy UUID
+and matched independent block digests. The getBlock invocation counters
+stayed at zero during both hit windows, with positive miss controls.
+The main `getblock.blockzilla.dev` domain still points directly to the
+existing Worker. This test is not a production routing change. See the
+[CDN test record](../reports/cdn-cache-ttl-20261122/README.md).
+
+The owner's slot 472608000 request exposed a separate serving gap. It is a
+real finalized block with 81 transactions. Ordinary JSON/bin reads do not
+use the native recent-frame route; only `.compact` does. The epoch 1094
+historical index returned 404, and Foundation's admitted archive catalog
+has no route for that epoch. The slot was absent from all 18 checked feed
+databases across the nine preserved continuous-runtime runs. Known native
+cloud namespaces also have no current-session entry. These checks do not
+establish global data loss. The active runtime uses bounded local-beam
+retention, without waiting for cloud custody; the older native cloud
+publisher remains tied to its older source session. Recent JSON projection,
+current-session publication handoff and current-epoch archive admission
+remain unfinished. No validator or native service was changed for this
+diagnosis. See the [coverage report](../reports/current-epoch-getblock-20261122/README.md).

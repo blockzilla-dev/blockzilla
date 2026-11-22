@@ -1,0 +1,108 @@
+{
+  "schema": "blockzilla-cdn-cache-ttl-summary-v1",
+  "date": "2026-11-22",
+  "publicApiChanged": false,
+  "mainWorkerVersion": "4d1b4d55-31f1-4e30-a287-717846eeff3c",
+  "canaryHost": "getblock-cdn-test.blockzilla.dev",
+  "pagesProject": "blockzilla-getblock-cdn-canary",
+  "pagesDeployment": "85fdb391-70a1-444c-8131-72d9fe563476",
+  "proxySourceSha256": "348703f92b81ebd7d9303082457c1f072d8be8d3cc5f9cf92d4b31d72f7ede70",
+  "blockFilesUploaded": 0,
+  "newPerBlockIndexes": 0,
+  "cacheApiUsedInProxy": false,
+  "workerCachingEnabledByThisTest": false,
+  "rule": {
+    "id": "dae0be9b4a1d4578b0457e783d0003fb",
+    "enabled": true,
+    "expression": "(http.host eq \"getblock-cdn-test.blockzilla.dev\" and http.request.method eq \"GET\" and starts_with(http.request.uri.path, \"/block/\") and (ends_with(http.request.uri.path, \".json\") or ends_with(http.request.uri.path, \".bin\")) and http.request.uri.query eq \"\")",
+    "action": "set_cache_settings",
+    "action_parameters": {
+      "cache": true,
+      "edge_ttl": {
+        "mode": "bypass_by_default"
+      },
+      "browser_ttl": {
+        "mode": "respect_origin"
+      },
+      "origin_error_page_passthru": true
+    },
+    "configuredThrough": "Cloudflare dashboard",
+    "apiRuleReadScopeAvailable": false
+  },
+  "policy": {
+    "success": "public, max-age=31536000, immutable",
+    "errors": "no-store",
+    "ttlMeansGuaranteedRetention": false
+  },
+  "preRuleControl": [
+    {
+      "date": "Sun, 22 Nov 2026 18:36:24 GMT",
+      "cache-control": "public, max-age=31536000, immutable",
+      "x-blockzilla-proxy-invocation": "66735d27-b3a5-4018-9a86-8f2aff7d9a55",
+      "cf-cache-status": "DYNAMIC"
+    },
+    {
+      "date": "Sun, 22 Nov 2026 18:36:24 GMT",
+      "cache-control": "public, max-age=31536000, immutable",
+      "x-blockzilla-proxy-invocation": "e8b56f25-77b8-4b8a-8ea7-7bd37134b0c5",
+      "cf-cache-status": "DYNAMIC"
+    }
+  ],
+  "hitFormats": {
+    "HitBin": {
+      "requests": 32,
+      "passed": 32,
+      "outerCacheStatuses": {
+        "HIT": 32
+      },
+      "p50TotalMs": 24.558083503507078,
+      "p95TotalMs": 88.09037500759587,
+      "p50TtfbMs": 18.72608350822702,
+      "observedGetBlockInvocations": 0,
+      "pagesInvocationCounter": null
+    },
+    "HitJson": {
+      "requests": 32,
+      "passed": 32,
+      "outerCacheStatuses": {
+        "HIT": 32
+      },
+      "p50TotalMs": 77.78735348256305,
+      "p95TotalMs": 271.18370798416436,
+      "p50TtfbMs": 20.552875008434057,
+      "observedGetBlockInvocations": 0,
+      "pagesInvocationCounter": null
+    }
+  },
+  "checks": {
+    "independentBinaryAndJsonCoreVerified": true,
+    "fullBodiesMatchDirectBaseline": true,
+    "all64OuterHitsHaveFrozenProxyUuid": true,
+    "getBlockInvocationsZeroInBothHitWindows": true,
+    "getBlockPositiveControlsMatchUnsampled": true,
+    "pagesPerProjectCountersAvailable": false,
+    "json502PassthroughVerified": false,
+    "productionReady": false
+  },
+  "pagesAnalyticsLimitation": "The Pages dataset reports __unknown__ for account-wide script identity. Per-project positive controls are not visible. Empty per-project Pages queries are not proof of zero invocations.",
+  "pricing": {
+    "source": "https://developers.cloudflare.com/pages/functions/pricing/",
+    "cdnHitWorkerRequestFeePerMillionUsd": 0,
+    "cdnHitWorkerCpuFeePerMillionUsd": 0,
+    "cdnHitOriginR2Operations": 0,
+    "scope": "Documented pricing for CDN hits that skip Functions; not an invoice or an all-in monthly estimate. Miss CPU, storage, hosting and the existing subscription remain separate.",
+    "serviceBindingAddsRequestFee": false
+  },
+  "limits": [
+    "HTTP receipts and getBlock metrics verify cache bypass; Pages project counters are unavailable.",
+    "Cold R2 latency was not retested. Fill includes warm archive caches and two existing CDN hits.",
+    "HTTP run stopped at its 30-second guard after all80 responses passed, before error checks. The original failure flag is preserved.",
+    "Cloudflare replaces backend502 JSON with a synthetic plain-text error, even with origin_error_page_passthru enabled. Do not migrate the main API on this evidence alone."
+  ],
+  "errorCheck": {
+    "requests": 8,
+    "cachePolicyChecksPassed": true,
+    "platform502Responses": 2,
+    "jsonErrorPassthroughVerified": false
+  }
+}
