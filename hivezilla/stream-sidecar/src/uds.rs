@@ -3,7 +3,7 @@ use anyhow::{Context, Result, ensure};
 use std::{
     fs::{File, OpenOptions},
     os::{
-        fd::AsRawFd,
+        fd::{AsFd, AsRawFd, OwnedFd},
         unix::fs::{FileTypeExt, MetadataExt, OpenOptionsExt, PermissionsExt},
     },
     path::{Path, PathBuf},
@@ -13,6 +13,9 @@ pub struct Guard {
     path: PathBuf,
     device: u64,
     inode: u64,
+    // Keep the bound inode alive until cleanup checks it. Inode numbers can be
+    // reused after the server closes its listener and another socket replaces it.
+    _listener: OwnedFd,
     _lock: File,
 }
 impl Drop for Guard {
@@ -86,12 +89,14 @@ pub fn bind(path: &Path) -> Result<(tokio::net::UnixListener, Guard)> {
     let listener = tokio::net::UnixListener::bind(path)?;
     std::fs::set_permissions(path, std::fs::Permissions::from_mode(0o600))?;
     let meta = std::fs::symlink_metadata(path)?;
+    let pinned_listener = listener.as_fd().try_clone_to_owned()?;
     Ok((
         listener,
         Guard {
             path: path.into(),
             device: meta.dev(),
             inode: meta.ino(),
+            _listener: pinned_listener,
             _lock: lock,
         },
     ))
@@ -124,11 +129,23 @@ mod tests {
         std::fs::set_permissions(t.path(), std::fs::Permissions::from_mode(0o700)).unwrap();
         let path = t.path().join("sidecar.sock");
         let (listener, guard) = bind(&path).unwrap();
+        let original = std::fs::symlink_metadata(&path).unwrap();
         drop(listener);
         std::fs::remove_file(&path).unwrap();
         let replacement = std::os::unix::net::UnixListener::bind(&path).unwrap();
+        let current = std::fs::symlink_metadata(&path).unwrap();
+        assert_ne!(
+            (original.dev(), original.ino()),
+            (current.dev(), current.ino())
+        );
         drop(guard);
-        assert!(path.exists());
+        let preserved = std::fs::symlink_metadata(&path).unwrap();
+        assert_eq!(
+            (preserved.dev(), preserved.ino()),
+            (current.dev(), current.ino())
+        );
+        let connection = std::os::unix::net::UnixStream::connect(&path).unwrap();
+        drop(connection);
         drop(replacement);
     }
 }

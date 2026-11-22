@@ -1,6 +1,6 @@
 # CI repair record
 
-PR #89 retains the existing runtime behavior and the six existing CI jobs.
+The initial CI repair retains runtime behavior and the six existing CI jobs.
 It adds a separate recovery job. The following changes repair checks that
 blocked this branch and the previous main revision. No live service was changed.
 
@@ -31,3 +31,22 @@ job hashes, hashes of object names, public Worker version IDs and one literal
 JSON property name. No credential finding was suppressed. Rules use exact
 paths, the existing generic rule ID and anchored match/value syntax. Adjacent
 credential fields on the same JSON line remain detectable.
+
+## Linux runner follow-up
+
+| File | Change | Validation |
+| --- | --- | --- |
+| `.github/workflows/ci.yml` | Install Ripgrep before the archive boundary check. | The Linux job log showed the missing command; all previous checks stay enabled. |
+| `scripts/check-archive-v2-wire-boundary.sh` | Fail with a clear message if Ripgrep is missing. | Local exact path/count check passes. |
+| `scripts/test_gitleaks_policy.py` | Use runtime-generated, fixed-entropy values that cannot contain default Gitleaks stopwords. Require the generic credential rule in negative cases. | Eight fresh fixture runs passed; the full committed-history scan found zero findings. |
+| `hivezilla/stream-relay/examples/rust-consumer/Cargo.lock` | Record the already present decoder as a dependency of the stream crate. | Locked resolution passes; no package version changes. |
+| `hivezilla/stream-sidecar/src/uds.rs` | Keep a duplicate listener FD through guard cleanup, so Linux cannot reuse the old socket inode. Strengthen the replacement test. | Format check passes; Linux CI tests the updated guard. |
+
+The socket cleanup defect was found by the new recovery CI job. The fix keeps
+owner, permission and lock checks. It adds one FD at listener startup and no
+per-block work or block copy.
+
+Extra local Rust builds exhausted local disk space before the new socket and
+example tests ran. Those builds were stopped and only this task's generated
+worktree target was removed. Source and shared caches were preserved. The
+updated PR must pass the Linux jobs before merge.

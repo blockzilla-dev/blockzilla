@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if ! command -v rg >/dev/null 2>&1; then
+  echo 'Archive V2 boundary check requires ripgrep (rg).' >&2
+  exit 1
+fi
+
 # Archive V2 readers must select one generation-bound wire profile through
 # blockzilla-compact-v2-reader. Keep this small allowlist for existing migration debt;
 # a new direct decoder, including one added to an allowlisted file, changes the

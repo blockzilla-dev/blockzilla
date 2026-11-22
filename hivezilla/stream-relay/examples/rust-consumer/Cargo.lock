@@ -1057,6 +1057,7 @@ dependencies = [
  "async-stream",
  "axum",
  "blockzilla-bank-stream-v2",
+ "blockzilla-stream-decoder",
  "bs58",
  "bytes",
  "clap 4.6.7",

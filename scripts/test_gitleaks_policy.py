@@ -56,6 +56,28 @@ def write(root, name, value, compact=False):
     path.write_text(json.dumps(value, indent=None if compact else 2) + "\n")
 
 
+def credential():
+    # Uniform URLsafe samples can contain words from Gitleaks' default
+    # stopword list. That makes an expected-positive detection nondeterministic.
+    # This alphabet cannot form any of the pinned rule's stopwords except six
+    # repeated zeros or x characters. Shuffled unique blocks prevent those runs.
+    # Four blocks have exactly four bits of entropy per character, include
+    # non-hex letters, and do not fit a metadata SHA-256 or UUID field.
+    alphabet = "0123456789qwxzjk"
+    random = secrets.SystemRandom()
+    return "".join("".join(random.sample(alphabet, len(alphabet))) for _ in range(4))
+
+
+def require_paths(rows, expected, reason):
+    require(all(row["RuleID"] == "generic-api-key" for row in rows),
+            "Negative fixtures must exercise the generic credential rule")
+    actual = {row["File"] for row in rows}
+    require(actual == expected, reason + ": " + json.dumps({
+        "missing_paths": sorted(expected - actual),
+        "unexpected_paths": sorted(actual - expected),
+    }))
+
+
 def scan(binary, root, report):
     command = [binary, "dir", ".", "--config", str(POLICY), "--redact=100",
                "--no-banner", "--no-color", "--report-format=json",
@@ -106,22 +128,22 @@ def main():
         # Keep metadata and a new credential on the same JSON line. A line-wide
         # exception could incorrectly suppress both; match-scoped rules must not.
         for name, value in fixtures.items():
-            write(tree, name, {**value, "api_key": secrets.token_urlsafe(40)}, compact=True)
+            write(tree, name, {**value, "api_key": credential()}, compact=True)
         outside = "outside/metadata.json"
         write(tree, outside, {"job_key": digest}, compact=True)
         rows = scan(binary, tree, temporary / "adjacent.json")
-        require({row["File"] for row in rows} == set(fixtures) | {outside},
-                "Credentials beside metadata and metadata outside reviewed paths must be found")
+        require_paths(rows, set(fixtures) | {outside},
+                      "Credentials beside metadata and metadata outside reviewed paths must be found")
 
         # Same reviewed field and path, but no longer a SHA-256 or version UUID:
         # an exception must not accept an arbitrary credential-shaped value.
         for name, value in fixtures.items():
             field = next(iter(value)) if name != PROPERTY_PATH else "api_key"
-            write(tree, name, {field: secrets.token_urlsafe(40)}, compact=True)
+            write(tree, name, {field: credential()}, compact=True)
         (tree / outside).unlink()
         rows = scan(binary, tree, temporary / "wrong-format.json")
-        require({row["File"] for row in rows} == set(fixtures),
-                "Credential values with the wrong metadata format must be found")
+        require_paths(rows, set(fixtures),
+                      "Credential values with the wrong metadata format must be found")
 
         print(json.dumps({"status": "PASS", "gitleaks_version": "8.30.1",
                           "reviewed_metadata_paths": len(fixtures),
