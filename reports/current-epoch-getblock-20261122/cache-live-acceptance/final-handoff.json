@@ -1,0 +1,70 @@
+{
+  "schema": "blockzilla-cache-final-handoff-v1",
+  "atUtc": "2026-11-22T21:16:45.231325+00:00",
+  "baseline": {
+    "workerVersion": "1cc2931c-a23d-464b-b8ee-00b0e49d978d",
+    "publicDataRequests": 73,
+    "allBodiesAndDigestsPassed": true,
+    "apiKeysSent": 0,
+    "providerRpcCalls": 0,
+    "warmHits": 48,
+    "warmOriginReads": 0,
+    "estimatedWarmWorkersOnlyCostPerMillionUsd": 0.33885853658536585,
+    "cpuCountsAdaptiveNotExact": true,
+    "receipt": ".codex-tmp/current-epoch-getblock-20261122/public-cache-benchmark/summary.json"
+  },
+  "frontendWorkersCache": {
+    "productionEnabled": false,
+    "testedOnlyOnUnpromotedVersions": true,
+    "unknownLengthErroredPrefixReusedAsHit": true,
+    "promotionRejected": true,
+    "faultBoundaryNotAssigned": true,
+    "evidence": ".codex-tmp/current-epoch-getblock-20261122/cache-live-acceptance/diagnostic-node.json"
+  },
+  "currentCacheApi": {
+    "atomicityProbePassed": true,
+    "positiveControlFullDigestMatched": true,
+    "badPutRejected": true,
+    "badMatchAbsent": true,
+    "bothSyntheticKeysDeletedAndAbsent": true,
+    "frontendCacheWasDisabled": true,
+    "probeVersion": "18deaee9-a10d-4352-be20-80344d101aca",
+    "receipt": ".codex-tmp/current-epoch-getblock-20261122/cache-live-acceptance/application-cache-api-receipt.json"
+  },
+  "decision": {
+    "retainStreamingCacheApi": true,
+    "frontendWorkersCacheMustRemainDisabled": true,
+    "rootDeploysCleanSafetyArtifactSeparately": true,
+    "cleanWasmSha256": "40966754f3e9100674efb845ebecc4c3b2eb8e776c9e2f33d3889400b23f8155",
+    "probeEntrypointsNeverPromoted": true
+  },
+  "lastVerifiedAgentState": {
+    "productionVersion": "1cc2931c-a23d-464b-b8ee-00b0e49d978d",
+    "productionPercentage": 100,
+    "previewsEnabled": false,
+    "workersDevEnabled": false
+  },
+  "requests": {
+    "baselineSeparatePlan": 73,
+    "acceptanceAndDiagnosticsUsed": 22,
+    "acceptanceCapInitially": 60,
+    "acceptanceCapExtendedByRoot": 80,
+    "furtherAgentDataRequests": 0
+  },
+  "realBlockBodyFilesWritten": 0,
+  "newWorkersOrProxiesOrBlockStores": 0,
+  "r2AndKvMutations": 0,
+  "agentWillMakeNoMoreCloudflareCalls": true,
+  "receiptPaths": {
+    "baselineHttp": ".codex-tmp/current-epoch-getblock-20261122/public-cache-benchmark/http.json",
+    "baselineCpu": ".codex-tmp/current-epoch-getblock-20261122/public-cache-benchmark/platform-cpu.json",
+    "baselineSummary": ".codex-tmp/current-epoch-getblock-20261122/public-cache-benchmark/summary.json",
+    "firstStoppedAttempt": ".codex-tmp/current-epoch-getblock-20261122/cache-live-acceptance/application-receipt.json",
+    "correctedStoppedAttempt": ".codex-tmp/current-epoch-getblock-20261122/cache-live-acceptance/application-resume-receipt.json",
+    "pythonDiagnosticInconclusive": ".codex-tmp/current-epoch-getblock-20261122/cache-live-acceptance/diagnostic-cache-commit.json",
+    "nodePrefixReuseProof": ".codex-tmp/current-epoch-getblock-20261122/cache-live-acceptance/diagnostic-node.json",
+    "cacheApiApplication": ".codex-tmp/current-epoch-getblock-20261122/cache-live-acceptance/application-cache-api-receipt.json",
+    "cacheApiSingleGet": ".codex-tmp/current-epoch-getblock-20261122/cache-live-acceptance/cache-api-18deaee9-a10d-4352-be20-80344d101aca.json",
+    "finalResults": ".codex-tmp/current-epoch-getblock-20261122/cache-live-acceptance/results.json"
+  }
+}

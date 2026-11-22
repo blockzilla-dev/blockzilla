@@ -1,8 +1,10 @@
 # Current epoch getBlock repair
 
 Production Worker `blockzilla-get-block` runs version
-`1cc2931c-a23d-464b-b8ee-00b0e49d978d` at 100%. Its WASM SHA-256 is
-`8df59cb7c34f05a9c259ebdcd754dec7fea9824f8df4fed1c0b911fc1a04c15b`.
+`e58a69ea-3b2a-465e-bac7-b68599ee1957` at 100%. Its WASM SHA-256 is
+`40966754f3e9100674efb845ebecc4c3b2eb8e776c9e2f33d3889400b23f8155`.
+The core repair first ran as version `1cc2931c-a23d-464b-b8ee-00b0e49d978d`.
+The current version adds error cache safety and a fresh execution header.
 
 - [Current epoch JSON, slot 472608000](https://archive.blockzilla.dev/block/472608000.json)
 - [Published archive binary, slot 470555971](https://archive.blockzilla.dev/block/470555971.bin)
@@ -10,7 +12,7 @@ Production Worker `blockzilla-get-block` runs version
 The exact route `archive.blockzilla.dev/block/*` uses this Worker. The
 existing archive R2 CNAME and raw object paths remain unchanged. The older
 `getblock.blockzilla.dev` hostname remains available. Live streams retain
-`stream.blockzilla.dev`. No load balancer or proxy was added. The temporary
+`stream.blockzilla.dev`. No archive proxy or load balancer was added. The temporary
 apex `/archive/*` route was removed after the archive hostname passed.
 
 ## Read path and scope
@@ -107,7 +109,7 @@ assumed publication boundary.
 
 ## Checks and files
 
-All 39 native/ledger actual-WASM checks, 29 public checks, 41 recovery checks,
+All 39 native/ledger actual-WASM checks, 35 public checks, 41 recovery checks,
 eight focused host checks and the direct-route unit check passed. The service
 passed 47 tests. The helper passed the SDK-option, slot/framing, read-only and
 default-refusal checks. These are focused tests, not CI changes.
@@ -116,7 +118,7 @@ default-refusal checks. These are focused tests, not CI changes.
 | --- | --- |
 | `Cargo.toml`, `Cargo.lock` | Admit the standalone lightweight native-frame crate; release WASM and host builds pass. |
 | `edgezilla/get-block/Cargo.toml` | Add native-frame/Bytes dependencies and test fixtures; no full validator SDK in the Worker. |
-| `edgezilla/get-block/src/worker.rs` | Foundation-first JSON, terminal errors, generation cache keys, route alias and reward types; actual WASM and real RPC checks pass. |
+| `edgezilla/get-block/src/worker.rs` | Foundation-first JSON, terminal errors, generation cache keys, route alias and reward types; all returned errors are no-store and each execution has a fresh Ray stamp without reading the body. Actual WASM and real RPC checks pass. |
 | `worker/foundation_first.rs` | Request-local native/ledger outcomes and pinned configuration; legacy public/recovery suites pass. |
 | `worker/foundation_first/finalized.rs` | Checked private HTTP protocol and bounded cancellation; wrong source/root/hash/generation and timeout checks pass. |
 | `worker/foundation_first/recent.rs` | Share existing metadata validation; exact recovery behavior passes. |
@@ -124,7 +126,8 @@ default-refusal checks. These are focused tests, not CI changes.
 | `worker/bundle_object.rs` | Shared checked decoder with separate local ledger IDs; epoch-boundary and Legacy/V0/V1 tests pass. |
 | `worker/resolution.rs` | Authenticated alias parsing; both index paths reject anonymous requests before backend reads. |
 | `scripts/test-native-finalized-worker.mjs` | Independent native/ledger RPC, binary bytes, aliases, cache sharing, errors and new reward tests; 39 pass. |
-| `wrangler.production.jsonc` | One production Worker, canonical route, source/helper pins, public access and disabled test URLs; live API checks pass. |
+| `scripts/test-public-worker.mjs` | Shared public cache identities, fresh execution stamps, no extra backend reads and error no-store checks; 35 pass. |
+| `wrangler.production.jsonc` | One production Worker, canonical route, source/helper pins, public access, disabled managed Workers Cache and disabled test URLs; live API checks pass. |
 | `hivezilla/ledger-archive/Cargo.toml`, `Cargo.lock` | Explicit bounded build feature and existing-version JSON dependencies; default and overlay builds pass. |
 | `ledger-archive/src/main.rs` | One-slot command and typed exits; CLI checks pass. |
 | `ledger-archive/src/ledger.rs` | Strict read-only complete rooted loading and file-cache option; real target and read-only checks pass. |
@@ -162,3 +165,44 @@ The final check shows both Foundation feeds and the Hetzner client moving,
 with no current input error or active recovery. The client has 34 historical
 failed recovery attempts; this count did not increase during the check. This
 is current health evidence, not a claim of zero interruption during the repair.
+
+Four task-only build directories were then removed from Foundation. This freed
+6,382,952,448 allocated bytes (5.94 GiB). Active executables, source overlays,
+patches, records and all source data remained. The protected process identities
+and retained file hashes stayed fixed. See `foundation-artifact-cleanup.json`.
+
+## Public stream and cache acceptance
+
+The [public stream routing repair](../../../hivezilla/deploy/public-native-stream/README.md)
+is deployed and accepted. Its loopback TCP-to-Unix bridge adds no block store.
+The existing Tunnel keeps the private reader rule first and exposes only the
+native head, events, beam and chunk read paths. The current native Bearer key
+is required. Missing, wrong, legacy and URL keys return 401. Private control
+paths return 404 even with a valid key. Exact frame, cursor, chunk and object
+hash checks passed. All seven protected process identities stayed fixed during
+this routing repair. This does not claim browser/CORS or long-stream latency
+acceptance, or that the private consumer changed transport.
+
+The [archive benchmark](../public-cache-benchmark/README.md) separates origin
+cache bypass from warm Cache API hits. The baseline used the core repair
+version; all 73 requests passed. The final production safety version then
+passed eight separate warm requests with full body digests, zero backend reads
+and eight different execution stamps. See `cache-safety-production-proof.json`.
+Cache API hits still execute the Worker. The sampled marginal request and CPU
+estimate is about $0.339 per million warm requests, before the subscription,
+included allowances, backend, machine, storage and network costs.
+
+Managed Workers Cache remains explicitly disabled. A 0% synthetic test reused
+an errored unknown-length stream prefix. No real block or production route was
+used for that failure test. The existing Cache API rejected a failed fill and
+kept no partial entry. No probe version was promoted. Full results and retained
+failures are in the [cache acceptance record](../cache-live-acceptance/README.md).
+
+The [deployment receipt](cache-safety-deployment.json) records the clean safety
+version at 100%, with managed Workers Cache, workers.dev and preview URLs all
+disabled. The three `cache-*-wasm.json` records cover its 115 local WASM checks.
+The final safety version also returned slot 472608000 through `LEDGER_COMPACT`
+with the expected hashes, 81 transactions and 1326 rewards, with no customer
+KV or billable reads. See `target-final-safety-version.json`. Its single normal
+miss took 2.396 seconds; it is not a fully cold storage measurement.
+No CI configuration was changed.

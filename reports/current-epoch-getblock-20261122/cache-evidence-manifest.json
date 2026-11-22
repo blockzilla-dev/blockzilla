@@ -1,0 +1,142 @@
+{
+  "schema": "blockzilla-safe-cache-report-assembly-v1",
+  "assembledAt": "2026-11-22T21:23:46.006132+00:00",
+  "copiedFiles": [
+    {
+      "path": "public-cache-benchmark/README.md",
+      "bytes": 6727,
+      "sha256": "fabbf7f162e85670e9f63bdaf47d36f6ea65387ac998ab4da96be7cf0eac9f0f",
+      "copiedWithoutModification": false,
+      "sourceSha256": "37060d107ebd6aac348b0db22b1f641013ebd007d40b4016d62494745a27e1c8",
+      "documentationUpdate": "Linked the final clean e58 deployment and production proof. Raw JSON measurement and failure receipts remain unchanged."
+    },
+    {
+      "path": "public-cache-benchmark/http.json",
+      "bytes": 313136,
+      "sha256": "771d81928b1d6130f994c2da89a7f0b8090904d39a36c29fe9f6d40a35144d22",
+      "copiedWithoutModification": true
+    },
+    {
+      "path": "public-cache-benchmark/summary.json",
+      "bytes": 5769,
+      "sha256": "d9aa60f45ed6b46213b2fc0dc5b328e943bdb71f209992865192e46b06004017",
+      "copiedWithoutModification": true
+    },
+    {
+      "path": "public-cache-benchmark/platform-cpu.json",
+      "bytes": 37739,
+      "sha256": "1b506dff7ba37dd956c1ffd5c8ad74c3dd01a08ee716b0080ce9ff1c21e8578a",
+      "copiedWithoutModification": true
+    },
+    {
+      "path": "public-cache-benchmark/live-settings-before.json",
+      "bytes": 3408,
+      "sha256": "84647bf7fea4aa0ba08c333ae6144f4328c7e0d0fd984895f1716da638c4f633",
+      "copiedWithoutModification": true
+    },
+    {
+      "path": "public-cache-benchmark/live-settings-after.json",
+      "bytes": 650,
+      "sha256": "b8723c790d5981be479ebaad94a221a94fe177b3fe1573d01a724787e3b95523",
+      "copiedWithoutModification": true
+    },
+    {
+      "path": "public-cache-benchmark/wrangler-schema-support.json",
+      "bytes": 5085,
+      "sha256": "416e45787130b5d88089d956e31ed8d2b4e89f63fcae91782e43e8dbac9a71d5",
+      "copiedWithoutModification": true
+    },
+    {
+      "path": "public-cache-benchmark/cache-proposal.json",
+      "bytes": 4192,
+      "sha256": "c10288b1f62ddd50fe814da1d2aa71f79a234fbe0708e8c819833ab84054cf31",
+      "copiedWithoutModification": true
+    },
+    {
+      "path": "cache-live-acceptance/RESULTS.md",
+      "bytes": 5371,
+      "sha256": "e2a8d16bab96aa5930592c73a00b8388c076fd28250655c6ef8f592d0348bfd0",
+      "copiedWithoutModification": true
+    },
+    {
+      "path": "cache-live-acceptance/results.json",
+      "bytes": 4201,
+      "sha256": "d0e7f47236d5b921b885accef53ce5f18b6aa16194f4eafa140b488b2aef1240",
+      "copiedWithoutModification": true
+    },
+    {
+      "path": "cache-live-acceptance/final-handoff.json",
+      "bytes": 3357,
+      "sha256": "21a8fa4e66d5a9fa6a9b4470f5ba65fa167c78d3edeeddef4141e38cbcc287b9",
+      "copiedWithoutModification": true
+    },
+    {
+      "path": "cache-live-acceptance/application-receipt.json",
+      "bytes": 3606,
+      "sha256": "58d67b22b9e7ff006e484eb46d6b179d4dd85f2c07bdb4bc37b752fe69162cdd",
+      "copiedWithoutModification": true
+    },
+    {
+      "path": "cache-live-acceptance/probe-3c6c40ef-ddbf-471d-a5eb-0a1fdb4893da.json",
+      "bytes": 12402,
+      "sha256": "aaa6b8fd8e9be37c9a96e9ee95f99e67cf49064f88713acbd8f02d71e30b5639",
+      "copiedWithoutModification": true
+    },
+    {
+      "path": "cache-live-acceptance/application-resume-receipt.json",
+      "bytes": 3080,
+      "sha256": "6c4dbbab8dfb64f50cf1f86bf80782ec19dca0c1fc07a07c0317e59b486cf732",
+      "copiedWithoutModification": true
+    },
+    {
+      "path": "cache-live-acceptance/probe-resume-06922dfb-06c5-47e0-b851-7f8e1f2fb62e.json",
+      "bytes": 3480,
+      "sha256": "ef02ef251e21c35de142dd8fb7464e3e641e6c65a4b978254cce1063165723a9",
+      "copiedWithoutModification": true
+    },
+    {
+      "path": "cache-live-acceptance/diagnostic-cache-commit.json",
+      "bytes": 2686,
+      "sha256": "e2573dc295622fc2c3e050218373b8890e8ab33e703d35fb94b151c0781bd25b",
+      "copiedWithoutModification": true
+    },
+    {
+      "path": "cache-live-acceptance/diagnostic-cache-commit-unclassified.json",
+      "bytes": 2426,
+      "sha256": "ade74db55102439aa937c97b86c4804b3f09a18495abc6a44383e3f89f1b9caf",
+      "copiedWithoutModification": true
+    },
+    {
+      "path": "cache-live-acceptance/diagnostic-node.json",
+      "bytes": 4775,
+      "sha256": "42e5c2f9f3dcabb007a1c8fb1951818900c9ab8413ab10a00b5b3efac38b33dc",
+      "copiedWithoutModification": true
+    },
+    {
+      "path": "cache-live-acceptance/application-cache-api-receipt.json",
+      "bytes": 2345,
+      "sha256": "1ffbdf1f4365e1fc19af7345f2cef08296ec85b54c1677d1b42e6a1ea88a7862",
+      "copiedWithoutModification": true
+    },
+    {
+      "path": "cache-live-acceptance/cache-api-18deaee9-a10d-4352-be20-80344d101aca.json",
+      "bytes": 1505,
+      "sha256": "3dde56248f46caf4bdff6e8d89c3ec1c573188236dd5220e7e77d9c304a0fa0c",
+      "copiedWithoutModification": true
+    },
+    {
+      "path": "cache-live-acceptance/request-budget.json",
+      "bytes": 4121,
+      "sha256": "ee753ec5b7ea5845dcc6babd7b9dd6ee49b96e9b6cc730f5b398508885b4c5e6",
+      "copiedWithoutModification": true
+    }
+  ],
+  "sourceReceiptsUnmodified": true,
+  "stagingScriptsOrSecretsCopied": false,
+  "blockBodyFilesCopied": 0,
+  "cloudflareCalls": 0,
+  "baselineDataRequests": 73,
+  "acceptanceAndDiagnosticDataRequests": 22,
+  "scope": "Only baseline and cache acceptance receipts; repair documentation is owned by root.",
+  "rawJsonReceiptsUnmodified": true
+}

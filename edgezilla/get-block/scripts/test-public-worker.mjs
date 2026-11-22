@@ -68,6 +68,31 @@ async function main() {
         else assert.equal(sha(body), spec.bundleSha);
         checks.push({ name: `${kind}-shared-hit-identity-${index}`, status: response.status });
       }
+      const beforeRayRequests = await h.stats(), rayBodies = [];
+      for (const ray of ['1111111111111111-TEST', '2222222222222222-TEST']) {
+        const response = await request(`/block/${slot}.${kind}?rewards=false`, { 'CF-Ray': ray });
+        const body = Buffer.from(await response.arrayBuffer());
+        assert.equal(response.status, 200);
+        assert.equal(response.headers.get('X-Blockzilla-Cache'), 'HIT');
+        assert.equal(response.headers.get('X-Blockzilla-Foundation-Result'), 'RESPONSE_CACHE');
+        assert.equal(response.headers.get('X-Blockzilla-Origin-Ray'), ray);
+        rayBodies.push(sha(body));
+        checks.push({ name: `${kind}-shared-hit-fresh-origin-ray-${ray[0]}`, status: response.status });
+      }
+      assert.equal(rayBodies[0], rayBodies[1], `${kind} origin stamp must not alter the body`);
+      assert.deepEqual(await h.stats(), beforeRayRequests, `${kind} response hits must avoid backends`);
+    }
+    await h.control('complete');
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const response = await request('/unknown-route-for-cache-policy');
+      await response.arrayBuffer();
+      assert.equal(response.status, 404);
+      assert.equal(response.headers.get('Cache-Control'), 'no-store');
+      assert.notEqual(response.headers.get('X-Blockzilla-Cache'), 'HIT');
+      const stats = await h.stats();
+      assert.deepEqual(stats.events, []);
+      assert.deepEqual(stats.broker.events, []);
+      checks.push({ name: `router-404-not-cached-${attempt}`, status: response.status, backendRequests: 0 });
     }
     for (const [name, path, expected] of [
       ['bad-encoding', `/block/${slot}.json?encoding=base58`, 400],
@@ -102,6 +127,7 @@ async function main() {
       const response = await h.mf.dispatchFetch(ORIGIN + path, options);
       await response.arrayBuffer();
       assert.equal(response.status, 401, name);
+      assert.match(response.headers.get('Cache-Control'), /no-store/);
       checks.push({ name, status: response.status });
     }
     const receipt = { state: 'PASS', checks, total: checks.length, artifact: h.artifact,

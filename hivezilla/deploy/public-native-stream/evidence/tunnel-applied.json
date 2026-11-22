@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "applied": {
+    "version": 5,
+    "pid": 480183,
+    "journal_realtime_us": "1795380843875792"
+  },
+  "fallback_checks": [
+    {
+      "path": "/v2/banks/state",
+      "status": 404,
+      "body_bytes": 0
+    },
+    {
+      "path": "/v2/banks/ack",
+      "status": 404,
+      "body_bytes": 0
+    },
+    {
+      "path": "/v2/banks/coverage-gaps",
+      "status": 404,
+      "body_bytes": 0
+    },
+    {
+      "path": "/health",
+      "status": 404,
+      "body_bytes": 0
+    }
+  ],
+  "socket_started": false
+}

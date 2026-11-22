@@ -1,0 +1,35 @@
+{
+  "success": true,
+  "errors": [],
+  "messages": [],
+  "result": {
+    "tunnel_id": "0cd18a26-d76a-408c-a1fa-55a1151fa3ae",
+    "version": 5,
+    "config": {
+      "ingress": [
+        {
+          "path": "^/v1/(recent/[0-9]+|finalized/[0-9]+|resolve|resolve-block/[0-9]+)$",
+          "service": "http://127.0.0.1:18962",
+          "hostname": "stream.blockzilla.dev"
+        },
+        {
+          "path": "^/v2/banks/(head|events|beam|chunks/[0-9a-f]{64})$",
+          "service": "http://127.0.0.1:8871",
+          "hostname": "stream.blockzilla.dev"
+        },
+        {
+          "service": "http_status:404",
+          "hostname": "stream.blockzilla.dev"
+        },
+        {
+          "service": "http_status:404"
+        }
+      ],
+      "warp-routing": {
+        "enabled": false
+      }
+    },
+    "source": "cloudflare",
+    "created_at": "2026-11-22T20:54:03.493475Z"
+  }
+}

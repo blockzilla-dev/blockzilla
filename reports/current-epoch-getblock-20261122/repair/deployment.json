@@ -1,9 +1,9 @@
 {
   "state": "DEPLOYED",
   "worker": "blockzilla-get-block",
-  "version": "1cc2931c-a23d-464b-b8ee-00b0e49d978d",
+  "version": "e58a69ea-3b2a-465e-bac7-b68599ee1957",
   "percentage": 100,
-  "wasmSha256": "8df59cb7c34f05a9c259ebdcd754dec7fea9824f8df4fed1c0b911fc1a04c15b",
+  "wasmSha256": "40966754f3e9100674efb845ebecc4c3b2eb8e776c9e2f33d3889400b23f8155",
   "canonicalBase": "https://archive.blockzilla.dev",
   "compatibilityBase": "https://getblock.blockzilla.dev",
   "routeId": "a95d755d40714516a3c411812477bdcc",
@@ -22,5 +22,16 @@
   "foundationReaderPid": 2304452,
   "ledgerMinimumSlot": 472176000,
   "streamHostname": "stream.blockzilla.dev",
-  "publicStreamHttp": "Pre-existing502; private feed and consumer healthy; repair pending"
+  "publicStreamHttp": "PASS: exact authenticated native frames/chunks; private control routes blocked",
+  "frontendWorkersCache": {
+    "enabled": false,
+    "cross_version_cache": false
+  },
+  "publicStreamRequiresBearerKey": true,
+  "tunnelConfigurationVersion": 5,
+  "streamProxy": "bounded systemd TCP-to-Unix bridge; no block storage",
+  "localWasmChecks": 115,
+  "cacheSafetyWarmProof": "PASS: eight full-body matches, fresh execution stamps, zero backend reads",
+  "foundationBuildCleanupAllocatedBytes": 6382952448,
+  "coreRepairVersion": "1cc2931c-a23d-464b-b8ee-00b0e49d978d"
 }

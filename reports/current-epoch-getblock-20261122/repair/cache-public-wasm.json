@@ -1,0 +1,162 @@
+{
+  "state": "PASS",
+  "checks": [
+    {
+      "name": "json-public-identity-0",
+      "status": 200,
+      "cache": "MISS"
+    },
+    {
+      "name": "json-public-identity-1",
+      "status": 200,
+      "cache": "HIT"
+    },
+    {
+      "name": "json-public-identity-2",
+      "status": 200,
+      "cache": "HIT"
+    },
+    {
+      "name": "json-public-identity-3",
+      "status": 200,
+      "cache": "HIT"
+    },
+    {
+      "name": "json-shared-cache-hit",
+      "hit": true
+    },
+    {
+      "name": "json-shared-hit-identity-0",
+      "status": 200
+    },
+    {
+      "name": "json-shared-hit-identity-1",
+      "status": 200
+    },
+    {
+      "name": "json-shared-hit-identity-2",
+      "status": 200
+    },
+    {
+      "name": "json-shared-hit-identity-3",
+      "status": 200
+    },
+    {
+      "name": "json-shared-hit-identity-4",
+      "status": 200
+    },
+    {
+      "name": "json-shared-hit-identity-5",
+      "status": 200
+    },
+    {
+      "name": "json-shared-hit-fresh-origin-ray-1",
+      "status": 200
+    },
+    {
+      "name": "json-shared-hit-fresh-origin-ray-2",
+      "status": 200
+    },
+    {
+      "name": "bin-public-identity-0",
+      "status": 200,
+      "cache": "MISS"
+    },
+    {
+      "name": "bin-public-identity-1",
+      "status": 200,
+      "cache": "HIT"
+    },
+    {
+      "name": "bin-public-identity-2",
+      "status": 200,
+      "cache": "HIT"
+    },
+    {
+      "name": "bin-public-identity-3",
+      "status": 200,
+      "cache": "HIT"
+    },
+    {
+      "name": "bin-shared-cache-hit",
+      "hit": true
+    },
+    {
+      "name": "bin-shared-hit-identity-0",
+      "status": 200
+    },
+    {
+      "name": "bin-shared-hit-identity-1",
+      "status": 200
+    },
+    {
+      "name": "bin-shared-hit-identity-2",
+      "status": 200
+    },
+    {
+      "name": "bin-shared-hit-identity-3",
+      "status": 200
+    },
+    {
+      "name": "bin-shared-hit-identity-4",
+      "status": 200
+    },
+    {
+      "name": "bin-shared-hit-identity-5",
+      "status": 200
+    },
+    {
+      "name": "bin-shared-hit-fresh-origin-ray-1",
+      "status": 200
+    },
+    {
+      "name": "bin-shared-hit-fresh-origin-ray-2",
+      "status": 200
+    },
+    {
+      "name": "router-404-not-cached-0",
+      "status": 404,
+      "backendRequests": 0
+    },
+    {
+      "name": "router-404-not-cached-1",
+      "status": 404,
+      "backendRequests": 0
+    },
+    {
+      "name": "bad-encoding",
+      "status": 400
+    },
+    {
+      "name": "missing-compact-identity",
+      "status": 400
+    },
+    {
+      "name": "unavailable-not-cached-0",
+      "status": 404
+    },
+    {
+      "name": "unavailable-not-cached-1",
+      "status": 404
+    },
+    {
+      "name": "public-info",
+      "status": 200
+    },
+    {
+      "name": "resolution-keeps-auth",
+      "status": 401
+    },
+    {
+      "name": "post-keeps-contract",
+      "status": 401
+    }
+  ],
+  "total": 35,
+  "artifact": {
+    "build": "/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/build/index.js",
+    "wasmSha256": "40966754f3e9100674efb845ebecc4c3b2eb8e776c9e2f33d3889400b23f8155",
+    "compatibilityDate": "2026-09-10"
+  },
+  "scope": "Local actual WASM; customer key and billing bindings removed from the request environment."
+}

@@ -6,6 +6,10 @@
   "compatibility_date": "2026-11-21",
   "workers_dev": false,
   "preview_urls": false,
+  "cache": {
+    "enabled": false,
+    "cross_version_cache": false
+  },
   "routes": [
     { "pattern": "getblock.blockzilla.dev", "custom_domain": true },
     { "pattern": "archive.blockzilla.dev/block/*", "zone_id": "fe1afd69f777e57eca0a230722f77da2" }

@@ -1,0 +1,25 @@
+[Unit]
+Description=Blockzilla native stream TCP to Unix bridge
+Requires=hivezilla-native-stream-proxy.socket
+After=hivezilla-native-stream-proxy.socket
+
+[Service]
+User=ubuntu
+Group=ubuntu
+ExecStart=/usr/lib/systemd/systemd-socket-proxyd --connections-max=8 --exit-idle-time=5min /home/ubuntu/live/hivezilla-validator-20260930/runtime/live/origin.sock
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateNetwork=yes
+ProtectHome=read-only
+ProtectSystem=strict
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictAddressFamilies=AF_UNIX AF_INET
+CapabilityBoundingSet=
+AmbientCapabilities=
+MemoryMax=64M
+TasksMax=16
+LimitNOFILE=512
+Restart=on-failure
+RestartSec=1s

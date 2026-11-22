@@ -1,0 +1,129 @@
+{
+  "schema": "blockzilla-node-cache-commit-diagnostic-v1",
+  "diagnosticOnly": true,
+  "startedAt": "2026-11-22T21:04:49.745Z",
+  "version": "06922dfb-06c5-47e0-b851-7f8e1f2fb62e",
+  "productionVersion": "1cc2931c-a23d-464b-b8ee-00b0e49d978d",
+  "originalAcceptanceStillFailed": true,
+  "originalReceiptSha256": "ef02ef251e21c35de142dd8fb7464e3e641e6c65a4b978254cce1063165723a9",
+  "budgetBefore": 18,
+  "requestLimit": 80,
+  "maxDataRequests": 5,
+  "requests": [
+    {
+      "label": "readiness-0",
+      "path": "/__cache_probe?kind=ok&case=93d3dbeb-c8aa-44cd-b882-3942a0443a8e",
+      "startedAt": "2026-11-22T21:04:58.591Z",
+      "status": 200,
+      "bytes": 65536,
+      "completed": true,
+      "headers": {
+        "cache-control": "public, max-age=300",
+        "cf-cache-status": "MISS",
+        "cf-ray": "a5eae3be5db98bd2-CDG",
+        "content-length": "65536",
+        "content-type": "application/octet-stream",
+        "x-bz-probe-expected-length": "65536",
+        "x-bz-probe-invocation": "94fe4432-5641-414b-b979-cd205f15488c",
+        "x-bz-probe-method": "GET",
+        "x-bz-probe-origin-ray": "a5eae3be5db98bd2-MAD"
+      },
+      "headersMs": 416.5079590000005,
+      "firstByteMs": 423.48754200000076,
+      "sha256": "8dd5abc52b4acc5672866317a6cef7e5471509928bc0bfe812e3b2a5a9269ece",
+      "totalMs": 436.6283340000009,
+      "producerUuid": "94fe4432-5641-414b-b979-cd205f15488c",
+      "originRay": "a5eae3be5db98bd2-MAD",
+      "cfCacheStatus": "MISS"
+    },
+    {
+      "label": "unknown-repeat-0",
+      "path": "/__cache_probe?kind=stream-error-unknown&case=7e321562-bb34-4455-a1f8-3869aadc803e",
+      "startedAt": "2026-11-22T21:04:59.029Z",
+      "status": 200,
+      "bytes": 65536,
+      "completed": true,
+      "headers": {
+        "cache-control": "public, max-age=300",
+        "cf-cache-status": "MISS",
+        "cf-ray": "a5eae3c0cc848bd2-CDG",
+        "content-type": "application/octet-stream",
+        "x-bz-probe-emitted-length": "65536",
+        "x-bz-probe-invocation": "3bad64b1-7ff4-4aeb-8f99-31acc9461783",
+        "x-bz-probe-method": "GET",
+        "x-bz-probe-origin-ray": "a5eae3c0cc848bd2-AMS",
+        "x-bz-probe-stream-type": "unknown"
+      },
+      "headersMs": 160.2407920000005,
+      "firstByteMs": 160.36933300000055,
+      "sha256": "bbcbec9f8d7ea83ab7a5ca228f8a8b48159e623c19233bc31a0635f52379c6f3",
+      "totalMs": 257.59058299999924,
+      "producerUuid": "3bad64b1-7ff4-4aeb-8f99-31acc9461783",
+      "originRay": "a5eae3c0cc848bd2-AMS",
+      "cfCacheStatus": "MISS",
+      "sameProducerAsBaseline": false,
+      "sameShaAsBaseline": false
+    },
+    {
+      "label": "unknown-repeat-1",
+      "path": "/__cache_probe?kind=stream-error-unknown&case=7e321562-bb34-4455-a1f8-3869aadc803e",
+      "startedAt": "2026-11-22T21:04:59.289Z",
+      "status": 200,
+      "bytes": 65536,
+      "completed": true,
+      "headers": {
+        "cache-control": "public, max-age=300",
+        "cf-cache-status": "HIT",
+        "cf-ray": "a5eae3c269eb8bd2-CDG",
+        "content-type": "application/octet-stream",
+        "x-bz-probe-emitted-length": "65536",
+        "x-bz-probe-invocation": "3bad64b1-7ff4-4aeb-8f99-31acc9461783",
+        "x-bz-probe-method": "GET",
+        "x-bz-probe-origin-ray": "a5eae3c0cc848bd2-AMS",
+        "x-bz-probe-stream-type": "unknown"
+      },
+      "headersMs": 57.01337500000045,
+      "firstByteMs": 57.91749999999956,
+      "sha256": "bbcbec9f8d7ea83ab7a5ca228f8a8b48159e623c19233bc31a0635f52379c6f3",
+      "totalMs": 59.77704199999971,
+      "producerUuid": "3bad64b1-7ff4-4aeb-8f99-31acc9461783",
+      "originRay": "a5eae3c0cc848bd2-AMS",
+      "cfCacheStatus": "HIT",
+      "sameProducerAsBaseline": true,
+      "sameShaAsBaseline": true
+    }
+  ],
+  "noCodeOrVersionOrRouteChanges": true,
+  "bodyFilesWritten": 0,
+  "newApplicationAcceptancePerformed": false,
+  "requestsSentWithAuthorization": 0,
+  "beforeProduction": [
+    {
+      "version_id": "1cc2931c-a23d-464b-b8ee-00b0e49d978d",
+      "percentage": 100
+    }
+  ],
+  "producerReady": true,
+  "originalFailedAgeSeconds": 450.096,
+  "reusedExactFailedUrl": false,
+  "unknownPath": "/__cache_probe?kind=stream-error-unknown&case=7e321562-bb34-4455-a1f8-3869aadc803e",
+  "cachedPrefixReuseObserved": true,
+  "unknownCalls": 2,
+  "distinctUnknownProducerUuids": 1,
+  "conclusion": "PREFIX_REUSE_OBSERVED_DO_NOT_PROMOTE",
+  "completedHttpBodyIsNotApplicationCompletionProof": true,
+  "afterSubdomain": {
+    "enabled": false,
+    "previews_enabled": false
+  },
+  "previewsRestoredDisabled": true,
+  "afterProduction": [
+    {
+      "version_id": "1cc2931c-a23d-464b-b8ee-00b0e49d978d",
+      "percentage": 100
+    }
+  ],
+  "productionUnchanged": true,
+  "budgetAfter": 21,
+  "finishedAt": "2026-11-22T21:05:02.217Z"
+}

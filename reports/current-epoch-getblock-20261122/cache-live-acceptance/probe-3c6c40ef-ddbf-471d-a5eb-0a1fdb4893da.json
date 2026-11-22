@@ -1,0 +1,339 @@
+{
+  "schema": "blockzilla-workers-cache-live-acceptance-v1",
+  "startedAt": "2026-11-22T20:53:23.948Z",
+  "base": "https://3c6c40ef-blockzilla-get-block.cheron-augustin.workers.dev",
+  "version": "3c6c40ef-ddbf-471d-a5eb-0a1fdb4893da",
+  "mode": "probe",
+  "plannedRequests": 35,
+  "globalRequestBudget": 60,
+  "requests": [
+    {
+      "label": "probe-ok-fill",
+      "path": "/__cache_probe?kind=ok&case=e2577608-4307-40c2-8bf4-bd779cb279cd",
+      "method": "GET",
+      "startedAt": "2026-11-22T20:53:23.949Z",
+      "status": 200,
+      "bytes": 65536,
+      "completed": true,
+      "headers": {
+        "cache-control": "public, max-age=300",
+        "cf-cache-status": "MISS",
+        "cf-ray": "a5ead2c8dc16017d-CDG",
+        "content-length": "65536",
+        "content-type": "application/octet-stream",
+        "x-bz-probe-expected-length": "65536",
+        "x-bz-probe-invocation": "11f430dd-1b73-4902-a036-95c6de3605d9",
+        "x-bz-probe-method": "GET",
+        "x-bz-probe-origin-ray": "a5ead2c8dc16017d-CDG"
+      },
+      "headersMs": 573.747666,
+      "firstByteMs": 575.40175,
+      "totalMs": 582.704208,
+      "sha256": "759f98c6dac5a4099575f8d4353f4218807d8c40ecb3885967ccc6df4a627cc1"
+    },
+    {
+      "label": "probe-ok-hit-0",
+      "path": "/__cache_probe?kind=ok&case=e2577608-4307-40c2-8bf4-bd779cb279cd",
+      "method": "GET",
+      "startedAt": "2026-11-22T20:53:24.535Z",
+      "status": 200,
+      "bytes": 65536,
+      "completed": true,
+      "headers": {
+        "age": "0",
+        "cache-control": "public, max-age=300",
+        "cf-cache-status": "HIT",
+        "cf-ray": "a5ead2cc1e54017d-CDG",
+        "content-length": "65536",
+        "content-type": "application/octet-stream",
+        "x-bz-probe-expected-length": "65536",
+        "x-bz-probe-invocation": "11f430dd-1b73-4902-a036-95c6de3605d9",
+        "x-bz-probe-method": "GET",
+        "x-bz-probe-origin-ray": "a5ead2c8dc16017d-CDG"
+      },
+      "headersMs": 78.92479200000002,
+      "firstByteMs": 91.70787500000006,
+      "totalMs": 93.96204200000011,
+      "sha256": "759f98c6dac5a4099575f8d4353f4218807d8c40ecb3885967ccc6df4a627cc1"
+    },
+    {
+      "label": "probe-ok-hit-1",
+      "path": "/__cache_probe?kind=ok&case=e2577608-4307-40c2-8bf4-bd779cb279cd",
+      "method": "GET",
+      "startedAt": "2026-11-22T20:53:24.631Z",
+      "status": 200,
+      "bytes": 65536,
+      "completed": true,
+      "headers": {
+        "age": "0",
+        "cache-control": "public, max-age=300",
+        "cf-cache-status": "HIT",
+        "cf-ray": "a5ead2ccbebd017d-CDG",
+        "content-length": "65536",
+        "content-type": "application/octet-stream",
+        "x-bz-probe-expected-length": "65536",
+        "x-bz-probe-invocation": "11f430dd-1b73-4902-a036-95c6de3605d9",
+        "x-bz-probe-method": "GET",
+        "x-bz-probe-origin-ray": "a5ead2c8dc16017d-CDG"
+      },
+      "headersMs": 70.70483300000001,
+      "firstByteMs": 75.59449999999993,
+      "totalMs": 76.49795799999993,
+      "sha256": "759f98c6dac5a4099575f8d4353f4218807d8c40ecb3885967ccc6df4a627cc1"
+    },
+    {
+      "label": "probe-head-cold",
+      "path": "/__cache_probe?kind=ok&case=14c1ac6d-14bd-4bfa-8c93-deab7dbef04b",
+      "method": "HEAD",
+      "startedAt": "2026-11-22T20:53:24.709Z",
+      "status": 200,
+      "bytes": 0,
+      "completed": true,
+      "headers": {
+        "cache-control": "public, max-age=300",
+        "cf-cache-status": "MISS",
+        "cf-ray": "a5ead2cd2f18017d-CDG",
+        "content-length": "65536",
+        "content-type": "application/octet-stream",
+        "x-bz-probe-expected-length": "65536",
+        "x-bz-probe-invocation": "0a1d75f2-6ce2-42ce-86e4-742802fd748b",
+        "x-bz-probe-method": "GET",
+        "x-bz-probe-origin-ray": "a5ead2cd2f18017d-MAD"
+      },
+      "headersMs": 169.628958,
+      "totalMs": 169.650708,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "probe-head-replay-get",
+      "path": "/__cache_probe?kind=ok&case=14c1ac6d-14bd-4bfa-8c93-deab7dbef04b",
+      "method": "GET",
+      "startedAt": "2026-11-22T20:53:24.879Z",
+      "status": 200,
+      "bytes": 65536,
+      "completed": true,
+      "headers": {
+        "age": "0",
+        "cache-control": "public, max-age=300",
+        "cf-cache-status": "HIT",
+        "cf-ray": "a5ead2ce6ccec72b-CDG",
+        "content-length": "65536",
+        "content-type": "application/octet-stream",
+        "x-bz-probe-expected-length": "65536",
+        "x-bz-probe-invocation": "0a1d75f2-6ce2-42ce-86e4-742802fd748b",
+        "x-bz-probe-method": "GET",
+        "x-bz-probe-origin-ray": "a5ead2cd2f18017d-MAD"
+      },
+      "headersMs": 84.50183300000003,
+      "firstByteMs": 84.66145800000004,
+      "totalMs": 94.50383299999999,
+      "sha256": "5486129067f635545c2bfdb9dcaf1dfd484e4275484fcd207a4e0501368aa67d"
+    },
+    {
+      "label": "probe-503-0",
+      "path": "/__cache_probe?kind=error&case=eea26ad9-cf96-4943-b585-256fa88ec329",
+      "method": "GET",
+      "startedAt": "2026-11-22T20:53:24.975Z",
+      "status": 503,
+      "bytes": 125,
+      "completed": true,
+      "headers": {
+        "cache-control": "no-store",
+        "cf-cache-status": "BYPASS",
+        "cf-ray": "a5ead2ceddd6c72b-CDG",
+        "content-length": "125",
+        "content-type": "application/json",
+        "x-bz-probe-invocation": "64fba23c-8da0-44dc-8cf7-587f19a122cb",
+        "x-bz-probe-method": "GET",
+        "x-bz-probe-origin-ray": "a5ead2ceddd6c72b-AMS"
+      },
+      "headersMs": 167.52812500000005,
+      "firstByteMs": 167.672916,
+      "totalMs": 167.73020799999995,
+      "sha256": "8d44c6aa80b5cb9273a323a75542938809952646d867197a60bf461697f6a974"
+    },
+    {
+      "label": "probe-503-1",
+      "path": "/__cache_probe?kind=error&case=eea26ad9-cf96-4943-b585-256fa88ec329",
+      "method": "GET",
+      "startedAt": "2026-11-22T20:53:25.144Z",
+      "status": 503,
+      "bytes": 125,
+      "completed": true,
+      "headers": {
+        "cache-control": "no-store",
+        "cf-cache-status": "BYPASS",
+        "cf-ray": "a5ead2cfe822c72b-CDG",
+        "content-length": "125",
+        "content-type": "application/json",
+        "x-bz-probe-invocation": "2f4279f8-8b5d-41e4-8c94-2530a2578146",
+        "x-bz-probe-method": "GET",
+        "x-bz-probe-origin-ray": "a5ead2cfe822c72b-CDG"
+      },
+      "headersMs": 104.62708300000008,
+      "firstByteMs": 104.71400000000017,
+      "totalMs": 104.74479100000008,
+      "sha256": "d3e23555cc818b6dd5d220a1e3e2c07ffcd2ce9d9320b5c94edee1a4db352a94"
+    },
+    {
+      "label": "probe-503-2",
+      "path": "/__cache_probe?kind=error&case=eea26ad9-cf96-4943-b585-256fa88ec329",
+      "method": "GET",
+      "startedAt": "2026-11-22T20:53:25.249Z",
+      "status": 503,
+      "bytes": 125,
+      "completed": true,
+      "headers": {
+        "cache-control": "no-store",
+        "cf-cache-status": "BYPASS",
+        "cf-ray": "a5ead2d089cbc72b-CDG",
+        "content-length": "125",
+        "content-type": "application/json",
+        "x-bz-probe-invocation": "a1117259-2c94-4997-8da0-912cc438b1dd",
+        "x-bz-probe-method": "GET",
+        "x-bz-probe-origin-ray": "a5ead2d089cbc72b-CDG"
+      },
+      "headersMs": 54.34787499999993,
+      "firstByteMs": 54.440832999999884,
+      "totalMs": 54.47991699999989,
+      "sha256": "3d0b457d736efb3ebee668e98060c2943c733e89b8d1a5ed79b8d0cccdfbc9fa"
+    },
+    {
+      "label": "probe-stream-error-0",
+      "path": "/__cache_probe?kind=stream-error&case=639ac244-e66c-4bda-9d15-5c1affc65759",
+      "method": "GET",
+      "startedAt": "2026-11-22T20:53:25.304Z",
+      "status": 200,
+      "bytes": 65536,
+      "completed": false,
+      "headers": {
+        "cache-control": "public, max-age=300",
+        "cf-cache-status": "MISS",
+        "cf-ray": "a5ead2d0ea98c72b-CDG",
+        "content-length": "65537",
+        "content-type": "application/octet-stream",
+        "x-bz-probe-emitted-length": "65536",
+        "x-bz-probe-expected-length": "65537",
+        "x-bz-probe-invocation": "330163ce-e9a0-46e3-8904-370a8a9a6848",
+        "x-bz-probe-method": "GET",
+        "x-bz-probe-origin-ray": "a5ead2d0ea98c72b-AMS",
+        "x-bz-probe-stream-type": "fixed"
+      },
+      "headersMs": 161.8924159999999,
+      "firstByteMs": 162.087041,
+      "readError": "body_read_error",
+      "totalMs": 258.2101660000001,
+      "sha256": "fc6382f830b300d4ab57fc9af2ae4ff90e62d2dd1382eae9e94874d75ca4127e"
+    },
+    {
+      "label": "probe-stream-error-1",
+      "path": "/__cache_probe?kind=stream-error&case=639ac244-e66c-4bda-9d15-5c1affc65759",
+      "method": "GET",
+      "startedAt": "2026-11-22T20:53:25.564Z",
+      "status": 200,
+      "bytes": 65536,
+      "completed": false,
+      "headers": {
+        "cache-control": "public, max-age=300",
+        "cf-cache-status": "MISS",
+        "cf-ray": "a5ead2d2bf56bb88-CDG",
+        "content-length": "65537",
+        "content-type": "application/octet-stream",
+        "x-bz-probe-emitted-length": "65536",
+        "x-bz-probe-expected-length": "65537",
+        "x-bz-probe-invocation": "6a6b3989-e43c-4ad5-afba-d9350ea61997",
+        "x-bz-probe-method": "GET",
+        "x-bz-probe-origin-ray": "a5ead2d2bf56bb88-AMS",
+        "x-bz-probe-stream-type": "fixed"
+      },
+      "headersMs": 187.52495899999985,
+      "firstByteMs": 187.72341699999993,
+      "readError": "body_read_error",
+      "totalMs": 285.3812919999998,
+      "sha256": "b7f04e5178404f4b887bccde9289120bb221ecb7cc93e32329ced8cddc92e3b7"
+    },
+    {
+      "label": "probe-stream-error-2",
+      "path": "/__cache_probe?kind=stream-error&case=639ac244-e66c-4bda-9d15-5c1affc65759",
+      "method": "GET",
+      "startedAt": "2026-11-22T20:53:25.850Z",
+      "status": 200,
+      "bytes": 65536,
+      "completed": false,
+      "headers": {
+        "cache-control": "public, max-age=300",
+        "cf-cache-status": "MISS",
+        "cf-ray": "a5ead2d48cd3d142-CDG",
+        "content-length": "65537",
+        "content-type": "application/octet-stream",
+        "x-bz-probe-emitted-length": "65536",
+        "x-bz-probe-expected-length": "65537",
+        "x-bz-probe-invocation": "c28ddb04-4924-4900-af52-96fc2f90e7cb",
+        "x-bz-probe-method": "GET",
+        "x-bz-probe-origin-ray": "a5ead2d48cd3d142-AMS",
+        "x-bz-probe-stream-type": "fixed"
+      },
+      "headersMs": 125.72000000000003,
+      "firstByteMs": 125.92695800000024,
+      "readError": "body_read_error",
+      "totalMs": 222.74862499999995,
+      "sha256": "09d5faa6ce971693abb9c41f3e7fa689f9ca6bb358bdd168b9e1a11da2d7c069"
+    },
+    {
+      "label": "probe-stream-error-unknown-0",
+      "path": "/__cache_probe?kind=stream-error-unknown&case=b0ebb2d8-829b-4efa-86fd-c944b70685f8",
+      "method": "GET",
+      "startedAt": "2026-11-22T20:53:26.075Z",
+      "status": 200,
+      "bytes": 65536,
+      "completed": true,
+      "headers": {
+        "cache-control": "public, max-age=300",
+        "cf-cache-status": "MISS",
+        "cf-ray": "a5ead2d5fd7cb758-CDG",
+        "content-type": "application/octet-stream",
+        "x-bz-probe-emitted-length": "65536",
+        "x-bz-probe-invocation": "7f244a31-706e-4d53-b847-4e028ad5297b",
+        "x-bz-probe-method": "GET",
+        "x-bz-probe-origin-ray": "a5ead2d5fd7cb758-AMS",
+        "x-bz-probe-stream-type": "unknown"
+      },
+      "headersMs": 228.54016600000023,
+      "firstByteMs": 230.03537500000039,
+      "totalMs": 325.46891600000026,
+      "sha256": "d355e14562ec2fbe0a2f8bdaa774f7b5c8973ac615e2ff531b7684f3f97376cc"
+    }
+  ],
+  "checks": [
+    {
+      "label": "synthetic cache hits freeze origin identity and complete body",
+      "passed": true
+    },
+    {
+      "label": "cold HEAD fills a full GET representation",
+      "passed": true
+    },
+    {
+      "label": "no-store 503 never freezes origin identity",
+      "passed": true
+    },
+    {
+      "label": "stream-error partially emitted producer error is never reused as a cache hit",
+      "passed": true
+    }
+  ],
+  "authorizationHeadersSent": 0,
+  "providerRpcCalls": 0,
+  "blockBodiesWritten": 0,
+  "productionConfigurationChanged": false,
+  "streamErrorWitnesses": {
+    "stream-error": {
+      "attempts": 3,
+      "partialResponseWitnesses": 3,
+      "freshProducerIdentities": 3
+    }
+  },
+  "passed": false,
+  "error": "truncated producer body completed as success",
+  "sharedRequestCount": 12
+}

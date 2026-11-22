@@ -1,0 +1,90 @@
+{
+  "status": "FAIL",
+  "block_payload_persisted": false,
+  "keys_printed_or_copied": false,
+  "auth": [
+    {
+      "credential": "missing",
+      "status": 401,
+      "wall_ms": 66.976
+    },
+    {
+      "credential": "wrong",
+      "status": 401,
+      "wall_ms": 98.998
+    },
+    {
+      "credential": "legacy",
+      "status": 401,
+      "wall_ms": 64.036
+    },
+    {
+      "credential": "current",
+      "status": 200,
+      "wall_ms": 61.038
+    },
+    {
+      "credential": "url-key-rejected",
+      "status": 401,
+      "wall_ms": 41.762
+    }
+  ],
+  "beam": {
+    "start_cursor": "000000000000000018ea5078fdda19df-13e843:p630856:daf44ec387f4e772b79a68da8eee6090dd769dc034e44cb3947a26b028976be2",
+    "frames": [
+      {
+        "sha256": "5a5236080a7248b7d6872a309faf4fa40827e9a1f3b6ea7bfb92d972dd3c65fc",
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p630857:5a5236080a7248b7d6872a309faf4fa40827e9a1f3b6ea7bfb92d972dd3c65fc",
+        "sequence": 630857,
+        "kind": "block",
+        "slot": 472683507,
+        "bytes": 186131,
+        "objects_checked": 12
+      },
+      {
+        "sha256": "fb4ab1db2f9ab0792e08b94a87ca57cb5a4a185e9687e7bd89b0144c6c0f79c7",
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p630858:fb4ab1db2f9ab0792e08b94a87ca57cb5a4a185e9687e7bd89b0144c6c0f79c7",
+        "sequence": 630858,
+        "kind": "root",
+        "slot": 472683506,
+        "bytes": 1560,
+        "objects_checked": 0
+      }
+    ],
+    "exact_next_sequences": true
+  },
+  "chunk": {
+    "sha256": "ad716b71fef7db42695e59d49d40ea0bbcfabc8d5505004b4b687456f0ed3261",
+    "cursor": "000000000000000018ea5078fdda19df-13e843:p630854:ad716b71fef7db42695e59d49d40ea0bbcfabc8d5505004b4b687456f0ed3261",
+    "sequence": 630854,
+    "kind": "block",
+    "slot": 472683506,
+    "bytes": 169874,
+    "objects_checked": 12,
+    "wall_ms": 101.457,
+    "original_bytes_equal": true
+  },
+  "private_origin_paths": [
+    {
+      "path": "/v2/banks/state",
+      "status": 404
+    },
+    {
+      "path": "/v2/banks/ack",
+      "status": 404
+    },
+    {
+      "path": "/v2/banks/coverage-gaps",
+      "status": 404
+    },
+    {
+      "path": "/v2/banks/finalized/events",
+      "status": 404
+    },
+    {
+      "path": "/health",
+      "status": 404
+    }
+  ],
+  "reason": "JSONDecodeError"
+}

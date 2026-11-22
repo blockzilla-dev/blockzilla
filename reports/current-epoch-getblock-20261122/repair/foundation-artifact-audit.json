@@ -1,0 +1,134 @@
+{
+  "status": "READ_ONLY_AUDIT_COMPLETE",
+  "measured_at_utc": "2026-11-22T20:52:21.014382+00:00",
+  "scope": {
+    "allowed_jobs": [
+      "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-native-publication-20261122",
+      "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122",
+      "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122"
+    ],
+    "excluded": [
+      "All ledger/accounts/captures/compact/stream data and R2",
+      "Original jobs and shared build targets outside these three roots",
+      "Existing native-ledger-release-20261121 target"
+    ]
+  },
+  "active_reader": {
+    "pid": 2304452,
+    "binary": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/bin/blockzilla-resolution-service-ledger-6dee8f3e3993f613",
+    "config": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/recent-config.ledger-overlap-v1.json",
+    "minimum_slot": 472176000,
+    "native_archive_catalog_configured": false
+  },
+  "active_helper": {
+    "binary": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/bin/hivezilla-ledger-archive-c75dd8411289612031405d7b2c14e448b17bb52af975e4e07f61947dc4126a1e",
+    "sha256": "c75dd8411289612031405d7b2c14e448b17bb52af975e4e07f61947dc4126a1e"
+  },
+  "process_reference_audit": {
+    "all_process_exe_cwd_argv_paths_and_maps_checked_with_sudo": true,
+    "matching_pids": [
+      2304452
+    ],
+    "no_build_process_found": true,
+    "matching_paths": [
+      "active reader binary",
+      "active reader overlap config"
+    ]
+  },
+  "unit_reference_audit": {
+    "inspected_roots": [
+      "/etc/systemd/system",
+      "/home/ubuntu/.config/systemd/user",
+      "/run/systemd/transient"
+    ],
+    "matching_files": [
+      "/etc/systemd/system/blockzilla-recent-get-block.service.d/90-current-epoch-getblock-20261122.conf",
+      "/etc/systemd/system/blockzilla-recent-get-block.service.d/95-ledger-compact-20261122.conf",
+      "/etc/systemd/system/blockzilla-recent-get-block.service.d/96-ledger-overlap-20261122.conf"
+    ],
+    "target_or_sdk_tree_references": false,
+    "native_runtime_archive_config_present": false
+  },
+  "runtime_dynamic_dependencies": {
+    "reader": [
+      "/lib64/ld-linux-x86-64.so.2",
+      "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "/usr/lib/x86_64-linux-gnu/libm.so.6"
+    ],
+    "helper": [
+      "/lib64/ld-linux-x86-64.so.2",
+      "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "/usr/lib/x86_64-linux-gnu/libm.so.6",
+      "/usr/lib/x86_64-linux-gnu/libstdc++.so.6"
+    ],
+    "task_target_or_sdk_library_dependency": false
+  },
+  "candidate_directories": [
+    {
+      "path": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-native-publication-20261122/target",
+      "allocated_bytes": 3024908288,
+      "kind": "Rust build outputs",
+      "symlink": false,
+      "within_allowed_job": true,
+      "live_process_or_mapped_library_reference": false,
+      "delete_approved": false
+    },
+    {
+      "path": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/target",
+      "allocated_bytes": 2276618240,
+      "kind": "Rust and SDK build outputs",
+      "symlink": false,
+      "within_allowed_job": true,
+      "live_process_or_mapped_library_reference": false,
+      "delete_approved": false
+    },
+    {
+      "path": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/bounded-v2/agave",
+      "allocated_bytes": 540712960,
+      "kind": "Earlier isolated SDK checkout",
+      "symlink": false,
+      "within_allowed_job": true,
+      "live_process_or_mapped_library_reference": false,
+      "delete_approved": false
+    },
+    {
+      "path": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/bounded-v3/agave",
+      "allocated_bytes": 540712960,
+      "kind": "Final isolated SDK checkout; reconstruct from retained official revision and patch",
+      "symlink": false,
+      "within_allowed_job": true,
+      "live_process_or_mapped_library_reference": false,
+      "delete_approved": false
+    }
+  ],
+  "candidate_allocated_bytes_total": 6382952448,
+  "keep": {
+    "all_bin_releases": true,
+    "all_configs_unit_backups_logs_receipts_measurement_failures": true,
+    "native_publication_source_and_tar_metadata": true,
+    "ledger_source_v1": true,
+    "ledger_bounded_v2_and_v3_source_overlays": true,
+    "ledger_bounded_v3_prepared_json": true,
+    "ledger_run_build_v3_py": true,
+    "ledger_results_v1_and_v3": true,
+    "service_source_v1": true
+  },
+  "reproduction_pins": {
+    "official_agave_revision": "b6149a719f8fa84123ac3ce1e5f201af64bca8ee",
+    "sdk_patch_path": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/source-v1/hivezilla/ledger-archive/patches/agave-v4.4.0-rc.1-read-only-file-cap.patch",
+    "sdk_patch_sha256": "115dc1a326a39e77bef40a5c4f0b9c5e23f3ecdadb6a32a433810e52debadd5a",
+    "overlay_manifest_sha256": "df08d63be33f4d1b50c00d0d05ffaf0a02c7ca9e7fee5a17b54024528aec4a9f",
+    "overlay_lock_sha256": "58ead488392d9f61e4b05fb53f392929dd04edff859f6d6866797b476b76ada1"
+  },
+  "execution_conditions": [
+    "Root approves the exact four paths after cache acceptance.",
+    "Repeat process/map references immediately before deletion.",
+    "Verify active binary SHAs, config and protected PIDs before and after.",
+    "Reject symlinks, non-directories or real paths outside the three allowed jobs."
+  ],
+  "deletions_run": false,
+  "block_payloads_read": false,
+  "credentials_saved": false
+}

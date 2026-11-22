@@ -1,5 +1,28 @@
 # Direct Agave production deployment
 
+## Archive and public native stream, 22 November 2026
+
+The archive JSON endpoint is now `https://archive.blockzilla.dev/block/{slot}.json`.
+It asks Foundation for a rooted native block or a read-only ledger conversion
+first, then uses R2 on a checked miss. Slot 472608000 passed complete transaction
+and reward checks. Foundation does not upload archives; a separate machine
+does that work. Keep the ledger publication overlap. Automatic new-epoch index
+admission and ledger retirement are not established by this repair. See the
+[current epoch repair](../../../reports/current-epoch-getblock-20261122/repair/README.md).
+
+`https://stream.blockzilla.dev` now reaches the current native Unix origin
+through a bounded loopback socket bridge and the existing Tunnel. It still
+requires the current native Bearer key. Missing, wrong, legacy and URL keys
+return 401. Private control paths return 404. Exact frame, chunk, cursor and
+object hash checks passed. The validator, controller, processed worker, Bank
+worker, origin, reader and Tunnel identities stayed fixed during this routing
+repair. The current private consumer still uses SSH. Read the
+[stream routing record](../public-native-stream/README.md) for the unit files,
+Tunnel allowlist, acceptance limits and rollback order.
+
+These records supersede the older public routing and archive read status
+below. They do not certify continuous history or current machine health.
+
 ## Automatic Worker recovery, 22 November 2026
 
 The Hetzner raw Rust consumer now recovers missing retained frames through

@@ -1,0 +1,26 @@
+{
+  "state": "PASS",
+  "version": "e58a69ea-3b2a-465e-bac7-b68599ee1957",
+  "wasmSha256": "40966754f3e9100674efb845ebecc4c3b2eb8e776c9e2f33d3889400b23f8155",
+  "percentage": 100,
+  "cacheOptions": {
+    "enabled": false,
+    "cross_version_cache": false
+  },
+  "before": [
+    {
+      "version_id": "1cc2931c-a23d-464b-b8ee-00b0e49d978d",
+      "percentage": 100
+    }
+  ],
+  "after": [
+    {
+      "version_id": "e58a69ea-3b2a-465e-bac7-b68599ee1957",
+      "percentage": 100
+    }
+  ],
+  "workersDev": false,
+  "previewUrls": false,
+  "deployedAtUtc": "2026-11-22T21:18:13.918517+00:00",
+  "probeVersionPromoted": false
+}

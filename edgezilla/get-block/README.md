@@ -14,8 +14,8 @@ stream recovery route is `GET /block/{slot}.compact`; see the
 [recovery report](../../reports/recent-get-block-recovery-20261122/README.md)
 for the required identity fields and the retained-window limit.
 
-The current deployment is version `1cc2931c-a23d-464b-b8ee-00b0e49d978d`.
-It passed 39 native/ledger, 29 public-access and 41 recovery actual-WASM
+The current deployment is version `e58a69ea-3b2a-465e-bac7-b68599ee1957`.
+It passed 39 native/ledger, 35 public-access and 41 recovery actual-WASM
 checks. The owner’s slot 472608000 returns 81 transactions from the existing
 Foundation ledger; wire bytes, transaction metadata and all 1326 reward
 records match RPC. Reward order differs between nodes. Recent JSON uses
@@ -25,7 +25,20 @@ The earlier [public deployment record](../../reports/public-getblock-20261122/RE
 describes its dated access-policy change.
 The [public benchmark](../../reports/public-getblock-benchmark-20261122/README.md)
 separates cold origin reads, response-cache hits, platform CPU and per-million
-request costs. Cache hits in this deployment still execute the Worker.
+request costs. The [current archive benchmark](../../reports/current-epoch-getblock-20261122/public-cache-benchmark/README.md)
+tests the selected archive hostname. Cache API hits still execute the Worker,
+with zero backend reads. Errors have `Cache-Control: no-store`.
+`X-Blockzilla-Origin-Ray` identifies the current Worker execution, including
+response-cache hits; it does not change the response body.
+
+The managed Workers Cache feature is explicitly disabled. In a separate 0%
+test version, it cached and reused an unknown-length response after its source
+stream failed. The existing Cache API rejected the same class of failed fill
+and retained no partial entry. See the [cache acceptance record](../../reports/current-epoch-getblock-20261122/cache-live-acceptance/README.md).
+
+The live native stream uses `https://stream.blockzilla.dev` and still requires
+its current Bearer key. The archive public-access setting does not unlock the
+stream. See the [stream routing record](../../hivezilla/deploy/public-native-stream/README.md).
 
 The earlier accepted production Worker version is
 `50aaba11-468b-4c57-b1ad-ddc999ea9152`. Recent recovery reads use the existing

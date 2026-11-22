@@ -1,0 +1,70 @@
+{
+  "schema": "blockzilla-cache-api-0pct-application-v1",
+  "state": "CACHE_API_ATOMICITY_PASS",
+  "startedAt": "2026-11-22T21:14:14.235641+00:00",
+  "productionVersion": "1cc2931c-a23d-464b-b8ee-00b0e49d978d",
+  "probePromoted": false,
+  "newWorkers": 0,
+  "newRoutes": 0,
+  "dnsMutations": 0,
+  "r2OrKvMutations": 0,
+  "realBlockReads": 0,
+  "blockBodyFilesWritten": 0,
+  "plannedDataRequests": 1,
+  "beforeProduction": [
+    {
+      "version_id": "1cc2931c-a23d-464b-b8ee-00b0e49d978d",
+      "percentage": 100
+    }
+  ],
+  "beforeSubdomain": {
+    "enabled": false,
+    "previews_enabled": false
+  },
+  "probeVersion": "18deaee9-a10d-4352-be20-80344d101aca",
+  "versionUrl": "https://18deaee9-blockzilla-get-block.cheron-augustin.workers.dev",
+  "cacheMetadata": {
+    "enabled": false,
+    "cross_version_cache": false
+  },
+  "probeReceipt": "/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/.codex-tmp/current-epoch-getblock-20261122/cache-live-acceptance/cache-api-18deaee9-a10d-4352-be20-80344d101aca.json",
+  "clientExitCode": 0,
+  "publicHttpStatus": 200,
+  "result": {
+    "invocation": "ab23ab3d-dc8e-4ef5-8ec3-a40485f27fc9",
+    "originRay": "a5eaf19d7a90286f",
+    "positivePutSucceeded": true,
+    "positiveMatchFound": true,
+    "positiveBodyComplete": true,
+    "positiveLengthCorrect": true,
+    "positiveDigestMatches": true,
+    "positiveExpectedSha256": "6eb88b927f3ff0adf78e9baa12b459323bb5ab8c1041a47904c9263850522a20",
+    "positiveActualSha256": "6eb88b927f3ff0adf78e9baa12b459323bb5ab8c1041a47904c9263850522a20",
+    "badPutRejected": true,
+    "badMatchAbsent": true,
+    "badExpectedPrefixSha256": "642a5b58a6a299f39bd4cd52b9da4e6fa9eb39aba18b6f24e7742f9aef1f87a0",
+    "badBodyComplete": null,
+    "badLengthCorrect": null,
+    "badBodySha256": null,
+    "unexpectedError": false,
+    "goodAbsentAfterCleanup": true,
+    "badAbsentAfterCleanup": true,
+    "cleanupSucceeded": true,
+    "passed": true
+  },
+  "atomicityPassed": true,
+  "afterSubdomain": {
+    "enabled": false,
+    "previews_enabled": false
+  },
+  "previewsRestoredDisabled": true,
+  "afterProduction": [
+    {
+      "version_id": "1cc2931c-a23d-464b-b8ee-00b0e49d978d",
+      "percentage": 100
+    }
+  ],
+  "productionUnchanged": true,
+  "sharedRequestCount": 22,
+  "finishedAt": "2026-11-22T21:14:30.851544+00:00"
+}

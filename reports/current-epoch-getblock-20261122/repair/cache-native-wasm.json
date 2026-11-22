@@ -1,0 +1,366 @@
+{
+  "status": "PASS",
+  "total": 39,
+  "artifact": {
+    "build": "/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/build/index.js",
+    "wasmSha256": "40966754f3e9100674efb845ebecc4c3b2eb8e776c9e2f33d3889400b23f8155",
+    "compatibilityDate": "2026-09-10"
+  },
+  "checks": [
+    {
+      "name": "raw-v1 native frame renders independent Base64 RPC",
+      "status": 200,
+      "bytes": 863,
+      "sha256": "738cae26b89d309b3f5b5222ec645eec8ed8d9a0e57437cfe79b9474a3f1297f",
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "cache": "BYPASS",
+      "foundation": "NATIVE_RECENT"
+    },
+    {
+      "name": "raw-v1 archive alias returns the same native JSON",
+      "status": 200,
+      "bytes": 863,
+      "sha256": "738cae26b89d309b3f5b5222ec645eec8ed8d9a0e57437cfe79b9474a3f1297f",
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "cache": "BYPASS",
+      "foundation": "NATIVE_RECENT"
+    },
+    {
+      "name": "raw-v1 includes exact DeactivatedStake and VATDebit rewards",
+      "status": 200,
+      "bytes": 1174,
+      "sha256": "97925647c1b9d5ac977b0b21ef4d914ea0ea4be5ca83434acb5f24a44cdc61fb",
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "cache": "BYPASS",
+      "foundation": "NATIVE_RECENT"
+    },
+    {
+      "name": "zstd-legacy native frame renders independent Base64 RPC",
+      "status": 200,
+      "bytes": 854,
+      "sha256": "8017d219454c37f564ee674cc34efc975b50a7c5f6485c674e697dd4e675c2f2",
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "cache": "BYPASS",
+      "foundation": "NATIVE_RECENT"
+    },
+    {
+      "name": "zstd-legacy archive alias returns the same native JSON",
+      "status": 200,
+      "bytes": 854,
+      "sha256": "8017d219454c37f564ee674cc34efc975b50a7c5f6485c674e697dd4e675c2f2",
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "cache": "BYPASS",
+      "foundation": "NATIVE_RECENT"
+    },
+    {
+      "name": "zstd-legacy includes exact DeactivatedStake and VATDebit rewards",
+      "status": 200,
+      "bytes": 1165,
+      "sha256": "e9bda1be27ae00c7037d150dc4c0b51a2d384a8ff06595859e9d0c95fcd3fdea",
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "cache": "BYPASS",
+      "foundation": "NATIVE_RECENT"
+    },
+    {
+      "name": "native miss reads the original frame in one signed S3 range",
+      "status": 200,
+      "bytes": 863,
+      "sha256": "738cae26b89d309b3f5b5222ec645eec8ed8d9a0e57437cfe79b9474a3f1297f",
+      "r2Gets": 0,
+      "s3Gets": 1,
+      "cache": "BYPASS",
+      "foundation": "NATIVE_ARCHIVE"
+    },
+    {
+      "name": "native binding reads the same original frame once from R2",
+      "status": 200,
+      "bytes": 863,
+      "sha256": "738cae26b89d309b3f5b5222ec645eec8ed8d9a0e57437cfe79b9474a3f1297f",
+      "r2Gets": 1,
+      "s3Gets": 0,
+      "cache": "BYPASS",
+      "foundation": "NATIVE_ARCHIVE"
+    },
+    {
+      "name": "wrong source is rejected before any R2 read",
+      "status": 502,
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "noLegacyArchiveFallback": true
+    },
+    {
+      "name": "wrong root cannot trigger archive fallback",
+      "status": 502,
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "noLegacyArchiveFallback": true
+    },
+    {
+      "name": "wrong frame bytes cannot trigger archive fallback",
+      "status": 502,
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "noLegacyArchiveFallback": true
+    },
+    {
+      "name": "wrong producer cannot trigger archive fallback",
+      "status": 502,
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "noLegacyArchiveFallback": true
+    },
+    {
+      "name": "wrong native locator producer is rejected before R2",
+      "status": 502,
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "noLegacyArchiveFallback": true
+    },
+    {
+      "name": "native S3 bytes must match the exact original frame identity",
+      "status": 502,
+      "r2Gets": 0,
+      "s3Gets": 1,
+      "noLegacyArchiveFallback": true
+    },
+    {
+      "name": "unrooted response stays uncached 0",
+      "status": 409,
+      "bytes": 80,
+      "sha256": "c62e2ffa7657b99a747805d629c6a9b4e13024a65d1fff2ee789ae6d5f8ef891",
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "cache": "MISS",
+      "foundation": "block_not_finalized"
+    },
+    {
+      "name": "unrooted response stays uncached 1",
+      "status": 409,
+      "bytes": 80,
+      "sha256": "c62e2ffa7657b99a747805d629c6a9b4e13024a65d1fff2ee789ae6d5f8ef891",
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "cache": "MISS",
+      "foundation": "block_not_finalized"
+    },
+    {
+      "name": "native-unavailable remains 503 without archive fallback",
+      "status": 503,
+      "bytes": 79,
+      "sha256": "09dd48a00953ed71ed67696a1f73ba56db627507b29a60af049f9c263c874cf4",
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "cache": "MISS",
+      "foundation": "UNAVAILABLE"
+    },
+    {
+      "name": "native-capacity-unavailable remains 503 without archive fallback",
+      "status": 503,
+      "bytes": 88,
+      "sha256": "2f98858be94866dce90c4943a388b98a21247452a7b9e7ee6e91e4efcaef403a",
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "cache": "MISS",
+      "foundation": "UNAVAILABLE"
+    },
+    {
+      "name": "native-network-error stays terminal and uncached 0",
+      "status": 503,
+      "bytes": 99,
+      "sha256": "09cc726d287c6083395d36acfab7544e09f001449d2a22fe9553c7355233a3dc",
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "cache": "MISS",
+      "foundation": "UNAVAILABLE"
+    },
+    {
+      "name": "native-network-error stays terminal and uncached 1",
+      "status": 503,
+      "bytes": 99,
+      "sha256": "09cc726d287c6083395d36acfab7544e09f001449d2a22fe9553c7355233a3dc",
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "cache": "MISS",
+      "foundation": "UNAVAILABLE"
+    },
+    {
+      "name": "native-header-timeout stays terminal and uncached 0",
+      "status": 503,
+      "bytes": 99,
+      "sha256": "09cc726d287c6083395d36acfab7544e09f001449d2a22fe9553c7355233a3dc",
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "cache": "MISS",
+      "foundation": "UNAVAILABLE"
+    },
+    {
+      "name": "native-header-timeout stays terminal and uncached 1",
+      "status": 503,
+      "bytes": 99,
+      "sha256": "09cc726d287c6083395d36acfab7544e09f001449d2a22fe9553c7355233a3dc",
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "cache": "MISS",
+      "foundation": "UNAVAILABLE"
+    },
+    {
+      "name": "ledger bundle renders exact Legacy/V0/V1 Base64 RPC",
+      "status": 200,
+      "bytes": 1984,
+      "sha256": "aeee789c1d1c60b7ecdbcd750b4ddd093c7ea5a9ba792e355611dc7bf4dea9ce",
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "cache": "BYPASS",
+      "foundation": "LEDGER_COMPACT"
+    },
+    {
+      "name": "archive alias returns the same ledger JSON",
+      "status": 200,
+      "bytes": 1984,
+      "sha256": "aeee789c1d1c60b7ecdbcd750b4ddd093c7ea5a9ba792e355611dc7bf4dea9ce",
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "cache": "BYPASS",
+      "foundation": "LEDGER_COMPACT"
+    },
+    {
+      "name": "ledger slot proof must match the request",
+      "status": 502,
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "noLegacyArchiveFallback": true
+    },
+    {
+      "name": "ledger blockhash must match the decoded bundle",
+      "status": 502,
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "noLegacyArchiveFallback": true
+    },
+    {
+      "name": "ledger full-metadata proof is required",
+      "status": 502,
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "noLegacyArchiveFallback": true
+    },
+    {
+      "name": "ledger helper generation is pinned",
+      "status": 502,
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "noLegacyArchiveFallback": true
+    },
+    {
+      "name": "ledger bundle bytes must match their full SHA",
+      "status": 502,
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "noLegacyArchiveFallback": true
+    },
+    {
+      "name": "ledger public response fill",
+      "status": 200,
+      "bytes": 1984,
+      "sha256": "aeee789c1d1c60b7ecdbcd750b4ddd093c7ea5a9ba792e355611dc7bf4dea9ce",
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "cache": "MISS",
+      "foundation": "LEDGER_COMPACT"
+    },
+    {
+      "name": "ledger archive alias shares the existing response cache",
+      "status": 200,
+      "bytes": 1984,
+      "sha256": "aeee789c1d1c60b7ecdbcd750b4ddd093c7ea5a9ba792e355611dc7bf4dea9ce",
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "cache": "HIT",
+      "foundation": "RESPONSE_CACHE"
+    },
+    {
+      "name": "native-ok public response fill",
+      "status": 200,
+      "bytes": 863,
+      "sha256": "738cae26b89d309b3f5b5222ec645eec8ed8d9a0e57437cfe79b9474a3f1297f",
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "cache": "MISS",
+      "foundation": "NATIVE_RECENT"
+    },
+    {
+      "name": "native-ok archive alias shares the existing response cache",
+      "status": 200,
+      "bytes": 863,
+      "sha256": "738cae26b89d309b3f5b5222ec645eec8ed8d9a0e57437cfe79b9474a3f1297f",
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "cache": "HIT",
+      "foundation": "RESPONSE_CACHE"
+    },
+    {
+      "name": "native-archive public response fill",
+      "status": 200,
+      "bytes": 863,
+      "sha256": "738cae26b89d309b3f5b5222ec645eec8ed8d9a0e57437cfe79b9474a3f1297f",
+      "r2Gets": 0,
+      "s3Gets": 1,
+      "cache": "MISS",
+      "foundation": "NATIVE_ARCHIVE"
+    },
+    {
+      "name": "native-archive archive alias shares the existing response cache",
+      "status": 200,
+      "bytes": 863,
+      "sha256": "738cae26b89d309b3f5b5222ec645eec8ed8d9a0e57437cfe79b9474a3f1297f",
+      "r2Gets": 0,
+      "s3Gets": 0,
+      "cache": "HIT",
+      "foundation": "RESPONSE_CACHE"
+    },
+    {
+      "name": "typed native miss retains the existing historical archive path",
+      "status": 200,
+      "r2Gets": 2
+    },
+    {
+      "name": "ordinary binary contract stays on the original bundle path",
+      "status": 200
+    },
+    {
+      "name": "archive binary alias preserves the exact original bundle digest",
+      "status": 200
+    },
+    {
+      "name": "archive resolution alias keeps the authenticated index gate",
+      "status": 401
+    }
+  ],
+  "fixture": {
+    "path": "/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/.codex-tmp/current-epoch-getblock-20261122/native-fixtures.json",
+    "producerGeneration": "8bf3391c4f72b06d0b7eddda8c44a093f383530357a683f40d7b1f40376f1598",
+    "variants": [
+      {
+        "name": "raw-v1",
+        "frameSha256": "7dc7f348fff7a05a79ee5d8eb6cf095a8894c1858b2d66b0d91a7db7e98597e8"
+      },
+      {
+        "name": "zstd-legacy",
+        "frameSha256": "55494565c0d9d775f6799e02a799deef48070663962bb9e0f8c1c055a5f5d43b"
+      }
+    ],
+    "ledger": {
+      "path": "/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/.codex-tmp/current-epoch-getblock-20261122/ledger-helper/ledger-fixtures.json",
+      "generation": "ledger-compact-v1",
+      "slot": 472608000,
+      "bundleSha256": "5038516cd3592f7f60e9e991421c4cf868bff1fcd01c564c06566399cea1f18b"
+    }
+  },
+  "scope": "Actual local release WASM; original synthetic native frame bytes and independently assembled wire/RPC expectations. Customer KV and billing bindings are absent. No cloud requests or deployment."
+}

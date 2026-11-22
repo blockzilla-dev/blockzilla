@@ -1,0 +1,88 @@
+{
+  "schema": "blockzilla-before-worker-cache-proposal-v1",
+  "state": "FRONTEND_CACHE_REJECTED_BY_LIVE_STREAM_ERROR_CANARY",
+  "atUtc": "2026-11-22T20:33:42.390096+00:00",
+  "currentBehavior": "The route invokes the Worker. It then calls the Cache API. Public auth bypass avoids customer KV and billing writes, but it does not bypass the Worker.",
+  "candidate": {
+    "sameWorker": "blockzilla-get-block",
+    "wranglerConfigDelta": {
+      "cache": {
+        "enabled": true,
+        "cross_version_cache": false
+      }
+    },
+    "newWorkers": 0,
+    "newPagesProjects": 0,
+    "newOrigins": 0,
+    "newDurableBlockCopies": 0,
+    "dnsOrRouteChanges": 0
+  },
+  "candidateDocumentedBehavior": {
+    "cacheBeforeWorker": true,
+    "cacheHitsSkipCpu": true,
+    "tieredByDefault": true,
+    "streamingCollapseSupported": true,
+    "cacheKeyExcludesHostname": true,
+    "cacheKeyIncludesPathQueryAndVersion": true,
+    "authorizationRequestsBypass": "Normally; explicit public/must-revalidate/s-maxage directives have documented exceptions. Public getBlock deliberately returns shared content.",
+    "setCookieResponsesBypass": true,
+    "responseSizeLimitBytes": 536870912
+  },
+  "pricing": {
+    "cacheHitsStillHaveStandardRequestCharge": true,
+    "additionalRequestsPerMillionUsd": 0.3,
+    "additionalCpuPerMillionMsUsd": 0.02,
+    "monthlyAllowanceAndBaseSubscriptionExcluded": true
+  },
+  "acceptanceBeforeProduction": [
+    "Keep cross-version caching off, so new deployments do not serve old reward or source-policy responses.",
+    "Verify all errors, profile variants, compact recovery, and client-locator variants return explicit no-store/private.",
+    "Verify query variations remain distinct and arbitrary representation headers use Vary if needed.",
+    "Check digest-complete streaming fills; prove an aborted/error stream is not reusable.",
+    "Compare CF-Cache-Status with platform invocation and CPU counters. A frozen X-Blockzilla-Cache header is insufficient.",
+    "Verify native identity and recovery pin behavior remains enforced for uncacheable compact requests.",
+    "Use the same Worker and existing source frames; do not upload rendered block copies."
+  ],
+  "alternativeIfZeroWorkerRequestFeeIsRequired": {
+    "status": "Architecture inference only; not deployed",
+    "path": "ordinary proxied hostname without Worker route -> normal zone cache -> existing machine streaming proxy -> current Worker on miss",
+    "newBlockStore": false,
+    "tradeoff": "Adds an origin hop and machine bandwidth on misses. It requires routing changes and separate correctness/cost checks.",
+    "r2CustomDomainAloneIsInsufficient": "Existing epoch Compact V2 objects do not directly expose the generated per-slot JSON and Wincode responses."
+  },
+  "primarySources": {
+    "cacheApi": "https://developers.cloudflare.com/workers/runtime-apis/cache/",
+    "routeOrder": "https://developers.cloudflare.com/cache/interaction-cloudflare-products/workers/",
+    "workersCache": "https://developers.cloudflare.com/workers/cache/",
+    "configuration": "https://developers.cloudflare.com/workers/cache/configuration/",
+    "cacheKeys": "https://developers.cloudflare.com/workers/cache/cache-keys/",
+    "limitations": "https://developers.cloudflare.com/workers/cache/limitations/",
+    "pricing": "https://developers.cloudflare.com/workers/platform/pricing/"
+  },
+  "deploymentOrConfigChanges": 0,
+  "streamErrorCacheCommitBehavior": "Not explicitly documented; verify with a deliberate producer-stream error before activation.",
+  "installedWranglerCacheSupport": [
+    {
+      "version": "4.135.0",
+      "supported": true
+    },
+    {
+      "version": "4.135.0",
+      "supported": true
+    },
+    {
+      "version": "4.165.0",
+      "supported": true
+    }
+  ],
+  "productionFeatureEnabled": false,
+  "liveCanaryResult": {
+    "unknownLengthErroredPrefixReusedAsHit": true,
+    "sameProducerAndBodyHash": true,
+    "currentCacheApiRejectedSameProducerError": true,
+    "probeVersionsUnpromoted": true,
+    "evidenceDirectory": ".codex-tmp/current-epoch-getblock-20261122/cache-live-acceptance",
+    "dataRequestsAcrossAcceptanceAndDiagnostics": 22,
+    "requestLimit": 80
+  }
+}

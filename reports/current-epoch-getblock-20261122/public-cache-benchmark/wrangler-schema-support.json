@@ -1,0 +1,161 @@
+[
+  {
+    "wranglerVersion": "4.135.0",
+    "supportsCache": true,
+    "definitions": [
+      {
+        "definition": "RawConfig",
+        "cacheProperty": {
+          "$ref": "#/definitions/CacheOptions",
+          "description": "Specify the cache behavior of the Worker.",
+          "markdownDescription": "Specify the cache behavior of the Worker."
+        }
+      },
+      {
+        "definition": "RawEnvironment",
+        "cacheProperty": {
+          "$ref": "#/definitions/CacheOptions",
+          "description": "Specify the cache behavior of the Worker.",
+          "markdownDescription": "Specify the cache behavior of the Worker."
+        }
+      },
+      {
+        "definition": "WorkerEntrypointExport",
+        "cacheProperty": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Whether cache is enabled for this entrypoint.",
+              "markdownDescription": "Whether cache is enabled for this entrypoint."
+            }
+          },
+          "required": [
+            "enabled"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "definition": "PreviewsConfig",
+        "cacheProperty": {
+          "$ref": "#/definitions/interface-769040647-14205-24567-769040647-0-586662004818536"
+        }
+      },
+      {
+        "definition": "interface-769040647-14205-24567-769040647-0-586662004818536",
+        "cacheProperty": {
+          "$ref": "#/definitions/CacheOptions",
+          "description": "Specify the cache behavior of the Worker.",
+          "markdownDescription": "Specify the cache behavior of the Worker."
+        }
+      }
+    ]
+  },
+  {
+    "wranglerVersion": "4.135.0",
+    "supportsCache": true,
+    "definitions": [
+      {
+        "definition": "RawConfig",
+        "cacheProperty": {
+          "$ref": "#/definitions/CacheOptions",
+          "description": "Specify the cache behavior of the Worker.",
+          "markdownDescription": "Specify the cache behavior of the Worker."
+        }
+      },
+      {
+        "definition": "RawEnvironment",
+        "cacheProperty": {
+          "$ref": "#/definitions/CacheOptions",
+          "description": "Specify the cache behavior of the Worker.",
+          "markdownDescription": "Specify the cache behavior of the Worker."
+        }
+      },
+      {
+        "definition": "WorkerEntrypointExport",
+        "cacheProperty": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Whether cache is enabled for this entrypoint.",
+              "markdownDescription": "Whether cache is enabled for this entrypoint."
+            }
+          },
+          "required": [
+            "enabled"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "definition": "PreviewsConfig",
+        "cacheProperty": {
+          "$ref": "#/definitions/interface-769040647-14205-24567-769040647-0-586662004818536"
+        }
+      },
+      {
+        "definition": "interface-769040647-14205-24567-769040647-0-586662004818536",
+        "cacheProperty": {
+          "$ref": "#/definitions/CacheOptions",
+          "description": "Specify the cache behavior of the Worker.",
+          "markdownDescription": "Specify the cache behavior of the Worker."
+        }
+      }
+    ]
+  },
+  {
+    "wranglerVersion": "4.165.0",
+    "supportsCache": true,
+    "definitions": [
+      {
+        "definition": "RawConfig",
+        "cacheProperty": {
+          "$ref": "#/definitions/CacheOptions",
+          "description": "Specify the cache behavior of the Worker.",
+          "markdownDescription": "Specify the cache behavior of the Worker."
+        }
+      },
+      {
+        "definition": "RawEnvironment",
+        "cacheProperty": {
+          "$ref": "#/definitions/CacheOptions",
+          "description": "Specify the cache behavior of the Worker.",
+          "markdownDescription": "Specify the cache behavior of the Worker."
+        }
+      },
+      {
+        "definition": "WorkerEntrypointExport",
+        "cacheProperty": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Whether cache is enabled for this entrypoint.",
+              "markdownDescription": "Whether cache is enabled for this entrypoint."
+            }
+          },
+          "required": [
+            "enabled"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "definition": "PreviewsConfig",
+        "cacheProperty": {
+          "$ref": "#/definitions/interface-769040647-14884-25493-769040647-0-628442004818536"
+        }
+      },
+      {
+        "definition": "interface-769040647-14884-25493-769040647-0-628442004818536",
+        "cacheProperty": {
+          "$ref": "#/definitions/CacheOptions",
+          "description": "Specify the cache behavior of the Worker.",
+          "markdownDescription": "Specify the cache behavior of the Worker."
+        }
+      }
+    ]
+  }
+]

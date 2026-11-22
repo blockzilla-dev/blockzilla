@@ -1,0 +1,125 @@
+{
+  "schema": "blockzilla-workers-cache-canary-results-v1",
+  "state": "FRONTEND_CACHE_REJECTED_CACHE_API_ATOMICITY_PASSED_PRODUCTION_UNCHANGED",
+  "atUtc": "2026-11-22T20:58:49.316806+00:00",
+  "productionVersion": "1cc2931c-a23d-464b-b8ee-00b0e49d978d",
+  "productionPercentage": 100,
+  "wasmCandidateSha256": "40966754f3e9100674efb845ebecc4c3b2eb8e776c9e2f33d3889400b23f8155",
+  "probeVersions": {
+    "legacyIdentityProducer": "3c6c40ef-ddbf-471d-a5eb-0a1fdb4893da",
+    "nativeReadableProducer": "06922dfb-06c5-47e0-b851-7f8e1f2fb62e"
+  },
+  "cacheMetadataAccepted": {
+    "enabled": true,
+    "cross_version_cache": false
+  },
+  "passedFirstAttemptChecks": [
+    {
+      "label": "synthetic cache hits freeze origin identity and complete body",
+      "passed": true
+    },
+    {
+      "label": "cold HEAD fills a full GET representation",
+      "passed": true
+    },
+    {
+      "label": "no-store 503 never freezes origin identity",
+      "passed": true
+    },
+    {
+      "label": "stream-error partially emitted producer error is never reused as a cache hit",
+      "passed": true
+    }
+  ],
+  "fixedLengthStreamWitnesses": {
+    "stream-error": {
+      "attempts": 3,
+      "partialResponseWitnesses": 3,
+      "freshProducerIdentities": 3
+    }
+  },
+  "correctedControlPassed": [
+    {
+      "label": "synthetic cache hits freeze origin identity and complete body",
+      "passed": true
+    }
+  ],
+  "nativeReadableFailure": {
+    "httpStatus": 200,
+    "bytes": 65536,
+    "completed": true,
+    "cfCacheStatus": "MISS",
+    "contentLengthPresent": false,
+    "assertion": "truncated producer body completed as success"
+  },
+  "cacheReuseAfterErrorTested": true,
+  "cachePoisonOrPlatformBugEstablished": false,
+  "remainingRequestBudget": 58,
+  "requestsUsed": 22,
+  "requestLimit": 80,
+  "apiAcceptanceExecuted": false,
+  "cleanVersionUploaded": false,
+  "productionPromoted": false,
+  "productionUnchanged": true,
+  "versionUrlsEnabled": false,
+  "workersDevEnabled": false,
+  "newWorkers": 0,
+  "newRoutes": 0,
+  "dnsMutations": 0,
+  "storageMutations": 0,
+  "blockBodiesWritten": 0,
+  "diagnosticConclusion": "PREFIX_REUSE_OBSERVED_DO_NOT_PROMOTE",
+  "cachedPrefixReuseEstablished": true,
+  "unknownLengthJsonCacheAcceptanceSafe": false,
+  "platformFaultBoundaryIdentified": false,
+  "limitExtensionReason": "Root explicitly raised the limit from60 to80 for bounded Node diagnostic after Python HTTP transport failures.",
+  "cachedPrefixEvidence": {
+    "firstStatus": 200,
+    "firstCacheStatus": "MISS",
+    "repeatStatus": 200,
+    "repeatCacheStatus": "HIT",
+    "bytes": 65536,
+    "completed": true,
+    "producerUuid": "3bad64b1-7ff4-4aeb-8f99-31acc9461783",
+    "originRay": "a5eae3c0cc848bd2-AMS",
+    "sha256": "bbcbec9f8d7ea83ab7a5ca228f8a8b48159e623c19233bc31a0635f52379c6f3",
+    "producerIdentityFrozen": true,
+    "bodyHashFrozen": true,
+    "edgeRayChanged": true
+  },
+  "currentCacheApiAtomicityProbePassed": true,
+  "frontendWorkersCachePromotionRejected": true,
+  "currentCacheApiProbe": {
+    "version": "18deaee9-a10d-4352-be20-80344d101aca",
+    "frontendCacheOptions": {
+      "enabled": false,
+      "cross_version_cache": false
+    },
+    "httpStatus": 200,
+    "result": {
+      "invocation": "ab23ab3d-dc8e-4ef5-8ec3-a40485f27fc9",
+      "originRay": "a5eaf19d7a90286f",
+      "positivePutSucceeded": true,
+      "positiveMatchFound": true,
+      "positiveBodyComplete": true,
+      "positiveLengthCorrect": true,
+      "positiveDigestMatches": true,
+      "positiveExpectedSha256": "6eb88b927f3ff0adf78e9baa12b459323bb5ab8c1041a47904c9263850522a20",
+      "positiveActualSha256": "6eb88b927f3ff0adf78e9baa12b459323bb5ab8c1041a47904c9263850522a20",
+      "badPutRejected": true,
+      "badMatchAbsent": true,
+      "badExpectedPrefixSha256": "642a5b58a6a299f39bd4cd52b9da4e6fa9eb39aba18b6f24e7742f9aef1f87a0",
+      "badBodyComplete": null,
+      "badLengthCorrect": null,
+      "badBodySha256": null,
+      "unexpectedError": false,
+      "goodAbsentAfterCleanup": true,
+      "badAbsentAfterCleanup": true,
+      "cleanupSucceeded": true,
+      "passed": true
+    },
+    "syntheticKeysRemoved": true,
+    "realBlockReads": 0,
+    "publicRequests": 1
+  }
+}

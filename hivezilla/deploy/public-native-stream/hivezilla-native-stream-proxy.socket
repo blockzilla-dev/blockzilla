@@ -1,0 +1,11 @@
+[Unit]
+Description=Blockzilla native stream loopback socket
+
+[Socket]
+ListenStream=127.0.0.1:8871
+Accept=no
+NoDelay=yes
+Backlog=32
+
+[Install]
+WantedBy=sockets.target

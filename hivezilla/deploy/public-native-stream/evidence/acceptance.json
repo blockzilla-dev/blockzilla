@@ -1,0 +1,158 @@
+{
+  "status": "PASS",
+  "block_payload_persisted": false,
+  "keys_printed_or_copied": false,
+  "auth": [
+    {
+      "credential": "missing",
+      "status": 401,
+      "wall_ms": 91.817
+    },
+    {
+      "credential": "wrong",
+      "status": 401,
+      "wall_ms": 88.027
+    },
+    {
+      "credential": "legacy",
+      "status": 401,
+      "wall_ms": 80.272
+    },
+    {
+      "credential": "current",
+      "status": 200,
+      "wall_ms": 69.41
+    },
+    {
+      "credential": "url-key-rejected",
+      "status": 401,
+      "wall_ms": 43.612
+    }
+  ],
+  "beam": {
+    "start_cursor": "000000000000000018ea5078fdda19df-13e843:p636368:21c51bdd387bb1b6ffd0c8b79dd6c99b691463bb52932cc2b21511b857ffcd5d",
+    "frames": [
+      {
+        "sha256": "ee7ed969c1ff3a4cc6d9f808b6ae195d4a21156dbd7c95bcd8c224832cfdf280",
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p636369:ee7ed969c1ff3a4cc6d9f808b6ae195d4a21156dbd7c95bcd8c224832cfdf280",
+        "sequence": 636369,
+        "kind": "block",
+        "slot": 472685345,
+        "bytes": 245497,
+        "objects_checked": 12,
+        "original_bytes_equal": true
+      },
+      {
+        "sha256": "7a982705def2c993a6bc45c5391607e7fa6a722a9d68c178ef0c4e8891fb9ef7",
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p636370:7a982705def2c993a6bc45c5391607e7fa6a722a9d68c178ef0c4e8891fb9ef7",
+        "sequence": 636370,
+        "kind": "root",
+        "slot": 472685344,
+        "bytes": 1562,
+        "objects_checked": 0,
+        "original_bytes_equal": true
+      }
+    ],
+    "exact_next_sequences": true
+  },
+  "chunk": {
+    "sha256": "414ed848db97f5e880b45cd64d21c56b4230ead53f7242c8f2946be1dd4a33ff",
+    "cursor": "000000000000000018ea5078fdda19df-13e843:p636366:414ed848db97f5e880b45cd64d21c56b4230ead53f7242c8f2946be1dd4a33ff",
+    "sequence": 636366,
+    "kind": "block",
+    "slot": 472685344,
+    "bytes": 293859,
+    "objects_checked": 12,
+    "wall_ms": 75.16,
+    "original_bytes_equal": true
+  },
+  "private_origin_paths": [
+    {
+      "path": "/v2/banks/state",
+      "status": 404
+    },
+    {
+      "path": "/v2/banks/ack",
+      "status": 404
+    },
+    {
+      "path": "/v2/banks/coverage-gaps",
+      "status": 404
+    },
+    {
+      "path": "/v2/banks/finalized/events",
+      "status": 404
+    },
+    {
+      "path": "/health",
+      "status": 404
+    }
+  ],
+  "getblock": {
+    "slot": 472685344,
+    "status": 200,
+    "foundation": "NATIVE_RECENT",
+    "r2_gets": "0",
+    "s3_gets": "0",
+    "body_sha256": "0ba83902bcb9ace65fb1dae684ce2ede21b13153e5ed1fc8acbe3feaa17845be",
+    "wall_ms": 416.489
+  },
+  "protected_units": {
+    "hivezilla-validator.service": {
+      "ActiveState": "active",
+      "InvocationID": "a1edd40e43404e8cb9c81a7caacfa1ee",
+      "MainPID": "1304643",
+      "NRestarts": "0"
+    },
+    "hivezilla-native-continuous-processed@c1739ce6fcee61291f41548b1960aa27.service": {
+      "ActiveState": "active",
+      "InvocationID": "f3d5b43e7c584fe7a7c35b0f5f04d544",
+      "MainPID": "2108523",
+      "NRestarts": "0"
+    },
+    "hivezilla-native-continuous-banks@c1739ce6fcee61291f41548b1960aa27.service": {
+      "ActiveState": "active",
+      "InvocationID": "b2618cdc3b3346c188afdbf5236e33c7",
+      "MainPID": "2128693",
+      "NRestarts": "0"
+    },
+    "hivezilla-native-continuous-origin@c1739ce6fcee61291f41548b1960aa27.service": {
+      "ActiveState": "active",
+      "InvocationID": "66781175b34a418c88f084a4c402d3f2",
+      "MainPID": "2108530",
+      "NRestarts": "0"
+    },
+    "hivezilla-tunnel.service": {
+      "ActiveState": "active",
+      "InvocationID": "9d1592d736864f2da945d0353189cbad",
+      "MainPID": "480183",
+      "NRestarts": "0"
+    },
+    "blockzilla-recent-get-block.service": {
+      "ActiveState": "active",
+      "InvocationID": "f89111729a024762b536779dc304c128",
+      "MainPID": "2304452",
+      "NRestarts": "0"
+    },
+    "hivezilla-native-continuous.service": {
+      "ActiveState": "active",
+      "InvocationID": "db3a236e5060436982fdd5849b92207e",
+      "MainPID": "2108510",
+      "NRestarts": "0"
+    }
+  },
+  "retention_authority_unchanged": true,
+  "origin_socket_mode_unchanged": true,
+  "proxy": {
+    "MainPID": "2449071",
+    "NRestarts": "0",
+    "MemoryCurrent": "2838528",
+    "MemoryPeak": "3575808",
+    "MemoryMax": "67108864",
+    "LimitNOFILE": "512",
+    "PrivateNetwork": "yes",
+    "ProtectHome": "read-only",
+    "rss_kib": 6536,
+    "open_fds": 17
+  }
+}

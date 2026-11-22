@@ -1,0 +1,144 @@
+{
+  "limit": 80,
+  "used": 22,
+  "requests": [
+    {
+      "label": "probe-ok-fill",
+      "mode": "probe",
+      "version": "3c6c40ef-ddbf-471d-a5eb-0a1fdb4893da",
+      "at": "2026-11-22T20:53:23.949Z"
+    },
+    {
+      "label": "probe-ok-hit-0",
+      "mode": "probe",
+      "version": "3c6c40ef-ddbf-471d-a5eb-0a1fdb4893da",
+      "at": "2026-11-22T20:53:24.534Z"
+    },
+    {
+      "label": "probe-ok-hit-1",
+      "mode": "probe",
+      "version": "3c6c40ef-ddbf-471d-a5eb-0a1fdb4893da",
+      "at": "2026-11-22T20:53:24.631Z"
+    },
+    {
+      "label": "probe-head-cold",
+      "mode": "probe",
+      "version": "3c6c40ef-ddbf-471d-a5eb-0a1fdb4893da",
+      "at": "2026-11-22T20:53:24.709Z"
+    },
+    {
+      "label": "probe-head-replay-get",
+      "mode": "probe",
+      "version": "3c6c40ef-ddbf-471d-a5eb-0a1fdb4893da",
+      "at": "2026-11-22T20:53:24.879Z"
+    },
+    {
+      "label": "probe-503-0",
+      "mode": "probe",
+      "version": "3c6c40ef-ddbf-471d-a5eb-0a1fdb4893da",
+      "at": "2026-11-22T20:53:24.975Z"
+    },
+    {
+      "label": "probe-503-1",
+      "mode": "probe",
+      "version": "3c6c40ef-ddbf-471d-a5eb-0a1fdb4893da",
+      "at": "2026-11-22T20:53:25.143Z"
+    },
+    {
+      "label": "probe-503-2",
+      "mode": "probe",
+      "version": "3c6c40ef-ddbf-471d-a5eb-0a1fdb4893da",
+      "at": "2026-11-22T20:53:25.249Z"
+    },
+    {
+      "label": "probe-stream-error-0",
+      "mode": "probe",
+      "version": "3c6c40ef-ddbf-471d-a5eb-0a1fdb4893da",
+      "at": "2026-11-22T20:53:25.304Z"
+    },
+    {
+      "label": "probe-stream-error-1",
+      "mode": "probe",
+      "version": "3c6c40ef-ddbf-471d-a5eb-0a1fdb4893da",
+      "at": "2026-11-22T20:53:25.563Z"
+    },
+    {
+      "label": "probe-stream-error-2",
+      "mode": "probe",
+      "version": "3c6c40ef-ddbf-471d-a5eb-0a1fdb4893da",
+      "at": "2026-11-22T20:53:25.850Z"
+    },
+    {
+      "label": "probe-stream-error-unknown-0",
+      "mode": "probe",
+      "version": "3c6c40ef-ddbf-471d-a5eb-0a1fdb4893da",
+      "at": "2026-11-22T20:53:26.074Z"
+    },
+    {
+      "label": "probe-ok-fill",
+      "mode": "probe-resume",
+      "version": "06922dfb-06c5-47e0-b851-7f8e1f2fb62e",
+      "at": "2026-11-22T20:57:28.322Z"
+    },
+    {
+      "label": "probe-ok-hit-0",
+      "mode": "probe-resume",
+      "version": "06922dfb-06c5-47e0-b851-7f8e1f2fb62e",
+      "at": "2026-11-22T20:57:28.876Z"
+    },
+    {
+      "label": "probe-stream-error-unknown-0",
+      "mode": "probe-resume",
+      "version": "06922dfb-06c5-47e0-b851-7f8e1f2fb62e",
+      "at": "2026-11-22T20:57:28.932Z"
+    },
+    {
+      "label": "diagnostic-cache-commit-0",
+      "mode": "diagnostic",
+      "version": "06922dfb-06c5-47e0-b851-7f8e1f2fb62e",
+      "at": "2026-11-22T21:01:07.936354+00:00"
+    },
+    {
+      "label": "diagnostic-cache-commit-1",
+      "mode": "diagnostic",
+      "version": "06922dfb-06c5-47e0-b851-7f8e1f2fb62e",
+      "at": "2026-11-22T21:01:07.994476+00:00"
+    },
+    {
+      "label": "diagnostic-cache-commit-2",
+      "mode": "diagnostic",
+      "version": "06922dfb-06c5-47e0-b851-7f8e1f2fb62e",
+      "at": "2026-11-22T21:01:08.049843+00:00"
+    },
+    {
+      "label": "readiness-0",
+      "mode": "node-diagnostic",
+      "version": "06922dfb-06c5-47e0-b851-7f8e1f2fb62e",
+      "at": "2026-11-22T21:04:58.590Z"
+    },
+    {
+      "label": "unknown-repeat-0",
+      "mode": "node-diagnostic",
+      "version": "06922dfb-06c5-47e0-b851-7f8e1f2fb62e",
+      "at": "2026-11-22T21:04:59.029Z"
+    },
+    {
+      "label": "unknown-repeat-1",
+      "mode": "node-diagnostic",
+      "version": "06922dfb-06c5-47e0-b851-7f8e1f2fb62e",
+      "at": "2026-11-22T21:04:59.288Z"
+    },
+    {
+      "label": "cache-api-atomicity",
+      "mode": "single-request-diagnostic",
+      "version": "18deaee9-a10d-4352-be20-80344d101aca",
+      "at": "2026-11-22T21:14:26.751Z"
+    }
+  ],
+  "previousLimit": 60,
+  "limitExtension": {
+    "authorizedBy": "root",
+    "reason": "Bounded Node-only diagnostic after Python HTTP transport failures; no application acceptance assertion is relaxed.",
+    "at": "2026-11-22T21:04:49.744Z"
+  }
+}

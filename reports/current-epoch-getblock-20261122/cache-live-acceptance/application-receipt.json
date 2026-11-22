@@ -1,0 +1,112 @@
+{
+  "schema": "blockzilla-workers-cache-0pct-acceptance-v1",
+  "startedAt": "2026-11-22T20:53:09.316624+00:00",
+  "state": "STOPPED_PRODUCTION_PRESERVED",
+  "productionVersion": "1cc2931c-a23d-464b-b8ee-00b0e49d978d",
+  "versions": {
+    "probe": {
+      "id": "3c6c40ef-ddbf-471d-a5eb-0a1fdb4893da",
+      "url": "https://3c6c40ef-blockzilla-get-block.cheron-augustin.workers.dev",
+      "configPath": "/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/.codex-tmp/current-epoch-getblock-20261122/cache-live-acceptance/probe-candidate/wrangler.jsonc",
+      "productionStillUnchanged": {
+        "id": "084d32e5-c0a6-4dab-b367-030629b31075",
+        "created_on": "2026-11-22T20:08:25.858223Z",
+        "versions": [
+          {
+            "version_id": "1cc2931c-a23d-464b-b8ee-00b0e49d978d",
+            "percentage": 100
+          }
+        ]
+      },
+      "cacheMetadata": [
+        {
+          "path": "resources.script_runtime.cache_options",
+          "value": {
+            "enabled": true,
+            "cross_version_cache": false
+          }
+        },
+        {
+          "path": "resources.script_runtime.cache_options.cross_version_cache",
+          "value": false
+        }
+      ],
+      "source": "wrangler versions upload only",
+      "uploadExitCode": 0,
+      "acceptance": {
+        "receipt": "/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/.codex-tmp/current-epoch-getblock-20261122/cache-live-acceptance/probe-3c6c40ef-ddbf-471d-a5eb-0a1fdb4893da.json",
+        "exitCode": 1,
+        "passed": false,
+        "requests": 12,
+        "sharedRequestCount": 12,
+        "checks": [
+          {
+            "label": "synthetic cache hits freeze origin identity and complete body",
+            "passed": true
+          },
+          {
+            "label": "cold HEAD fills a full GET representation",
+            "passed": true
+          },
+          {
+            "label": "no-store 503 never freezes origin identity",
+            "passed": true
+          },
+          {
+            "label": "stream-error partially emitted producer error is never reused as a cache hit",
+            "passed": true
+          }
+        ],
+        "streamErrorWitnesses": {
+          "stream-error": {
+            "attempts": 3,
+            "partialResponseWitnesses": 3,
+            "freshProducerIdentities": 3
+          }
+        },
+        "error": "truncated producer body completed as success"
+      }
+    }
+  },
+  "promotionPerformed": false,
+  "newWorkers": 0,
+  "newRoutes": 0,
+  "dnsMutations": 0,
+  "storageMutations": 0,
+  "blockBodiesWritten": 0,
+  "workerDevEnabled": false,
+  "beforeProduction": {
+    "id": "084d32e5-c0a6-4dab-b367-030629b31075",
+    "created_on": "2026-11-22T20:08:25.858223Z",
+    "versions": [
+      {
+        "version_id": "1cc2931c-a23d-464b-b8ee-00b0e49d978d",
+        "percentage": 100
+      }
+    ]
+  },
+  "beforeSubdomain": {
+    "enabled": false,
+    "previews_enabled": false
+  },
+  "temporaryPreviewEnabled": true,
+  "errorType": "RuntimeError",
+  "errorMessage": "probe acceptance failed or inconclusive; production not changed",
+  "afterSubdomain": {
+    "enabled": false,
+    "previews_enabled": false
+  },
+  "temporaryPreviewRestoredDisabled": true,
+  "afterProduction": {
+    "id": "084d32e5-c0a6-4dab-b367-030629b31075",
+    "created_on": "2026-11-22T20:08:25.858223Z",
+    "versions": [
+      {
+        "version_id": "1cc2931c-a23d-464b-b8ee-00b0e49d978d",
+        "percentage": 100
+      }
+    ]
+  },
+  "productionUnchanged": true,
+  "finishedAt": "2026-11-22T20:53:29.300378+00:00"
+}

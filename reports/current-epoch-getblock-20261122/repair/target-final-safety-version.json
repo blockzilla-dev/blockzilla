@@ -1,0 +1,21 @@
+{
+  "state": "PASS",
+  "version": "e58a69ea-3b2a-465e-bac7-b68599ee1957",
+  "atUtc": "2026-11-22T21:23:47.283Z",
+  "url": "https://archive.blockzilla.dev/block/472608000.json",
+  "status": 200,
+  "bytes": 583789,
+  "bodySha256": "85bd16f8c8456524f6615a2c815601efa27ef68e7208cb24b365a4aba25a66fd",
+  "blockhash": "DMvymXRdtFwkR26HW2rwMJpVfhsbqyypYmptq91Aasgj",
+  "previousBlockhash": "ELvbqp7k1YgC2HmJYy8n7g26BvkcALtX1cwC84xqJtb6",
+  "parentSlot": 472607999,
+  "transactions": 81,
+  "rewards": 1326,
+  "cache": "MISS",
+  "foundationResult": "LEDGER_COMPACT",
+  "authKvReads": 0,
+  "customerBillableReads": 0,
+  "originRay": "a5eaff3dab02d982",
+  "totalMs": 2395.807042,
+  "scope": "Single normal final production target check; no cold-path latency claim. Body processed in RAM and not persisted."
+}

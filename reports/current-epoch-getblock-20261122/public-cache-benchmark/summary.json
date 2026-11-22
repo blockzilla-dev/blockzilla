@@ -1,0 +1,162 @@
+{
+  "schema": "blockzilla-public-archive-cache-summary-v1",
+  "atUtc": "2026-11-22T20:37:03.233118+00:00",
+  "httpPassed": true,
+  "requests": 73,
+  "requestBudget": 80,
+  "slots": [
+    470555971,
+    470663944,
+    470771932,
+    470879999
+  ],
+  "host": "archive.blockzilla.dev",
+  "workerVersion": "1cc2931c-a23d-464b-b8ee-00b0e49d978d",
+  "edge": "CDG",
+  "apiKeysSent": 0,
+  "providerRpcCalls": 0,
+  "blockBodyFilesWritten": 0,
+  "liveConfigurationMutations": 0,
+  "cohorts": [
+    {
+      "representation": "bin",
+      "condition": "cold",
+      "httpRequests": 8,
+      "successful": 8,
+      "ttfbMs": {
+        "p50": 601.754,
+        "p95": 815.474,
+        "p99": 815.474
+      },
+      "totalMs": {
+        "p50": 606.772,
+        "p95": 820.307,
+        "p99": 820.307
+      },
+      "originReadsPerRequest": 3,
+      "ownerR2ReadsPerRequest": 1,
+      "foundationS3ReadsPerRequest": 2,
+      "meanPlatformCpuMs": 16.862375,
+      "platformEstimatedInvocations": 8,
+      "platformRawSampleCount": 8,
+      "platformSampleInterval": 1,
+      "platformCountMatchesHttp": true,
+      "platformConfidenceValid": false
+    },
+    {
+      "representation": "json",
+      "condition": "cold",
+      "httpRequests": 8,
+      "successful": 8,
+      "ttfbMs": {
+        "p50": 510.571,
+        "p95": 939.275,
+        "p99": 939.275
+      },
+      "totalMs": {
+        "p50": 571.222,
+        "p95": 994.49,
+        "p99": 994.49
+      },
+      "originReadsPerRequest": 2,
+      "ownerR2ReadsPerRequest": 0,
+      "foundationS3ReadsPerRequest": 2,
+      "meanPlatformCpuMs": 69.384375,
+      "platformEstimatedInvocations": 8,
+      "platformRawSampleCount": 8,
+      "platformSampleInterval": 1,
+      "platformCountMatchesHttp": true,
+      "platformConfidenceValid": false
+    },
+    {
+      "representation": "bin",
+      "condition": "hit",
+      "httpRequests": 24,
+      "successful": 24,
+      "ttfbMs": {
+        "p50": 25.808,
+        "p95": 62.708,
+        "p99": 96.616
+      },
+      "totalMs": {
+        "p50": 29.064,
+        "p95": 64.843,
+        "p99": 99.574
+      },
+      "originReadsPerRequest": 0,
+      "ownerR2ReadsPerRequest": 0,
+      "foundationS3ReadsPerRequest": 0,
+      "meanPlatformCpuMs": 2.1276363636363635,
+      "platformEstimatedInvocations": 22,
+      "platformRawSampleCount": 10,
+      "platformSampleInterval": 2.2,
+      "platformCountMatchesHttp": false,
+      "platformConfidenceValid": false
+    },
+    {
+      "representation": "json",
+      "condition": "hit",
+      "httpRequests": 24,
+      "successful": 24,
+      "ttfbMs": {
+        "p50": 26.437,
+        "p95": 61.832,
+        "p99": 219.378
+      },
+      "totalMs": {
+        "p50": 93.463,
+        "p95": 155.142,
+        "p99": 333.912
+      },
+      "originReadsPerRequest": 0,
+      "ownerR2ReadsPerRequest": 0,
+      "foundationS3ReadsPerRequest": 0,
+      "meanPlatformCpuMs": 1.7290526315789472,
+      "platformEstimatedInvocations": 19,
+      "platformRawSampleCount": 16,
+      "platformSampleInterval": 1.1875,
+      "platformCountMatchesHttp": false,
+      "platformConfidenceValid": false
+    }
+  ],
+  "warmHttpHits": 48,
+  "warmOriginReads": 0,
+  "warmCustomerBillableReads": 0,
+  "platformWarmEstimatedInvocations": 41,
+  "platformWarmRawSamples": 26,
+  "platformWarmCpuTimeUs": 79660,
+  "platformWarmCountsExact": false,
+  "platformWarmPositiveCpuObserved": true,
+  "cfCacheStatusCounts": {
+    "HIT": 50,
+    "None": 23
+  },
+  "cost": {
+    "currency": "USD",
+    "scope": "Marginal Workers request and CPU only, beyond included allowances. Excludes base subscription, backend storage/requests, Foundation machine and bandwidth.",
+    "requestFeePerMillion": 0.3,
+    "cpuFeePerMillionMs": 0.02,
+    "currentWarmCacheEstimatedCpuMsPerRequest": 1.9429268292682929,
+    "currentWarmCacheEstimatedCostPerMillion": 0.33885853658536585,
+    "workersCacheOuterHitDocumentedCostPerMillion": 0.3,
+    "workersCacheOuterHitCpuMs": 0,
+    "estimatedWarmCpuSavingPerMillion": 0.03885853658536586,
+    "requestFeeBecomesZeroWithWorkersCache": false,
+    "samplingLimitation": "Warm platform counts are adaptive estimates (41 estimated invocations from26 raw samples for48 HTTP requests), not an exact invoice or precise confidence interval."
+  },
+  "conclusions": [
+    "Public access removes customer authentication/quota work. It does not remove the Cloudflare request charge.",
+    "The current Cache API path executes Worker code on a cache hit. Positive platform invocation and CPU counters during both warm windows support the documented behavior.",
+    "CF-Cache-Status:HIT and X-Blockzilla-Cache:HIT alone cannot prove that code did not run.",
+    "Workers Cache is a documented one-Worker option that checks cached responses before executing code. It is not enabled in the current production version.",
+    "Workers Cache outer hits still pay the standard request rate. They do not consume Worker CPU.",
+    "An ordinary zone-cache origin on an existing machine could avoid Worker invocation/fee on CDN hits, but it changes routing and adds a miss hop; it remains an untested architecture option."
+  ],
+  "limitations": [
+    "Cold means profile=1 Worker response/index/range cache bypass, not physically cold R2/provider caches or an empty Worker isolate. Profiling adds overhead.",
+    "Eight cold and24 warm samples per format at one Cloudflare edge; no global latency or tail percentile claim.",
+    "CPU metrics are adaptive estimates; warm counts differ from exact HTTP counts and the small-sample confidence flags are false.",
+    "Time-window script/version metrics cannot rule out unrelated external requests.",
+    "Managed Workers Cache was researched, not enabled or benchmarked. No free Workers-cache request claim is made."
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "schema": "blockzilla-cache-commit-diagnostic-v1",
+  "diagnosticOnly": true,
+  "originalAcceptanceStillFailed": true,
+  "version": "06922dfb-06c5-47e0-b851-7f8e1f2fb62e",
+  "startedAt": "2026-11-22T21:01:04.799122+00:00",
+  "failedResponseAgeSeconds": 215.866618,
+  "reusedExactFailedUrl": true,
+  "path": "/__cache_probe?kind=stream-error-unknown&case=14013735-638d-478d-a3f9-0c442a7cabc7",
+  "requests": [
+    {
+      "attempt": 1,
+      "startedAt": "2026-11-22T21:01:07.937635+00:00",
+      "status": null,
+      "bytes": 0,
+      "completed": false,
+      "errorType": "HTTPError",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "totalMs": 56.332,
+      "cfCacheStatus": null,
+      "producerUuid": null,
+      "originRay": null,
+      "sameProducerAsBaseline": false,
+      "sameBodyShaAsBaseline": false
+    },
+    {
+      "attempt": 2,
+      "startedAt": "2026-11-22T21:01:07.994750+00:00",
+      "status": null,
+      "bytes": 0,
+      "completed": false,
+      "errorType": "HTTPError",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "totalMs": 54.676,
+      "cfCacheStatus": null,
+      "producerUuid": null,
+      "originRay": null,
+      "sameProducerAsBaseline": false,
+      "sameBodyShaAsBaseline": false
+    },
+    {
+      "attempt": 3,
+      "startedAt": "2026-11-22T21:01:08.050314+00:00",
+      "status": null,
+      "bytes": 0,
+      "completed": false,
+      "errorType": "HTTPError",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "totalMs": 76.32,
+      "cfCacheStatus": null,
+      "producerUuid": null,
+      "originRay": null,
+      "sameProducerAsBaseline": false,
+      "sameBodyShaAsBaseline": false
+    }
+  ],
+  "beforeProduction": [
+    {
+      "version_id": "1cc2931c-a23d-464b-b8ee-00b0e49d978d",
+      "percentage": 100
+    }
+  ],
+  "budgetBefore": 15,
+  "noNewCodeOrVersionOrDeployment": true,
+  "bodyFilesWritten": 0,
+  "productionPromoted": false,
+  "cachedPrefixReuseObserved": false,
+  "conclusion": "NO_REUSE_OBSERVED_ACCEPTANCE_STILL_FAILED",
+  "afterSubdomain": {
+    "enabled": false,
+    "previews_enabled": false
+  },
+  "afterProduction": [
+    {
+      "version_id": "1cc2931c-a23d-464b-b8ee-00b0e49d978d",
+      "percentage": 100
+    }
+  ],
+  "productionUnchanged": true,
+  "budgetAfter": 18,
+  "finishedAt": "2026-11-22T21:01:10.913991+00:00"
+}

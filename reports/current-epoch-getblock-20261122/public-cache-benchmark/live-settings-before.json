@@ -1,0 +1,168 @@
+{
+  "atUtc": "2026-11-22T20:30:49.472240+00:00",
+  "worker": "blockzilla-get-block",
+  "settingKeys": [
+    "annotations",
+    "bindings",
+    "compatibility_date",
+    "compatibility_flags",
+    "limits",
+    "logpush",
+    "observability",
+    "placement",
+    "tags",
+    "tail_consumers",
+    "usage_model"
+  ],
+  "cache": null,
+  "cacheSettingPresent": false,
+  "deployment": {
+    "id": "084d32e5-c0a6-4dab-b367-030629b31075",
+    "created_on": "2026-11-22T20:08:25.858223Z",
+    "versions": [
+      {
+        "version_id": "1cc2931c-a23d-464b-b8ee-00b0e49d978d",
+        "percentage": 100
+      }
+    ]
+  },
+  "bindingNamesAndTypes": [
+    {
+      "name": "BZ_ARCHIVE_GENERATION",
+      "type": "plain_text"
+    },
+    {
+      "name": "BZ_ARCHIVE_LAYOUT",
+      "type": "plain_text"
+    },
+    {
+      "name": "BZ_ARCHIVE_PREFIX",
+      "type": "plain_text"
+    },
+    {
+      "name": "BZ_ARCHIVE_SOURCE",
+      "type": "plain_text"
+    },
+    {
+      "name": "BZ_AUTH_CACHE_SCOPE",
+      "type": "plain_text"
+    },
+    {
+      "name": "BZ_FOUNDATION_BINARY_RESOLVE_MODE",
+      "type": "plain_text"
+    },
+    {
+      "name": "BZ_FOUNDATION_LEDGER_GENERATION",
+      "type": "plain_text"
+    },
+    {
+      "name": "BZ_FOUNDATION_LOOKUP_BODY_TIMEOUT_MS",
+      "type": "plain_text"
+    },
+    {
+      "name": "BZ_FOUNDATION_LOOKUP_GENERATION",
+      "type": "plain_text"
+    },
+    {
+      "name": "BZ_FOUNDATION_LOOKUP_MODE",
+      "type": "plain_text"
+    },
+    {
+      "name": "BZ_FOUNDATION_LOOKUP_SECRET",
+      "type": "secret_text"
+    },
+    {
+      "name": "BZ_FOUNDATION_LOOKUP_TIMEOUT_MS",
+      "type": "plain_text"
+    },
+    {
+      "name": "BZ_FOUNDATION_LOOKUP_URL",
+      "type": "plain_text"
+    },
+    {
+      "name": "BZ_FOUNDATION_NATIVE_ARCHIVE_PREFIX",
+      "type": "plain_text"
+    },
+    {
+      "name": "BZ_FOUNDATION_NATIVE_FINALIZED",
+      "type": "plain_text"
+    },
+    {
+      "name": "BZ_FOUNDATION_NATIVE_PRODUCER_GENERATION",
+      "type": "plain_text"
+    },
+    {
+      "name": "BZ_FOUNDATION_RECENT_SOURCE",
+      "type": "plain_text"
+    },
+    {
+      "name": "BZ_GET_BLOCK_PUBLIC",
+      "type": "plain_text"
+    },
+    {
+      "name": "BZ_HTTP_GET_ONLY",
+      "type": "plain_text"
+    },
+    {
+      "name": "BZ_LOCATOR_SECRET",
+      "type": "secret_text"
+    },
+    {
+      "name": "BZ_MESSAGE_SCHEMA_OVERRIDES",
+      "type": "plain_text"
+    },
+    {
+      "name": "BZ_METADATA_SCHEMA",
+      "type": "plain_text"
+    },
+    {
+      "name": "BZ_RESOLUTION",
+      "type": "r2_bucket"
+    },
+    {
+      "name": "BZ_RESOLUTION_GENERATION",
+      "type": "plain_text"
+    },
+    {
+      "name": "BZ_RESOLUTION_PREFIX",
+      "type": "plain_text"
+    },
+    {
+      "name": "BZ_RESOLUTION_SLOTS",
+      "type": "plain_text"
+    },
+    {
+      "name": "BZ_RPC_API_KEYS",
+      "type": "kv_namespace"
+    },
+    {
+      "name": "BZ_RPC_METRICS",
+      "type": "analytics_engine"
+    },
+    {
+      "name": "BZ_S3_ACCESS_KEY_ID",
+      "type": "secret_text"
+    },
+    {
+      "name": "BZ_S3_BUCKET",
+      "type": "secret_text"
+    },
+    {
+      "name": "BZ_S3_ENDPOINT",
+      "type": "secret_text"
+    },
+    {
+      "name": "BZ_S3_REGION",
+      "type": "secret_text"
+    },
+    {
+      "name": "BZ_S3_SECRET_ACCESS_KEY",
+      "type": "secret_text"
+    },
+    {
+      "name": "BZ_SLOT_INDEX",
+      "type": "plain_text"
+    }
+  ],
+  "mutations": 0
+}

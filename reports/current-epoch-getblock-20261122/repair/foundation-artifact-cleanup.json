@@ -1,0 +1,140 @@
+{
+  "status": "PASS",
+  "created_at_utc": "2026-11-22T20:53:25.855634+00:00",
+  "approved_exact_paths": [
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-native-publication-20261122/target",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/target",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/bounded-v2/agave",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/bounded-v3/agave"
+  ],
+  "allocated_bytes_before": {
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-native-publication-20261122/target": 3024908288,
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/target": 2276618240,
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/bounded-v2/agave": 540712960,
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/bounded-v3/agave": 540712960
+  },
+  "total_allocated_bytes_before": 6382952448,
+  "filesystem_before": {
+    "available_bytes": 1124918411264,
+    "free_bytes": 1124935188480
+  },
+  "live_candidate_references": [],
+  "candidate_top_symlinks": false,
+  "nested_mounts": false,
+  "kept_file_sha256_before": {
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/bin/hivezilla-ledger-archive-c75dd8411289612031405d7b2c14e448b17bb52af975e4e07f61947dc4126a1e": "c75dd8411289612031405d7b2c14e448b17bb52af975e4e07f61947dc4126a1e",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/bin/blockzilla-resolution-service-ledger-e330f3a63025a922": "e330f3a63025a922f538f5de71b5d0dd65297bf31e374d8a8a6c1df0f837536e",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/bin/blockzilla-resolution-service-ledger-6dee8f3e3993f613": "6dee8f3e3993f6139a066bd9d0cdff64bc8e264bc3b8dd42a5a6938a8e43d4ab",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/bin/blockzilla-resolution-service": "3706565c7407e7188d1ab21ea183ffc619898da28b810631658414691db0f47f",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/recent-config.ledger-overlap-v1.json": "27c343c8f42f2ab718374718e9a750758d8b7dd2616bb59aa7ee8c03ec7aa5fe",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/recent-config.ledger-v1.json": "9dc6d7beb284103a3aef92e959055e982a14272026b801fb51f0e6426e9a99a9",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/recent-config.json": "47dbd50f502aaad430c38480626e920bc64fcabd3fdcacd46dfcb9c3fce35f26",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/source-v1/hivezilla/ledger-archive/patches/agave-v4.4.0-rc.1-read-only-file-cap.patch": "115dc1a326a39e77bef40a5c4f0b9c5e23f3ecdadb6a32a433810e52debadd5a",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/bounded-v3/PREPARED.json": "4241dfda0336bb6cb2d59cc7252ee8146a5d0ed66d4be6856d8d9f79fd6c3c78",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/run-build-v3.py": "b2488030bf00e2f00ab40d418722f80dcba55b9eb5eb0195127fb88b68797fdb",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/bounded-v3/source/hivezilla/ledger-archive/Cargo.toml": "df08d63be33f4d1b50c00d0d05ffaf0a02c7ca9e7fee5a17b54024528aec4a9f",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/bounded-v3/source/hivezilla/ledger-archive/Cargo.lock": "58ead488392d9f61e4b05fb53f392929dd04edff859f6d6866797b476b76ada1"
+  },
+  "protected_before": {
+    "controller": {
+      "pid": 2108510,
+      "start_ticks": "466809260",
+      "exe": "/usr/bin/python3.14"
+    },
+    "processed": {
+      "pid": 2108523,
+      "start_ticks": "466809279",
+      "exe": "/home/ubuntu/live/hivezilla-validator-20260930/releases/native-direct-producer-20261122-073dfeef519cb8d9/hivezilla-direct-agave"
+    },
+    "origin": {
+      "pid": 2108530,
+      "start_ticks": "466809282",
+      "exe": "/home/ubuntu/live/hivezilla-validator-20260930/releases/native-direct-origin-20261122-dd65404a0759159e/hivezilla-stream"
+    },
+    "banks": {
+      "pid": 2128693,
+      "start_ticks": "466820250",
+      "exe": "/home/ubuntu/live/hivezilla-validator-20260930/releases/native-direct-producer-20261122-073dfeef519cb8d9/hivezilla-direct-agave"
+    },
+    "validator": {
+      "pid": 1304643,
+      "start_ticks": "457737831",
+      "exe": "/home/ubuntu/live/hivezilla-validator-20260930/releases/agave-native-ledger-v1fix-20261121-251b5d923155da26/agave-validator"
+    },
+    "tunnel": {
+      "pid": 480183,
+      "start_ticks": "13669710",
+      "exe": "/usr/bin/cloudflared"
+    },
+    "reader": {
+      "pid": 2304452,
+      "start_ticks": "467019595",
+      "exe": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/bin/blockzilla-resolution-service-ledger-6dee8f3e3993f613"
+    }
+  },
+  "removed": [
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-native-publication-20261122/target",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/target",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/bounded-v2/agave",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/bounded-v3/agave"
+  ],
+  "kept_file_sha256_after": {
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/bin/hivezilla-ledger-archive-c75dd8411289612031405d7b2c14e448b17bb52af975e4e07f61947dc4126a1e": "c75dd8411289612031405d7b2c14e448b17bb52af975e4e07f61947dc4126a1e",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/bin/blockzilla-resolution-service-ledger-e330f3a63025a922": "e330f3a63025a922f538f5de71b5d0dd65297bf31e374d8a8a6c1df0f837536e",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/bin/blockzilla-resolution-service-ledger-6dee8f3e3993f613": "6dee8f3e3993f6139a066bd9d0cdff64bc8e264bc3b8dd42a5a6938a8e43d4ab",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/bin/blockzilla-resolution-service": "3706565c7407e7188d1ab21ea183ffc619898da28b810631658414691db0f47f",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/recent-config.ledger-overlap-v1.json": "27c343c8f42f2ab718374718e9a750758d8b7dd2616bb59aa7ee8c03ec7aa5fe",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/recent-config.ledger-v1.json": "9dc6d7beb284103a3aef92e959055e982a14272026b801fb51f0e6426e9a99a9",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/recent-config.json": "47dbd50f502aaad430c38480626e920bc64fcabd3fdcacd46dfcb9c3fce35f26",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/source-v1/hivezilla/ledger-archive/patches/agave-v4.4.0-rc.1-read-only-file-cap.patch": "115dc1a326a39e77bef40a5c4f0b9c5e23f3ecdadb6a32a433810e52debadd5a",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/bounded-v3/PREPARED.json": "4241dfda0336bb6cb2d59cc7252ee8146a5d0ed66d4be6856d8d9f79fd6c3c78",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/run-build-v3.py": "b2488030bf00e2f00ab40d418722f80dcba55b9eb5eb0195127fb88b68797fdb",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/bounded-v3/source/hivezilla/ledger-archive/Cargo.toml": "df08d63be33f4d1b50c00d0d05ffaf0a02c7ca9e7fee5a17b54024528aec4a9f",
+    "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/bounded-v3/source/hivezilla/ledger-archive/Cargo.lock": "58ead488392d9f61e4b05fb53f392929dd04edff859f6d6866797b476b76ada1"
+  },
+  "all_kept_files_unchanged": true,
+  "protected_after": {
+    "controller": {
+      "pid": 2108510,
+      "start_ticks": "466809260",
+      "exe": "/usr/bin/python3.14"
+    },
+    "processed": {
+      "pid": 2108523,
+      "start_ticks": "466809279",
+      "exe": "/home/ubuntu/live/hivezilla-validator-20260930/releases/native-direct-producer-20261122-073dfeef519cb8d9/hivezilla-direct-agave"
+    },
+    "origin": {
+      "pid": 2108530,
+      "start_ticks": "466809282",
+      "exe": "/home/ubuntu/live/hivezilla-validator-20260930/releases/native-direct-origin-20261122-dd65404a0759159e/hivezilla-stream"
+    },
+    "banks": {
+      "pid": 2128693,
+      "start_ticks": "466820250",
+      "exe": "/home/ubuntu/live/hivezilla-validator-20260930/releases/native-direct-producer-20261122-073dfeef519cb8d9/hivezilla-direct-agave"
+    },
+    "validator": {
+      "pid": 1304643,
+      "start_ticks": "457737831",
+      "exe": "/home/ubuntu/live/hivezilla-validator-20260930/releases/agave-native-ledger-v1fix-20261121-251b5d923155da26/agave-validator"
+    },
+    "tunnel": {
+      "pid": 480183,
+      "start_ticks": "13669710",
+      "exe": "/usr/bin/cloudflared"
+    },
+    "reader": {
+      "pid": 2304452,
+      "start_ticks": "467019595",
+      "exe": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/bin/blockzilla-resolution-service-ledger-6dee8f3e3993f613"
+    }
+  },
+  "all_protected_processes_unchanged": true,
+  "candidate_paths_absent": true,
+  "filesystem_after": {
+    "available_bytes": 1131285889024,
+    "free_bytes": 1131302666240
+  },
+  "finished_at_utc": "2026-11-22T20:53:26.401715+00:00"
+}

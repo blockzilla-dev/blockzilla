@@ -879,6 +879,25 @@ fn round_ms(value: f64) -> f64 {
 
 #[event(fetch)]
 async fn main(req: Request, env: worker::Env, ctx: worker::Context) -> Result<Response> {
+    let origin_ray = req.headers().get("CF-Ray")?;
+    let response = route_request(req, env, ctx).await?;
+    let mut response = response_with_mutable_headers(response);
+    if response.status_code() >= 400 {
+        response
+            .headers_mut()
+            .set("Cache-Control", ERROR_CACHE_CONTROL)?;
+    }
+    if let Some(origin_ray) = origin_ray {
+        response
+            .headers_mut()
+            .set("X-Blockzilla-Origin-Ray", &origin_ray)?;
+    } else {
+        response.headers_mut().delete("X-Blockzilla-Origin-Ray")?;
+    }
+    Ok(response)
+}
+
+async fn route_request(req: Request, env: worker::Env, ctx: worker::Context) -> Result<Response> {
     if req.method() == Method::Post
         && req.path() == "/"
         && optional_var(&env, "BZ_HTTP_GET_ONLY").as_deref() != Some("true")

@@ -1,0 +1,97 @@
+{
+  "schema": "blockzilla-workers-cache-live-acceptance-v1",
+  "startedAt": "2026-11-22T20:57:28.321Z",
+  "base": "https://06922dfb-blockzilla-get-block.cheron-augustin.workers.dev",
+  "version": "06922dfb-06c5-47e0-b851-7f8e1f2fb62e",
+  "mode": "probe-resume",
+  "plannedRequests": 26,
+  "globalRequestBudget": 60,
+  "requests": [
+    {
+      "label": "probe-ok-fill",
+      "path": "/__cache_probe?kind=ok&case=af4039e0-68a7-497a-a0b2-bd61d58936f1",
+      "method": "GET",
+      "startedAt": "2026-11-22T20:57:28.323Z",
+      "status": 200,
+      "bytes": 65536,
+      "completed": true,
+      "headers": {
+        "cache-control": "public, max-age=300",
+        "cf-cache-status": "MISS",
+        "cf-ray": "a5ead8c01913ad2e-CDG",
+        "content-length": "65536",
+        "content-type": "application/octet-stream",
+        "x-bz-probe-expected-length": "65536",
+        "x-bz-probe-invocation": "016b9b89-060e-4edb-85cd-6f92af796ac8",
+        "x-bz-probe-method": "GET",
+        "x-bz-probe-origin-ray": "a5ead8c01913ad2e-CDG"
+      },
+      "headersMs": 545.427417,
+      "firstByteMs": 546.607958,
+      "totalMs": 551.278625,
+      "sha256": "8a32a117a468e7ee03f19a51dc0f7d1fe2305fae3ecd994dd2164c032c149037"
+    },
+    {
+      "label": "probe-ok-hit-0",
+      "path": "/__cache_probe?kind=ok&case=af4039e0-68a7-497a-a0b2-bd61d58936f1",
+      "method": "GET",
+      "startedAt": "2026-11-22T20:57:28.876Z",
+      "status": 200,
+      "bytes": 65536,
+      "completed": true,
+      "headers": {
+        "age": "0",
+        "cache-control": "public, max-age=300",
+        "cf-cache-status": "HIT",
+        "cf-ray": "a5ead8c33894ad2e-CDG",
+        "content-length": "65536",
+        "content-type": "application/octet-stream",
+        "x-bz-probe-expected-length": "65536",
+        "x-bz-probe-invocation": "016b9b89-060e-4edb-85cd-6f92af796ac8",
+        "x-bz-probe-method": "GET",
+        "x-bz-probe-origin-ray": "a5ead8c01913ad2e-CDG"
+      },
+      "headersMs": 52.32166600000005,
+      "firstByteMs": 52.55725000000007,
+      "totalMs": 54.099875,
+      "sha256": "8a32a117a468e7ee03f19a51dc0f7d1fe2305fae3ecd994dd2164c032c149037"
+    },
+    {
+      "label": "probe-stream-error-unknown-0",
+      "path": "/__cache_probe?kind=stream-error-unknown&case=14013735-638d-478d-a3f9-0c442a7cabc7",
+      "method": "GET",
+      "startedAt": "2026-11-22T20:57:28.932Z",
+      "status": 200,
+      "bytes": 65536,
+      "completed": true,
+      "headers": {
+        "cache-control": "public, max-age=300",
+        "cf-cache-status": "MISS",
+        "cf-ray": "a5ead8c38999ad2e-CDG",
+        "content-type": "application/octet-stream",
+        "x-bz-probe-emitted-length": "65536",
+        "x-bz-probe-invocation": "16ba53b5-5113-4b0d-8e02-a1e343235eb0",
+        "x-bz-probe-method": "GET",
+        "x-bz-probe-origin-ray": "a5ead8c38999ad2e-MAD",
+        "x-bz-probe-stream-type": "unknown"
+      },
+      "headersMs": 185.70724999999993,
+      "firstByteMs": 185.81904099999997,
+      "totalMs": 281.7812909999999,
+      "sha256": "b0d37b867252457271dde8e0779ed0226909253ed971af0551be6a6db602b08c"
+    }
+  ],
+  "checks": [
+    {
+      "label": "synthetic cache hits freeze origin identity and complete body",
+      "passed": true
+    }
+  ],
+  "authorizationHeadersSent": 0,
+  "providerRpcCalls": 0,
+  "blockBodiesWritten": 0,
+  "productionConfigurationChanged": false,
+  "passed": false,
+  "error": "truncated producer body completed as success",
+  "sharedRequestCount": 15
+}

@@ -1,0 +1,42 @@
+{
+  "schema": "blockzilla-cache-api-atomicity-call-v1",
+  "version": "18deaee9-a10d-4352-be20-80344d101aca",
+  "at": "2026-11-22T21:14:26.753Z",
+  "publicRequests": 1,
+  "sharedRequestCount": 22,
+  "status": 200,
+  "headers": {
+    "cache-control": "no-store",
+    "cf-ray": "a5eaf19d7a90286f-CDG",
+    "content-type": "application/json",
+    "x-bz-probe-invocation": "ab23ab3d-dc8e-4ef5-8ec3-a40485f27fc9",
+    "x-bz-probe-origin-ray": "a5eaf19d7a90286f"
+  },
+  "bytes": 732,
+  "blockBodiesWritten": 0,
+  "apiKeysSent": 0,
+  "bodySha256": "0f14b3c2868dfcb3d467c0a386cf807ea275ccc89de83f64b3b7641db13d1a11",
+  "result": {
+    "invocation": "ab23ab3d-dc8e-4ef5-8ec3-a40485f27fc9",
+    "originRay": "a5eaf19d7a90286f",
+    "positivePutSucceeded": true,
+    "positiveMatchFound": true,
+    "positiveBodyComplete": true,
+    "positiveLengthCorrect": true,
+    "positiveDigestMatches": true,
+    "positiveExpectedSha256": "6eb88b927f3ff0adf78e9baa12b459323bb5ab8c1041a47904c9263850522a20",
+    "positiveActualSha256": "6eb88b927f3ff0adf78e9baa12b459323bb5ab8c1041a47904c9263850522a20",
+    "badPutRejected": true,
+    "badMatchAbsent": true,
+    "badExpectedPrefixSha256": "642a5b58a6a299f39bd4cd52b9da4e6fa9eb39aba18b6f24e7742f9aef1f87a0",
+    "badBodyComplete": null,
+    "badLengthCorrect": null,
+    "badBodySha256": null,
+    "unexpectedError": false,
+    "goodAbsentAfterCleanup": true,
+    "badAbsentAfterCleanup": true,
+    "cleanupSucceeded": true,
+    "passed": true
+  },
+  "atomicityPassed": true
+}

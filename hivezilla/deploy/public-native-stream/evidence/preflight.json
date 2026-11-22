@@ -1,0 +1,68 @@
+{
+  "status": "PASS",
+  "units": {
+    "hivezilla-validator.service": {
+      "ActiveState": "active",
+      "SubState": "running",
+      "InvocationID": "a1edd40e43404e8cb9c81a7caacfa1ee",
+      "MainPID": "1304643",
+      "NRestarts": "0"
+    },
+    "hivezilla-native-continuous-processed@c1739ce6fcee61291f41548b1960aa27.service": {
+      "ActiveState": "active",
+      "SubState": "running",
+      "InvocationID": "f3d5b43e7c584fe7a7c35b0f5f04d544",
+      "MainPID": "2108523",
+      "NRestarts": "0"
+    },
+    "hivezilla-native-continuous-banks@c1739ce6fcee61291f41548b1960aa27.service": {
+      "ActiveState": "active",
+      "SubState": "running",
+      "InvocationID": "b2618cdc3b3346c188afdbf5236e33c7",
+      "MainPID": "2128693",
+      "NRestarts": "0"
+    },
+    "hivezilla-native-continuous-origin@c1739ce6fcee61291f41548b1960aa27.service": {
+      "ActiveState": "active",
+      "SubState": "running",
+      "InvocationID": "66781175b34a418c88f084a4c402d3f2",
+      "MainPID": "2108530",
+      "NRestarts": "0"
+    },
+    "hivezilla-tunnel.service": {
+      "ActiveState": "active",
+      "SubState": "running",
+      "InvocationID": "9d1592d736864f2da945d0353189cbad",
+      "MainPID": "480183",
+      "NRestarts": "0"
+    },
+    "blockzilla-recent-get-block.service": {
+      "ActiveState": "active",
+      "SubState": "running",
+      "InvocationID": "f89111729a024762b536779dc304c128",
+      "MainPID": "2304452",
+      "NRestarts": "0"
+    },
+    "hivezilla-native-continuous.service": {
+      "ActiveState": "active",
+      "SubState": "running",
+      "InvocationID": "db3a236e5060436982fdd5849b92207e",
+      "MainPID": "2108510",
+      "NRestarts": "0"
+    }
+  },
+  "generation": "c1739ce6fcee61291f41548b1960aa27",
+  "socket_mode": "0o600",
+  "authority": {
+    "path": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/native-continuous-20261121/runs/c1739ce6fcee61291f41548b1960aa27/bank-v2/RETENTION-AUTHORITY.json",
+    "sha256": "096ed55ca9e9ba6347907273dab87a8890c921e54cd49a36c28047e66e97c369",
+    "bytes": 643,
+    "inode": 258468588
+  },
+  "legacy": [
+    "ActiveState=inactive",
+    "UnitFileState=disabled",
+    "Job="
+  ],
+  "data_mutated": false
+}

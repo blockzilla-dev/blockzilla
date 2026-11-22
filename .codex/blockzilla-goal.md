@@ -733,9 +733,37 @@ configuration and retention policy were restored; the feed is moving. No
 archive gate remains. Validator and Tunnel identities stayed unchanged.
 The read-only ledger helper separately passed slot 472608000 with 81
 transactions, correct hashes and no persisted block body, under its time
-and memory limits. Worker version `1cc2931c-a23d-464b-b8ee-00b0e49d978d` is
-deployed at 100%. The public JSON response matches all transaction bytes
+and memory limits. The core repair first ran as Worker version
+`1cc2931c-a23d-464b-b8ee-00b0e49d978d`. The public JSON response matches all transaction bytes
 and metadata and all 1326 block reward records; reward order differs from
 the comparison RPC. The new reward types are preserved. The checked ledger
 root-key range spans 1.01 epochs, which does not prove complete coverage.
 Ledger purge and automatic new-epoch index admission remain separate work.
+
+The clean safety version `e58a69ea-3b2a-465e-bac7-b68599ee1957` is now at
+100%. It passed 115 focused actual-WASM checks. Returned errors are no-store;
+each execution has a fresh origin Ray header without reading the body. Eight
+production warm hits matched full body digests, used zero backend reads and
+had distinct execution headers. These Cache API hits still run the Worker.
+The 73-request archive benchmark measured binary cold/hit p50 at 606.8/29.1 ms
+and JSON at 571.2/93.5 ms. Cold means Worker cache bypass, not empty provider,
+disk or isolate caches. Warm request and CPU cost is sampled at about $0.339/M,
+excluding fixed and backend costs. Managed Workers Cache is explicitly off:
+a separate 0% test reused a failed unknown-length stream prefix. The existing
+Cache API rejected a failed fill and retained no partial entry. See the
+[repair and acceptance records](../reports/current-epoch-getblock-20261122/repair/README.md).
+
+The native public stream now passes through a bounded loopback TCP-to-Unix
+bridge on Foundation and the existing Tunnel. The current native Bearer key
+is still required. Archive public access does not unlock the stream. Exact
+frames, cursors, chunks, object hashes and key rejection passed. Private
+control paths stay inaccessible. The routing repair did not restart any of
+the seven protected processes. The existing private consumer keeps its SSH
+transport; browser/CORS and public long-stream latency were not accepted.
+See the [stream record](../hivezilla/deploy/public-native-stream/README.md).
+
+Seven old getBlock test Workers and the CDN test Pages project, hostname,
+DNS record and cache rule were removed. One getBlock Worker remains, with
+workers.dev and preview URLs disabled. The website and all storage data stay.
+Task-only Foundation build cleanup freed 5.94 GiB; active binaries and source
+data were retained. The branch is pushed to `blockzilla-dev/blockzilla`.
