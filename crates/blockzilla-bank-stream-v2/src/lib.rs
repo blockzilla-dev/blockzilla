@@ -659,6 +659,7 @@ pub mod artifact;
 pub mod chain;
 pub mod client;
 pub mod consensus;
+pub mod finalized;
 #[cfg(any(test, feature = "test-fixtures"))]
 pub mod fixtures;
 #[cfg(test)]

@@ -373,12 +373,18 @@ fn processed_decode_preserves_bank_identity_and_token_index_rejects_it() {
 }
 
 fn bank_fixture(failed: bool) -> blockzilla_bank_stream_v2::Frame {
+    bank_fixture_with(failed, |_, _| {})
+}
+
+fn bank_fixture_with(
+    failed: bool,
+    edit: impl FnOnce(&mut ArchiveV2HotBlockBlob, &mut Vec<u8>),
+) -> blockzilla_bank_stream_v2::Frame {
     use blockzilla_bank_stream_v2 as v2;
     let wire = fixture(true, failed, 1);
     let meta = u32_at(&wire, 8).unwrap() as usize;
     let mut e: Value = serde_json::from_slice(&wire[16..16 + meta]).unwrap();
     let old = &wire[16 + meta..];
-    let mut body = old.to_vec();
     let source = v2::SourceIdentity {
         genesis_hash: base58(&[5; 32]),
         node_identity: base58(&[6; 32]),
@@ -394,6 +400,18 @@ fn bank_fixture(failed: bool) -> blockzilla_bank_stream_v2::Frame {
     };
     // Re-encode the same current Rust compact schema with its actual height.
     let objects = e["objects"].as_array_mut().unwrap();
+    let blob = objects
+        .iter()
+        .find(|o| o["path"] == "archive-v2-blocks.zstd")
+        .unwrap();
+    let at = blob["offset"].as_u64().unwrap() as usize;
+    let end = at + blob["bytes"].as_u64().unwrap() as usize;
+    let mut block: ArchiveV2HotBlockBlob =
+        wincode::config::deserialize(&old[at..end], wincode_leb128_config()).unwrap();
+    block.header.block_height = Some(400000000);
+    let mut signatures = vec![9; 64];
+    edit(&mut block, &mut signatures);
+    let raw = wincode::config::serialize(&block, wincode_leb128_config()).unwrap();
     let mut objects_v2 = Vec::new();
     let mut files = Vec::new();
     let mut rebuilt = Vec::new();
@@ -402,28 +420,18 @@ fn bank_fixture(failed: bool) -> blockzilla_bank_stream_v2::Frame {
         let end = start + o["bytes"].as_u64().unwrap() as usize;
         let mut bytes = old[start..end].to_vec();
         if o["path"] == "archive-v2-blocks.zstd" {
-            let mut block: ArchiveV2HotBlockBlob =
-                wincode::config::deserialize(&bytes, wincode_leb128_config()).unwrap();
-            block.header.block_height = Some(400000000);
-            bytes = wincode::config::serialize(&block, wincode_leb128_config()).unwrap();
+            bytes.clone_from(&raw);
         }
-        // The height adds encoded bytes; update the index's bounded row lengths.
         if o["path"] == "archive-v2-blocks.index" {
-            let blob_o = objects
-                .iter()
-                .find(|o| o["path"] == "archive-v2-blocks.zstd")
-                .unwrap();
-            let at = blob_o["offset"].as_u64().unwrap() as usize;
-            let len = blob_o["bytes"].as_u64().unwrap() as usize;
-            let mut block: ArchiveV2HotBlockBlob =
-                wincode::config::deserialize(&old[at..at + len], wincode_leb128_config()).unwrap();
-            block.header.block_height = Some(400000000);
-            let n = wincode::config::serialize(&block, wincode_leb128_config())
-                .unwrap()
-                .len();
+            let n = raw.len();
             bytes[20..28].copy_from_slice(&(n as u64).to_le_bytes());
             bytes[56..60].copy_from_slice(&(n as u32).to_le_bytes());
             bytes[60..64].copy_from_slice(&(n as u32).to_le_bytes());
+            bytes[64..68].copy_from_slice(&block.tx_count.to_le_bytes());
+            bytes[84..88].copy_from_slice(&((signatures.len() / 64) as u32).to_le_bytes());
+        }
+        if o["path"] == "signatures.bin" {
+            bytes.clone_from(&signatures);
         }
         let path = o["path"].as_str().unwrap().to_owned();
         files.push(json!({"path":path,"bytes":bytes.len(),"sha256":v2::digest(&bytes)}));
@@ -448,8 +456,6 @@ fn bank_fixture(failed: bool) -> blockzilla_bank_stream_v2::Frame {
             rebuilt.extend(bytes);
         }
     }
-    body.clear();
-    body.extend(rebuilt);
     let mut marker = e["marker"].clone();
     marker["schema"] = "hivezilla-direct-agave-processed-compact-v1".into();
     marker["state"] = "COMPLETE".into();
@@ -485,7 +491,7 @@ fn bank_fixture(failed: bool) -> blockzilla_bank_stream_v2::Frame {
             objects: objects_v2,
             event,
         },
-        &body,
+        &rebuilt,
     )
     .unwrap()
 }
@@ -505,6 +511,180 @@ fn real_encoded_bank_v2_preserves_failed_error_loaded_keys_and_height() {
     let n = u32_at(&f.wire, 8).unwrap() as usize;
     let bad = blockzilla_bank_stream_v2::encode(e, &f.wire[16 + n..]).unwrap();
     assert!(decode_banks(&bad.wire, &Options::default()).is_err());
+    assert!(bank_first_signatures(&bad).is_err());
+}
+
+fn edit_message(
+    block: &mut ArchiveV2HotBlockBlob,
+    edit: impl FnOnce(&mut ArchiveV2HotMessagePayload),
+) {
+    let mut message =
+        wincode::config::deserialize(&block.message_bytes, wincode_leb128_config()).unwrap();
+    edit(&mut message);
+    block.message_bytes = wincode::config::serialize(&message, wincode_leb128_config()).unwrap();
+    block.tx_rows[0].message_len = block.message_bytes.len() as u32;
+}
+fn edit_metadata(block: &mut ArchiveV2HotBlockBlob, edit: impl FnOnce(&mut CompactMetaV1)) {
+    let mut metadata =
+        wincode::config::deserialize(&block.metadata_bytes, wincode_leb128_config()).unwrap();
+    edit(&mut metadata);
+    block.metadata_bytes = wincode::config::serialize(&metadata, wincode_leb128_config()).unwrap();
+    block.tx_rows[0].metadata_len = block.metadata_bytes.len() as u32;
+}
+
+#[test]
+fn compact_validation_matches_full_semantic_admission_without_projection() {
+    for failed in [false, true] {
+        let frame = bank_fixture(failed);
+        let summary = validate_bank_payload(&frame).unwrap();
+        let full: Value =
+            serde_json::from_slice(&decode_banks(&frame.wire, &Options::default()).unwrap())
+                .unwrap();
+        assert_eq!(
+            summary.transactions,
+            full["blocks"][0]["transactions"].as_array().unwrap().len()
+        );
+        assert_eq!(summary.signatures, 1);
+        assert_eq!(summary.failed, usize::from(failed));
+        assert_eq!(summary.successful, usize::from(!failed));
+        assert_eq!(summary.execution_unavailable, 0);
+    }
+    for case in 0..24 {
+        let frame = bank_fixture_with(false, |block, _| match case {
+            0 => block.tx_rows[0].flags |= 1 << 15,
+            1 => edit_message(block, |message| {
+                if let ArchiveV2HotMessagePayload::V0(m) = message {
+                    m.header.num_required_signatures = 2;
+                }
+            }),
+            2 => edit_message(block, |message| {
+                if let ArchiveV2HotMessagePayload::V0(m) = message {
+                    m.header.num_readonly_signed_accounts = 2;
+                }
+            }),
+            3 => edit_message(block, |message| {
+                if let ArchiveV2HotMessagePayload::V0(m) = message {
+                    m.header.num_readonly_unsigned_accounts = 99;
+                }
+            }),
+            4 => block.tx_rows[0].flags &= !ARCHIVE_V2_TX_FLAG_MESSAGE_V0,
+            5 => block.tx_rows[0].flags &= !ARCHIVE_V2_TX_FLAG_HAS_LOADED_ADDRESSES,
+            6 => edit_metadata(block, |m| m.loaded_readonly_addresses.clear()),
+            7 => edit_metadata(block, |m| {
+                m.err = Some(blockzilla_compact::CompactTransactionError::AccountNotFound)
+            }),
+            8 => edit_metadata(block, |m| m.inner_instructions = None),
+            9 => edit_message(block, |message| {
+                if let ArchiveV2HotMessagePayload::V0(m) = message {
+                    m.instructions[0].program_id_index = 99;
+                }
+            }),
+            10 => edit_message(block, |message| {
+                if let ArchiveV2HotMessagePayload::V0(m) = message {
+                    m.instructions[0].accounts.push(99);
+                }
+            }),
+            11 => edit_metadata(block, |m| {
+                m.inner_instructions.as_mut().unwrap()[0].index = 99
+            }),
+            12 => edit_metadata(block, |m| {
+                m.inner_instructions.as_mut().unwrap()[0].instructions[0].program_id_index = 99
+            }),
+            13 => edit_metadata(block, |m| {
+                m.inner_instructions.as_mut().unwrap()[0].instructions[0]
+                    .accounts
+                    .push(99)
+            }),
+            14 => edit_metadata(block, |m| {
+                m.pre_balances.pop();
+            }),
+            15 => block.tx_rows[0].message_offset = 1,
+            16 => block.tx_rows[0].metadata_offset = 1,
+            17 => edit_message(block, |message| {
+                if let ArchiveV2HotMessagePayload::V0(m) = message {
+                    m.account_keys[0] = CompactPubkey::Id(999);
+                }
+            }),
+            18 | 19 => edit_metadata(block, |m| {
+                m.post_token_balances
+                    .push(blockzilla_compact::CompactTokenBalance {
+                        account_index: if case == 18 { 99 } else { 0 },
+                        mint: Some(CompactPubkey::Id(999)),
+                        owner: None,
+                        program_id: None,
+                        amount: 1,
+                        decimals: 6,
+                    })
+            }),
+            20 => edit_metadata(block, |m| {
+                m.return_data = Some(blockzilla_compact::CompactReturnData {
+                    program_id: CompactPubkey::Id(999),
+                    data: vec![],
+                })
+            }),
+            21 => edit_message(block, |message| {
+                if let ArchiveV2HotMessagePayload::V0(m) = message {
+                    m.address_table_lookups[0].account_key = CompactPubkey::Id(999);
+                }
+            }),
+            22 => block.tx_rows[0].reserved[0] = 1,
+            23 => block.tx_rows[0].flags &= !ARCHIVE_V2_TX_FLAG_HAS_METADATA,
+            _ => unreachable!(),
+        });
+        let full = decode_banks(&frame.wire, &Options::default())
+            .unwrap_err()
+            .to_string();
+        let compact = validate_bank_payload(&frame).unwrap_err().to_string();
+        assert_eq!(compact, full, "semantic case {case}");
+    }
+}
+
+#[test]
+fn bank_signature_projection_preserves_transaction_order_and_checks_cardinality() {
+    let frame = bank_fixture_with(true, |block, signatures| {
+        let mut message: ArchiveV2HotMessagePayload =
+            wincode::config::deserialize(&block.message_bytes, wincode_leb128_config()).unwrap();
+        let ArchiveV2HotMessagePayload::V0(v0) = &mut message else {
+            panic!("expected the loaded-address fixture");
+        };
+        v0.header.num_required_signatures = 2;
+        v0.header.num_readonly_unsigned_accounts = 0;
+        let mut first_message =
+            wincode::config::serialize(&message, wincode_leb128_config()).unwrap();
+        let first = &mut block.tx_rows[0];
+        let second = ArchiveV2HotTxRow {
+            tx_index: 1,
+            message_offset: first_message.len() as u32,
+            metadata_offset: first.metadata_len,
+            ..*first
+        };
+        first.signature_count = 2;
+        first.message_len = first_message.len() as u32;
+        block.tx_rows.push(second);
+        block.tx_count = 2;
+        first_message.append(&mut block.message_bytes);
+        block.message_bytes = first_message;
+        block.metadata_bytes.extend_from_within(..);
+        signatures.extend_from_slice(&[8; 64]);
+        signatures.extend_from_slice(&[7; 64]);
+    });
+    assert_eq!(bank_first_signatures(&frame).unwrap(), [[9; 64], [7; 64]]);
+    let full: Value =
+        serde_json::from_slice(&decode_banks(&frame.wire, &Options::default()).unwrap()).unwrap();
+    assert_eq!(
+        full["blocks"][0]["transactions"][0]["signature"],
+        base58(&[9; 64])
+    );
+    assert_eq!(
+        full["blocks"][0]["transactions"][1]["signature"],
+        base58(&[7; 64])
+    );
+
+    let bad = bank_fixture_with(false, |block, _| block.tx_rows[0].signature_count = 2);
+    assert_eq!(
+        bank_first_signatures(&bad).unwrap_err().to_string(),
+        "signature_outside_file"
+    );
 }
 
 /// Synthetic current Rust compact objects, not live provider data.

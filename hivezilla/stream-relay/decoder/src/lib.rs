@@ -9,6 +9,7 @@ use ruzstd::decoding::StreamingDecoder;
 use serde::Deserialize;
 use serde_json::{Value, json};
 use std::{
+    borrow::Cow,
     collections::BTreeSet,
     io::{Read, Write},
 };
@@ -199,6 +200,68 @@ fn index(bytes: &[u8], blob_len: usize) -> Result<(u32, Vec<IndexRow>)> {
     ensure!(offset == blob_len, "unindexed_hot_bytes");
     Ok((flags, rows))
 }
+fn hot_block_bytes<'a>(blob: &'a [u8], flags: u32, row: &IndexRow) -> Result<Cow<'a, [u8]>> {
+    let input = &blob[row.offset..row.offset + row.compressed];
+    let decoded = if flags == 2 {
+        Cow::Borrowed(input)
+    } else {
+        let mut decoded = Vec::with_capacity(row.uncompressed.min(1_048_576));
+        let mut zstd = StreamingDecoder::new(input).context("zstd_header")?;
+        (&mut zstd)
+            .take(row.uncompressed as u64 + 1)
+            .read_to_end(&mut decoded)
+            .context("zstd_decode")?;
+        ensure!(zstd.into_inner().is_empty(), "trailing_zstd_bytes");
+        Cow::Owned(decoded)
+    };
+    ensure!(
+        decoded.len() == row.uncompressed,
+        "decoded_block_length_mismatch"
+    );
+    Ok(decoded)
+}
+fn hot_block<'a>(
+    bytes: &'a [u8],
+    row: &IndexRow,
+    parent_slot: u64,
+) -> Result<BorrowedArchiveV2HotBlockBlob<'a>> {
+    let block = deserialize_archive_v2_hot_block_blob_borrowed_current_with_preallocation_limit::<
+        1_048_576,
+    >(bytes)?;
+    ensure!(
+        block.header.slot == row.slot
+            && block.header.parent_slot == parent_slot
+            && block.tx_count as usize == row.transactions
+            && block.tx_rows_len() == row.transactions,
+        "decoded_block_identity_mismatch"
+    );
+    ensure!(
+        block.header.blockhash_id == row.block_id
+            && block.header.previous_blockhash_id == row.block_id.saturating_sub(1),
+        "native_blockhash_id_mismatch"
+    );
+    Ok(block)
+}
+fn validate_transaction_row(row: &ArchiveV2HotTxRow, index: usize) -> Result<()> {
+    ensure!(
+        row.tx_index as usize == index && row.reserved == [0; 3] && row.flags & !2047 == 0,
+        "invalid_transaction_row"
+    );
+    ensure!(
+        row.flags & (ARCHIVE_V2_TX_FLAG_TX_RAW_FALLBACK | ARCHIVE_V2_TX_FLAG_METADATA_RAW_FALLBACK)
+            == 0,
+        "raw_fallback_not_supported"
+    );
+    Ok(())
+}
+fn take_signatures<'a>(signatures: &'a [u8], at: &mut usize, count: u8) -> Result<&'a [u8]> {
+    let end = at
+        .checked_add(usize::from(count) * 64)
+        .context("signature_overflow")?;
+    let sig = signatures.get(*at..end).context("signature_outside_file")?;
+    *at = end;
+    Ok(sig)
+}
 fn key(k: &CompactPubkey, registry: &[u8]) -> Result<[u8; 32]> {
     match k {
         CompactPubkey::Raw(k) => Ok(*k),
@@ -235,7 +298,44 @@ fn exact<
 
 /// Return semantic compact values. This is not an RPC JSON or exact signed-wire renderer.
 pub fn decode(wire: &[u8], options: &Options) -> Result<Vec<u8>> {
-    decode_projection(wire, options, false, false)
+    decode_projection(wire, options, false, false, None)
+}
+
+/// Typed semantic admission for an original native Bank payload. It uses the
+/// same bounded message/metadata walker as the portable renderer, without
+/// generating base58 strings, transaction JSON, or serialized projection bytes.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub struct BankPayloadSummary {
+    pub transactions: usize,
+    pub successful: usize,
+    pub failed: usize,
+    pub execution_unavailable: usize,
+    pub signatures: usize,
+}
+pub fn validate_bank_payload(
+    frame: &blockzilla_bank_stream_v2::Frame,
+) -> Result<BankPayloadSummary> {
+    let admitted = blockzilla_bank_stream_v2::decode(frame.wire.clone())?;
+    ensure!(
+        admitted.sha256 == frame.sha256
+            && admitted.cursor == frame.cursor
+            && admitted.source == frame.source
+            && admitted.envelope.event == frame.envelope.event,
+        "payload_frame_mismatch"
+    );
+    ensure!(
+        admitted.envelope.event.kind == "block",
+        "bank_block_required"
+    );
+    let mut summary = BankPayloadSummary::default();
+    decode_projection(
+        &frame.wire,
+        &Options::default(),
+        false,
+        true,
+        Some(&mut summary),
+    )?;
+    Ok(summary)
 }
 
 /// Opt-in v2 entry point. Controls carry identity and native expiry, never a
@@ -247,7 +347,8 @@ pub fn decode_banks(wire: &[u8], options: &Options) -> Result<Vec<u8>> {
             &json!({"profile":frame.envelope.profile,"event":frame.envelope.event}),
         )?);
     }
-    let mut value: Value = serde_json::from_slice(&decode_projection(wire, options, false, true)?)?;
+    let mut value: Value =
+        serde_json::from_slice(&decode_projection(wire, options, false, true, None)?)?;
     ensure!(
         value["blocks"].as_array().is_some_and(|b| b.len() == 1)
             && value["blocks"][0]["blockHeight"]
@@ -262,6 +363,81 @@ pub fn decode_banks(wire: &[u8], options: &Options) -> Result<Vec<u8>> {
     Ok(serde_json::to_vec(&value)?)
 }
 
+/// Project the first signature of each transaction in an admitted v2 block.
+/// The caller supplies a frame from v2 transport admission. Transaction order
+/// and signature counts come from the compact rows, without expanding messages
+/// or metadata. Controls do not carry signatures.
+pub fn bank_first_signatures(frame: &blockzilla_bank_stream_v2::Frame) -> Result<Vec<[u8; 64]>> {
+    let envelope = &frame.envelope;
+    let event = &envelope.event;
+    let bank = &event.bank;
+    ensure!(
+        envelope.profile == blockzilla_bank_stream_v2::PROFILE && event.kind == "block",
+        "bank_block_required"
+    );
+    ensure!(
+        blockzilla_bank_stream_v2::frame_length(&frame.wire)? == frame.wire.len(),
+        "invalid_transport_length"
+    );
+    let meta = u32_at(&frame.wire, 8)? as usize;
+    let payload = frame
+        .wire
+        .get(16 + meta..)
+        .context("invalid_transport_length")?;
+    let object = |name: &str| -> Result<&[u8]> {
+        let entry = envelope
+            .objects
+            .iter()
+            .find(|entry| entry.path == name)
+            .with_context(|| format!("missing_object:{name}"))?;
+        let end = entry
+            .offset
+            .checked_add(entry.bytes)
+            .context("object_overflow")?;
+        payload
+            .get(entry.offset..end)
+            .context("object_outside_payload")
+    };
+    let blob = object("archive-v2-blocks.zstd")?;
+    let (flags, rows) = index(object("archive-v2-blocks.index")?, blob.len())?;
+    let [row] = rows.as_slice() else {
+        anyhow::bail!("one_bank_required");
+    };
+    ensure!(
+        row.slot == bank.slot && envelope.marker["produced_blocks"][0]["block_id"] == row.block_id,
+        "index_identity_mismatch"
+    );
+    let parent = object("prev_blockhash_tail.bin")?;
+    ensure!(
+        object("blockhash_registry.bin")? == bank.blockhash
+            && parent.len() == 40
+            && parent[..32] == bank.parent_blockhash
+            && u64_at(parent, 32)? == bank.parent_slot,
+        "native_blockhash_mismatch"
+    );
+    let signatures = object("signatures.bin")?;
+    ensure!(
+        signatures.len().is_multiple_of(64) && signatures.len() / 64 == row.signatures,
+        "signature_file_count_mismatch"
+    );
+    let bytes = hot_block_bytes(blob, flags, row)?;
+    let block = hot_block(&bytes, row, bank.parent_slot)?;
+    ensure!(
+        block.header.block_height == event.block_height,
+        "native_payload_height_mismatch"
+    );
+    let mut first = Vec::with_capacity(row.transactions);
+    let mut at = 0;
+    for (index, tx) in block.tx_rows().enumerate() {
+        validate_transaction_row(&tx, index)?;
+        ensure!(tx.signature_count > 0, "missing_transaction_signature");
+        let transaction_signatures = take_signatures(signatures, &mut at, tx.signature_count)?;
+        first.push(transaction_signatures[..64].try_into()?);
+    }
+    ensure!(at == signatures.len(), "signature_file_count_mismatch");
+    Ok(first)
+}
+
 /// Native consumer projection. Uses the same typed metadata and key resolver,
 /// and emits exact recorded token balances without expanding messages or logs.
 #[cfg(not(target_arch = "wasm32"))]
@@ -274,6 +450,7 @@ pub fn decode_token_balances(wire: &[u8]) -> Result<Vec<u8>> {
         },
         true,
         false,
+        None,
     )
 }
 
@@ -282,7 +459,9 @@ fn decode_projection(
     options: &Options,
     token_only: bool,
     bank_v2: bool,
+    mut validation: Option<&mut BankPayloadSummary>,
 ) -> Result<Vec<u8>> {
+    let validation_only = validation.is_some();
     ensure!(
         wire.len() >= 16 && wire.len() <= MAX_FRAME && &wire[..8] == b"BZSTRM01",
         "invalid_transport_frame"
@@ -361,38 +540,17 @@ fn decode_projection(
             r.slot <= SAFE_INTEGER && r.slot == identity.slot && r.block_id == identity.block_id,
             "index_identity_mismatch"
         );
-        let input = &blob[r.offset..r.offset + r.compressed];
-        let mut decoded = Vec::with_capacity(r.uncompressed.min(1_048_576));
-        if flags == 2 {
-            decoded.extend_from_slice(input);
-        } else {
-            let mut zstd = StreamingDecoder::new(input).context("zstd_header")?;
-            (&mut zstd)
-                .take(r.uncompressed as u64 + 1)
-                .read_to_end(&mut decoded)
-                .context("zstd_decode")?;
-            ensure!(zstd.into_inner().is_empty(), "trailing_zstd_bytes");
+        let decoded = hot_block_bytes(blob, flags, r)?;
+        let block = hot_block(&decoded, r, identity.parent_slot)?;
+        if bank_v2 {
+            ensure!(
+                block.header.block_height
+                    == e.event
+                        .as_ref()
+                        .and_then(|event| event["block_height"].as_u64()),
+                "native_payload_height_mismatch"
+            );
         }
-        ensure!(
-            decoded.len() == r.uncompressed,
-            "decoded_block_length_mismatch"
-        );
-        let block =
-            deserialize_archive_v2_hot_block_blob_borrowed_current_with_preallocation_limit::<
-                1_048_576,
-            >(&decoded)?;
-        ensure!(
-            block.header.slot == r.slot
-                && block.header.parent_slot == identity.parent_slot
-                && block.tx_count as usize == r.transactions
-                && block.tx_rows_len() == r.transactions,
-            "decoded_block_identity_mismatch"
-        );
-        ensure!(
-            block.header.blockhash_id == r.block_id
-                && block.header.previous_blockhash_id == r.block_id.saturating_sub(1),
-            "native_blockhash_id_mismatch"
-        );
         let start = r.block_id as usize * 32;
         ensure!(
             blockhashes.get(start..start + 32) == Some(identity.blockhash.as_slice()),
@@ -409,19 +567,7 @@ fn decode_projection(
         let mut message_at = 0usize;
         let mut metadata_at = 0usize;
         for (tx_index, row) in block.tx_rows().enumerate() {
-            ensure!(
-                row.tx_index as usize == tx_index
-                    && row.reserved == [0; 3]
-                    && row.flags & !2047 == 0,
-                "invalid_transaction_row"
-            );
-            ensure!(
-                row.flags
-                    & (ARCHIVE_V2_TX_FLAG_TX_RAW_FALLBACK
-                        | ARCHIVE_V2_TX_FLAG_METADATA_RAW_FALLBACK)
-                    == 0,
-                "raw_fallback_not_supported"
-            );
+            validate_transaction_row(&row, tx_index)?;
             ensure!(
                 row.message_offset as usize == message_at
                     && row.metadata_offset as usize == metadata_at,
@@ -540,6 +686,29 @@ fn decode_projection(
                         && m.post_balances.len() == accounts.len(),
                     "balance_account_count_mismatch"
                 );
+                for balance in m.pre_token_balances.iter().chain(&m.post_token_balances) {
+                    ensure!(
+                        (balance.account_index as usize) < accounts.len(),
+                        "invalid_token_account_index"
+                    );
+                    for reference in [&balance.mint, &balance.owner, &balance.program_id]
+                        .into_iter()
+                        .flatten()
+                    {
+                        key(reference, registry)?;
+                    }
+                }
+                for reward in &m.rewards {
+                    key(&reward.pubkey, registry)?;
+                }
+                if let Some(return_data) = &m.return_data {
+                    key(&return_data.program_id, registry)?;
+                }
+            }
+            if let ArchiveV2HotMessagePayload::V0(message) = &message {
+                for lookup in &message.address_table_lookups {
+                    key(&lookup.account_key, registry)?;
+                }
             }
             let mut top = BTreeSet::new();
             let mut inner = BTreeSet::new();
@@ -577,13 +746,17 @@ fn decode_projection(
                 }
             }
             let success = metadata.as_ref().map(|m| m.err.is_none());
-            let end_signature = signature_at
-                .checked_add(row.signature_count as usize * 64)
-                .context("signature_overflow")?;
-            let sig = signatures
-                .get(signature_at..end_signature)
-                .context("signature_outside_file")?;
-            signature_at = end_signature;
+            let sig = take_signatures(signatures, &mut signature_at, row.signature_count)?;
+            if let Some(summary) = validation.as_deref_mut() {
+                summary.transactions += 1;
+                summary.signatures += usize::from(row.signature_count);
+                match success {
+                    Some(true) => summary.successful += 1,
+                    Some(false) => summary.failed += 1,
+                    None => summary.execution_unavailable += 1,
+                }
+                continue;
+            }
             let any_filter = !filter.programs.is_empty() || !filter.accounts.is_empty();
             let matched = !any_filter
                 || top
@@ -643,6 +816,9 @@ fn decode_projection(
             "transaction_regions_or_signatures_mismatch"
         );
         total += r.transactions;
+        if validation_only {
+            continue;
+        }
         let mut result = json!({"slot":r.slot,"parentSlot":identity.parent_slot,"blockhash":base58(&identity.blockhash),
             "parentBlockhash":base58(&identity.parent_blockhash),"bankId":identity.bank_id,"finality":if e.marker.finalized {"finalized"}else{"processed"},"transactionCount":r.transactions,
             "transactions":transactions});
@@ -650,6 +826,9 @@ fn decode_projection(
             result["blockHeight"] = json!(block.header.block_height);
         }
         blocks.push(result);
+    }
+    if validation_only {
+        return Ok(Vec::new());
     }
     let mut value = json!({"profile":e.profile,"epoch":e.marker.epoch,"session":e.marker.session_id,
         "canonical":false,"publicationReady":false,"transactionCount":total,"blocks":blocks});
