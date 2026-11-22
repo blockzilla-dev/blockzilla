@@ -50,3 +50,32 @@ Extra local Rust builds exhausted local disk space before the new socket and
 example tests ran. Those builds were stopped and only this task's generated
 worktree target was removed. Source and shared caches were preserved. The
 updated PR must pass the Linux jobs before merge.
+
+## Archive compatibility and lock follow-up
+
+Run `45044815324` passed the stream, recovery, Worker, Hivezilla operations,
+documentation and secret checks. This includes the updated socket guard and
+locked consumer example. The Rust workspace check found 26 archive
+reprocessor failures with the new optional consensus fields and one archive
+repair lock failure. These checks were not removed or disabled.
+
+| File | Change | Validation |
+| --- | --- | --- |
+| `blockzilla/cli/src/archive_v2/registry_reprocess.rs` | Read the optional consensus tail with strict bounds and keep it during rewrites. Reject a damaged tail after a matched current prefix without older-schema fallback. | Add old/new format, field preservation and malformed-tail regressions; Linux CI must pass before merge. |
+| `blockzilla/cli/src/archive_verify.rs` | Explicitly release the migration lock when its owner ends, including post-lock validation errors. Keep permission, identity and contention checks. | Add a duplicate-FD regression that also checks successor lock protection; Linux CI must pass before merge. |
+
+The workspace format check and exact archive wire-boundary check passed.
+The new Rust tests were not built locally; the Linux CI result is required.
+
+These old formats have no outer-schema tag. An empty old shredding block can
+have the same bytes as a current block with an incomplete consensus tail.
+The reader follows the shared codec: once the current prefix matches, reject
+a damaged tail. The ambiguity test records this limit. Unambiguous legacy
+fallbacks remain covered; this is not a claim that every old byte sequence is
+accepted.
+
+The lock failure is consistent with a parallel fork retaining a duplicate
+open file description. This cause is an inference from the failing test and
+the [Linux lock contract](https://man7.org/linux/man-pages/man2/flock.2.html).
+The new test covers that lock lifetime directly. No heavy local build was
+started for this follow-up.
