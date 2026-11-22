@@ -1,0 +1,56 @@
+{
+  "schema": "public-getblock-validation-v1",
+  "passed": true,
+  "workerVersion": "4d1b4d55-31f1-4e30-a287-717846eeff3c",
+  "localSuites": [
+    {
+      "name": "public-wasm",
+      "passed": true,
+      "checks": 29,
+      "wasmSha256": "a29bbabe6d5b3343c894dc681a3a785bc573b277bb86e25e8460d6e7c8b53a06"
+    },
+    {
+      "name": "public-recent-wasm",
+      "passed": true,
+      "checks": 41,
+      "wasmSha256": "a29bbabe6d5b3343c894dc681a3a785bc573b277bb86e25e8460d6e7c8b53a06"
+    },
+    {
+      "name": "private-foundation-wasm",
+      "passed": true,
+      "checks": 110,
+      "wasmSha256": "a29bbabe6d5b3343c894dc681a3a785bc573b277bb86e25e8460d6e7c8b53a06"
+    },
+    {
+      "name": "private-recent-wasm",
+      "passed": true,
+      "checks": 41,
+      "wasmSha256": "a29bbabe6d5b3343c894dc681a3a785bc573b277bb86e25e8460d6e7c8b53a06"
+    },
+    {
+      "name": "range-probe-wasm",
+      "passed": true,
+      "checks": 11,
+      "wasmSha256": "a29bbabe6d5b3343c894dc681a3a785bc573b277bb86e25e8460d6e7c8b53a06"
+    }
+  ],
+  "localChecks": 232,
+  "liveChecks": 9,
+  "settingsChecks": {
+    "deploy_config_has_only_expected_changes": true,
+    "public_flag_is_true_in_config": true,
+    "live_vars_match_expected_stage": true,
+    "resource_bindings_match": true,
+    "secret_names_match": true,
+    "compatibility_date_matches": true,
+    "limits_match": true,
+    "observability_matches": true,
+    "domain_is_enabled_on_same_worker": true,
+    "one_version_at_100_percent": true,
+    "version_matches_stage": true
+  },
+  "apiHeadersSent": 0,
+  "blockPayloadFilesWritten": 0,
+  "freshLiveRecentFrameTest": false,
+  "fullWorkspaceCiUsed": false
+}

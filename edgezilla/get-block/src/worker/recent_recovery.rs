@@ -9,7 +9,7 @@ pub(super) async fn handle(
     profile: Option<ProfileHandle>,
     api_key: RpcApiKeyRecord,
     request_started: f64,
-    metrics: AnalyticsEngineDataset,
+    metrics: Option<AnalyticsEngineDataset>,
     raw_slot: &str,
 ) -> Result<Response> {
     let request = match RecentRequest::parse(&req, raw_slot) {
@@ -230,7 +230,7 @@ pub(super) async fn handle(
 fn finish(
     mut response: Response,
     api_key: &RpcApiKeyRecord,
-    metrics: &AnalyticsEngineDataset,
+    metrics: &Option<AnalyticsEngineDataset>,
     request_started: f64,
     profile: Option<&ProfileHandle>,
     storage: StorageSnapshot,

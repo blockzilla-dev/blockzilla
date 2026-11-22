@@ -21,6 +21,7 @@
     "BZ_MESSAGE_SCHEMA_OVERRIDES": "{\"0\":\"may24\",\"1\":\"may24\",\"2\":\"may24\"}",
     "BZ_SLOT_INDEX": "sparse",
     "BZ_HTTP_GET_ONLY": "true",
+    "BZ_GET_BLOCK_PUBLIC": "true",
     "BZ_AUTH_CACHE_SCOPE": "4a84b9e29a65488ca474ac05e896b626",
     "BZ_RESOLUTION_PREFIX": "serving/foundation-resolution-20261121-v1",
     "BZ_RESOLUTION_GENERATION": "foundation-resolution-20261121-v1",

@@ -455,7 +455,7 @@ pub(super) async fn foundation_archive_binary_response(
     slot: u64,
     route: PendingLocatorV1,
     ctx: &Rc<worker::Context>,
-    metrics: &AnalyticsEngineDataset,
+    metrics: &Option<AnalyticsEngineDataset>,
     key: &RpcApiKeyRecord,
 ) -> std::result::Result<Response, String> {
     foundation_archive_binary_response_for_hash(source, slot, route, ctx, metrics, key, None).await
@@ -466,7 +466,7 @@ pub(super) async fn foundation_archive_binary_response_for_hash(
     slot: u64,
     route: PendingLocatorV1,
     ctx: &Rc<worker::Context>,
-    metrics: &AnalyticsEngineDataset,
+    metrics: &Option<AnalyticsEngineDataset>,
     key: &RpcApiKeyRecord,
     expected_hash: Option<[u8; 32]>,
 ) -> std::result::Result<Response, String> {
@@ -617,7 +617,7 @@ async fn foundation_native_binary_response(
     slot: u64,
     route: PendingLocatorV1,
     ctx: &Rc<worker::Context>,
-    metrics: &AnalyticsEngineDataset,
+    metrics: &Option<AnalyticsEngineDataset>,
     key: &RpcApiKeyRecord,
     expected_hash: Option<[u8; 32]>,
 ) -> std::result::Result<Response, String> {
@@ -1063,7 +1063,7 @@ async fn pinned_native_response(
     len: usize,
     identity: &SourceObjectIdentity,
     ctx: &Rc<worker::Context>,
-    metrics: &AnalyticsEngineDataset,
+    metrics: &Option<AnalyticsEngineDataset>,
     key_record: &RpcApiKeyRecord,
 ) -> std::result::Result<NativeRange, String> {
     ensure_js_safe_range(offset, len)?;
@@ -1141,7 +1141,7 @@ fn record_origin_completion(
     source: &WorkerSource,
     completion: js_sys::Promise,
     ctx: &Rc<worker::Context>,
-    metrics: &AnalyticsEngineDataset,
+    metrics: &Option<AnalyticsEngineDataset>,
     key: &RpcApiKeyRecord,
 ) {
     let backend = backend_kind(source);
@@ -1153,6 +1153,9 @@ fn record_origin_completion(
     ctx.wait_until(async move {
         let Ok(value) = wasm_bindgen_futures::JsFuture::from(completion).await else {
             console_error!("native source stream failed or was cancelled");
+            return;
+        };
+        let Some(dataset) = dataset else {
             return;
         };
         let bytes = js_sys::Reflect::get(&value, &JsValue::from_str("hotBytes"))
@@ -1336,7 +1339,7 @@ pub(super) async fn binary_response(
     include_access: bool,
     token: Option<&str>,
     ctx: &Rc<worker::Context>,
-    metrics: &AnalyticsEngineDataset,
+    metrics: &Option<AnalyticsEngineDataset>,
     key: &RpcApiKeyRecord,
 ) -> std::result::Result<Response, String> {
     let config = source
@@ -1374,7 +1377,7 @@ pub(super) async fn binary_response_checked(
     slot: u64,
     resolution: CheckedResolution,
     ctx: &Rc<worker::Context>,
-    metrics: &AnalyticsEngineDataset,
+    metrics: &Option<AnalyticsEngineDataset>,
     key: &RpcApiKeyRecord,
 ) -> std::result::Result<Response, String> {
     let locator = resolution.locator();
@@ -1404,7 +1407,7 @@ async fn binary_response_from_descriptor(
     resolution: Option<CheckedResolution>,
     generation: &str,
     ctx: &Rc<worker::Context>,
-    metrics: &AnalyticsEngineDataset,
+    metrics: &Option<AnalyticsEngineDataset>,
     key: &RpcApiKeyRecord,
 ) -> std::result::Result<Response, String> {
     locator.validate(&source.archive_prefix, generation, slot)?;

@@ -456,7 +456,7 @@ pub(super) async fn binary_response(
     source: &WorkerSource,
     slot: u64,
     ctx: &Rc<worker::Context>,
-    metrics: &AnalyticsEngineDataset,
+    metrics: &Option<AnalyticsEngineDataset>,
     key_record: &RpcApiKeyRecord,
 ) -> std::result::Result<Response, String> {
     let (config, entry) = admission(source, slot)?;
@@ -495,6 +495,9 @@ pub(super) async fn binary_response(
     ctx.wait_until(async move {
         let Ok(value) = wasm_bindgen_futures::JsFuture::from(parts.completion).await else {
             console_error!("admitted bundle stream failed or was cancelled");
+            return;
+        };
+        let Some(dataset) = dataset else {
             return;
         };
         let bytes = js_sys::Reflect::get(&value, &JsValue::from_str("hotBytes"))

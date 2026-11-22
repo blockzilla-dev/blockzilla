@@ -4,13 +4,20 @@
 Foundation's query-with-signatures upload is the default storage layout. It
 needs no block-access sidecar and does not change the durable archive files.
 
-The public hostname is `https://getblock.blockzilla.dev`. It uses the existing
-API keys. The original `workers.dev` hostname remains available. The recent
+The public hostname is `https://getblock.blockzilla.dev`. Its getBlock GET
+routes are free and require no API key when `BZ_GET_BLOCK_PUBLIC=true`.
+These requests skip API-key storage and customer billing. The default for
+other deployments is authenticated access. The original `workers.dev`
+hostname remains available. The recent
 stream recovery route is `GET /block/{slot}.compact`; see the
 [recovery report](../../reports/recent-get-block-recovery-20261122/README.md)
 for the required identity fields and the retained-window limit.
 
-The accepted production Worker version is
+The public GET deployment is version `4d1b4d55-31f1-4e30-a287-717846eeff3c`.
+It passed 232 local actual-WASM checks and nine live no-key checks. See the
+[public deployment record](../../reports/public-getblock-20261122/README.md).
+
+The earlier accepted production Worker version is
 `50aaba11-468b-4c57-b1ad-ddc999ea9152`. Recent recovery reads use the existing
 Foundation producer window. Finalized archive misses use the admitted original
 archive ranges. The experiment records below describe their dated test builds.
@@ -63,13 +70,16 @@ is claimed. See the [preparation record](../../reports/get-block-native-r2-20261
 The two data endpoints accept HTTP GET only:
 
 ```bash
-curl -sS https://RPC_HOST/block/321000000.bin \
-  -H "Authorization: Bearer $BLOCKZILLA_RPC_API_KEY" \
-  --output 321000000.bin
+curl -sS https://getblock.blockzilla.dev/block/470555971.bin \
+  --output 470555971.bin
 
-curl -sS 'https://RPC_HOST/block/321000000.json?rewards=false&encoding=base64' \
-  -H "Authorization: Bearer $BLOCKZILLA_RPC_API_KEY"
+curl -sS 'https://getblock.blockzilla.dev/block/470555971.json?rewards=false&encoding=base64'
 ```
+
+Other deployments require the existing Bearer header unless their public GET
+setting is enabled. Public JSON and binary block successes have a long HTTP
+cache lifetime. Errors are not cached. Compact recovery still requires its
+exact block identity and retains `private, no-store` response headers.
 
 `.bin` returns the Wincode `BlockzillaGetBlockBundleV1` wire format. It contains
 a block and a block-local access blob with resolved keys, hashes and signatures.

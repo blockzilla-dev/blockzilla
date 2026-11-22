@@ -2,7 +2,7 @@ use crate::archive_cache::ArchiveByteCache;
 use crate::archive_schema::{MessageSchema, MetadataSchema};
 use crate::rpc_access::{
     BackendReadTracker, DirectCacheVariant, RpcApiKeyRecord, api_key_digest, direct_cache_identity,
-    parse_bearer_key, rpc_method_for_metrics,
+    parse_bearer_key, public_get_block_enabled, rpc_method_for_metrics,
 };
 use crate::storage_metrics::{StorageBackend, StorageMetrics, StorageSnapshot};
 mod base58;
@@ -946,23 +946,32 @@ async fn handle_direct_block(
     let ctx = Rc::new(ctx);
     let request_started = now_ms();
     let profile = request_profile(&req);
+    let public = public_get_block_enabled(optional_var(&env, "BZ_GET_BLOCK_PUBLIC").as_deref());
     let auth_started = now_ms();
-    let auth = match authenticate_api_key_with_cache_policy(
-        &req,
-        &env,
-        allow_index_and_auth_cache(profile.as_ref()),
-    )
-    .await
-    {
-        Ok(record) => record,
-        Err(RpcAuthError::Unauthorized) => return api_unauthorized_response(),
-        Err(RpcAuthError::Unavailable) => {
-            return json_error_profiled(
-                503,
-                "api_unavailable",
-                "API authentication is temporarily unavailable",
-                profile.as_ref(),
-            );
+    let auth = if public {
+        AuthenticatedApiKey {
+            record: RpcApiKeyRecord::anonymous_get_block(),
+            cache_status: "public",
+            cache_tier: "none",
+        }
+    } else {
+        match authenticate_api_key_with_cache_policy(
+            &req,
+            &env,
+            allow_index_and_auth_cache(profile.as_ref()),
+        )
+        .await
+        {
+            Ok(record) => record,
+            Err(RpcAuthError::Unauthorized) => return api_unauthorized_response(),
+            Err(RpcAuthError::Unavailable) => {
+                return json_error_profiled(
+                    503,
+                    "api_unavailable",
+                    "API authentication is temporarily unavailable",
+                    profile.as_ref(),
+                );
+            }
         }
     };
     if let Some(profile) = &profile {
@@ -985,9 +994,24 @@ async fn handle_direct_block(
     } else {
         "compact-v2"
     };
-    let mut response =
-        handle_authenticated_direct_block(req, env, ctx, profile, auth.record, request_started)
-            .await?;
+    let mut response = handle_authenticated_direct_block(
+        req,
+        env,
+        ctx,
+        profile,
+        auth.record,
+        request_started,
+        public,
+    )
+    .await?;
+    if public {
+        response
+            .headers_mut()
+            .set("Access-Control-Allow-Origin", "*")?;
+        response
+            .headers_mut()
+            .set("Access-Control-Expose-Headers", "*")?;
+    }
     add_auth_cache_headers(&mut response, auth_cache_status, auth_cache_tier)?;
     response
         .headers_mut()
@@ -1025,7 +1049,11 @@ fn add_auth_cache_headers(
     )?;
     response.headers_mut().set(
         "X-Blockzilla-Auth-KV-Reads",
-        if cache_status == "hit" { "0" } else { "1" },
+        if matches!(cache_status, "hit" | "public") {
+            "0"
+        } else {
+            "1"
+        },
     )?;
     response.headers_mut().set(
         "X-Blockzilla-Auth-Cache-Tier",
@@ -1041,10 +1069,15 @@ async fn handle_authenticated_direct_block(
     profile: Option<ProfileHandle>,
     api_key: RpcApiKeyRecord,
     request_started: f64,
+    public: bool,
 ) -> Result<Response> {
-    let metrics = match rpc_metrics(&env, profile.as_ref()) {
-        Ok(metrics) => metrics,
-        Err(response) => return Ok(response),
+    let metrics = if public {
+        None
+    } else {
+        match rpc_metrics(&env, profile.as_ref()) {
+            Ok(metrics) => metrics,
+            Err(response) => return Ok(response),
+        }
     };
 
     let path = req.path();
@@ -1176,9 +1209,15 @@ async fn handle_authenticated_direct_block(
         match Cache::default().get(cache_key.clone(), false).await {
             Ok(Some(response)) => {
                 let mut response = response_with_mutable_headers(response);
-                response
-                    .headers_mut()
-                    .set("Cache-Control", "private, no-store")?;
+                response.headers_mut().set(
+                    "Cache-Control",
+                    direct_client_cache_control(
+                        public,
+                        true,
+                        profile.is_some(),
+                        client_locator.is_some(),
+                    ),
+                )?;
                 response
                     .headers_mut()
                     .set("X-Blockzilla-Cache-Fill", "HIT")?;
@@ -1222,9 +1261,15 @@ async fn handle_authenticated_direct_block(
                     && let Ok(Some(response)) = Cache::default().get(key.clone(), false).await
                 {
                     let mut response = response_with_mutable_headers(response);
-                    response
-                        .headers_mut()
-                        .set("Cache-Control", "private, no-store")?;
+                    response.headers_mut().set(
+                        "Cache-Control",
+                        direct_client_cache_control(
+                            public,
+                            true,
+                            profile.is_some(),
+                            client_locator.is_some(),
+                        ),
+                    )?;
                     response
                         .headers_mut()
                         .set("X-Blockzilla-Cache-Fill", "COALESCED")?;
@@ -1689,11 +1734,15 @@ async fn handle_authenticated_direct_block(
         None
     };
 
-    // Only the programmatic Worker Cache owns reusable representations. The
-    // client response stays private so an outer shared cache cannot skip auth.
-    response
-        .headers_mut()
-        .set("Cache-Control", "private, no-store")?;
+    // Authenticated and client-locator variants stay private. Only a known
+    // successful public block may also enter a client or shared HTTP cache.
+    let cache_control = direct_client_cache_control(
+        public,
+        outcome == "ok" && response.status_code() == 200,
+        profile.is_some(),
+        client_locator.is_some(),
+    );
+    response.headers_mut().set("Cache-Control", cache_control)?;
     response
         .headers_mut()
         .set("X-Blockzilla-Cache-Fill", fill_status)?;
@@ -1737,6 +1786,43 @@ async fn handle_authenticated_direct_block(
     Ok(response)
 }
 
+fn direct_client_cache_control(
+    public: bool,
+    success: bool,
+    profiled: bool,
+    client_locator: bool,
+) -> &'static str {
+    if public && success && !profiled && !client_locator {
+        BLOCK_CACHE_CONTROL
+    } else {
+        "private, no-store"
+    }
+}
+
+#[cfg(test)]
+mod public_get_block_tests {
+    use super::*;
+
+    #[test]
+    fn only_successful_ordinary_public_blocks_have_public_cache_headers() {
+        assert_eq!(
+            direct_client_cache_control(true, true, false, false),
+            BLOCK_CACHE_CONTROL
+        );
+        for flags in [
+            (false, true, false, false),
+            (true, false, false, false),
+            (true, true, true, false),
+            (true, true, false, true),
+        ] {
+            assert_eq!(
+                direct_client_cache_control(flags.0, flags.1, flags.2, flags.3),
+                "private, no-store"
+            );
+        }
+    }
+}
+
 fn response_with_mutable_headers(response: Response) -> Response {
     let status = response.status_code();
     let headers = response.headers().clone();
@@ -1752,23 +1838,25 @@ fn response_with_mutable_headers(response: Response) -> Response {
 fn rpc_metrics(
     env: &worker::Env,
     profile: Option<&ProfileHandle>,
-) -> std::result::Result<AnalyticsEngineDataset, Response> {
-    env.analytics_engine(RPC_METRICS_BINDING).map_err(|_| {
-        console_error!(
-            "{}",
-            json!({
-                "event": "rpc_metrics_backend_error",
-                "reason": "missing_binding",
-            })
-        );
-        json_error_profiled(
-            503,
-            "api_unavailable",
-            "API metering is temporarily unavailable",
-            profile,
-        )
-        .unwrap_or_else(|_| Response::error("API unavailable", 503).unwrap())
-    })
+) -> std::result::Result<Option<AnalyticsEngineDataset>, Response> {
+    env.analytics_engine(RPC_METRICS_BINDING)
+        .map(Some)
+        .map_err(|_| {
+            console_error!(
+                "{}",
+                json!({
+                    "event": "rpc_metrics_backend_error",
+                    "reason": "missing_binding",
+                })
+            );
+            json_error_profiled(
+                503,
+                "api_unavailable",
+                "API metering is temporarily unavailable",
+                profile,
+            )
+            .unwrap_or_else(|_| Response::error("API unavailable", 503).unwrap())
+        })
 }
 
 fn direct_block_route(path: &str) -> Option<(RouteBlockMode, &str)> {
@@ -1882,6 +1970,12 @@ async fn handle_info(_req: Request, ctx: RouteContext<()>) -> Result<Response> {
         "archive_source": "compact-v2",
         "archive_backends": ["r2", "s3"],
     });
+    if public_get_block_enabled(optional_var(&ctx.env, "BZ_GET_BLOCK_PUBLIC").as_deref()) {
+        info["authentication"] = json!(
+            "Public and free for GET /block/:slot and GET /block-lite/:slot; POST and resolution routes require an API key"
+        );
+        info["public_get_block"] = json!({ "enabled": true, "free": true });
+    }
     if !get_only {
         info["transaction_rpc"] = json!({ "route": "POST /", "method": "getTransaction", "encodings": ["json", "base64", "base58"] });
     }
@@ -3272,7 +3366,7 @@ async fn read_rpc_body(req: &mut Request) -> std::result::Result<Vec<u8>, RpcBod
 fn finish_metered_rpc(
     execution: RpcExecution,
     api_key: &RpcApiKeyRecord,
-    metrics: &AnalyticsEngineDataset,
+    metrics: &Option<AnalyticsEngineDataset>,
     request_started: f64,
     profile: Option<&ProfileHandle>,
 ) -> Result<Response> {
@@ -3338,7 +3432,7 @@ impl MeteredRequest {
 fn finish_metered_response(
     mut response: Response,
     api_key: &RpcApiKeyRecord,
-    metrics: &AnalyticsEngineDataset,
+    metrics: &Option<AnalyticsEngineDataset>,
     metering: MeteredRequest,
     request_started: f64,
     profile: Option<&ProfileHandle>,
@@ -3359,13 +3453,21 @@ fn finish_metered_response(
     )?;
     response.headers_mut().set(
         "X-Blockzilla-Billable-Reads",
-        if metering.billable_backend_reads == 0 {
+        if metrics.is_none() || metering.billable_backend_reads == 0 {
             "0"
         } else {
             "1"
         },
     )?;
     apply_storage_headers(&mut response, metering.storage)?;
+    if status >= 400 {
+        response
+            .headers_mut()
+            .set("Cache-Control", ERROR_CACHE_CONTROL)?;
+    }
+    let Some(metrics) = metrics.as_ref() else {
+        return Ok(response);
+    };
     let point = AnalyticsEngineDataPointBuilder::new()
         .indexes([api_key.key_id.as_str()])
         .blobs([
@@ -3993,7 +4095,7 @@ async fn foundation_binary_response(
     slot: u64,
     prepared: foundation_first::Outcome,
     ctx: &Rc<worker::Context>,
-    metrics: &AnalyticsEngineDataset,
+    metrics: &Option<AnalyticsEngineDataset>,
     key: &RpcApiKeyRecord,
 ) -> std::result::Result<Response, String> {
     match prepared {
@@ -4063,6 +4165,9 @@ async fn foundation_binary_response(
             ctx.wait_until(async move {
                 let Ok(value) = wasm_bindgen_futures::JsFuture::from(parts.completion).await else {
                     console_error!("Foundation complete body failed or was cancelled");
+                    return;
+                };
+                let Some(dataset) = dataset else {
                     return;
                 };
                 let bytes = js_sys::Reflect::get(&value, &JsValue::from_str("hotBytes"))

@@ -665,3 +665,18 @@ attached to the existing owner Worker. HTTPS, current-key access, unauthenticate
 rejection, one original archive digest and missing-recovery-pin rejection
 passed. The existing Worker version and stream domain stay in use. See the
 [domain checks](../reports/stream-worker-recovery-20261122/domain-check.json).
+
+## Public getBlock GET access, 22 November 2026
+
+The owner requests public and free getBlock GET routes for now, without API
+keys or customer quota checks. This replaces the earlier private access
+policy for these routes. Keep native recovery identity checks and keep
+errors uncacheable. Do not add another block store or a new index.
+
+The public setting is deployed on `getblock.blockzilla.dev`, Worker version
+`4d1b4d55-31f1-4e30-a287-717846eeff3c`. Public reads skip customer key storage
+and billing writes. Ordinary successful JSON/binary blocks have public cache
+headers; compact recovery retains its exact pins and no-store policy. All
+232 local actual-WASM checks and nine live keyless checks passed. No new
+live recent-frame test or zero Cloudflare request-cost claim is made. See
+the [public GET deployment record](../reports/public-getblock-20261122/README.md).

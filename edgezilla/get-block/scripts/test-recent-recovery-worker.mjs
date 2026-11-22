@@ -56,7 +56,7 @@ const RECENT_BROKER = String.raw`
 `;
 
 async function main() {
-  const { values } = parseArgs({ options: { build: { type: 'string' }, receipt: { type: 'string' } } });
+  const { values } = parseArgs({ options: { build: { type: 'string' }, receipt: { type: 'string' }, public: { type: 'boolean', default: false } } });
   assert.ok(values.build && values.receipt, '--build and --receipt are required');
   const fixtures = {};
   for (const slot of slots) {
@@ -68,13 +68,17 @@ async function main() {
       cursor: `${source.session_id}:p1:${frameSha}`, frame_sha256: frameSha, commitment: 'processed' } };
   }
   const h = await createFoundationFirstHarness(values.build, {
-    ownerBindings: { BZ_FOUNDATION_RECENT_SOURCE: JSON.stringify(source) },
+    ownerBindings: { BZ_FOUNDATION_RECENT_SOURCE: JSON.stringify(source), ...(values.public ? { BZ_GET_BLOCK_PUBLIC: 'true' } : {}) },
     ownerTransform: text => text.replace('probeEnabled:!!command.probeEnabled,', 'probeEnabled:!!command.probeEnabled,recentDisabled:!!command.recentDisabled,recentOnly:!!command.recentOnly,')
       .replace('...env,...lookup,BZ_R2_PROBE_ENABLED:', '...env,...lookup,BZ_FOUNDATION_LOOKUP_MODE:state.recentOnly?\'recent-only\':\'all\',BZ_FOUNDATION_RECENT_SOURCE:state.recentDisabled?undefined:env.BZ_FOUNDATION_RECENT_SOURCE,BZ_R2_PROBE_ENABLED:')
-      .replace("state.mode.endsWith('resolution-stall')||", "state.mode==='recent-stall'||state.mode.endsWith('resolution-stall')||"),
+      .replace("state.mode.endsWith('resolution-stall')||", "state.mode==='recent-stall'||state.mode.endsWith('resolution-stall')||")
+      .replace('new worker(ctx,{...env,...lookup,', values.public
+        ? 'new worker(ctx,{...env,...lookup,BZ_RPC_API_KEYS:undefined,BZ_RPC_METRICS:undefined,'
+        : 'new worker(ctx,{...env,...lookup,'),
     brokerTransform: text => text.replace("const specs=", `const RECENT_FIXTURES=${JSON.stringify(fixtures)};const specs=`)
       .replace(' const rawMatch=', RECENT_BROKER + ' const rawMatch='),
   });
+  if (values.public) h.request = (path, options = {}) => h.mf.dispatchFetch('https://foundation-owner.test' + path, options);
   const checks = [];
   const query = (slot, processed = false) => {
     const f = fixtures[slot], q = new URLSearchParams({ blockhash: f.metadata.blockhash, commitment: processed ? 'processed' : 'finalized', profile: '1' });
@@ -85,6 +89,11 @@ async function main() {
     await h.control(mode, { rawBinary: true, recentDisabled: disabled });
     const q = query(slot, processed); if (normal) q.delete('profile'); if (mutate) mutate(q);
     const response = await h.request(`/block/${slot}.compact?${q}`), headers = Object.fromEntries(response.headers);
+    if (values.public) {
+      assert.equal(headers['x-blockzilla-auth-kv-reads'], '0', name);
+      assert.equal(headers['x-blockzilla-billable-reads'], '0', name);
+      assert.match(headers['cache-control'], /no-store/, name);
+    }
     let bytes, failed = false;
     try { bytes = Buffer.from(await response.arrayBuffer()); } catch { failed = true; }
     const checkedFrameRejected = failed || response.status >= 400 || sha(bytes) !== fixtures[slot].sha256;

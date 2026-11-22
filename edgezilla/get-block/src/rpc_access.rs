@@ -82,7 +82,22 @@ pub(crate) struct RpcApiKeyRecord {
     pub(crate) status: RpcApiKeyStatus,
 }
 
+pub(crate) fn public_get_block_enabled(value: Option<&str>) -> bool {
+    value == Some("true")
+}
+
 impl RpcApiKeyRecord {
+    pub(crate) fn anonymous_get_block() -> Self {
+        Self {
+            // The colon deliberately excludes this request-local identity from
+            // the valid stored API-key namespace. Never infer access from IDs.
+            key_id: "public:getBlock".into(),
+            customer_id: "public".into(),
+            label: "Public getBlock".into(),
+            status: RpcApiKeyStatus::Enabled,
+        }
+    }
+
     pub(crate) fn validate(&self) -> Result<(), &'static str> {
         if !valid_stable_id(&self.key_id) {
             return Err("keyId must be 1-64 ASCII letters, digits, underscores, or hyphens");
@@ -167,6 +182,18 @@ mod tests {
     use super::*;
 
     const VALID_KEY: &str = "bz_live_abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG";
+
+    #[test]
+    fn public_get_block_requires_explicit_true_and_cannot_be_a_stored_key() {
+        for value in [None, Some("false"), Some("TRUE"), Some("1"), Some("")] {
+            assert!(!public_get_block_enabled(value));
+        }
+        assert!(public_get_block_enabled(Some("true")));
+        let anonymous = RpcApiKeyRecord::anonymous_get_block();
+        assert_eq!(anonymous.key_id, "public:getBlock");
+        assert!(anonymous.validate().is_err());
+        assert!(anonymous.is_enabled());
+    }
 
     #[test]
     fn parses_well_formed_bearer_key() {
