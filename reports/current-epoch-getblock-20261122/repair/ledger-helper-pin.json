@@ -1,0 +1,10 @@
+{
+  "path": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/bin/hivezilla-ledger-archive-c75dd8411289612031405d7b2c14e448b17bb52af975e4e07f61947dc4126a1e",
+  "sha256": "c75dd8411289612031405d7b2c14e448b17bb52af975e4e07f61947dc4126a1e",
+  "bytes": 33033288,
+  "mode": "0o555",
+  "sdk_revision": "b6149a719f8fa84123ac3ce1e5f201af64bca8ee",
+  "sdk_patch_sha256": "115dc1a326a39e77bef40a5c4f0b9c5e23f3ecdadb6a32a433810e52debadd5a",
+  "bounded_read_only_max_open_files": 64,
+  "service_config_changed": false
+}

@@ -1,0 +1,81 @@
+{
+  "phase": "PASS",
+  "created_at_utc": "2026-11-22T20:24:09.651295+00:00",
+  "old_reader_pid": 2179203,
+  "previous_config": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/recent-config.ledger-v1.json",
+  "new_config": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/recent-config.ledger-overlap-v1.json",
+  "config_sha256": "27c343c8f42f2ab718374718e9a750758d8b7dd2616bb59aa7ee8c03ec7aa5fe",
+  "minimum_slot": 472176000,
+  "only_config_change": "ledger_compact.minimum_slot:472608000->472176000",
+  "service_sha256": "6dee8f3e3993f6139a066bd9d0cdff64bc8e264bc3b8dd42a5a6938a8e43d4ab",
+  "helper_sha256": "c75dd8411289612031405d7b2c14e448b17bb52af975e4e07f61947dc4126a1e",
+  "protected_before": {
+    "controller": {
+      "pid": 2108510,
+      "start_ticks": "466809260",
+      "exe": "/usr/bin/python3.14"
+    },
+    "processed": {
+      "pid": 2108523,
+      "start_ticks": "466809279",
+      "exe": "/home/ubuntu/live/hivezilla-validator-20260930/releases/native-direct-producer-20261122-073dfeef519cb8d9/hivezilla-direct-agave"
+    },
+    "origin": {
+      "pid": 2108530,
+      "start_ticks": "466809282",
+      "exe": "/home/ubuntu/live/hivezilla-validator-20260930/releases/native-direct-origin-20261122-dd65404a0759159e/hivezilla-stream"
+    },
+    "banks": {
+      "pid": 2128693,
+      "start_ticks": "466820250",
+      "exe": "/home/ubuntu/live/hivezilla-validator-20260930/releases/native-direct-producer-20261122-073dfeef519cb8d9/hivezilla-direct-agave"
+    },
+    "validator": {
+      "pid": 1304643,
+      "start_ticks": "457737831",
+      "exe": "/home/ubuntu/live/hivezilla-validator-20260930/releases/agave-native-ledger-v1fix-20261121-251b5d923155da26/agave-validator"
+    },
+    "tunnel": {
+      "pid": 480183,
+      "start_ticks": "13669710",
+      "exe": "/usr/bin/cloudflared"
+    }
+  },
+  "native_archive_catalog_configured": false,
+  "new_reader_pid": 2304452,
+  "protected_unchanged": true,
+  "probe": {
+    "status": 200,
+    "slot": 472607999,
+    "result": "ledger_compact",
+    "bytes": 134142,
+    "sha256": "90fbdfadaecf20ce37ca0d651c98236d09cb5a2f47917a6f24e72baa3d6b6476",
+    "blockhash": "ELvbqp7k1YgC2HmJYy8n7g26BvkcALtX1cwC84xqJtb6",
+    "previous_blockhash": "3KfbkuZiiwaoGXgkEJiGTGW9oK4Hcg6E4w1jzTshyXMY",
+    "parent_slot": 472607998,
+    "transactions": 255,
+    "signatures": 260,
+    "rooted": true,
+    "metadata_complete": true,
+    "elapsed_ms": 3387.204,
+    "body_saved": false
+  },
+  "unit_state": {
+    "MainPID": "2304452",
+    "MemoryCurrent": "859828224",
+    "MemoryPeak": "1889603584",
+    "MemoryHigh": "1887436800",
+    "MemoryMax": "2147483648",
+    "LimitNOFILE": "524288",
+    "LimitNOFILESoft": "65536"
+  },
+  "protected_start_ticks_unchanged": {
+    "controller": true,
+    "processed": true,
+    "origin": true,
+    "banks": true,
+    "validator": true,
+    "tunnel": true
+  },
+  "verified_at_utc": "2026-11-22T20:24:45.600000+00:00"
+}

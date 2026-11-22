@@ -9,6 +9,7 @@ use blockzilla_get_block::{
     },
 };
 use http_body_util::BodyExt;
+use std::path::PathBuf;
 use std::sync::{Mutex, atomic::AtomicUsize};
 use tower::ServiceExt;
 
@@ -241,6 +242,354 @@ async fn recent_http_passes_original_processed_and_finalized_frames() {
 }
 
 #[tokio::test]
+async fn finalized_slot_http_returns_original_frame_with_verifiable_root_control() {
+    let f = crate::recent::tests::fixture();
+    let catalog = Arc::new(MockCatalog {
+        calls: AtomicUsize::new(0),
+    });
+    let app = router_with_recent(catalog.clone(), TOKEN, 0, 2, Some(Arc::new(f.client))).unwrap();
+    let response = app.oneshot(get_request("/v1/finalized/100")).await.unwrap();
+    assert_eq!(response.status(), StatusCode::OK);
+    assert_eq!(response.headers()[header::CACHE_CONTROL], "no-store");
+    assert_eq!(
+        response.headers()["x-bz-foundation-commitment"],
+        "finalized"
+    );
+    assert_eq!(response.headers()["x-bz-foundation-result"], "recent");
+    assert_eq!(
+        response.headers()["x-bz-finalized-producer-generation"],
+        "a".repeat(64)
+    );
+    assert_eq!(response.headers()["x-bz-foundation-sha256"], f.frame.sha256);
+    let root = blockzilla_bank_stream_v2::decode(
+        URL_SAFE_NO_PAD
+            .decode(response.headers()["x-bz-finalized-root"].as_bytes())
+            .unwrap()
+            .into(),
+    )
+    .unwrap();
+    assert_eq!(root.envelope.event.kind, "root");
+    assert_eq!(root.source, f.frame.source);
+    root.envelope.event.matches_payload(&f.frame).unwrap();
+    let metadata: crate::recent::RecentMetadata = serde_json::from_slice(
+        &URL_SAFE_NO_PAD
+            .decode(response.headers()["x-bz-recent-metadata"].as_bytes())
+            .unwrap(),
+    )
+    .unwrap();
+    assert_eq!(metadata.blockhash, crate::recent::encode_hash(&[100; 32]));
+    assert_eq!(metadata.commitment, "finalized");
+    assert_eq!(bytes(response).await, f.frame.wire);
+    assert_eq!(catalog.calls.load(Ordering::Relaxed), 0);
+}
+
+#[tokio::test]
+async fn finalized_slot_http_preserves_checked_misses_and_rejects_invalid_requests() {
+    let f = crate::recent::tests::fixture();
+    let app = router_with_recent(
+        Arc::new(MockCatalog {
+            calls: AtomicUsize::new(0),
+        }),
+        TOKEN,
+        0,
+        2,
+        Some(Arc::new(f.client)),
+    )
+    .unwrap();
+    let response = app
+        .clone()
+        .oneshot(get_request(&format!("/v1/finalized/{SLOT}")))
+        .await
+        .unwrap();
+    assert_eq!(response.status(), StatusCode::NOT_FOUND);
+    assert_eq!(response.headers()["x-bz-foundation-result"], "not_cached");
+    assert_eq!(
+        response.headers()["x-bz-recent-blockhash"],
+        crate::recent::encode_hash(&[5; 32])
+    );
+    let value: serde_json::Value = serde_json::from_slice(&bytes(response).await).unwrap();
+    assert_eq!(value["source"], serde_json::to_value(pending()).unwrap());
+    let response = app
+        .clone()
+        .oneshot(get_request("/v1/finalized/99"))
+        .await
+        .unwrap();
+    assert_eq!(response.status(), StatusCode::NOT_FOUND);
+    assert_eq!(
+        serde_json::from_slice::<serde_json::Value>(&bytes(response).await).unwrap()["source"],
+        serde_json::Value::Null
+    );
+    for uri in [
+        "/v1/finalized/100?rewards=true",
+        "/v1/finalized/9007199254740992",
+    ] {
+        let response = app.clone().oneshot(get_request(uri)).await.unwrap();
+        assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+        assert_eq!(response.headers()[header::CACHE_CONTROL], "no-store");
+    }
+    let mut request = get_request("/v1/finalized/100");
+    request.headers_mut().remove("authorization");
+    assert_eq!(
+        app.clone().oneshot(request).await.unwrap().status(),
+        StatusCode::UNAUTHORIZED
+    );
+    let mut request = get_request("/v1/finalized/100");
+    request.headers_mut().remove("x-bz-foundation-generation");
+    assert_eq!(
+        app.oneshot(request).await.unwrap().status(),
+        StatusCode::CONFLICT
+    );
+}
+
+#[tokio::test]
+async fn finalized_slot_http_corrupt_root_is_unavailable_not_an_archive_miss() {
+    let f = crate::recent::tests::fixture();
+    f.db.execute("DELETE FROM feed_events WHERE sequence=3", [])
+        .unwrap();
+    let app = router_with_recent(
+        Arc::new(MockCatalog {
+            calls: AtomicUsize::new(0),
+        }),
+        TOKEN,
+        0,
+        2,
+        Some(Arc::new(f.client)),
+    )
+    .unwrap();
+    let response = app.oneshot(get_request("/v1/finalized/100")).await.unwrap();
+    assert_eq!(response.status(), StatusCode::SERVICE_UNAVAILABLE);
+    assert_eq!(response.headers()["x-bz-foundation-result"], "unavailable");
+    assert_eq!(response.headers()[header::CACHE_CONTROL], "no-store");
+}
+
+#[tokio::test]
+async fn finalized_slot_http_unrooted_bank_is_conflict_not_an_archive_miss() {
+    let f = crate::recent::tests::fixture();
+    f.db.execute("UPDATE banks SET state='confirmed'", [])
+        .unwrap();
+    let app = router_with_recent(
+        Arc::new(MockCatalog {
+            calls: AtomicUsize::new(0),
+        }),
+        TOKEN,
+        0,
+        2,
+        Some(Arc::new(f.client)),
+    )
+    .unwrap();
+    let response = app.oneshot(get_request("/v1/finalized/100")).await.unwrap();
+    assert_eq!(response.status(), StatusCode::CONFLICT);
+    assert_eq!(response.headers()["x-bz-foundation-result"], "unavailable");
+    assert_eq!(
+        serde_json::from_slice::<serde_json::Value>(&bytes(response).await).unwrap()["reason"],
+        "not_finalized"
+    );
+}
+
+#[tokio::test]
+async fn finalized_slot_http_returns_verified_native_locator_after_local_retirement() {
+    let (directory, f, expected) = crate::native_archive::tests::fixture();
+    f.db.execute("DELETE FROM banks", []).unwrap();
+    f.db.execute("DELETE FROM feed_events", []).unwrap();
+    let recent = RecentClient::new(crate::recent::RecentConfig {
+        bank_source_root: f.root.path().canonicalize().unwrap(),
+        payload_root: f.root.path().join("processed").canonicalize().unwrap(),
+        source: f.frame.source.clone(),
+        producer_generation: "a".repeat(64),
+        native_archive_catalog: Some(directory.path().join("archive.sqlite")),
+        ledger_compact: None,
+    })
+    .unwrap();
+    let app = router_with_recent(
+        Arc::new(MockCatalog {
+            calls: AtomicUsize::new(0),
+        }),
+        TOKEN,
+        0,
+        2,
+        Some(Arc::new(recent)),
+    )
+    .unwrap();
+    let response = app
+        .clone()
+        .oneshot(get_request("/v1/finalized/100"))
+        .await
+        .unwrap();
+    assert_eq!(response.status(), StatusCode::NOT_FOUND);
+    assert_eq!(response.headers()["x-bz-foundation-result"], "not_cached");
+    assert_eq!(
+        response.headers()["x-bz-finalized-producer-generation"],
+        "a".repeat(64)
+    );
+    let value: serde_json::Value = serde_json::from_slice(&bytes(response).await).unwrap();
+    assert_eq!(value["source"], serde_json::Value::Null);
+    assert_eq!(
+        value["native_archive"],
+        serde_json::to_value(expected).unwrap()
+    );
+    std::fs::remove_file(directory.path().join("archive.sqlite")).unwrap();
+    let response = app.oneshot(get_request("/v1/finalized/100")).await.unwrap();
+    assert_eq!(response.status(), StatusCode::SERVICE_UNAVAILABLE);
+    assert_eq!(response.headers()["x-bz-foundation-result"], "unavailable");
+}
+
+fn ledger_app(
+    action: &str,
+    wall: u64,
+) -> (
+    Router,
+    crate::recent::tests::Fixture,
+    tempfile::TempDir,
+    crate::ledger_compact::Config,
+) {
+    let f = crate::recent::tests::fixture();
+    f.db.execute("DELETE FROM banks", []).unwrap();
+    f.db.execute("DELETE FROM feed_events", []).unwrap();
+    let (directory, config) = crate::ledger_compact::tests::fixture(action, wall);
+    let recent = RecentClient::new(crate::recent::RecentConfig {
+        bank_source_root: f.root.path().canonicalize().unwrap(),
+        payload_root: f.root.path().join("processed").canonicalize().unwrap(),
+        source: f.frame.source.clone(),
+        producer_generation: "a".repeat(64),
+        native_archive_catalog: None,
+        ledger_compact: Some(config.clone()),
+    })
+    .unwrap();
+    let app = router_with_recent(
+        Arc::new(MockCatalog {
+            calls: AtomicUsize::new(0),
+        }),
+        TOKEN,
+        0,
+        2,
+        Some(Arc::new(recent)),
+    )
+    .unwrap();
+    (app, f, directory, config)
+}
+
+#[tokio::test]
+async fn ledger_fallback_returns_only_bundle_provenance_after_all_checked_misses() {
+    let (app, _native, _directory, config) = ledger_app("emit", 1000);
+    let response = app
+        .clone()
+        .oneshot(get_request(&format!("/v1/finalized/{SLOT}")))
+        .await
+        .unwrap();
+    assert_eq!(
+        response.status(),
+        StatusCode::NOT_FOUND,
+        "admitted historical archive must precede ledger work"
+    );
+    assert!(!config.ledger.join("helper.pid").exists());
+    let response = app.oneshot(get_request("/v1/finalized/100")).await.unwrap();
+    assert_eq!(response.status(), StatusCode::OK);
+    assert_eq!(
+        response.headers()["x-bz-foundation-result"],
+        "ledger_compact"
+    );
+    assert_eq!(
+        response.headers()[header::CONTENT_TYPE],
+        crate::ledger_compact::CONTENT_TYPE
+    );
+    assert_eq!(response.headers()[header::CACHE_CONTROL], "no-store");
+    assert_eq!(
+        response.headers()["x-bz-ledger-generation"],
+        "ledger-compact-v1"
+    );
+    assert!(response.headers().get("x-bz-recent-metadata").is_none());
+    assert!(response.headers().get("x-bz-finalized-root").is_none());
+    let metadata: crate::ledger_compact::Metadata = serde_json::from_slice(
+        &URL_SAFE_NO_PAD
+            .decode(response.headers()["x-bz-ledger-metadata"].as_bytes())
+            .unwrap(),
+    )
+    .unwrap();
+    let body = bytes(response).await;
+    assert_eq!(metadata.sha256, hex::encode(Sha256::digest(&body)));
+    assert_eq!(metadata.length, body.len() as u64);
+    assert!(metadata.rooted && metadata.metadata_complete);
+}
+
+#[tokio::test]
+async fn ledger_fallback_errors_do_not_become_archive_misses() {
+    for (action, code, reason) in [
+        ("absent", StatusCode::NOT_FOUND, "not_cached"),
+        ("unrooted", StatusCode::CONFLICT, "not_finalized"),
+        (
+            "incomplete",
+            StatusCode::SERVICE_UNAVAILABLE,
+            "ledger_compact_unavailable",
+        ),
+    ] {
+        let (app, _native, _directory, _config) = ledger_app(action, 1000);
+        let response = app.oneshot(get_request("/v1/finalized/100")).await.unwrap();
+        assert_eq!(response.status(), code);
+        let value: serde_json::Value = serde_json::from_slice(&bytes(response).await).unwrap();
+        assert_eq!(value["reason"], reason);
+    }
+}
+
+#[tokio::test]
+async fn cancelling_ledger_http_holds_capacity_until_the_helper_exits() {
+    struct Release(PathBuf);
+    impl Drop for Release {
+        fn drop(&mut self) {
+            let _ = std::fs::write(&self.0, []);
+        }
+    }
+    let (app, _native, _directory, config) = ledger_app("wait_release", 3000);
+    let release = Release(config.ledger.join("release"));
+    let task = tokio::spawn(app.clone().oneshot(get_request("/v1/finalized/100")));
+    tokio::time::timeout(std::time::Duration::from_secs(2), async {
+        while !config.ledger.join("helper.pid").exists() {
+            tokio::time::sleep(std::time::Duration::from_millis(5)).await;
+        }
+    })
+    .await
+    .unwrap();
+    task.abort();
+    assert!(task.await.unwrap_err().is_cancelled());
+    let response = app.clone().oneshot(get_request("/v1/info")).await.unwrap();
+    let value: serde_json::Value = serde_json::from_slice(&bytes(response).await).unwrap();
+    assert_eq!(value["available_permits"], 1);
+    let busy = tokio::time::timeout(
+        std::time::Duration::from_millis(500),
+        app.clone().oneshot(get_request("/v1/finalized/100")),
+    )
+    .await
+    .expect("helper busy gate must reject without starting another child")
+    .unwrap();
+    assert_eq!(busy.status(), StatusCode::SERVICE_UNAVAILABLE);
+    assert_eq!(
+        serde_json::from_slice::<serde_json::Value>(&bytes(busy).await).unwrap()["reason"],
+        "ledger_compact_unavailable"
+    );
+    drop(release);
+    tokio::time::timeout(std::time::Duration::from_secs(2), async {
+        loop {
+            let response = app.clone().oneshot(get_request("/v1/info")).await.unwrap();
+            let value: serde_json::Value = serde_json::from_slice(&bytes(response).await).unwrap();
+            if value["available_permits"] == 2 {
+                break;
+            }
+            tokio::time::sleep(std::time::Duration::from_millis(5)).await;
+        }
+    })
+    .await
+    .unwrap();
+    let pid = std::fs::read_to_string(config.ledger.join("helper.pid"))
+        .unwrap()
+        .parse::<i32>()
+        .unwrap();
+    assert_eq!(
+        unsafe { libc::kill(pid, 0) },
+        -1,
+        "helper must be reaped before capacity is returned"
+    );
+}
+
+#[tokio::test]
 async fn recent_finalized_miss_binds_archive_hash_before_any_r2_read() {
     let f = crate::recent::tests::fixture();
     let app = router_with_recent(
@@ -337,6 +686,15 @@ async fn recent_is_opt_in_and_requires_pins_authentication_and_complete_processe
 
 #[tokio::test]
 async fn cancelling_recent_http_does_not_release_a_running_blocking_job_permit() {
+    cancelling_native_http_keeps_its_blocking_permit(false).await;
+}
+
+#[tokio::test]
+async fn cancelling_finalized_http_does_not_release_a_running_blocking_job_permit() {
+    cancelling_native_http_keeps_its_blocking_permit(true).await;
+}
+
+async fn cancelling_native_http_keeps_its_blocking_permit(finalized_by_slot: bool) {
     use std::sync::Condvar;
 
     struct ReleaseOnDrop(Arc<(Mutex<bool>, Condvar)>);
@@ -389,10 +747,14 @@ async fn cancelling_recent_http_does_not_release_a_running_blocking_job_permit()
         release,
     });
     let app = router_with_recent(catalog, TOKEN, 0, 1, Some(Arc::new(f.client))).unwrap();
-    let uri = format!(
-        "/v1/recent/{SLOT}?blockhash={}&commitment=finalized",
-        crate::recent::encode_hash(&[5; 32])
-    );
+    let uri = if finalized_by_slot {
+        format!("/v1/finalized/{SLOT}")
+    } else {
+        format!(
+            "/v1/recent/{SLOT}?blockhash={}&commitment=finalized",
+            crate::recent::encode_hash(&[5; 32])
+        )
+    };
     let task = tokio::spawn(app.clone().oneshot(get_request(&uri)));
     tokio::time::timeout(std::time::Duration::from_secs(2), wait_entered)
         .await

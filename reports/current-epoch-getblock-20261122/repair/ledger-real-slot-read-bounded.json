@@ -1,0 +1,51 @@
+{
+  "slot": 472608000,
+  "helper_sha256": "c75dd8411289612031405d7b2c14e448b17bb52af975e4e07f61947dc4126a1e",
+  "read_only": true,
+  "secondary_copy": false,
+  "block_payload_persisted": false,
+  "os_page_cache": "not_flushed_or_controlled",
+  "wall_limit_seconds": 8,
+  "nofile_limits": [
+    65536,
+    524288
+  ],
+  "read_only_max_open_files": 64,
+  "sdk_patch_sha256": "115dc1a326a39e77bef40a5c4f0b9c5e23f3ecdadb6a32a433810e52debadd5a",
+  "returncode": 0,
+  "stdout_bytes": 91862,
+  "stderr_bytes": 0,
+  "status": "PASS",
+  "metadata": {
+    "version": 1,
+    "slot": 472608000,
+    "parent_slot": 472607999,
+    "blockhash": "DMvymXRdtFwkR26HW2rwMJpVfhsbqyypYmptq91Aasgj",
+    "previous_blockhash": "ELvbqp7k1YgC2HmJYy8n7g26BvkcALtX1cwC84xqJtb6",
+    "tx_count": 81,
+    "hot": {
+      "block_id": 1,
+      "slot": 472608000,
+      "compressed_offset": 0,
+      "compressed_len": 68121,
+      "uncompressed_len": 124975,
+      "tx_count": 81,
+      "first_tx_ordinal": 0,
+      "first_signature_ordinal": 0,
+      "signature_count": 82
+    },
+    "sha256": "c5f7ebd6e0f4ae757ac0e1ca62176e6be8628fd5076a327cae16ec32ce4bebbc",
+    "length": 91293,
+    "message_schema": 0,
+    "metadata_schema": 0,
+    "rooted": true,
+    "metadata_complete": true
+  },
+  "metadata_bytes": 557,
+  "wall_ms": 2862.279,
+  "helper_peak_rss_bytes": 1160441856,
+  "helper_user_cpu_ms": 3007.914,
+  "helper_system_cpu_ms": 706.859,
+  "helper_input_blocks": 61480,
+  "helper_output_blocks": 0
+}

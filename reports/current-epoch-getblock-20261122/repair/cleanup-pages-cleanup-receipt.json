@@ -1,0 +1,60 @@
+{
+  "schema": "blockzilla-pages-cdn-canary-cleanup-v1",
+  "startedAt": "2026-11-22T20:15:16.996144+00:00",
+  "project": "blockzilla-getblock-cdn-canary",
+  "hostname": "getblock-cdn-test.blockzilla.dev",
+  "projectsBefore": [
+    "blockzilla-getblock-cdn-canary",
+    "ferno-pulsar",
+    "ferno-token-metadata",
+    "ferno-wallet-lab",
+    "ferno-wallet-lab-adapter",
+    "ferno-wallet-lab-dapp",
+    "firescope-frontend",
+    "firewatch-frontend",
+    "my-svelte-app",
+    "pkm-auction",
+    "strategy-ferno-ag",
+    "wasted-brief",
+    "website"
+  ],
+  "canonicalDeploymentId": "85fdb391-70a1-444c-8131-72d9fe563476",
+  "projectSourceBackedUp": true,
+  "domainBefore": {
+    "id": "22e430a0-0159-479f-8fa7-f05a5f7e4f9e",
+    "name": "getblock-cdn-test.blockzilla.dev",
+    "status": "active",
+    "created_on": "2026-11-22T18:34:14.985604Z"
+  },
+  "storageApisCalled": 0,
+  "secretOrBindingValuesSaved": false,
+  "mutations": [
+    {
+      "operation": "deletePagesDomain",
+      "hostname": "getblock-cdn-test.blockzilla.dev",
+      "success": true
+    },
+    {
+      "operation": "deletePagesProject",
+      "project": "blockzilla-getblock-cdn-canary",
+      "success": true
+    }
+  ],
+  "state": "PASS",
+  "projectsAfter": [
+    "ferno-pulsar",
+    "ferno-token-metadata",
+    "ferno-wallet-lab",
+    "ferno-wallet-lab-adapter",
+    "ferno-wallet-lab-dapp",
+    "firescope-frontend",
+    "firewatch-frontend",
+    "my-svelte-app",
+    "pkm-auction",
+    "strategy-ferno-ag",
+    "wasted-brief",
+    "website"
+  ],
+  "unrelatedProjectsUnchanged": true,
+  "finishedAt": "2026-11-22T20:15:24.013925+00:00"
+}

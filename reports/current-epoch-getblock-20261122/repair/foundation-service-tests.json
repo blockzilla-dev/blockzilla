@@ -1,0 +1,9 @@
+{
+  "remotePath": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/service-tests.json",
+  "modifiedUnix": 1795373939.3851893,
+  "receipt": {
+    "exitCode": 0,
+    "elapsedSeconds": 13.206,
+    "log": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/service-tests.log"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "schema": "blockzilla-archive-host-path-route-v1",
+  "atUtc": "2026-11-22T20:18:38.895765+00:00",
+  "worker": "blockzilla-get-block",
+  "expectedVersion": "1cc2931c-a23d-464b-b8ee-00b0e49d978d",
+  "pattern": "archive.blockzilla.dev/block/*",
+  "applyRequested": true,
+  "mutations": 1,
+  "keptDomainsBefore": [
+    {
+      "id": "bfc30a1214968d784abb348f93c879cbdab79e9b",
+      "hostname": "blockzilla.dev",
+      "service": "blockzilla",
+      "environment": "production",
+      "zone_id": "fe1afd69f777e57eca0a230722f77da2",
+      "enabled": true,
+      "previews_enabled": false
+    },
+    {
+      "id": "3e5664f63a8c29e94ab042d4c03a62552f034e00",
+      "hostname": "getblock.blockzilla.dev",
+      "service": "blockzilla-get-block",
+      "environment": "production",
+      "zone_id": "fe1afd69f777e57eca0a230722f77da2",
+      "enabled": true,
+      "previews_enabled": false
+    }
+  ],
+  "routesBefore": [
+    {
+      "id": "628bea874f8242a297cd66c62d8a0e75",
+      "pattern": "blockzilla.dev/archive/*",
+      "script": "blockzilla-get-block"
+    }
+  ],
+  "state": "CONNECTED",
+  "noNewWorker": true,
+  "noRedirect": true,
+  "websiteWorkerInvokedByArchiveRoute": false,
+  "routesAfter": [
+    {
+      "id": "628bea874f8242a297cd66c62d8a0e75",
+      "pattern": "blockzilla.dev/archive/*",
+      "script": "blockzilla-get-block"
+    },
+    {
+      "id": "a95d755d40714516a3c411812477bdcc",
+      "pattern": "archive.blockzilla.dev/block/*",
+      "script": "blockzilla-get-block"
+    }
+  ],
+  "keptDomainsAfter": [
+    {
+      "id": "bfc30a1214968d784abb348f93c879cbdab79e9b",
+      "hostname": "blockzilla.dev",
+      "service": "blockzilla",
+      "environment": "production",
+      "zone_id": "fe1afd69f777e57eca0a230722f77da2",
+      "enabled": true,
+      "previews_enabled": false
+    },
+    {
+      "id": "3e5664f63a8c29e94ab042d4c03a62552f034e00",
+      "hostname": "getblock.blockzilla.dev",
+      "service": "blockzilla-get-block",
+      "environment": "production",
+      "zone_id": "fe1afd69f777e57eca0a230722f77da2",
+      "enabled": true,
+      "previews_enabled": false
+    }
+  ]
+}

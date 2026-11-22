@@ -12,6 +12,7 @@ mod bundle_object;
 pub mod client;
 mod foundation_archive;
 mod foundation_first;
+mod native_block;
 mod native_hash;
 mod native_reader;
 mod recent_recovery;
@@ -889,11 +890,7 @@ async fn main(req: Request, env: worker::Env, ctx: worker::Context) -> Result<Re
         response.headers_mut().set("Allow", "GET")?;
         return Ok(response);
     }
-    if req
-        .path()
-        .strip_prefix("/block/")
-        .is_some_and(|path| path.ends_with(".resolution"))
-    {
+    if full_block_route_path(&req.path()).is_some_and(|path| path.ends_with(".resolution")) {
         return resolution::handle_index(req, env, ctx).await;
     }
     if req.method() == Method::Get && direct_block_route(&req.path()).is_some() {
@@ -1324,7 +1321,120 @@ async fn handle_authenticated_direct_block(
         } else {
             "RECENT_ONLY"
         };
+        if config.native_finalized_enabled()
+            && request.format == BlockResponseFormat::Json
+            && client_locator.is_none()
+        {
+            match config.lookup_finalized(&source, request.slot).await {
+                Ok(result @ foundation_first::Outcome::Native { .. }) => {
+                    foundation_status = "NATIVE_RECENT";
+                    source.foundation_prepared.borrow_mut().replace(result);
+                }
+                Ok(result @ foundation_first::Outcome::NativeArchive { .. }) => {
+                    foundation_status = "NATIVE_ARCHIVE";
+                    source.foundation_prepared.borrow_mut().replace(result);
+                }
+                Ok(result @ foundation_first::Outcome::LedgerCompact { .. }) => {
+                    foundation_status = "LEDGER_COMPACT";
+                    source.foundation_prepared.borrow_mut().replace(result);
+                }
+                Ok(result @ foundation_first::Outcome::NotCached { source: Some(_) }) => {
+                    foundation_status = "ARCHIVE";
+                    source.foundation_prepared.borrow_mut().replace(result);
+                }
+                Ok(foundation_first::Outcome::NotCached { source: None }) => {
+                    foundation_status = "NATIVE_MISS";
+                }
+                Ok(foundation_first::Outcome::TransportFailure(_)) => {
+                    let mut response = json_error_profiled(
+                        503,
+                        "foundation_unavailable",
+                        "Foundation block source is unavailable",
+                        profile.as_ref(),
+                    )?;
+                    response
+                        .headers_mut()
+                        .set("X-Blockzilla-Foundation-Result", "UNAVAILABLE")?;
+                    return finish_metered_response(
+                        response,
+                        &api_key,
+                        &metrics,
+                        MeteredRequest::new(method, "backend_error", cache_status, transport, 0, 0)
+                            .with_storage(source.storage_metrics.snapshot()),
+                        request_started,
+                        profile.as_ref(),
+                    );
+                }
+                Ok(foundation_first::Outcome::NativeUnavailable { status, reason }) => {
+                    let mut response =
+                        json_error_profiled(status, &reason, &reason, profile.as_ref())?;
+                    response
+                        .headers_mut()
+                        .set("X-Blockzilla-Foundation-Result", "UNAVAILABLE")?;
+                    return finish_metered_response(
+                        response,
+                        &api_key,
+                        &metrics,
+                        MeteredRequest::new(method, "backend_error", cache_status, transport, 0, 0)
+                            .with_storage(source.storage_metrics.snapshot()),
+                        request_started,
+                        profile.as_ref(),
+                    );
+                }
+                Ok(foundation_first::Outcome::Unavailable(reason)) => {
+                    let (status, code) = match reason {
+                        foundation_first::Unavailable::Unavailable => (404, "block_unavailable"),
+                        foundation_first::Unavailable::Pruned => (410, "block_pruned"),
+                        foundation_first::Unavailable::Incomplete => (409, "block_incomplete"),
+                        foundation_first::Unavailable::NotFinalized => (409, "block_not_finalized"),
+                        foundation_first::Unavailable::CoverageUnavailable => {
+                            (404, "coverage_unavailable")
+                        }
+                        foundation_first::Unavailable::SourceChanged => (409, "source_changed"),
+                        foundation_first::Unavailable::HashMismatch => (409, "hash_mismatch"),
+                    };
+                    let mut response = json_error_profiled(status, code, code, profile.as_ref())?;
+                    response
+                        .headers_mut()
+                        .set("X-Blockzilla-Foundation-Result", code)?;
+                    return finish_metered_response(
+                        response,
+                        &api_key,
+                        &metrics,
+                        MeteredRequest::new(method, "not_found", cache_status, transport, 0, 0)
+                            .with_storage(source.storage_metrics.snapshot()),
+                        request_started,
+                        profile.as_ref(),
+                    );
+                }
+                other => {
+                    let error = match other {
+                        Err(error) => error,
+                        _ => "Foundation finalized lookup returned an invalid result type".into(),
+                    };
+                    let mut response = json_error_profiled(
+                        502,
+                        "foundation_lookup_error",
+                        &error,
+                        profile.as_ref(),
+                    )?;
+                    response
+                        .headers_mut()
+                        .set("X-Blockzilla-Foundation-Result", "REJECTED")?;
+                    return finish_metered_response(
+                        response,
+                        &api_key,
+                        &metrics,
+                        MeteredRequest::new(method, "backend_error", cache_status, transport, 0, 0)
+                            .with_storage(source.storage_metrics.snapshot()),
+                        request_started,
+                        profile.as_ref(),
+                    );
+                }
+            }
+        }
         if config.archive_lookup_enabled()
+            && source.foundation_prepared.borrow().is_none()
             && mode == RouteBlockMode::Full
             && client_locator.is_none()
             && !client_binary
@@ -1342,6 +1452,27 @@ async fn handle_authenticated_direct_block(
                 config.lookup(&source, request.slot).await
             };
             match lookup {
+                Ok(
+                    foundation_first::Outcome::Native { .. }
+                    | foundation_first::Outcome::NativeArchive { .. }
+                    | foundation_first::Outcome::NativeUnavailable { .. }
+                    | foundation_first::Outcome::LedgerCompact { .. },
+                ) => {
+                    return finish_metered_response(
+                        json_error_profiled(
+                            502,
+                            "foundation_lookup_error",
+                            "Unexpected native result from legacy lookup",
+                            profile.as_ref(),
+                        )?,
+                        &api_key,
+                        &metrics,
+                        MeteredRequest::new(method, "backend_error", cache_status, transport, 0, 0)
+                            .with_storage(source.storage_metrics.snapshot()),
+                        request_started,
+                        profile.as_ref(),
+                    );
+                }
                 Ok(result @ foundation_first::Outcome::Complete { .. }) => {
                     foundation_status = "COMPLETE";
                     source.foundation_prepared.borrow_mut().replace(result);
@@ -1859,8 +1990,13 @@ fn rpc_metrics(
         })
 }
 
+fn full_block_route_path(path: &str) -> Option<&str> {
+    path.strip_prefix("/block/")
+        .or_else(|| path.strip_prefix("/archive/block/"))
+}
+
 fn direct_block_route(path: &str) -> Option<(RouteBlockMode, &str)> {
-    let (mode, raw_slot) = if let Some(raw_slot) = path.strip_prefix("/block/") {
+    let (mode, raw_slot) = if let Some(raw_slot) = full_block_route_path(path) {
         (RouteBlockMode::Full, raw_slot)
     } else if let Some(raw_slot) = path.strip_prefix("/block-lite/") {
         (RouteBlockMode::Lite, raw_slot)
@@ -1913,6 +2049,11 @@ fn archive_cache_generation(env: &worker::Env) -> String {
         "BZ_FOUNDATION_LOOKUP_MODE",
         "BZ_FOUNDATION_LOOKUP_TIMEOUT_MS",
         "BZ_FOUNDATION_LOOKUP_BODY_TIMEOUT_MS",
+        "BZ_FOUNDATION_NATIVE_FINALIZED",
+        "BZ_FOUNDATION_RECENT_SOURCE",
+        "BZ_FOUNDATION_NATIVE_PRODUCER_GENERATION",
+        "BZ_FOUNDATION_NATIVE_ARCHIVE_PREFIX",
+        "BZ_FOUNDATION_LEDGER_GENERATION",
     ];
     let identity = fields
         .iter()
@@ -4057,6 +4198,42 @@ async fn fetch_direct_json_block(
     let prepared = source.foundation_prepared.borrow_mut().take();
     if let Some(prepared) = prepared {
         let block = match prepared {
+            foundation_first::Outcome::LedgerCompact {
+                response,
+                metadata,
+                length,
+                digest,
+            } => {
+                let bytes =
+                    foundation_first::read_complete_verified(response, length, digest).await?;
+                bundle_object::decode_ledger_bundle(source, slot, &bytes, &metadata)?
+            }
+            foundation_first::Outcome::Native {
+                response,
+                metadata,
+                root,
+                length,
+            } => {
+                let bytes = foundation_first::read_native_frame(response, length).await?;
+                native_block::decode(source, slot, bytes, &metadata, &root)?
+            }
+            foundation_first::Outcome::NativeArchive { record } => {
+                let length = usize::try_from(record.frame.length)
+                    .map_err(|_| "native archive frame exceeds runtime bounds")?;
+                // The complete native object is content-addressed and was
+                // checked against the configured source before this read.
+                let bytes = if length <= MAX_ARCHIVE_RANGE_BYTES {
+                    source
+                        .get_cached_range(&record.frame.key, 0, length)
+                        .await?
+                } else {
+                    source.get_range_inner(&record.frame.key, 0, length).await?
+                };
+                if bytes.len() != length {
+                    return Err("native archive body length differs".into());
+                }
+                native_block::decode(source, slot, bytes, &record.metadata, &record.root()?)?
+            }
             foundation_first::Outcome::Complete {
                 response,
                 locator,
@@ -6357,6 +6534,8 @@ async fn stream_compact_reward_value(
         2 => w.raw(br#""Rent""#),
         3 => w.raw(br#""Staking""#),
         4 => w.raw(br#""Voting""#),
+        5 => w.raw(br#""DeactivatedStake""#),
+        6 => w.raw(br#""VATDebit""#),
         _ => w.raw(b"null"),
     }
     w.raw(b",\"commission\":");
@@ -6433,6 +6612,8 @@ async fn stream_rewards_value(
             2 => w.raw(br#""Rent""#),
             3 => w.raw(br#""Staking""#),
             4 => w.raw(br#""Voting""#),
+            5 => w.raw(br#""DeactivatedStake""#),
+            6 => w.raw(br#""VATDebit""#),
             _ => w.raw(b"null"),
         }
         w.raw(b",\"commission\":");
@@ -7912,6 +8093,8 @@ async fn compact_reward_value(
             2 => Value::String("Rent".to_string()),
             3 => Value::String("Staking".to_string()),
             4 => Value::String("Voting".to_string()),
+            5 => Value::String("DeactivatedStake".to_string()),
+            6 => Value::String("VATDebit".to_string()),
             _ => Value::Null,
         },
         "commission": reward.commission,
@@ -7936,6 +8119,8 @@ async fn rewards_value(
                 2 => Value::String("Rent".to_string()),
                 3 => Value::String("Staking".to_string()),
                 4 => Value::String("Voting".to_string()),
+                5 => Value::String("DeactivatedStake".to_string()),
+                6 => Value::String("VATDebit".to_string()),
                 _ => Value::Null,
             },
             "commission": reward.commission,
@@ -9176,6 +9361,24 @@ mod tests {
             Some(("getBlockLite", "123.json"))
         );
         assert!(direct_block_route("/block/nested/123.bin").is_none());
+        for path in ["/archive/block/123.json", "/archive/block/123.bin"] {
+            assert_eq!(
+                direct_block_route(path).map(|(mode, slot)| (mode.metric_method(), slot)),
+                Some(("getBlock", path.rsplit('/').next().unwrap()))
+            );
+        }
+        assert_eq!(
+            full_block_route_path("/archive/block/123.resolution"),
+            Some("123.resolution")
+        );
+        for path in [
+            "/123.json",
+            "/archive/123.json",
+            "/archive/block/",
+            "/archive/block/nested/123.json",
+        ] {
+            assert!(direct_block_route(path).is_none(), "{path}");
+        }
     }
 
     #[test]

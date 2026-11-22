@@ -1,0 +1,17 @@
+{
+  "schema": "blockzilla-production-test-url-disable-v1",
+  "startedAt": "2026-11-22T20:16:07.681260+00:00",
+  "worker": "blockzilla-get-block",
+  "productionVersion": "1cc2931c-a23d-464b-b8ee-00b0e49d978d",
+  "before": {
+    "enabled": true,
+    "previews_enabled": true
+  },
+  "mutations": 1,
+  "after": {
+    "enabled": false,
+    "previews_enabled": false
+  },
+  "state": "PASS",
+  "finishedAt": "2026-11-22T20:16:10.479125+00:00"
+}

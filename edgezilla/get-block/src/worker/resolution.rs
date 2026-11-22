@@ -1640,9 +1640,7 @@ async fn handle_authenticated_index(
         Ok(metrics) => metrics,
         Err(response) => return Ok(response),
     };
-    let slot = req
-        .path()
-        .strip_prefix("/block/")
+    let slot = full_block_route_path(&req.path())
         .and_then(|p| p.strip_suffix(".resolution"))
         .filter(|p| !p.is_empty() && p.bytes().all(|b| b.is_ascii_digit()))
         .and_then(|p| p.parse::<u64>().ok());

@@ -1,0 +1,68 @@
+{
+  "phase": "active_worker_preview_verified",
+  "old_reader_pid": 1814876,
+  "protected_before": {
+    "controller": {
+      "pid": 2108510,
+      "start_ticks": "466809260",
+      "exe": "/usr/bin/python3.14"
+    },
+    "processed": {
+      "pid": 2108523,
+      "start_ticks": "466809279",
+      "exe": "/home/ubuntu/live/hivezilla-validator-20260930/releases/native-direct-producer-20261122-073dfeef519cb8d9/hivezilla-direct-agave"
+    },
+    "origin": {
+      "pid": 2108530,
+      "start_ticks": "466809282",
+      "exe": "/home/ubuntu/live/hivezilla-validator-20260930/releases/native-direct-origin-20261122-dd65404a0759159e/hivezilla-stream"
+    },
+    "banks": {
+      "pid": 2128693,
+      "start_ticks": "466820250",
+      "exe": "/home/ubuntu/live/hivezilla-validator-20260930/releases/native-direct-producer-20261122-073dfeef519cb8d9/hivezilla-direct-agave"
+    },
+    "validator": {
+      "pid": 1304643,
+      "start_ticks": "457737831",
+      "exe": "/home/ubuntu/live/hivezilla-validator-20260930/releases/agave-native-ledger-v1fix-20261121-251b5d923155da26/agave-validator"
+    },
+    "tunnel": {
+      "pid": 480183,
+      "start_ticks": "13669710",
+      "exe": "/usr/bin/cloudflared"
+    }
+  },
+  "native_archive_catalog_configured": false,
+  "service_sha256": "6dee8f3e3993f6139a066bd9d0cdff64bc8e264bc3b8dd42a5a6938a8e43d4ab",
+  "helper_sha256": "c75dd8411289612031405d7b2c14e448b17bb52af975e4e07f61947dc4126a1e",
+  "new_reader_pid": 2179203,
+  "protected_unchanged": true,
+  "private_target_attempt": {
+    "status": 503,
+    "reason": "ledger_compact_unavailable",
+    "interpretation": "Concurrent Worker probe succeeded; single helper gate was occupied. No independent helper failure was established."
+  },
+  "worker_preview_reported_by_root": {
+    "status": 200,
+    "slot": 472608000,
+    "transactions": 81,
+    "exact_wire": true,
+    "exact_metadata": true,
+    "hashes_match": true
+  },
+  "rollback": {
+    "remove_only": "/etc/systemd/system/blockzilla-recent-get-block.service.d/95-ledger-compact-20261122.conf",
+    "then": "systemctl daemon-reload; restart blockzilla-recent-get-block.service only",
+    "prior_override": "90-current-epoch-getblock-20261122.conf"
+  },
+  "unit_state": {
+    "MainPID": "2179203",
+    "MemoryCurrent": "958615552",
+    "MemoryPeak": "1888972800",
+    "MemoryHigh": "1887436800",
+    "MemoryMax": "2147483648",
+    "LimitNOFILE": "524288",
+    "LimitNOFILESoft": "65536"
+  }
+}

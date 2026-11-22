@@ -1,0 +1,60 @@
+{
+  "remotePath": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/reader-deployment.json",
+  "modifiedUnix": 1795374416.7360973,
+  "receipt": {
+    "status": "PASS",
+    "unit": "blockzilla-recent-get-block.service",
+    "priorReaderPid": 321829,
+    "protectedPidsBefore": {
+      "hivezilla-validator.service": 1304643,
+      "hivezilla-tunnel.service": 480183,
+      "blockzilla-foundation-direct-service-20261122.service": 4189020,
+      "hivezilla-native-continuous-processed@c1739ce6fcee61291f41548b1960aa27.service": 3381566,
+      "hivezilla-native-continuous-banks@c1739ce6fcee61291f41548b1960aa27.service": 3381564,
+      "hivezilla-native-continuous-origin@c1739ce6fcee61291f41548b1960aa27.service": 3381565
+    },
+    "dropIn": "/etc/systemd/system/blockzilla-recent-get-block.service.d/90-current-epoch-getblock-20261122.conf",
+    "recentConfig": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/recent-config.json",
+    "binarySha256": "3706565c7407e7188d1ab21ea183ffc619898da28b810631658414691db0f47f",
+    "nativeArchiveCatalogEnabled": false,
+    "readinessSeconds": 5.329,
+    "readerPid": 1814876,
+    "live": {
+      "slot": 472652116,
+      "status": 200,
+      "frameBytes": 205062,
+      "frameSha256": "91d0dcec73b93d246f98748a1ef4d24c078caded7be03e19e84a0120c95a672a",
+      "rootBytes": 1562,
+      "objectHashesChecked": 12
+    },
+    "existingRecent": [
+      {
+        "commitment": "processed",
+        "status": 200,
+        "sameOriginalFrame": true
+      },
+      {
+        "commitment": "finalized",
+        "status": 200,
+        "sameOriginalFrame": true
+      }
+    ],
+    "unauthorizedInfoStatus": 401,
+    "unauthorizedResolveStatus": 401,
+    "requestedSlot": {
+      "slot": 472608000,
+      "status": 404,
+      "reason": "not_cached",
+      "source": null
+    },
+    "protectedPidsAfter": {
+      "hivezilla-validator.service": 1304643,
+      "hivezilla-tunnel.service": 480183,
+      "blockzilla-foundation-direct-service-20261122.service": 4189020,
+      "hivezilla-native-continuous-processed@c1739ce6fcee61291f41548b1960aa27.service": 3381566,
+      "hivezilla-native-continuous-banks@c1739ce6fcee61291f41548b1960aa27.service": 3381564,
+      "hivezilla-native-continuous-origin@c1739ce6fcee61291f41548b1960aa27.service": 3381565
+    },
+    "protectedPidsUnchanged": true
+  }
+}

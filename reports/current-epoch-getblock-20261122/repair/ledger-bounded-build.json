@@ -1,0 +1,60 @@
+{
+  "status": "PASS",
+  "started_unix": 1795377027.45412,
+  "jobs": 2,
+  "debug": 0,
+  "incremental": false,
+  "opt_level": 1,
+  "prepared": {
+    "version": 1,
+    "agave_revision": "b6149a719f8fa84123ac3ce1e5f201af64bca8ee",
+    "patch_sha256": "115dc1a326a39e77bef40a5c4f0b9c5e23f3ecdadb6a32a433810e52debadd5a",
+    "original_manifest_sha256": "95e4ca494027aaed3c535560ba6786c589e6f233fbe321f6dd844d9e808a0fda",
+    "overlay_manifest_sha256": "df08d63be33f4d1b50c00d0d05ffaf0a02c7ca9e7fee5a17b54024528aec4a9f",
+    "overlay_lock_sha256": "58ead488392d9f61e4b05fb53f392929dd04edff859f6d6866797b476b76ada1",
+    "registry_packages_unchanged": true,
+    "feature": "bounded-ledger-read",
+    "locked_fetch_allowed": true,
+    "read_only_max_open_files": 64,
+    "sdk": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/bounded-v3/agave",
+    "manifest": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/bounded-v3/source/hivezilla/ledger-archive/Cargo.toml",
+    "agave_direct_dependency_paths": {
+      "solana-entry": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/bounded-v3/agave/entry",
+      "solana-ledger": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/bounded-v3/agave/ledger",
+      "solana-transaction-status": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/bounded-v3/agave/transaction-status"
+    },
+    "sdk_diff": " ledger/src/blockstore_db.rs      |  7 ++++---\n ledger/src/blockstore_options.rs | 19 +++++++++++++++++++\n 2 files changed, 23 insertions(+), 3 deletions(-)\n"
+  },
+  "commands": [
+    {
+      "phase": "default-refuses-unbounded",
+      "returncode": 0,
+      "seconds": 7.52446174621582
+    },
+    {
+      "phase": "bounded-sdk-tests",
+      "returncode": 0,
+      "seconds": 90.08139634132385
+    },
+    {
+      "phase": "slot-tests",
+      "returncode": 0,
+      "seconds": 0.7147986888885498
+    },
+    {
+      "phase": "readonly-tests",
+      "returncode": 0,
+      "seconds": 0.4143044948577881
+    },
+    {
+      "phase": "helper",
+      "returncode": 0,
+      "seconds": 5.171163082122803
+    }
+  ],
+  "phase": "helper",
+  "finished_unix": 1795377131.3897247,
+  "binary": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-ledger-compact-20261122/target/release/hivezilla-ledger-archive",
+  "binary_bytes": 33033288,
+  "binary_sha256": "c75dd8411289612031405d7b2c14e448b17bb52af975e4e07f61947dc4126a1e"
+}

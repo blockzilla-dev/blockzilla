@@ -1,0 +1,123 @@
+{
+  "archiveBindingRows": 0,
+  "archiveRoleEnabled": false,
+  "archiveStateDirectoryExists": false,
+  "banksAfter": {
+    "ActiveState": "active",
+    "InvocationID": "b2618cdc3b3346c188afdbf5236e33c7",
+    "MainPID": "2128693",
+    "NRestarts": "0"
+  },
+  "banksBefore": {
+    "ActiveState": "active",
+    "InvocationID": "15e3d22b5a684bbb948c73e97f487873",
+    "MainPID": "2089776",
+    "NRestarts": "0"
+  },
+  "dropinExists": false,
+  "dropinRemoved": "/etc/systemd/system/hivezilla-native-continuous-banks@c1739ce6fcee61291f41548b1960aa27.service.d/archive-pilot.conf",
+  "dropinSha256": "b4426a8de1fb0ec2b9875ac5aa87ff6de85d89fafb6a66ca5f883dae79b63a3a",
+  "feedAdvanced": true,
+  "feedSequenceAfter": 573195,
+  "feedSequenceBefore": 573148,
+  "finishedUnix": 1795377057.1482813,
+  "gateBindingUnconsumed": true,
+  "legacyPolicyRestored": true,
+  "originalBanksBinary": {
+    "path": "/home/ubuntu/live/hivezilla-validator-20260930/releases/native-direct-producer-20261122-073dfeef519cb8d9/hivezilla-direct-agave",
+    "sha256": "073dfeef519cb8d95c739d0df4ecfa3fe820793ac767d047dd61aaa4fbebd407"
+  },
+  "originalConfigSha256": "154c49d1d3c015f01f726e45a6cd2409bfdd34eb5bcdad331be4c050d83eb4d3",
+  "originalHistoricPreviousJsonKnown": false,
+  "policyRestoration": "Restore exact pre-opt-in authority JSON from previous_json; historical previous_json is unknown and restored to NULL.",
+  "protectedAfter": {
+    "hivezilla-native-continuous-origin@c1739ce6fcee61291f41548b1960aa27.service": {
+      "ActiveState": "active",
+      "InvocationID": "66781175b34a418c88f084a4c402d3f2",
+      "MainPID": "2108530",
+      "NRestarts": "0"
+    },
+    "hivezilla-native-continuous-processed@c1739ce6fcee61291f41548b1960aa27.service": {
+      "ActiveState": "active",
+      "InvocationID": "f3d5b43e7c584fe7a7c35b0f5f04d544",
+      "MainPID": "2108523",
+      "NRestarts": "0"
+    },
+    "hivezilla-native-continuous.service": {
+      "ActiveState": "active",
+      "InvocationID": "db3a236e5060436982fdd5849b92207e",
+      "MainPID": "2108510",
+      "NRestarts": "0"
+    },
+    "hivezilla-tunnel.service": {
+      "ActiveState": "active",
+      "InvocationID": "9d1592d736864f2da945d0353189cbad",
+      "MainPID": "480183",
+      "NRestarts": "0"
+    },
+    "hivezilla-validator.service": {
+      "ActiveState": "active",
+      "InvocationID": "a1edd40e43404e8cb9c81a7caacfa1ee",
+      "MainPID": "1304643",
+      "NRestarts": "0"
+    }
+  },
+  "protectedBefore": {
+    "hivezilla-native-continuous-origin@c1739ce6fcee61291f41548b1960aa27.service": {
+      "ActiveState": "active",
+      "InvocationID": "66781175b34a418c88f084a4c402d3f2",
+      "MainPID": "2108530",
+      "NRestarts": "0"
+    },
+    "hivezilla-native-continuous-processed@c1739ce6fcee61291f41548b1960aa27.service": {
+      "ActiveState": "active",
+      "InvocationID": "f3d5b43e7c584fe7a7c35b0f5f04d544",
+      "MainPID": "2108523",
+      "NRestarts": "0"
+    },
+    "hivezilla-native-continuous.service": {
+      "ActiveState": "active",
+      "InvocationID": "db3a236e5060436982fdd5849b92207e",
+      "MainPID": "2108510",
+      "NRestarts": "0"
+    },
+    "hivezilla-tunnel.service": {
+      "ActiveState": "active",
+      "InvocationID": "9d1592d736864f2da945d0353189cbad",
+      "MainPID": "480183",
+      "NRestarts": "0"
+    },
+    "hivezilla-validator.service": {
+      "ActiveState": "active",
+      "InvocationID": "a1edd40e43404e8cb9c81a7caacfa1ee",
+      "MainPID": "1304643",
+      "NRestarts": "0"
+    }
+  },
+  "protectedProcessesUnchanged": true,
+  "publisherStarted": false,
+  "r2WritesByPilot": 0,
+  "restoredAuthority": {
+    "consumer_ack_required": false,
+    "frontier": "full-committed-native-feed-tip",
+    "limits": {
+      "max_output_bytes": 68719476736,
+      "max_retained_banks": 4096,
+      "min_retention_ms": 120000,
+      "retained_banks": 1024
+    },
+    "mode": "local-beam-v1",
+    "producer_generation": "4aaf2462131201579e55e0679f31f4a992d2c85d4e3c4891f682537625e88900",
+    "schema": "blockzilla-retention-authority-v1",
+    "source": {
+      "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+      "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+      "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+      "session_id": "000000000000000018ea5078fdda19df-13e843"
+    }
+  },
+  "retainedBanks": 2144,
+  "schema": "blockzilla-native-unconsumed-opt-in-removal-v1",
+  "startedUnix": 1795377055.4749746,
+  "state": "PASS"
+}

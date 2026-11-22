@@ -1,0 +1,43 @@
+{
+  "remotePath": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/ledger-service-build.json",
+  "modifiedUnix": 1795375821.8610895,
+  "receipt": {
+    "phases": [
+      {
+        "name": "tests",
+        "exitCode": 0,
+        "elapsedSeconds": 2.586,
+        "log": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/ledger-service-tests.log"
+      },
+      {
+        "name": "build",
+        "exitCode": 0,
+        "elapsedSeconds": 9.202,
+        "log": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/ledger-service-build.log"
+      }
+    ],
+    "liveActivation": false,
+    "maxConcurrentLedgerHelpers": 1,
+    "binary": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/bin/blockzilla-resolution-service-ledger-6dee8f3e3993f613",
+    "binarySha256": "6dee8f3e3993f6139a066bd9d0cdff64bc8e264bc3b8dd42a5a6938a8e43d4ab",
+    "binaryBytes": 9546384,
+    "sourcePins": {
+      "indexer/blockzilla-resolution-service/Cargo.toml": "473bd3eb9070180af7ed5bc750c97f7fd16bf8751985bd51f1b5f121ccc714be",
+      "indexer/blockzilla-resolution-service/src/bin/measure_direct_resolution.rs": "caea20e73bcc5e4feaeeb170bbca937e9f83206b43f8902303e281f10474cca3",
+      "indexer/blockzilla-resolution-service/src/bin/measure_resolutions.rs": "bc9abdcccbd1f0b925fe8eabcd756e89a35f7ada1a08dc04fece6e8bcdf51e9b",
+      "indexer/blockzilla-resolution-service/src/cache.rs": "f6c8fbe398ce8661b56051e10731e166ec632f38fff39492c9a037b956427089",
+      "indexer/blockzilla-resolution-service/src/catalog.rs": "b5c4561f45ab2e56e891bc7d7227f9f01e615dbbe168b1f19062762d821b700d",
+      "indexer/blockzilla-resolution-service/src/direct.rs": "cf0f8e7af64dedfa48144b68def76d9d78de17e51683a34419670e7638cb541e",
+      "indexer/blockzilla-resolution-service/src/finalized.rs": "683bb2dfa6150864611ab50c5f5c8e800ae916ce0b0a42513110350f6e022a22",
+      "indexer/blockzilla-resolution-service/src/http.rs": "bac9a66e78e66e43399f4d95dffc89c4b47c084b32a72e05800a96405aa31fe0",
+      "indexer/blockzilla-resolution-service/src/http_tests.rs": "ec7fbf4dcb055410f1605328c7df77856548ddd189c59401693f42a31588d1fd",
+      "indexer/blockzilla-resolution-service/src/ledger_compact.rs": "c0ae7c83421278429fab9795e1b7e200fbb352f2480fce2e61506556e674625f",
+      "indexer/blockzilla-resolution-service/src/ledger_compact_tests.rs": "cf9a1b0dcd0821f6be36f2e16b262cdd1e7a06ccb514f1f2c872c8fa33e34cdf",
+      "indexer/blockzilla-resolution-service/src/lib.rs": "f2c260737c1fcb85ca466272d934105df36d58ef0122d7905987281ae2f0cf09",
+      "indexer/blockzilla-resolution-service/src/main.rs": "952e839a07b60375f0e84dc61d31bab8f3d38ae1c966806a16cc9bda8275d542",
+      "indexer/blockzilla-resolution-service/src/native_archive.rs": "84107c57e48fd45c4a3df32f80ba774e89af79d0fd754354a7de6e29d95ee6ee",
+      "indexer/blockzilla-resolution-service/src/recent.rs": "96e75d0efcf84f23c23ac90f85c7c863270e64447914199e6724fcf19968459e",
+      "indexer/blockzilla-resolution-service/src/recent_tests.rs": "f81bbfa60d04d22a0d562e8f8acdb461b4ce4bde92392a134551e3f0f9a39cf9"
+    }
+  }
+}

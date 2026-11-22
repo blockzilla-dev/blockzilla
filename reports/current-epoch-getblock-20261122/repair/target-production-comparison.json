@@ -1,0 +1,36 @@
+{
+  "state": "PASS",
+  "slot": 472608000,
+  "blockhash": "DMvymXRdtFwkR26HW2rwMJpVfhsbqyypYmptq91Aasgj",
+  "previousBlockhash": "ELvbqp7k1YgC2HmJYy8n7g26BvkcALtX1cwC84xqJtb6",
+  "parentSlot": 472607999,
+  "transactions": 81,
+  "rawFullResultEqual": false,
+  "compatibleResultEqual": true,
+  "optionalNullFieldsOmittedByRpc": [],
+  "blockRewardsOrderOnly": true,
+  "blockRewardsCount": 1326,
+  "orderedTransactionWireEqual": true,
+  "orderedMetadataEqual": true,
+  "differenceCount": 0,
+  "differencePaths": [],
+  "worker": {
+    "http_code": 200,
+    "time_namelookup": 0.021829,
+    "time_connect": 0.029975,
+    "time_appconnect": 0.049101,
+    "time_starttransfer": 2.918129,
+    "time_total": 2.948027,
+    "size_download": 144479
+  },
+  "publicRpc": {
+    "http_code": 200,
+    "time_namelookup": 0.022064,
+    "time_connect": 0.041816,
+    "time_appconnect": 0.06742,
+    "time_starttransfer": 0.121532,
+    "time_total": 0.19611,
+    "size_download": 200561
+  },
+  "scope": "Live requests; block bodies stayed in process memory; no payload file or copy stored."
+}

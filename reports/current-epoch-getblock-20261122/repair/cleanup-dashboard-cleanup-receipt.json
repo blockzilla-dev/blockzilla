@@ -1,0 +1,22 @@
+{
+  "schema": "blockzilla-cdn-canary-dashboard-cleanup-v1",
+  "observedAt": "2026-11-22T20:14:41.427161+00:00",
+  "cacheRule": {
+    "id": "dae0be9b4a1d4578b0457e783d0003fb",
+    "name": "getBlock immutable CDN canary",
+    "hostname": "getblock-cdn-test.blockzilla.dev",
+    "deleted": true,
+    "verifiedDashboardState": "No Cache Rules created;0 active"
+  },
+  "dns": {
+    "name": "getblock-cdn-test.blockzilla.dev",
+    "type": "CNAME",
+    "content": "blockzilla-getblock-cdn-canary.pages.dev",
+    "proxied": true,
+    "ttl": "Auto",
+    "deleted": true,
+    "verifiedDashboardState": "Filtered exact hostname shows No DNS records after deletion."
+  },
+  "otherDnsAndRulesChanged": false,
+  "completedAt": "2026-11-22T20:16:23.798789+00:00"
+}

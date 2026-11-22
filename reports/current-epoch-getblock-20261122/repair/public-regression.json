@@ -1,0 +1,136 @@
+{
+  "state": "PASS",
+  "checks": [
+    {
+      "name": "json-public-identity-0",
+      "status": 200,
+      "cache": "MISS"
+    },
+    {
+      "name": "json-public-identity-1",
+      "status": 200,
+      "cache": "HIT"
+    },
+    {
+      "name": "json-public-identity-2",
+      "status": 200,
+      "cache": "HIT"
+    },
+    {
+      "name": "json-public-identity-3",
+      "status": 200,
+      "cache": "HIT"
+    },
+    {
+      "name": "json-shared-cache-hit",
+      "hit": true
+    },
+    {
+      "name": "json-shared-hit-identity-0",
+      "status": 200
+    },
+    {
+      "name": "json-shared-hit-identity-1",
+      "status": 200
+    },
+    {
+      "name": "json-shared-hit-identity-2",
+      "status": 200
+    },
+    {
+      "name": "json-shared-hit-identity-3",
+      "status": 200
+    },
+    {
+      "name": "json-shared-hit-identity-4",
+      "status": 200
+    },
+    {
+      "name": "json-shared-hit-identity-5",
+      "status": 200
+    },
+    {
+      "name": "bin-public-identity-0",
+      "status": 200,
+      "cache": "MISS"
+    },
+    {
+      "name": "bin-public-identity-1",
+      "status": 200,
+      "cache": "HIT"
+    },
+    {
+      "name": "bin-public-identity-2",
+      "status": 200,
+      "cache": "HIT"
+    },
+    {
+      "name": "bin-public-identity-3",
+      "status": 200,
+      "cache": "HIT"
+    },
+    {
+      "name": "bin-shared-cache-hit",
+      "hit": true
+    },
+    {
+      "name": "bin-shared-hit-identity-0",
+      "status": 200
+    },
+    {
+      "name": "bin-shared-hit-identity-1",
+      "status": 200
+    },
+    {
+      "name": "bin-shared-hit-identity-2",
+      "status": 200
+    },
+    {
+      "name": "bin-shared-hit-identity-3",
+      "status": 200
+    },
+    {
+      "name": "bin-shared-hit-identity-4",
+      "status": 200
+    },
+    {
+      "name": "bin-shared-hit-identity-5",
+      "status": 200
+    },
+    {
+      "name": "bad-encoding",
+      "status": 400
+    },
+    {
+      "name": "missing-compact-identity",
+      "status": 400
+    },
+    {
+      "name": "unavailable-not-cached-0",
+      "status": 404
+    },
+    {
+      "name": "unavailable-not-cached-1",
+      "status": 404
+    },
+    {
+      "name": "public-info",
+      "status": 200
+    },
+    {
+      "name": "resolution-keeps-auth",
+      "status": 401
+    },
+    {
+      "name": "post-keeps-contract",
+      "status": 401
+    }
+  ],
+  "total": 29,
+  "artifact": {
+    "build": "/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/build/index.js",
+    "wasmSha256": "8df59cb7c34f05a9c259ebdcd754dec7fea9824f8df4fed1c0b911fc1a04c15b",
+    "compatibilityDate": "2026-09-10"
+  },
+  "scope": "Local actual WASM; customer key and billing bindings removed from the request environment."
+}

@@ -1,0 +1,70 @@
+--- a/ledger/src/blockstore_options.rs
++++ b/ledger/src/blockstore_options.rs
+@@ -16,6 +16,8 @@
+     pub column_options: LedgerColumnOptions,
+     pub num_rocksdb_compaction_threads: NonZeroUsize,
+     pub num_rocksdb_flush_threads: NonZeroUsize,
++    /// Optional table/file-cache cap for this read-only open. Other modes ignore it.
++    pub read_only_max_open_files: Option<NonZeroUsize>,
+ }
+ 
+ impl Default for BlockstoreOptions {
+@@ -29,11 +31,28 @@
+             column_options: LedgerColumnOptions::default(),
+             num_rocksdb_compaction_threads: default_num_compaction_threads(),
+             num_rocksdb_flush_threads: default_num_flush_threads(),
++            read_only_max_open_files: None,
+         }
+     }
+ }
+ 
+ impl BlockstoreOptions {
++    /// Select the file-cache limit without changing primary or default behavior.
++    pub fn max_open_files_for_access(&self) -> std::io::Result<i32> {
++        if self.access_type != AccessType::ReadOnly {
++            return Ok(-1);
++        }
++        match self.read_only_max_open_files {
++            None => Ok(-1),
++            Some(limit) => i32::try_from(limit.get()).map_err(|_| {
++                std::io::Error::new(
++                    std::io::ErrorKind::InvalidInput,
++                    "read-only max_open_files exceeds positive i32",
++                )
++            }),
++        }
++    }
++
+     pub fn default_for_tests() -> Self {
+         BlockstoreOptions::default()
+     }
+--- a/ledger/src/blockstore_db.rs
++++ b/ledger/src/blockstore_db.rs
+@@ -103,7 +103,8 @@
+         fs::create_dir_all(&path)?;
+ 
+         // Use default database options
+-        let mut db_options = get_db_options(&options);
++        let max_open_files = options.max_open_files_for_access()?;
++        let mut db_options = get_db_options(&options, max_open_files);
+         if let Some(recovery_mode) = recovery_mode {
+             db_options.set_wal_recovery_mode(recovery_mode.into());
+         }
+@@ -1176,7 +1177,7 @@
+     }
+ }
+ 
+-fn get_db_options(blockstore_options: &BlockstoreOptions) -> Options {
++fn get_db_options(blockstore_options: &BlockstoreOptions, max_open_files: i32) -> Options {
+     let mut options = Options::default();
+ 
+     // Create missing items to support a clean start
+@@ -1213,7 +1214,7 @@
+ 
+     // Allow Rocks to open/keep open as many files as it needs for performance;
+     // it is not required for read-only access, but should be fine with our high ulimit.
+-    options.set_max_open_files(-1);
++    options.set_max_open_files(max_open_files);
+ 
+     options
+ }

@@ -48,6 +48,14 @@ pub(crate) fn read_only_options(ledger: &Path) -> Result<BlockstoreOptions> {
     }
     let mut options = BlockstoreOptions::default();
     options.access_type = AccessType::ReadOnly;
+    // Read-only access has no compaction or flush work. Do not size its
+    // background pools from the validator host's full CPU count.
+    options.num_rocksdb_compaction_threads = std::num::NonZeroUsize::new(1).unwrap();
+    options.num_rocksdb_flush_threads = std::num::NonZeroUsize::new(1).unwrap();
+    #[cfg(feature = "bounded-ledger-read")]
+    {
+        options.read_only_max_open_files = std::num::NonZeroUsize::new(64);
+    }
     reject_non_readonly(&options.access_type)?;
     Ok(options)
 }
@@ -64,6 +72,53 @@ pub(crate) fn open_read_only(ledger: &Path) -> Result<Blockstore> {
     let options = read_only_options(ledger)?;
     Blockstore::open_with_options(ledger, options)
         .with_context(|| format!("open ledger {}", ledger.display()))
+}
+
+/// A typed failure from the one-slot, read-only command. Only an absent slot
+/// and a slot that is not root are safe negative results for its caller.
+#[derive(Debug)]
+pub(crate) struct SlotReadFailure {
+    pub exit_code: i32,
+    message: String,
+}
+
+impl SlotReadFailure {
+    fn new(exit_code: i32, message: String) -> Self {
+        Self { exit_code, message }
+    }
+}
+
+impl std::fmt::Display for SlotReadFailure {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.message.fmt(f)
+    }
+}
+
+impl std::error::Error for SlotReadFailure {}
+
+/// Read one complete rooted block. This does not scan or write an epoch.
+pub(crate) fn load_slot(blockstore: &Blockstore, slot: u64) -> Result<SlotData> {
+    let meta = blockstore
+        .meta(slot)
+        .with_context(|| format!("read SlotMeta for slot {slot}"))?
+        .ok_or_else(|| SlotReadFailure::new(3, format!("slot {slot} is absent")))?;
+    if !blockstore.is_root(slot) {
+        return Err(SlotReadFailure::new(4, format!("slot {slot} is not rooted")).into());
+    }
+    if !meta.is_full() {
+        return Err(SlotReadFailure::new(5, format!("slot {slot} is not full")).into());
+    }
+    let data = load_rooted_block(blockstore, slot)?;
+    if data.parent_slot != meta.parent_slot {
+        bail!("slot {slot} rooted block parent differs from SlotMeta");
+    }
+    if let Some(parent) = data.parent_slot {
+        if parent >= slot || !blockstore.is_root(parent) {
+            bail!("slot {slot} parent {parent} is not an earlier root");
+        }
+    }
+    accept_block_against(&data, slot, slot, None)?;
+    Ok(data)
 }
 
 pub(crate) const SLOTS_PER_EPOCH: u64 = 432_000;
@@ -159,7 +214,10 @@ impl<T> OrderedLoads<'_, T> {
     }
 
     fn inflight_count(&self) -> usize {
-        self.pool.as_ref().map(|pool| pool.inflight.len()).unwrap_or(0)
+        self.pool
+            .as_ref()
+            .map(|pool| pool.inflight.len())
+            .unwrap_or(0)
     }
 
     fn thread_limit(&self) -> usize {
@@ -167,9 +225,9 @@ impl<T> OrderedLoads<'_, T> {
     }
 
     fn is_pending(&self, slot: u64) -> bool {
-        self.pool.as_ref().is_some_and(|pool| {
-            pool.inflight.contains(&slot) || pool.ready.contains_key(&slot)
-        })
+        self.pool
+            .as_ref()
+            .is_some_and(|pool| pool.inflight.contains(&slot) || pool.ready.contains_key(&slot))
     }
 
     fn take(&mut self, slot: u64) -> Result<T> {
@@ -386,7 +444,11 @@ where
     for slot in start_slot..=end_slot {
         scanned += 1;
         let prefetch_end = slot
-            .saturating_add(u64::try_from(read_threads).unwrap_or(u64::MAX).saturating_sub(1))
+            .saturating_add(
+                u64::try_from(read_threads)
+                    .unwrap_or(u64::MAX)
+                    .saturating_sub(1),
+            )
             .min(end_slot);
         if slot < end_slot {
             prefetch_rooted_slots(blockstore, loads, &ahead, slot + 1, prefetch_end)?;
@@ -407,12 +469,7 @@ where
         {
             if !blockstore.is_root(slot) {
                 leave_out_abandoned_fork(
-                    blockstore,
-                    loads,
-                    slot,
-                    end_slot,
-                    &mut ahead,
-                    &mut forks,
+                    blockstore, loads, slot, end_slot, &mut ahead, &mut forks,
                 )?;
             } else if !meta.is_full() {
                 bail!("slot {slot} is rooted and is not full");
@@ -508,9 +565,7 @@ fn leave_out_abandoned_fork(
 ) -> Result<()> {
     let relation = rooted_chain_relation(blockstore, slot)?;
     let markers = match relation {
-        ChainRelation::JumpsOver { .. } => {
-            proof_markers(blockstore, loads, slot, end_slot, ahead)?
-        }
+        ChainRelation::JumpsOver { .. } => proof_markers(blockstore, loads, slot, end_slot, ahead)?,
         ChainRelation::DescendsFrom { .. } => None,
     };
     let next_root = match relation {
@@ -650,7 +705,7 @@ fn load_rooted_block(blockstore: &Blockstore, slot: u64) -> Result<SlotData> {
         .get_slot_components_with_shred_info(slot, 0, false)
         .with_context(|| format!("read shreds for slot {slot}"))?;
     if !is_full {
-        bail!("slot {slot} is not full");
+        return Err(SlotReadFailure::new(5, format!("slot {slot} is not full")).into());
     }
     if components.len() != ranges.len() {
         bail!("slot {slot} component count does not match its shred ranges");
@@ -684,10 +739,16 @@ fn load_rooted_block(blockstore: &Blockstore, slot: u64) -> Result<SlotData> {
     let block = match blockstore.get_rooted_block(slot, true) {
         Ok(block) => block,
         Err(BlockstoreError::ParentEntriesUnavailable) => {
-            bail!("slot {slot} is missing parent entries");
+            return Err(
+                SlotReadFailure::new(5, format!("slot {slot} is missing parent entries")).into(),
+            );
         }
         Err(BlockstoreError::MissingTransactionMetadata) => {
-            bail!("slot {slot} is missing transaction status");
+            return Err(SlotReadFailure::new(
+                6,
+                format!("slot {slot} is missing transaction status"),
+            )
+            .into());
         }
         Err(err) => return Err(anyhow!(err).context(format!("read rooted block {slot}"))),
     };
@@ -1249,22 +1310,18 @@ mod tests {
             }
             Ok(slot)
         };
-        let got = with_ordered_loads(
-            4,
-            &load,
-            |loads| {
-                for slot in 0..16 {
-                    loads.submit(slot)?;
-                }
-                let mut got = Vec::new();
-                for slot in 0..9 {
-                    got.push(loads.take(slot)?);
-                }
-                let error = loads.take(9).unwrap_err();
-                assert!(error.to_string().contains("slot 9 failed"), "{error:#}");
-                Ok(got)
-            },
-        )
+        let got = with_ordered_loads(4, &load, |loads| {
+            for slot in 0..16 {
+                loads.submit(slot)?;
+            }
+            let mut got = Vec::new();
+            for slot in 0..9 {
+                got.push(loads.take(slot)?);
+            }
+            let error = loads.take(9).unwrap_err();
+            assert!(error.to_string().contains("slot 9 failed"), "{error:#}");
+            Ok(got)
+        })
         .unwrap();
         assert_eq!(got, (0..9).collect::<Vec<_>>());
         let mut seen = seen.into_inner().expect("seen");
@@ -1287,12 +1344,50 @@ mod tests {
         assert!(!dir.path().join(BLOCKSTORE_DIRECTORY_ROCKS_LEVEL).exists());
     }
 
+    #[cfg(feature = "bounded-ledger-read")]
+    #[test]
+    fn bounded_sdk_default_preserves_the_original_open_file_setting() {
+        let mut options = BlockstoreOptions::default();
+        assert_eq!(options.max_open_files_for_access().unwrap(), -1);
+        options.access_type = AccessType::ReadOnly;
+        assert_eq!(options.max_open_files_for_access().unwrap(), -1);
+    }
+
+    #[cfg(feature = "bounded-ledger-read")]
+    #[test]
+    fn bounded_sdk_primary_modes_ignore_the_read_only_file_cap() {
+        let mut options = BlockstoreOptions::default();
+        options.read_only_max_open_files = std::num::NonZeroUsize::new(64);
+        for access in [AccessType::Primary, AccessType::PrimaryForMaintenance] {
+            options.access_type = access;
+            assert_eq!(options.max_open_files_for_access().unwrap(), -1);
+        }
+    }
+
+    #[cfg(feature = "bounded-ledger-read")]
+    #[test]
+    fn bounded_sdk_reader_caps_files_and_rejects_integer_overflow() {
+        let mut options = BlockstoreOptions::default();
+        options.access_type = AccessType::ReadOnly;
+        options.read_only_max_open_files = std::num::NonZeroUsize::new(64);
+        assert_eq!(options.max_open_files_for_access().unwrap(), 64);
+        options.read_only_max_open_files = std::num::NonZeroUsize::new(usize::MAX);
+        assert_eq!(
+            options.max_open_files_for_access().unwrap_err().kind(),
+            std::io::ErrorKind::InvalidInput
+        );
+    }
+
     #[test]
     fn read_only_options_require_readonly_access() {
         let dir = tempfile::tempdir().unwrap();
         let rocks = dir.path().join(BLOCKSTORE_DIRECTORY_ROCKS_LEVEL);
         std::fs::create_dir(&rocks).unwrap();
         let options = read_only_options(dir.path()).unwrap();
+        assert_eq!(options.num_rocksdb_compaction_threads.get(), 1);
+        assert_eq!(options.num_rocksdb_flush_threads.get(), 1);
+        #[cfg(feature = "bounded-ledger-read")]
+        assert_eq!(options.max_open_files_for_access().unwrap(), 64);
         assert_eq!(options.access_type, AccessType::ReadOnly);
         assert!(reject_non_readonly(&AccessType::Primary).is_err());
         assert!(reject_non_readonly(&AccessType::PrimaryForMaintenance).is_err());
@@ -1338,10 +1433,7 @@ mod tests {
     #[test]
     fn epoch_zero_and_epoch_1079_have_fixed_slot_ranges() {
         assert_eq!(epoch_slot_range(0).unwrap(), (0, 431_999));
-        assert_eq!(
-            epoch_slot_range(1079).unwrap(),
-            (466_128_000, 466_559_999)
-        );
+        assert_eq!(epoch_slot_range(1079).unwrap(), (466_128_000, 466_559_999));
         assert_eq!(
             epoch_output_dir(Path::new("/home/sol/ledger-archive-out"), 0),
             PathBuf::from("/home/sol/ledger-archive-out/epoch-0")
@@ -1355,7 +1447,10 @@ mod tests {
     #[test]
     fn an_epoch_that_overflows_u64_is_refused() {
         let error = epoch_slot_range(u64::MAX).unwrap_err();
-        assert!(error.to_string().contains("epoch start overflows"), "{error:#}");
+        assert!(
+            error.to_string().contains("epoch start overflows"),
+            "{error:#}"
+        );
 
         let epoch = u64::MAX / SLOTS_PER_EPOCH;
         let start_slot = epoch * SLOTS_PER_EPOCH;
@@ -1367,22 +1462,29 @@ mod tests {
             );
         } else {
             let error = result.unwrap_err();
-            assert!(error.to_string().contains("epoch end overflows"), "{error:#}");
+            assert!(
+                error.to_string().contains("epoch end overflows"),
+                "{error:#}"
+            );
         }
     }
 
     #[test]
     fn an_epoch_must_sit_between_the_first_stored_slot_and_the_last_root() {
-        let error = ensure_epoch_is_stored(1078, 465_696_000, 466_127_999, 465_818_301, 468_118_000)
-            .unwrap_err();
+        let error =
+            ensure_epoch_is_stored(1078, 465_696_000, 466_127_999, 465_818_301, 468_118_000)
+                .unwrap_err();
         assert!(
             error.to_string().contains("starts at slot 465696000")
-                && error.to_string().contains("ledger starts at slot 465818301"),
+                && error
+                    .to_string()
+                    .contains("ledger starts at slot 465818301"),
             "{error:#}"
         );
 
-        let error = ensure_epoch_is_stored(1083, 467_856_000, 468_287_999, 465_818_301, 468_118_000)
-            .unwrap_err();
+        let error =
+            ensure_epoch_is_stored(1083, 467_856_000, 468_287_999, 465_818_301, 468_118_000)
+                .unwrap_err();
         assert!(
             error.to_string().contains("ends at slot 468287999")
                 && error.to_string().contains("last root is slot 468118000"),
@@ -1399,7 +1501,11 @@ mod tests {
         let output = epoch_output_dir(dir.path(), 1079);
         ensure_no_published_archive_file(&output).unwrap();
         std::fs::create_dir_all(&output).unwrap();
-        std::fs::write(output.join(format!("{ARCHIVE_V2_BLOCKS_FILE}.tmp")), b"partial").unwrap();
+        std::fs::write(
+            output.join(format!("{ARCHIVE_V2_BLOCKS_FILE}.tmp")),
+            b"partial",
+        )
+        .unwrap();
         ensure_no_published_archive_file(&output).unwrap();
         std::fs::write(output.join(ARCHIVE_V2_BLOCKS_FILE), b"x").unwrap();
         let error = ensure_no_published_archive_file(&output).unwrap_err();

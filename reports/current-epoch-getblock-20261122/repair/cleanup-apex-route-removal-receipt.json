@@ -1,0 +1,36 @@
+{
+  "schema": "blockzilla-apex-route-removal-v1",
+  "state": "PASS",
+  "atUtc": "2026-11-22T20:19:41.736812+00:00",
+  "removedRoute": {
+    "id": "628bea874f8242a297cd66c62d8a0e75",
+    "pattern": "blockzilla.dev/archive/*",
+    "script": "blockzilla-get-block",
+    "request_limit_fail_open": false
+  },
+  "routesBefore": [
+    {
+      "id": "628bea874f8242a297cd66c62d8a0e75",
+      "pattern": "blockzilla.dev/archive/*",
+      "script": "blockzilla-get-block",
+      "request_limit_fail_open": false
+    },
+    {
+      "id": "a95d755d40714516a3c411812477bdcc",
+      "pattern": "archive.blockzilla.dev/block/*",
+      "script": "blockzilla-get-block",
+      "request_limit_fail_open": false
+    }
+  ],
+  "routesAfter": [
+    {
+      "id": "a95d755d40714516a3c411812477bdcc",
+      "pattern": "archive.blockzilla.dev/block/*",
+      "script": "blockzilla-get-block",
+      "request_limit_fail_open": false
+    }
+  ],
+  "dnsChanges": 0,
+  "workerCodeChanges": 0,
+  "storageChanges": 0
+}

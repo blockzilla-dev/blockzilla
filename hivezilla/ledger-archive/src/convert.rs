@@ -9,15 +9,17 @@ use blockzilla_archive_v2::{
     ARCHIVE_V2_POH_FILE, ARCHIVE_V2_PREV_BLOCKHASH_TAIL_FILE,
     ARCHIVE_V2_PUBKEY_REGISTRY_COUNTS_FILE, ARCHIVE_V2_PUBKEY_REGISTRY_FILE,
     ARCHIVE_V2_PUBKEY_REGISTRY_INDEX_FILE, ARCHIVE_V2_SHREDDING_FILE, ARCHIVE_V2_SIGNATURES_FILE,
-    ARCHIVE_V2_TX_FLAG_HAS_ERROR,
-    ARCHIVE_V2_TX_FLAG_HAS_INNER_IX, ARCHIVE_V2_TX_FLAG_HAS_LOADED_ADDRESSES,
-    ARCHIVE_V2_TX_FLAG_HAS_LOGS, ARCHIVE_V2_TX_FLAG_HAS_METADATA,
-    ARCHIVE_V2_TX_FLAG_HAS_RETURN_DATA, ARCHIVE_V2_TX_FLAG_HAS_TOKEN_BALANCES,
-    ARCHIVE_V2_TX_FLAG_MESSAGE_V0, ARCHIVE_V2_VOTE_HASH_REGISTRY_FILE, ArchiveV2HotBlockBlob,
-    ArchiveV2HotBlockHeader, ArchiveV2HotBlockIndexRow, ArchiveV2HotInstruction,
-    ArchiveV2HotInstructionData, ArchiveV2HotLegacyMessage, ArchiveV2HotMessagePayload,
-    ArchiveV2HotRewards, ArchiveV2HotTxRow, ArchiveV2HotV0Message, ArchiveV2HotV1Message,
-    WincodeArchiveV2PohRecord, WincodeArchiveV2ShreddingRecord, write_archive_v2_hot_block_index,
+    ARCHIVE_V2_TX_FLAG_HAS_ERROR, ARCHIVE_V2_TX_FLAG_HAS_INNER_IX,
+    ARCHIVE_V2_TX_FLAG_HAS_LOADED_ADDRESSES, ARCHIVE_V2_TX_FLAG_HAS_LOGS,
+    ARCHIVE_V2_TX_FLAG_HAS_METADATA, ARCHIVE_V2_TX_FLAG_HAS_RETURN_DATA,
+    ARCHIVE_V2_TX_FLAG_HAS_TOKEN_BALANCES, ARCHIVE_V2_TX_FLAG_MESSAGE_V0,
+    ARCHIVE_V2_VOTE_HASH_REGISTRY_FILE, ArchiveV2BlockAccessBlob, ArchiveV2BlockAccessBlockhash,
+    ArchiveV2BlockAccessPubkey, ArchiveV2HotBlockBlob, ArchiveV2HotBlockHeader,
+    ArchiveV2HotBlockIndexRow, ArchiveV2HotInstruction, ArchiveV2HotInstructionData,
+    ArchiveV2HotLegacyMessage, ArchiveV2HotMessagePayload, ArchiveV2HotRewards, ArchiveV2HotTxRow,
+    ArchiveV2HotV0Message, ArchiveV2HotV1Message, BlockzillaGetBlockBlobEncoding,
+    BlockzillaGetBlockBundleV1, WINCODE_ARCHIVE_V2_BLOCK_ACCESS_VERSION, WincodeArchiveV2PohRecord,
+    WincodeArchiveV2ShreddingRecord, write_archive_v2_hot_block_index,
 };
 use blockzilla_compact::parse_logs_with_compactor;
 use blockzilla_compact::{
@@ -46,13 +48,130 @@ fn check_zstd_level(level: i32) -> Result<()> {
     if range.contains(&level) {
         return Ok(());
     }
-    bail!("zstd level {level} is outside {} to {}", range.start(), range.end());
+    bail!(
+        "zstd level {level} is outside {} to {}",
+        range.start(),
+        range.end()
+    );
 }
 const INDEX_FLAGS: u32 = 0;
 const VOTE_HASH_ROW_LEN: usize = 65;
 const RECENT_BLOCKHASH_SLOT_WINDOW: u64 = 150;
 const ROLLING_BLOCKHASH_CAPACITY: usize = 300;
 type PubkeyCounts = HashMap<[u8; 32], u32>;
+
+pub(crate) struct SlotBundle {
+    pub hot: ArchiveV2HotBlockIndexRow,
+    pub bytes: Vec<u8>,
+}
+
+/// Use the epoch encoder with a block-local dictionary and no output files.
+/// Recent transaction blockhashes stay inline, so this path needs no ancestor
+/// scan. The previous block is ID 0 and this block is ID 1 in this response.
+pub(crate) fn encode_slot_bundle(block: &SlotData) -> Result<SlotBundle> {
+    use crate::slot_compact::{MAX_BUNDLE_BYTES, MAX_HOT_BYTES, MAX_TRANSACTIONS};
+
+    crate::check::accept_block_against(block, block.slot, block.slot, None)?;
+    if block.transactions.len() > MAX_TRANSACTIONS {
+        bail!("slot {} has too many transactions", block.slot);
+    }
+    let mut counts = PubkeyCounts::new();
+    count_slot_pubkeys(block, &mut counts);
+    let keys = ordered_registry(counts).keys;
+    if keys.len() > 65_536 {
+        bail!("slot {} has too many registry keys", block.slot);
+    }
+    let key_index = KeyIndex::build_from_slice_low_memory(&keys);
+    let uncompressed = encode_hot_block(block, 1, &key_index, &RollingBlockhashes::default())?;
+    if uncompressed.len() > MAX_HOT_BYTES {
+        bail!("slot {} hot block exceeds its byte limit", block.slot);
+    }
+    let compressed = zstd::bulk::compress(&uncompressed, ZSTD_LEVEL)
+        .with_context(|| format!("compress slot {}", block.slot))?;
+    let uncompressed_len = u32::try_from(uncompressed.len()).context("hot block exceeds u32")?;
+    drop(uncompressed);
+    let compressed_len = u32::try_from(compressed.len()).context("compressed block exceeds u32")?;
+    let expected_signature_count = block.transactions.iter().try_fold(0usize, |count, tx| {
+        count
+            .checked_add(tx.signatures.len())
+            .context("signature count overflows")
+    })?;
+    if expected_signature_count > 8 * 1024 * 1024 / 64 {
+        bail!("slot {} signatures exceed their byte limit", block.slot);
+    }
+    let mut signatures = Vec::with_capacity(expected_signature_count * 64);
+    let signature_count = append_signatures(&mut signatures, block)?;
+    if signatures.len() > 8 * 1024 * 1024 {
+        bail!("slot {} signatures exceed their byte limit", block.slot);
+    }
+    let previous_blockhash = block
+        .previous_blockhash
+        .context("missing previous blockhash")?;
+    let access = ArchiveV2BlockAccessBlob {
+        version: WINCODE_ARCHIVE_V2_BLOCK_ACCESS_VERSION,
+        flags: 0,
+        blockhash: block.blockhash,
+        previous_blockhash,
+        signature_counts: block
+            .transactions
+            .iter()
+            .map(|tx| tx.signatures.len() as u8)
+            .collect(),
+        signatures,
+        pubkeys: keys
+            .into_iter()
+            .enumerate()
+            .map(|(index, pubkey)| ArchiveV2BlockAccessPubkey {
+                id: index as u32 + 1,
+                pubkey,
+            })
+            .collect(),
+        blockhashes: vec![
+            ArchiveV2BlockAccessBlockhash {
+                id: 0,
+                blockhash: previous_blockhash,
+            },
+            ArchiveV2BlockAccessBlockhash {
+                id: 1,
+                blockhash: block.blockhash,
+            },
+        ],
+        // The ledger encoder keeps instructions raw. It emits no vote IDs.
+        vote_hashes: Vec::new(),
+    };
+    let access_bytes = wincode::config::serialize(&access, wincode_leb128_config())
+        .context("serialize one-slot access")?;
+    if compressed.len().saturating_add(access_bytes.len()) > MAX_BUNDLE_BYTES {
+        bail!("slot {} bundle exceeds its byte limit", block.slot);
+    }
+    let tx_count =
+        u32::try_from(block.transactions.len()).context("transaction count exceeds u32")?;
+    let hot = ArchiveV2HotBlockIndexRow {
+        block_id: 1,
+        slot: block.slot,
+        compressed_offset: 0,
+        compressed_len,
+        uncompressed_len,
+        tx_count,
+        first_tx_ordinal: 0,
+        first_signature_ordinal: 0,
+        signature_count,
+    };
+    let bundle = BlockzillaGetBlockBundleV1 {
+        version: 1,
+        slot: block.slot,
+        hot_block_encoding: BlockzillaGetBlockBlobEncoding::ZstdWincode,
+        hot_block: compressed,
+        block_access_encoding: BlockzillaGetBlockBlobEncoding::Wincode,
+        block_access: Some(access_bytes),
+    };
+    let bytes = wincode::config::serialize(&bundle, wincode_leb128_config())
+        .context("serialize one-slot bundle")?;
+    if bytes.len() > MAX_BUNDLE_BYTES {
+        bail!("slot {} bundle exceeds its byte limit", block.slot);
+    }
+    Ok(SlotBundle { hot, bytes })
+}
 
 pub(crate) fn build_archive(
     ledger: &Path,
@@ -101,13 +220,9 @@ pub(crate) fn build_archive(
             "writing blocks for slots {start_slot} to {end_slot} at zstd level {zstd_level}"
         ));
         let mut writer = ArchiveWriter::create(&temps, key_index, tail, false, zstd_level)?;
-        scan_range(
-            &blockstore,
-            start_slot,
-            end_slot,
-            read_threads,
-            |block| writer.write_block(block),
-        )?;
+        scan_range(&blockstore, start_slot, end_slot, read_threads, |block| {
+            writer.write_block(block)
+        })?;
         writer.finish(output)?;
         Ok(inspected)
     })();
@@ -1708,7 +1823,8 @@ mod tests {
         let index = std::fs::read(dir.path().join(ARCHIVE_V2_BLOCK_INDEX_FILE)).unwrap();
         assert_eq!(i32::from_le_bytes(index[28..32].try_into().unwrap()), 3);
 
-        let error = write_archive(dir.path(), &inspected, 10_000, |_| Ok(block.clone())).unwrap_err();
+        let error =
+            write_archive(dir.path(), &inspected, 10_000, |_| Ok(block.clone())).unwrap_err();
         assert!(error.to_string().contains("zstd level"));
     }
 

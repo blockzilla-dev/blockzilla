@@ -21,6 +21,7 @@ blockzilla-bank-stream-v2 = { path = "../../crates/blockzilla-bank-stream-v2" }
 clap = { version = "4.6.6", features = ["derive", "env"] }
 hex = "0.4.3"
 libc = "0.2.190"
+rusqlite = { version = "=0.40.2", features = ["bundled", "fallible_uint"] }
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.151"
 hivezilla-stream = { path = "../../hivezilla/stream-relay" }
@@ -32,7 +33,6 @@ zstd = "0.14.0"
 
 [dev-dependencies]
 blockzilla-bank-stream-v2 = { path = "../../crates/blockzilla-bank-stream-v2", features = ["test-fixtures"] }
-rusqlite = { version = "=0.40.2", features = ["bundled", "fallible_uint"] }
 http-body-util = "0.1.5"
 tempfile = "3.27.0"
 tower = { version = "0.5.3", features = ["util"] }

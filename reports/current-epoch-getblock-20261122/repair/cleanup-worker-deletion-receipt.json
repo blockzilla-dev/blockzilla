@@ -1,0 +1,166 @@
+{
+  "schema": "blockzilla-getblock-experiment-worker-cleanup-v1",
+  "startedAt": "2026-11-22T20:14:29.872766+00:00",
+  "expectedProductionVersion": "1cc2931c-a23d-464b-b8ee-00b0e49d978d",
+  "workersBefore": [
+    "blockzilla",
+    "blockzilla-archive-samples-v1",
+    "blockzilla-dev",
+    "blockzilla-doc",
+    "blockzilla-finalized-fixture",
+    "blockzilla-foundation-watch",
+    "blockzilla-get-block",
+    "blockzilla-get-block-bundle-test",
+    "blockzilla-get-block-foundation-test",
+    "blockzilla-get-block-native-fast",
+    "blockzilla-get-block-native-full-test",
+    "blockzilla-get-block-native-test",
+    "blockzilla-get-block-worker",
+    "blockzilla-get-block-worker-bin-test",
+    "blockzilla-get-transaction-canary-20261121",
+    "blockzilla-network-format-benchmark-v1",
+    "blockzilla-staging",
+    "cloudflare-solana-rpc",
+    "ferno-ag",
+    "ferno-token-logo-router",
+    "kaichi-actions",
+    "memoireyohann",
+    "of-get-block-worker",
+    "pkm-sorter",
+    "rpc-proxy",
+    "stargazer-nas-gateway",
+    "strategy-ferno-ag-v2",
+    "syt-api",
+    "syt-tracker",
+    "tuxx-report",
+    "x402-tg-auction-bot"
+  ],
+  "keptDomainsBefore": [
+    {
+      "id": "bfc30a1214968d784abb348f93c879cbdab79e9b",
+      "hostname": "blockzilla.dev",
+      "service": "blockzilla",
+      "environment": "production",
+      "zone_id": "fe1afd69f777e57eca0a230722f77da2",
+      "enabled": true,
+      "previews_enabled": false
+    },
+    {
+      "id": "3e5664f63a8c29e94ab042d4c03a62552f034e00",
+      "hostname": "getblock.blockzilla.dev",
+      "service": "blockzilla-get-block",
+      "environment": "production",
+      "zone_id": "fe1afd69f777e57eca0a230722f77da2",
+      "enabled": true,
+      "previews_enabled": false
+    }
+  ],
+  "routesBefore": [
+    {
+      "id": "628bea874f8242a297cd66c62d8a0e75",
+      "pattern": "blockzilla.dev/archive/*",
+      "script": "blockzilla-get-block",
+      "request_limit_fail_open": false
+    }
+  ],
+  "backupsComplete": true,
+  "allDependencyChecksPassed": true,
+  "deletions": [
+    {
+      "worker": "blockzilla-get-block-bundle-test",
+      "success": true,
+      "atUtc": "2026-11-22T20:14:31.136878+00:00"
+    },
+    {
+      "worker": "blockzilla-get-block-foundation-test",
+      "success": true,
+      "atUtc": "2026-11-22T20:14:32.196847+00:00"
+    },
+    {
+      "worker": "blockzilla-get-block-native-fast",
+      "success": true,
+      "atUtc": "2026-11-22T20:14:33.236652+00:00"
+    },
+    {
+      "worker": "blockzilla-get-block-native-full-test",
+      "success": true,
+      "atUtc": "2026-11-22T20:14:34.348022+00:00"
+    },
+    {
+      "worker": "blockzilla-get-block-native-test",
+      "success": true,
+      "atUtc": "2026-11-22T20:14:35.479788+00:00"
+    },
+    {
+      "worker": "blockzilla-get-block-worker",
+      "success": true,
+      "atUtc": "2026-11-22T20:14:36.531494+00:00"
+    },
+    {
+      "worker": "blockzilla-get-block-worker-bin-test",
+      "success": true,
+      "atUtc": "2026-11-22T20:14:37.555037+00:00"
+    }
+  ],
+  "storageApisCalled": 0,
+  "secretOrBindingValuesSaved": false,
+  "state": "PASS",
+  "workersAfter": [
+    "blockzilla",
+    "blockzilla-archive-samples-v1",
+    "blockzilla-dev",
+    "blockzilla-doc",
+    "blockzilla-finalized-fixture",
+    "blockzilla-foundation-watch",
+    "blockzilla-get-block",
+    "blockzilla-get-transaction-canary-20261121",
+    "blockzilla-network-format-benchmark-v1",
+    "blockzilla-staging",
+    "cloudflare-solana-rpc",
+    "ferno-ag",
+    "ferno-token-logo-router",
+    "kaichi-actions",
+    "memoireyohann",
+    "of-get-block-worker",
+    "pkm-sorter",
+    "rpc-proxy",
+    "stargazer-nas-gateway",
+    "strategy-ferno-ag-v2",
+    "syt-api",
+    "syt-tracker",
+    "tuxx-report",
+    "x402-tg-auction-bot"
+  ],
+  "keptDomainsAfter": [
+    {
+      "id": "bfc30a1214968d784abb348f93c879cbdab79e9b",
+      "hostname": "blockzilla.dev",
+      "service": "blockzilla",
+      "environment": "production",
+      "zone_id": "fe1afd69f777e57eca0a230722f77da2",
+      "enabled": true,
+      "previews_enabled": false
+    },
+    {
+      "id": "3e5664f63a8c29e94ab042d4c03a62552f034e00",
+      "hostname": "getblock.blockzilla.dev",
+      "service": "blockzilla-get-block",
+      "environment": "production",
+      "zone_id": "fe1afd69f777e57eca0a230722f77da2",
+      "enabled": true,
+      "previews_enabled": false
+    }
+  ],
+  "routesAfter": [
+    {
+      "id": "628bea874f8242a297cd66c62d8a0e75",
+      "pattern": "blockzilla.dev/archive/*",
+      "script": "blockzilla-get-block",
+      "request_limit_fail_open": false
+    }
+  ],
+  "remainingBlockzillaGetblockWorkers": [
+    "blockzilla-get-block"
+  ],
+  "finishedAt": "2026-11-22T20:14:42.196875+00:00"
+}

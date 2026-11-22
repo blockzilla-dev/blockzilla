@@ -1,0 +1,240 @@
+{
+  "schema": "blockzilla-cloudflare-cleanup-final-v1",
+  "state": "PASS",
+  "observedAt": "2026-11-22T20:19:54.040946+00:00",
+  "workersAfter": [
+    "blockzilla",
+    "blockzilla-archive-samples-v1",
+    "blockzilla-dev",
+    "blockzilla-doc",
+    "blockzilla-finalized-fixture",
+    "blockzilla-foundation-watch",
+    "blockzilla-get-block",
+    "blockzilla-get-transaction-canary-20261121",
+    "blockzilla-network-format-benchmark-v1",
+    "blockzilla-staging",
+    "cloudflare-solana-rpc",
+    "ferno-ag",
+    "ferno-token-logo-router",
+    "kaichi-actions",
+    "memoireyohann",
+    "of-get-block-worker",
+    "pkm-sorter",
+    "rpc-proxy",
+    "stargazer-nas-gateway",
+    "strategy-ferno-ag-v2",
+    "syt-api",
+    "syt-tracker",
+    "tuxx-report",
+    "x402-tg-auction-bot"
+  ],
+  "remainingBlockzillaGetblockWorkers": [
+    "blockzilla-get-block"
+  ],
+  "pagesProjectsAfter": [
+    "ferno-pulsar",
+    "ferno-token-metadata",
+    "ferno-wallet-lab",
+    "ferno-wallet-lab-adapter",
+    "ferno-wallet-lab-dapp",
+    "firescope-frontend",
+    "firewatch-frontend",
+    "my-svelte-app",
+    "pkm-auction",
+    "strategy-ferno-ag",
+    "wasted-brief",
+    "website"
+  ],
+  "customDomainsUnchanged": true,
+  "unrelatedWorkerAndPagesProjectsUnchanged": true,
+  "tunnelsAndIngressUnchanged": true,
+  "tunnels": [
+    {
+      "id": "0759f2df-729a-4d8c-a2eb-54bd5d16dac7",
+      "name": "blockzilla-receiver",
+      "status": "healthy"
+    },
+    {
+      "id": "0d6d8387-be23-4428-948f-e8c4d7b3c497",
+      "name": "ferno-btc-origin",
+      "status": "healthy"
+    },
+    {
+      "id": "afbe6862-7045-4520-bea6-0ec0caafe5a8",
+      "name": "firewatch-fondation",
+      "status": "healthy"
+    },
+    {
+      "id": "0cd18a26-d76a-408c-a1fa-55a1151fa3ae",
+      "name": "hivezilla-validator",
+      "status": "healthy"
+    }
+  ],
+  "productionVersion": "1cc2931c-a23d-464b-b8ee-00b0e49d978d",
+  "retainedDeploymentVersions": [
+    {
+      "deploymentId": "084d32e5-c0a6-4dab-b367-030629b31075",
+      "versions": [
+        {
+          "version_id": "1cc2931c-a23d-464b-b8ee-00b0e49d978d",
+          "percentage": 100
+        }
+      ]
+    },
+    {
+      "deploymentId": "2f70ccbb-b946-47d9-bf5b-713dfa34469a",
+      "versions": [
+        {
+          "version_id": "4d1b4d55-31f1-4e30-a287-717846eeff3c",
+          "percentage": 100
+        }
+      ]
+    },
+    {
+      "deploymentId": "d20dadcf-74bb-4027-ae97-dcba338d6d85",
+      "versions": [
+        {
+          "version_id": "50aaba11-468b-4c57-b1ad-ddc999ea9152",
+          "percentage": 100
+        }
+      ]
+    },
+    {
+      "deploymentId": "1bd87671-c88a-46ee-a7fd-658963e1241c",
+      "versions": [
+        {
+          "version_id": "2359b1b3-d95b-4e3b-bffc-b4161aac406f",
+          "percentage": 100
+        }
+      ]
+    },
+    {
+      "deploymentId": "0475fe4d-5c98-41bc-9c60-b648101da491",
+      "versions": [
+        {
+          "version_id": "566ecc0a-949d-417b-90cd-89c629bc9073",
+          "percentage": 100
+        }
+      ]
+    },
+    {
+      "deploymentId": "cc7ec5ff-a51f-4178-98da-acbb832518f9",
+      "versions": [
+        {
+          "version_id": "074812ac-a908-4eba-bec5-02752230eae6",
+          "percentage": 100
+        }
+      ]
+    },
+    {
+      "deploymentId": "bf3336df-cea8-4416-b633-fd6e1347df6c",
+      "versions": [
+        {
+          "version_id": "61ed6815-f9f9-4669-abe1-dd841717ea78",
+          "percentage": 100
+        }
+      ]
+    },
+    {
+      "deploymentId": "69e6d963-4c90-48db-afd4-e8939c54ec3f",
+      "versions": [
+        {
+          "version_id": "556cefdf-726a-4be4-8e95-3644c25f5d46",
+          "percentage": 100
+        }
+      ]
+    },
+    {
+      "deploymentId": "62063040-5cff-4199-9471-34a2f478530d",
+      "versions": [
+        {
+          "version_id": "62a0e93e-0565-49d1-9f28-347a6595aeb2",
+          "percentage": 100
+        }
+      ]
+    },
+    {
+      "deploymentId": "cbc3e686-d2cd-436e-ba34-689f07c97515",
+      "versions": [
+        {
+          "version_id": "a2345d14-1cfc-48e4-bfe9-f0b46bd9a449",
+          "percentage": 100
+        }
+      ]
+    }
+  ],
+  "productionWorkersDevEnabled": false,
+  "productionPreviewUrlsEnabled": false,
+  "productionRoutes": [
+    {
+      "id": "a95d755d40714516a3c411812477bdcc",
+      "pattern": "archive.blockzilla.dev/block/*",
+      "script": "blockzilla-get-block",
+      "request_limit_fail_open": false
+    }
+  ],
+  "httpChecks": [
+    {
+      "url": "https://archive.blockzilla.dev/block/472608000.json",
+      "httpStatus": 200,
+      "finalUrl": "https://archive.blockzilla.dev/block/472608000.json",
+      "bytes": 583789,
+      "bodySha256": "85bd16f8c8456524f6615a2c815601efa27ef68e7208cb24b365a4aba25a66fd",
+      "transactionCount": 81,
+      "rewardCount": 1326,
+      "blockhash": "DMvymXRdtFwkR26HW2rwMJpVfhsbqyypYmptq91Aasgj",
+      "cache": "HIT",
+      "foundationRecentRequests": "0",
+      "r2Reads": "0",
+      "billableReads": "0",
+      "blockBodyFilesWritten": 0
+    },
+    {
+      "url": "https://getblock.blockzilla.dev/block/472608000.json",
+      "httpStatus": 200,
+      "finalUrl": "https://getblock.blockzilla.dev/block/472608000.json",
+      "bytes": 583789,
+      "bodySha256": "85bd16f8c8456524f6615a2c815601efa27ef68e7208cb24b365a4aba25a66fd",
+      "transactionCount": 81,
+      "rewardCount": 1326,
+      "blockhash": "DMvymXRdtFwkR26HW2rwMJpVfhsbqyypYmptq91Aasgj",
+      "cache": "HIT",
+      "foundationRecentRequests": "0",
+      "r2Reads": "0",
+      "billableReads": "0",
+      "blockBodyFilesWritten": 0
+    }
+  ],
+  "homepageHeadStatusBefore": 403,
+  "homepageHeadStatusAfter": 403,
+  "storageApisCalled": 0,
+  "blockBodyFilesWritten": 0,
+  "secretOrBindingValuesSaved": false,
+  "canonicalUrlTemplates": [
+    "https://archive.blockzilla.dev/block/{slot}.json",
+    "https://archive.blockzilla.dev/block/{slot}.bin"
+  ],
+  "originalArchiveDnsPreserved": {
+    "verifiedThrough": "Logged-in Cloudflare dashboard after final route activation",
+    "name": "archive.blockzilla.dev",
+    "type": "CNAME",
+    "content": "pub-97348740d6ef467aa2f1b4b62daa98dc.r2.dev",
+    "proxied": true,
+    "ttl": "Auto"
+  },
+  "archiveRootHeadBeforeAfter": [
+    403,
+    403
+  ],
+  "archiveRawRootPreserved": true,
+  "apexTemporaryRouteRemoved": true,
+  "cdnCanaryRemoved": {
+    "project": "blockzilla-getblock-cdn-canary",
+    "hostname": "getblock-cdn-test.blockzilla.dev",
+    "cacheRuleId": "dae0be9b4a1d4578b0457e783d0003fb",
+    "projectAndDomainAndDnsAndRuleRemoved": true
+  },
+  "sourceBackupsSecretScanPassed": true,
+  "noNewWorkerOrProxyOrLoadBalancer": true,
+  "finishedAt": "2026-11-22T20:21:07.236746+00:00"
+}

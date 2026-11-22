@@ -2,7 +2,7 @@
 resolver = "2"
 # The validator plugin and the ledger archive tool have independent lock files
 # for their exact Agave ABI.
-exclude = ["hivezilla/direct-agave", "hivezilla/stream-relay", "hivezilla/stream-relay/decoder", "hivezilla/ledger-archive"]
+exclude = ["hivezilla/direct-agave", "hivezilla/stream-relay", "hivezilla/stream-relay/decoder", "hivezilla/ledger-archive", "crates/blockzilla-bank-stream-v2"]
 members = [
     # Shared models, primitives, and byte sources.
     "crates/blockzilla-model",

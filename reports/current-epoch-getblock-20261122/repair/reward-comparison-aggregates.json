@@ -1,0 +1,57 @@
+{
+  "slot": 472608000,
+  "workerRewards": 1326,
+  "rpcRewards": 1326,
+  "typesWorker": {
+    "None": 666,
+    "Voting": 659,
+    "Fee": 1
+  },
+  "typesRpc": {
+    "VATDebit": 666,
+    "Voting": 659,
+    "Fee": 1
+  },
+  "rawFullRecordMultiset": {
+    "equal": false,
+    "workerOnly": 666,
+    "rpcOnly": 666
+  },
+  "nullTypeNormalization": {
+    "changedTo": {
+      "VATDebit": 666
+    },
+    "identityUnmatched": 0,
+    "identityAmbiguous": 0
+  },
+  "normalizedFullRecordMultiset": {
+    "equal": true,
+    "workerOnly": 0,
+    "rpcOnly": 0
+  },
+  "normalizedOrderedRewardsEqual": false,
+  "matchedIdentityRemainingDifferences": 0,
+  "remainingFieldDifferenceCounts": {},
+  "otherBlockFieldsEqual": {
+    "parentSlot": true,
+    "blockTime": true,
+    "blockHeight": true,
+    "previousBlockhash": true,
+    "numRewardPartitions": true,
+    "transactions": true,
+    "blockhash": true
+  },
+  "scope": "One preview GET and one public RPC call. Bodies stayed in process memory; only aggregate counts saved.",
+  "sdkEvidence": {
+    "crate": "solana-reward-info",
+    "version": "7.0.0",
+    "registryChecksum": "0d20f0760fe5f41208593d5111a13dff725a0b1af9986924c4a4ce5461520d0d",
+    "sourcePath": "/home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/solana-reward-info-7.0.0/src/lib.rs",
+    "serde": "Serialize/Deserialize derive on RewardType; no rename attribute",
+    "jsonNames": {
+      "5": "DeactivatedStake",
+      "6": "VATDebit"
+    },
+    "note": "Display strings differ from Serde and must not be used for RPC JSON."
+  }
+}

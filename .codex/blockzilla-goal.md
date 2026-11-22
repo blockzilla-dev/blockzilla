@@ -707,3 +707,35 @@ publisher remains tied to its older source session. Recent JSON projection,
 current-session publication handoff and current-epoch archive admission
 remain unfinished. No validator or native service was changed for this
 diagnosis. See the [coverage report](../reports/current-epoch-getblock-20261122/README.md).
+
+## Current epoch read boundary, 22 November 2026
+
+The owner clarified that Foundation must keep enough Agave ledger data for
+one or two epochs. A separate machine compacts and uploads epoch archives
+to Foundation R2. Foundation must not run a new archive uploader. Its local
+reader supplies recent native Compact V2 blocks or reads a complete rooted
+block from the existing ledger. The Cloudflare Worker renders RPC JSON.
+After a checked miss, the Worker can use the existing published Compact V2
+archive layout. Do not add another persistent block copy or a per-block
+resolution index. Ledger deletion must preserve the publication overlap.
+
+The selected public namespace is `archive.blockzilla.dev/block/<slot>.json`
+or `.bin`, on the same getBlock Worker. Keep `stream.blockzilla.dev` for live
+streams. The separate hostnames permit independent routing; they do not
+activate a load balancer. Keep the existing getBlock hostname
+for compatibility. After deployment, remove the getBlock experiment Workers
+and the test CDN proxy. Keep the separate website service.
+
+An attempted Foundation publication test was stopped before any uploader
+started. It made zero R2 writes. Its controller stop also stopped the
+dependent processed and origin services. The original controller, binary,
+configuration and retention policy were restored; the feed is moving. No
+archive gate remains. Validator and Tunnel identities stayed unchanged.
+The read-only ledger helper separately passed slot 472608000 with 81
+transactions, correct hashes and no persisted block body, under its time
+and memory limits. Worker version `1cc2931c-a23d-464b-b8ee-00b0e49d978d` is
+deployed at 100%. The public JSON response matches all transaction bytes
+and metadata and all 1326 block reward records; reward order differs from
+the comparison RPC. The new reward types are preserved. The checked ledger
+root-key range spans 1.01 epochs, which does not prove complete coverage.
+Ledger purge and automatic new-epoch index admission remain separate work.

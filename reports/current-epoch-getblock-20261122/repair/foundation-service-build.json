@@ -1,0 +1,29 @@
+{
+  "remotePath": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/service-build.json",
+  "modifiedUnix": 1795374063.360971,
+  "receipt": {
+    "exitCode": 0,
+    "elapsedSeconds": 51.724,
+    "log": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/service-build.log",
+    "binary": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/bin/blockzilla-resolution-service",
+    "binaryBytes": 9433464,
+    "binarySha256": "3706565c7407e7188d1ab21ea183ffc619898da28b810631658414691db0f47f",
+    "sourceFiles": {
+      "indexer/blockzilla-resolution-service/Cargo.toml": "473bd3eb9070180af7ed5bc750c97f7fd16bf8751985bd51f1b5f121ccc714be",
+      "indexer/blockzilla-resolution-service/src/bin/measure_direct_resolution.rs": "caea20e73bcc5e4feaeeb170bbca937e9f83206b43f8902303e281f10474cca3",
+      "indexer/blockzilla-resolution-service/src/bin/measure_resolutions.rs": "bc9abdcccbd1f0b925fe8eabcd756e89a35f7ada1a08dc04fece6e8bcdf51e9b",
+      "indexer/blockzilla-resolution-service/src/cache.rs": "f6c8fbe398ce8661b56051e10731e166ec632f38fff39492c9a037b956427089",
+      "indexer/blockzilla-resolution-service/src/catalog.rs": "b5c4561f45ab2e56e891bc7d7227f9f01e615dbbe168b1f19062762d821b700d",
+      "indexer/blockzilla-resolution-service/src/direct.rs": "cf0f8e7af64dedfa48144b68def76d9d78de17e51683a34419670e7638cb541e",
+      "indexer/blockzilla-resolution-service/src/finalized.rs": "10aa043055efc97bab97fb362abeefa29036ef5628ba215c8be9b4d59c84584f",
+      "indexer/blockzilla-resolution-service/src/http.rs": "bac9a66e78e66e43399f4d95dffc89c4b47c084b32a72e05800a96405aa31fe0",
+      "indexer/blockzilla-resolution-service/src/http_tests.rs": "a6f453bc7ac1fd6d1d990032ea74b7aa8dd03fcbcd72fb1a6ca9a90d0f9bd696",
+      "indexer/blockzilla-resolution-service/src/lib.rs": "732522d853b79799da774fcbbc828ba3fd4722b89efb490dc734b60224c5a24f",
+      "indexer/blockzilla-resolution-service/src/main.rs": "952e839a07b60375f0e84dc61d31bab8f3d38ae1c966806a16cc9bda8275d542",
+      "indexer/blockzilla-resolution-service/src/native_archive.rs": "84107c57e48fd45c4a3df32f80ba774e89af79d0fd754354a7de6e29d95ee6ee",
+      "indexer/blockzilla-resolution-service/src/recent.rs": "5dda3fc62a62815af9409fee3d23a5d34ea69f1b8a6d927145f7377d64bd1177",
+      "indexer/blockzilla-resolution-service/src/recent_tests.rs": "8413c05bde6ff952d7984e3aae38ee3f7f7ed7ba394c74ed58263a3f18276097"
+    },
+    "sourceManifestNote": "AppleDouble metadata files are excluded; they are not Rust source modules."
+  }
+}

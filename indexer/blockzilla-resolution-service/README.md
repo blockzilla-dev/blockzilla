@@ -2,6 +2,31 @@
 
 ## Recent stream blocks
 
+`--recent-config` also enables private `GET /v1/finalized/{slot}`, with no
+query parameters. This route selects one unique rooted bank by slot. It
+checks the original block frame, native root control, source and retention
+authority. The caller does not supply a blockhash. Ambiguous rooted banks,
+missing root proofs, changed source bindings, corrupt files and retirement
+races are unavailable errors, not archive misses.
+
+A hit uses the same original frame body and `X-BZ-Recent-Metadata` described
+below, with admitted commitment `finalized`. `X-BZ-Finalized-Root` contains
+the exact small root control frame in URL-safe Base64 without padding. The
+raw control frame is limited to 4,096 bytes. A caller must check its source,
+root event and payload binding against the block. The processed block event
+stays unchanged. Foundation does not render RPC JSON or store another block
+copy; the Worker converts the checked existing Compact V2 objects.
+`X-BZ-Finalized-Producer-Generation` also binds the reply to the configured
+native producer generation. A retained but unrooted slot returns HTTP 409
+with `not_finalized`, never an archive miss.
+
+Only a successful source read with no rooted bank returns the existing HTTP
+404 `not_cached` reply and admitted archive locator (or `source: null`). An
+admitted locator also has `X-BZ-Recent-Blockhash`, checked against the local
+archive hash. This route uses the same authorization, protocol pins, bounded
+blocking-work permits, `no-store` policy and recent-read counters. The
+existing hash-pinned `/v1/recent/{slot}` contract remains unchanged.
+
 `--recent-config /private/recent.json` enables `GET /v1/recent/{slot}`. It reads
 the native producer's existing rolling window through `BankSource`. That
 library opens the existing `feed.sqlite` with `SQLITE_OPEN_READ_ONLY` and
@@ -24,6 +49,105 @@ The private configuration has this shape:
   "producer_generation": "<64 lowercase hex digits>"
 }
 ```
+
+An optional `native_archive_catalog` field can name the existing publisher's
+absolute `archive.sqlite` path. The service opens it read-only, with
+`query_only`, after a checked live miss. No connection or record is cached.
+If configured, a missing file, descriptor or invalid record returns HTTP 503.
+A missing slot row can continue to the existing historical catalog lookup.
+
+The publisher catalog has `meta(id INTEGER PRIMARY KEY, record TEXT)` and
+`finalized(slot INTEGER PRIMARY KEY, record TEXT)`. The `meta` row with ID 1
+is JSON with `version: 1`, exact `source`, `producer_generation`, and
+`prefix: native-stream/bank-v2/SESSION`. A finalized row contains only this
+small locator:
+
+```json
+{
+  "version": 1,
+  "producer_generation": "<64 lowercase hex digits>",
+  "metadata": {
+    "version": 1,
+    "slot": 100,
+    "blockhash": "<canonical native hash>",
+    "parent_slot": 99,
+    "parent_blockhash": "<canonical parent hash>",
+    "bank_id": 7,
+    "source": {
+      "genesis_hash": "<canonical native hash>",
+      "node_identity": "<canonical native identity>",
+      "agave_revision": "<exact revision>",
+      "session_id": "<exact native session>"
+    },
+    "cursor": "<source:pSEQUENCE:frame SHA>",
+    "frame_sha256": "<frame SHA>",
+    "commitment": "finalized"
+  },
+  "root_frame_base64": "<exact original root control, URL-safe Base64 without padding>",
+  "frame": {
+    "key": "native-stream/bank-v2/SESSION/frames/SHA.bin",
+    "etag": "\"<immutable R2 ETag>\"",
+    "length": 123,
+    "sha256": "<same SHA as metadata.frame_sha256>"
+  }
+}
+```
+
+The publisher must commit that row only after exact immutable frame upload,
+full readback and matching root proof. The service checks the catalog source,
+generation, canonical key, quoted ETag, bounded length, cursor and root binding.
+An archived native hit returns HTTP 404 with the existing `version`, `slot`,
+`reason: not_cached`, `source: null`, and the complete `native_archive` locator.
+The Worker can fetch that one existing frame from R2 and use the same native
+decoder. This response body is limited to 16 KiB. The normal live body remains
+unchanged. There is no second JSON or binary block store.
+
+### Optional current-ledger fallback
+
+The optional `ledger_compact` configuration admits the existing ledger
+compactor for slots at or above an explicit floor:
+
+```json
+{
+  "helper": "/private/release/hivezilla-ledger-archive",
+  "helper_sha256": "<64 lowercase hex digits>",
+  "ledger": "/existing/real/validator/ledger",
+  "minimum_slot": 472608000,
+  "max_wall_ms": 8000,
+  "generation": "ledger-compact-v1"
+}
+```
+
+This is a field inside the recent configuration. It runs only after a checked
+native miss, native archive miss and historical archive miss with no admitted
+source. It never replaces the exact processed `/v1/recent` contract. The
+service checks the helper SHA at startup and its file identity on each call.
+On Linux, the child executes the pinned open file. A separate nonblocking
+gate permits one ledger helper at a time, while other recent reads can use
+the normal HTTP capacity. A busy helper returns terminal HTTP 503 with
+`ledger_compact_unavailable`.
+
+The command is `read-slot-compact --ledger PATH --slot INTEGER`. It opens
+the existing ledger read-only for each call. Standard output is bounded to
+12 framing bytes, 4,096 metadata bytes and a 16 MiB existing V1 bundle.
+Standard error is bounded to 16 KiB. The service drains both pipes, kills and
+reaps the child at the configured deadline, and retains both capacity guards
+until the child exits, including after HTTP cancellation. No payload or
+snapshot file is created.
+
+A hit returns HTTP 200, `X-BZ-Foundation-Result: ledger_compact`, the existing
+bundle content type, `X-BZ-Ledger-Metadata` with URL-safe Base64 helper JSON,
+and the exact configured `X-BZ-Ledger-Generation`. The metadata binds the slot,
+parent, canonical Base58 hashes, transaction count, complete hot row, body
+SHA and length, current schemas, and explicit rooted/metadata-complete flags.
+The service borrows the bundle body from its bounded stdout buffer. The
+Worker checks and converts that existing bundle. This path has no native
+cursor, root control frame, or R2 object identity.
+
+Helper exit 3 is checked absence; exit 4 is HTTP 409 `not_finalized`.
+Incomplete data, corrupt output, other exits and timeouts are terminal HTTP
+503 `ledger_compact_unavailable`. Parent thread CPU measurements exclude
+the helper child CPU; elapsed work time includes the helper wait.
 
 Both directories must be real absolute paths. The service checks the exact
 source, producer generation, declared payload root and local beam retention

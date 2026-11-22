@@ -1,0 +1,42 @@
+{
+  "retrievedAtUtc": "2026-11-22T19:42:45.201696+00:00",
+  "payloadOrCredentialsCopied": false,
+  "serviceLibraryTests": {
+    "passed": 47,
+    "failed": 0,
+    "location": "Foundation isolated source job"
+  },
+  "runtimeTests": {
+    "passed": 17,
+    "failed": 0,
+    "locations": [
+      "local worktree",
+      "Foundation isolated source job"
+    ]
+  },
+  "deployedNativeReader": {
+    "sha256": "3706565c7407e7188d1ab21ea183ffc619898da28b810631658414691db0f47f",
+    "recordedPid": 1814876,
+    "receipt": "reader-deployment.json"
+  },
+  "stagedLedgerReader": {
+    "sha256": "6dee8f3e3993f6139a066bd9d0cdff64bc8e264bc3b8dd42a5a6938a8e43d4ab",
+    "bytes": 9546384,
+    "binary": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/current-epoch-getblock-service-20261122/bin/blockzilla-resolution-service-ledger-6dee8f3e3993f613",
+    "deployed": false,
+    "maxConcurrentHelpers": 1,
+    "sourceFilesMatch": 16,
+    "mismatches": []
+  },
+  "ledgerActivation": "Held until root supplies a bounded real-slot PASS and exact helper pin. No live ledger config or NOFILE change.",
+  "nativeArchiveActivation": "Held until publisher pilot proof and root authorization.",
+  "originalRuntimeFilesUnchanged": true,
+  "originalRuntimePins": {
+    "continuous_runtime.py": "bc1fc2a96216cae136725a813e637663536a3e84d77914189639b302d6a65c4e",
+    "test_continuous_runtime.py": "8120cb09568ab48cd6b9c5d2d65bf464a38320ca5413ef9ba5e60907f0e6b1fc"
+  },
+  "runtimeSourcePins": {
+    "continuous_runtime.py": "66dab59d929b0409b1b9f47b445081f0d001d4839e402ec98975617a013c87a7",
+    "test_continuous_runtime.py": "0d9da553425b67b6dd19c0307cad831709608d5cc5685b87708f2b42b1bb2dac"
+  }
+}

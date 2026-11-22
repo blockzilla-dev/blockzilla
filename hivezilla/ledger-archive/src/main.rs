@@ -4,6 +4,7 @@ mod ledger;
 mod markers;
 mod notify;
 mod publish;
+mod slot_compact;
 mod source;
 
 use std::path::PathBuf;
@@ -26,6 +27,14 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Command {
+    /// Read one rooted block and write a framed Compact V2 bundle to stdout.
+    /// No archive files are created. The read and encode deadline is 10 seconds.
+    ReadSlotCompact {
+        #[arg(long)]
+        ledger: PathBuf,
+        #[arg(long)]
+        slot: u64,
+    },
     /// Check one inclusive slot range in a snapshot or stopped ledger.
     CheckLedgerRange {
         ledger: PathBuf,
@@ -79,12 +88,16 @@ enum Command {
 fn main() {
     if let Err(err) = run() {
         eprintln!("error: {err:#}");
-        std::process::exit(1);
+        std::process::exit(slot_compact::exit_code(&err).unwrap_or(1));
     }
 }
 
 fn run() -> Result<()> {
     match Cli::parse().command {
+        Command::ReadSlotCompact { ledger, slot } => {
+            let response = slot_compact::read_with_deadline(ledger, slot)?;
+            response.write_to(&mut std::io::stdout().lock())
+        }
         Command::CheckLedgerRange {
             ledger,
             start_slot,
@@ -169,5 +182,33 @@ fn print_report(inspected: &check::Inspected) {
     println!(
         "Boundary hash: {}",
         bs58::encode(inspected.boundary_hash).into_string()
+    );
+}
+#[test]
+fn read_slot_compact_accepts_only_explicit_ledger_and_slot() {
+    let cli = Cli::try_parse_from([
+        "hivezilla-ledger-archive",
+        "read-slot-compact",
+        "--ledger",
+        "/read-only/ledger",
+        "--slot",
+        "472608000",
+    ])
+    .unwrap();
+    assert!(matches!(
+        cli.command,
+        Command::ReadSlotCompact {
+            slot: 472608000,
+            ..
+        }
+    ));
+    assert!(
+        Cli::try_parse_from([
+            "hivezilla-ledger-archive",
+            "read-slot-compact",
+            "--slot",
+            "1"
+        ])
+        .is_err()
     );
 }

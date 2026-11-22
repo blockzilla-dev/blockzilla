@@ -15,8 +15,10 @@ use base64::engine::general_purpose::URL_SAFE_NO_PAD;
 use std::time::Duration;
 use wasm_bindgen::prelude::wasm_bindgen;
 use worker::{ResponseBody, web_sys};
+mod finalized;
 mod recent;
-pub(super) use recent::{RecentOutcome, RecentRequest, RecentSource};
+pub(super) use finalized::{LedgerCompactMetadata, NativeArchiveV1, read_native_frame};
+pub(super) use recent::{RecentMetadata, RecentOutcome, RecentRequest, RecentSource};
 
 const PROTOCOL: &str = "1";
 pub(super) const BUNDLE_TYPE: &str = "application/vnd.blockzilla.get-block-bundle.wincode";
@@ -41,9 +43,32 @@ pub(super) struct Config {
     body_timeout_ms: u32,
     binary_uses_raw_block: bool,
     archive_lookup_enabled: bool,
+    finalized_source: Option<RecentSource>,
+    native_producer_generation: Option<String>,
+    native_archive_prefix: Option<String>,
+    ledger_generation: Option<String>,
 }
 
 pub(super) enum Outcome {
+    Native {
+        response: Response,
+        metadata: RecentMetadata,
+        root: Vec<u8>,
+        length: usize,
+    },
+    NativeArchive {
+        record: NativeArchiveV1,
+    },
+    NativeUnavailable {
+        status: u16,
+        reason: String,
+    },
+    LedgerCompact {
+        response: Response,
+        metadata: LedgerCompactMetadata,
+        length: usize,
+        digest: [u8; 32],
+    },
     Complete {
         response: Response,
         locator: LocatorV1,
@@ -200,6 +225,7 @@ impl Config {
             binary_mode(optional_var(env, "BZ_FOUNDATION_BINARY_RESOLVE_MODE").as_deref())?;
         config.archive_lookup_enabled =
             archive_lookup_mode(optional_var(env, "BZ_FOUNDATION_LOOKUP_MODE").as_deref())?;
+        config.configure_finalized(env)?;
         Ok(Some(config))
     }
 
@@ -267,6 +293,10 @@ impl Config {
             body_timeout_ms: timeout(body_timeout, DEFAULT_BODY_TIMEOUT_MS)?,
             binary_uses_raw_block: true,
             archive_lookup_enabled: true,
+            finalized_source: None,
+            native_producer_generation: None,
+            native_archive_prefix: None,
+            ledger_generation: None,
         })
     }
 
@@ -345,7 +375,12 @@ impl Config {
             }
             Outcome::Unavailable(reason) => Ok(ResolveOutcome::Unavailable(reason)),
             Outcome::TransportFailure(reason) => Ok(ResolveOutcome::TransportFailure(reason)),
-            Outcome::NotCached { .. } | Outcome::Complete { .. } => {
+            Outcome::NotCached { .. }
+            | Outcome::Complete { .. }
+            | Outcome::Native { .. }
+            | Outcome::NativeArchive { .. }
+            | Outcome::NativeUnavailable { .. }
+            | Outcome::LedgerCompact { .. } => {
                 Err("Foundation ID resolution returned an invalid result type".into())
             }
         }
@@ -390,7 +425,12 @@ impl Config {
             }
             Outcome::Unavailable(reason) => Ok(ResolveOutcome::Unavailable(reason)),
             Outcome::TransportFailure(reason) => Ok(ResolveOutcome::TransportFailure(reason)),
-            Outcome::NotCached { .. } | Outcome::Complete { .. } => {
+            Outcome::NotCached { .. }
+            | Outcome::Complete { .. }
+            | Outcome::Native { .. }
+            | Outcome::NativeArchive { .. }
+            | Outcome::NativeUnavailable { .. }
+            | Outcome::LedgerCompact { .. } => {
                 Err("Foundation raw-block resolution returned an invalid result type".into())
             }
         }

@@ -1,0 +1,201 @@
+{
+  "measured_at_utc": "2026-11-22T20:08:07.200337+00:00",
+  "read_only": true,
+  "secondary_copy": false,
+  "max_open_files": 64,
+  "db": "/home/ubuntu/live/hivezilla-validator-20260930/ledger/rocksdb",
+  "operations": "Two iterator boundary seeks in each of root and meta; no value reads, no table iteration, no block payloads.",
+  "boundaries": {
+    "root": {
+      "minimum_slot": 472232658,
+      "maximum_slot": 472669152,
+      "inclusive_slot_span": 436495,
+      "span_epochs": 1.0104050925925927,
+      "minimum_epoch": 1093,
+      "maximum_epoch": 1094,
+      "coverage": "Only boundary keys checked. This range does not prove that every slot is present or complete."
+    },
+    "meta": {
+      "minimum_slot": 472232658,
+      "maximum_slot": 472669156,
+      "inclusive_slot_span": 436499,
+      "span_epochs": 1.0104143518518518,
+      "minimum_epoch": 1093,
+      "maximum_epoch": 1094,
+      "coverage": "Only boundary keys checked. This range does not prove that every slot is present or complete."
+    }
+  },
+  "ledger_allocated_bytes": 1121580392448,
+  "filesystem": {
+    "total_bytes": 7450013548544,
+    "available_bytes": 1171848990720,
+    "free_bytes": 1171865767936
+  },
+  "validator_pid": 1304643,
+  "validator_ledger_retention_flags": [
+    {
+      "flag": "--ledger",
+      "value": "/home/ubuntu/live/hivezilla-validator-20260930/ledger"
+    }
+  ],
+  "matching_loaded_units": [
+    {
+      "scope": "system",
+      "name": "blockzilla-ledger-tool-rehearsal-20261109.service",
+      "load": "loaded",
+      "active": "failed",
+      "sub": "failed"
+    },
+    {
+      "scope": "system",
+      "name": "blockzilla-log-retention-20261016-r1.service",
+      "load": "loaded",
+      "active": "failed",
+      "sub": "failed"
+    },
+    {
+      "scope": "system",
+      "name": "firewatch-guarded-backend-build-20261122.service",
+      "load": "loaded",
+      "active": "failed",
+      "sub": "failed"
+    },
+    {
+      "scope": "system",
+      "name": "firewatch-native-reader.service",
+      "load": "loaded",
+      "active": "failed",
+      "sub": "failed"
+    },
+    {
+      "scope": "system",
+      "name": "firewatch-private-sqlite-build-20261122.service",
+      "load": "loaded",
+      "active": "failed",
+      "sub": "failed"
+    },
+    {
+      "scope": "system",
+      "name": "firewatch-retention-build-20261122.service",
+      "load": "loaded",
+      "active": "failed",
+      "sub": "failed"
+    },
+    {
+      "scope": "system",
+      "name": "hivezilla-native-ledger-cli-v1-20261121.service",
+      "load": "loaded",
+      "active": "active",
+      "sub": "exited"
+    },
+    {
+      "scope": "system",
+      "name": "hivezilla-native-ledger-integration-v1-20261121.service",
+      "load": "loaded",
+      "active": "active",
+      "sub": "exited"
+    },
+    {
+      "scope": "system",
+      "name": "hivezilla-native-ledger-integration-v2-20261121.service",
+      "load": "loaded",
+      "active": "failed",
+      "sub": "failed"
+    },
+    {
+      "scope": "system",
+      "name": "hivezilla-native-ledger-integration-v3-20261121.service",
+      "load": "loaded",
+      "active": "active",
+      "sub": "exited"
+    },
+    {
+      "scope": "system",
+      "name": "hivezilla-native-ledger-protocol-v1-20261121.service",
+      "load": "loaded",
+      "active": "active",
+      "sub": "exited"
+    },
+    {
+      "scope": "system",
+      "name": "hivezilla-native-ledger-release-v1-20261121.service",
+      "load": "loaded",
+      "active": "active",
+      "sub": "exited"
+    },
+    {
+      "scope": "system",
+      "name": "hivezilla-native-ledger-v1fix-release-v1-20261121.service",
+      "load": "loaded",
+      "active": "active",
+      "sub": "exited"
+    },
+    {
+      "scope": "system",
+      "name": "hivezilla-native-ledger-v1fix-tests-v1-20261121.service",
+      "load": "loaded",
+      "active": "active",
+      "sub": "exited"
+    }
+  ],
+  "elapsed_seconds": 4.532,
+  "actions": "No purge, publication, resize, restart or configuration change.",
+  "matching_unit_files": [
+    {
+      "scope": "system",
+      "name": "blockzilla-ledger-tool-rehearsal-20261109.service",
+      "state": "transient"
+    },
+    {
+      "scope": "system",
+      "name": "blockzilla-log-retention-20261016-r1.service",
+      "state": "transient"
+    },
+    {
+      "scope": "system",
+      "name": "firewatch-retention-build-20261122.service",
+      "state": "transient"
+    },
+    {
+      "scope": "system",
+      "name": "hivezilla-native-ledger-cli-v1-20261121.service",
+      "state": "transient"
+    },
+    {
+      "scope": "system",
+      "name": "hivezilla-native-ledger-integration-v1-20261121.service",
+      "state": "transient"
+    },
+    {
+      "scope": "system",
+      "name": "hivezilla-native-ledger-integration-v2-20261121.service",
+      "state": "transient"
+    },
+    {
+      "scope": "system",
+      "name": "hivezilla-native-ledger-integration-v3-20261121.service",
+      "state": "transient"
+    },
+    {
+      "scope": "system",
+      "name": "hivezilla-native-ledger-protocol-v1-20261121.service",
+      "state": "transient"
+    },
+    {
+      "scope": "system",
+      "name": "hivezilla-native-ledger-release-v1-20261121.service",
+      "state": "transient"
+    },
+    {
+      "scope": "system",
+      "name": "hivezilla-native-ledger-v1fix-release-v1-20261121.service",
+      "state": "transient"
+    },
+    {
+      "scope": "system",
+      "name": "hivezilla-native-ledger-v1fix-tests-v1-20261121.service",
+      "state": "transient"
+    }
+  ],
+  "interpretation": "The root boundary span is about1.01epochs and overlaps epochs1093and1094. It is not a proof of complete block coverage. No explicit ledger-size/purge/retention flag is present in validator argv. No matching running purge/retention job was found in the loaded unit metadata. This does not prove that an internal/default retention policy is disabled."
+}

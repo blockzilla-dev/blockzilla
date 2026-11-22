@@ -4,18 +4,25 @@
 Foundation's query-with-signatures upload is the default storage layout. It
 needs no block-access sidecar and does not change the durable archive files.
 
-The public hostname is `https://getblock.blockzilla.dev`. Its getBlock GET
-routes are free and require no API key when `BZ_GET_BLOCK_PUBLIC=true`.
+The public API is `https://archive.blockzilla.dev/block/{slot}.json` or `.bin`.
+The existing `https://getblock.blockzilla.dev/block/{slot}` routes remain
+available on the same Worker. Its getBlock GET routes are free and require
+no API key when `BZ_GET_BLOCK_PUBLIC=true`.
 These requests skip API-key storage and customer billing. The default for
-other deployments is authenticated access. The original `workers.dev`
-hostname remains available. The recent
+other deployments is authenticated access. The recent
 stream recovery route is `GET /block/{slot}.compact`; see the
 [recovery report](../../reports/recent-get-block-recovery-20261122/README.md)
 for the required identity fields and the retained-window limit.
 
-The public GET deployment is version `4d1b4d55-31f1-4e30-a287-717846eeff3c`.
-It passed 232 local actual-WASM checks and nine live no-key checks. See the
-[public deployment record](../../reports/public-getblock-20261122/README.md).
+The current deployment is version `1cc2931c-a23d-464b-b8ee-00b0e49d978d`.
+It passed 39 native/ledger, 29 public-access and 41 recovery actual-WASM
+checks. The owner’s slot 472608000 returns 81 transactions from the existing
+Foundation ledger; wire bytes, transaction metadata and all 1326 reward
+records match RPC. Reward order differs between nodes. Recent JSON uses
+Foundation first; the existing R2 archive path follows a checked miss.
+See the [current-epoch repair record](../../reports/current-epoch-getblock-20261122/repair/README.md).
+The earlier [public deployment record](../../reports/public-getblock-20261122/README.md)
+describes its dated access-policy change.
 The [public benchmark](../../reports/public-getblock-benchmark-20261122/README.md)
 separates cold origin reads, response-cache hits, platform CPU and per-million
 request costs. Cache hits in this deployment still execute the Worker.
@@ -24,6 +31,9 @@ The earlier accepted production Worker version is
 `50aaba11-468b-4c57-b1ad-ddc999ea9152`. Recent recovery reads use the existing
 Foundation producer window. Finalized archive misses use the admitted original
 archive ranges. The experiment records below describe their dated test builds.
+
+The experiment records below describe dated tests. Their temporary Cloudflare
+deployments are retired; the production API uses one getBlock Worker.
 
 The separate [owner native R2 test](../../reports/get-block-own-r2-20261122/README.md)
 uses `wrangler.native-test.jsonc` and
@@ -988,8 +998,9 @@ The route needs `BZ_FOUNDATION_RECENT_SOURCE`, a JSON object with exact
 also uses the existing private Foundation URL, secret, source prefix and
 generation configuration. The secret belongs in a Worker secret binding.
 `BZ_FOUNDATION_LOOKUP_MODE=recent-only` enables this recovery path without
-adding Foundation calls to the existing `.bin` and `.json` routes. The default
-mode `all` keeps the prior Foundation-first behavior on those routes.
+adding the older Foundation lookup to `.bin` and `.json`. The default mode
+`all` keeps the prior Foundation-first behavior on those routes. The optional
+finalized JSON path below has a separate switch.
 
 Operation receipts include
 `X-Blockzilla-Foundation-Recent-HTTP-Requests`, the existing archive GET/HEAD
@@ -997,3 +1008,36 @@ counts and the resolution POST count. A recent hit uses one private Foundation
 GET, zero archive calls and zero resolution POSTs. Optional native CPU and
 elapsed diagnostics use `X-Blockzilla-Recent-Native-*-Micros` headers. They are
 profiling data and do not change admission or billing counters.
+
+## Current epoch JSON
+
+`BZ_FOUNDATION_NATIVE_FINALIZED=true` makes normal JSON block reads call the
+private Foundation `/v1/finalized/{slot}` route first. The Worker converts
+Compact V2 to Solana RPC JSON with Base64 transaction bytes. Foundation does
+not render or store JSON. This switch does not change `.bin` or the exact
+identity requirements of `.compact`.
+
+Foundation returns a retained rooted native frame, a checked archive
+location, or a Compact V2 bundle made from its existing rooted ledger. The
+ledger path reuses `hivezilla/ledger-archive read-slot-compact`; its block body
+stays in RAM. It is distinct from a native stream frame and has no stream
+cursor. The service permits one ledger helper at a time, with a bounded
+deadline, output size and pinned executable hash. There is no RAM block cache.
+
+Foundation does not upload archives. A separate machine publishes the
+existing historical Compact V2 layout to R2. The optional native-frame
+archive catalog is not enabled in this deployment.
+
+The Worker checks the configured source and producer generation, block and
+parent hashes, the original frame SHA-256, native root proof and object
+bounds. A native archive miss supplies a content-addressed location and ETag;
+the Worker reads the original frame from R2 once and applies the same checks.
+The small archive catalog does not hold another block body. Unrooted blocks,
+invalid metadata and ledger helper faults return errors with `no-store`.
+
+Pin `BZ_FOUNDATION_NATIVE_PRODUCER_GENERATION` to the active native source. Ledger
+bundles also require `BZ_FOUNDATION_LEDGER_GENERATION`. Source changes require
+an explicit configuration update and create a separate response-cache key.
+The older historical Compact V2 R2 layout remains available after a checked
+miss. Native lookup timeouts return an uncached error. Ordinary successful
+JSON responses can use the shared response cache; errors cannot enter it.

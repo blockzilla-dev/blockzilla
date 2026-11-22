@@ -1,0 +1,17 @@
+{
+  "observedUnix": 1795377086.28004,
+  "runtimeState": "RUNNING",
+  "bankState": {
+    "consumer_ack_required": false,
+    "event_sequence": 573935,
+    "profile": "native-bank-compact-v2",
+    "retention_authority": "local-beam-v1",
+    "source_state": "RUNNING",
+    "state": "RUNNING",
+    "updated_unix_ms": 1795377086271
+  },
+  "retainedBanks": 1257,
+  "feedSequence": 573935,
+  "archiveBindingRows": 0,
+  "archiveAuthorityPresent": false
+}

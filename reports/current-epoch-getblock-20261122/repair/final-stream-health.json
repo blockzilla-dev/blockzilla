@@ -1,0 +1,238 @@
+{
+  "status": "PASS",
+  "measured_at_utc": "2026-11-22T20:16:04.112390+00:00",
+  "foundation": {
+    "measured_at_utc": "2026-11-22T20:15:34.180311+00:00",
+    "before": {
+      "runtime": {
+        "state": "RUNNING",
+        "stream_mode": "direct-v2",
+        "capacity_admitted": true,
+        "generation": "c1739ce6fcee61291f41548b1960aa27",
+        "updated_unix_ms": 1795378530786
+      },
+      "source_session": "000000000000000018ea5078fdda19df-13e843",
+      "units": {
+        "banks": {
+          "MainPID": "2128693",
+          "ActiveState": "active",
+          "NRestarts": "0"
+        },
+        "origin": {
+          "MainPID": "2108530",
+          "ActiveState": "active",
+          "NRestarts": "0"
+        },
+        "processed": {
+          "MainPID": "2108523",
+          "ActiveState": "active",
+          "NRestarts": "0"
+        }
+      },
+      "bank-v2": {
+        "sequence": 594059,
+        "slot": null,
+        "kind": "confirmed"
+      },
+      "processed": {
+        "sequence": 396272,
+        "slot": null,
+        "kind": "root"
+      }
+    },
+    "after": {
+      "runtime": {
+        "state": "RUNNING",
+        "stream_mode": "direct-v2",
+        "capacity_admitted": true,
+        "generation": "c1739ce6fcee61291f41548b1960aa27",
+        "updated_unix_ms": 1795378532829
+      },
+      "source_session": "000000000000000018ea5078fdda19df-13e843",
+      "units": {
+        "banks": {
+          "MainPID": "2128693",
+          "ActiveState": "active",
+          "NRestarts": "0"
+        },
+        "origin": {
+          "MainPID": "2108530",
+          "ActiveState": "active",
+          "NRestarts": "0"
+        },
+        "processed": {
+          "MainPID": "2108523",
+          "ActiveState": "active",
+          "NRestarts": "0"
+        }
+      },
+      "bank-v2": {
+        "sequence": 594101,
+        "slot": null,
+        "kind": "confirmed"
+      },
+      "processed": {
+        "sequence": 396300,
+        "slot": null,
+        "kind": "root"
+      }
+    },
+    "native_feed_events_advanced": 42,
+    "protected_pids": {
+      "controller": 2108510,
+      "processed": 2108523,
+      "origin": 2108530,
+      "banks": 2128693,
+      "validator": 1304643,
+      "tunnel": 480183
+    },
+    "protected_pids_alive": {
+      "controller": true,
+      "processed": true,
+      "origin": true,
+      "banks": true,
+      "validator": true,
+      "tunnel": true
+    },
+    "index_catalog": {
+      "file": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/recent-get-block-recovery-20261122/catalog.json",
+      "epoch_count": 12,
+      "maximum_epoch": 1091,
+      "mtime_utc": "2026-11-22T14:32:57.607609+00:00",
+      "matching_loaded_units": [
+        {
+          "scope": "system",
+          "name": "blockzilla-get-transaction-v2-index-tunnel-20261121.service",
+          "active": "failed",
+          "sub": "failed"
+        },
+        {
+          "scope": "system",
+          "name": "blockzilla-token-indexer-demo.service",
+          "active": "failed",
+          "sub": "failed"
+        },
+        {
+          "scope": "system",
+          "name": "blockzilla-transaction-index-quick-20261121.service",
+          "active": "failed",
+          "sub": "failed"
+        },
+        {
+          "scope": "system",
+          "name": "hivezilla-car-parent2-49f-2125-catalog-linux-tests-20261119.service",
+          "active": "failed",
+          "sub": "failed"
+        }
+      ],
+      "automatic_sync": "No matching running index/catalog/mirror/sync unit was found in the bounded unit inventory. This is not a full scheduler audit."
+    },
+    "scope": "Two read-only indexed feed tail lookups and status snapshots. No payloads, restarts or configuration changes.",
+    "protected_identity_checks": {
+      "controller": {
+        "pid": 2108510,
+        "start_ticks_unchanged": true
+      },
+      "processed": {
+        "pid": 2108523,
+        "start_ticks_unchanged": true
+      },
+      "origin": {
+        "pid": 2108530,
+        "start_ticks_unchanged": true
+      },
+      "banks": {
+        "pid": 2128693,
+        "start_ticks_unchanged": true
+      },
+      "validator": {
+        "pid": 1304643,
+        "start_ticks_unchanged": true
+      },
+      "tunnel": {
+        "pid": 480183,
+        "start_ticks_unchanged": true
+      }
+    },
+    "processed_feed_events_advanced": 28
+  },
+  "consumer": {
+    "measured_at_utc": "2026-11-22T20:14:39.779290+00:00",
+    "unit": "blockzilla-client-pipe.service",
+    "unit_state": {
+      "MainPID": "1457002",
+      "NRestarts": "0",
+      "ExecMainStatus": "0",
+      "ActiveState": "active",
+      "SubState": "running"
+    },
+    "before": {
+      "producerGeneration": "4aaf2462131201579e55e0679f31f4a992d2c85d4e3c4891f682537625e88900",
+      "runtimeGeneration": "c1739ce6fcee61291f41548b1960aa27",
+      "inputMode": "raw_ssh",
+      "input": "live",
+      "signingReady": true,
+      "payloadMode": "compact-only",
+      "beamCommittedCursor": "000000000000000018ea5078fdda19df-13e843:p593310:de181eab9ad2ae10520469268abb453f0eca4a8e964db745dbe2c2e30e9a0ff2",
+      "beamSourceObservedAtMs": 1795378476610,
+      "beamLastFrameAgeMs": 64,
+      "sampledAtMs": 1795378476772,
+      "outputCursor": "000000000000000018ea5078fdda19df-13e843:o449342:0c7b645fafd9f8165fee1a280b53e1527f348012f00034e5fe537eae540da82f",
+      "source_matches_config": true,
+      "source_session": "000000000000000018ea5078fdda19df-13e843",
+      "error_present": false,
+      "beam_reconcile_error_present": false,
+      "recovery": {
+        "enabled": true,
+        "active": false,
+        "completedWindows": 2,
+        "failedAttempts": 34,
+        "committedBlocks": 27,
+        "committedControls": 54,
+        "fromCursor": "000000000000000018ea5078fdda19df-13e843:p569652:8c8c88fcdf00da4218079713f17e8ef85d93b8528125ed91278b39c2b7a96d43",
+        "toCursor": "000000000000000018ea5078fdda19df-13e843:p569709:d32668acfba63f10bb3c8c51d3f29057e70f5e8a72bf4ff596227be5186a9c77",
+        "last_error_present": false
+      }
+    },
+    "after": {
+      "producerGeneration": "4aaf2462131201579e55e0679f31f4a992d2c85d4e3c4891f682537625e88900",
+      "runtimeGeneration": "c1739ce6fcee61291f41548b1960aa27",
+      "inputMode": "raw_ssh",
+      "input": "live",
+      "signingReady": true,
+      "payloadMode": "compact-only",
+      "beamCommittedCursor": "000000000000000018ea5078fdda19df-13e843:p593354:8dea952b7be33d620897cf591bf391b4bca0d174cdcbe4f1767b07f8087c3d65",
+      "beamSourceObservedAtMs": 1795378479505,
+      "beamLastFrameAgeMs": 90,
+      "sampledAtMs": 1795378479778,
+      "outputCursor": "000000000000000018ea5078fdda19df-13e843:o449386:21db495aea4e926cc4a4c5558e6fa0a5603234bdd88fc0fc090e653dd834f632",
+      "source_matches_config": true,
+      "source_session": "000000000000000018ea5078fdda19df-13e843",
+      "error_present": false,
+      "beam_reconcile_error_present": false,
+      "recovery": {
+        "enabled": true,
+        "active": false,
+        "completedWindows": 2,
+        "failedAttempts": 34,
+        "committedBlocks": 27,
+        "committedControls": 54,
+        "fromCursor": "000000000000000018ea5078fdda19df-13e843:p569652:8c8c88fcdf00da4218079713f17e8ef85d93b8528125ed91278b39c2b7a96d43",
+        "toCursor": "000000000000000018ea5078fdda19df-13e843:p569709:d32668acfba63f10bb3c8c51d3f29057e70f5e8a72bf4ff596227be5186a9c77",
+        "last_error_present": false
+      }
+    },
+    "source_cursor_advanced": true,
+    "source_events_advanced": 44,
+    "failed_attempts_increased": false,
+    "scope": "Read-only unit metadata and two private head requests. No block data, restarts or configuration changes."
+  },
+  "limitations": [
+    "Two short progress samples establish current flow, not uninterrupted history.",
+    "Consumer failedAttempts34 is cumulative and did not increase during this sample. It is not zero.",
+    "No automatic index sync was found in the bounded unit inventory. Other schedulers were not audited."
+  ],
+  "changed_services": false,
+  "block_payloads_read": false,
+  "credentials_saved": false
+}
