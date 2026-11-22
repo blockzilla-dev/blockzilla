@@ -61,7 +61,7 @@ repair lock failure. These checks were not removed or disabled.
 
 | File | Change | Validation |
 | --- | --- | --- |
-| `blockzilla/cli/src/archive_v2/registry_reprocess.rs` | Read the optional consensus tail with strict bounds and keep it during rewrites. Reject a damaged tail after a matched current prefix without older-schema fallback. | Add old/new format, field preservation and malformed-tail regressions; Linux CI must pass before merge. |
+| `blockzilla/cli/src/archive_v2/registry_reprocess.rs` | Read the optional consensus tail with strict bounds and keep it during rewrites. Check the current prefix against the external block index before selecting it. Reject a damaged tail after an index-valid current prefix without older-schema fallback. | Add old/new format, field preservation, index validation and malformed-tail regressions; Linux CI must pass before merge. |
 | `blockzilla/cli/src/archive_verify.rs` | Explicitly release the migration lock when its owner ends, including post-lock validation errors. Keep permission, identity and contention checks. | Add a duplicate-FD regression that also checks successor lock protection; Linux CI must pass before merge. |
 
 The workspace format check and exact archive wire-boundary check passed.
@@ -69,10 +69,19 @@ The new Rust tests were not built locally; the Linux CI result is required.
 
 These old formats have no outer-schema tag. An empty old shredding block can
 have the same bytes as a current block with an incomplete consensus tail.
-The reader follows the shared codec: once the current prefix matches, reject
-a damaged tail. The ambiguity test records this limit. Unambiguous legacy
-fallbacks remain covered; this is not a claim that every old byte sequence is
-accepted.
+Once the current prefix matches the external index, reject a damaged tail.
+The ambiguity test records this limit. Unambiguous legacy fallbacks remain
+covered; this is not a claim that every old byte sequence is accepted.
+
+Run `45047387624` passed the six other jobs again. Its CLI test program
+passed 666 tests, including the former 27 failures and the new footer and
+lock tests. One existing legacy test then exposed a false current-prefix
+match. An empty old shredding list was read as no rewards, and its actual
+rewards tag was read as one transaction, while the external index required
+three. The follow-up checks slot, transaction count, row count and signature
+sum before reading the tail. An index mismatch can use an exact legacy
+decoder; a matching current prefix with a damaged tail still cannot. The
+existing legacy regression also checks pass-1 analysis.
 
 The lock failure is consistent with a parallel fork retaining a duplicate
 open file description. This cause is an inference from the failing test and
