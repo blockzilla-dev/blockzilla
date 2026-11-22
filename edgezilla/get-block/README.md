@@ -16,6 +16,9 @@ for the required identity fields and the retained-window limit.
 The public GET deployment is version `4d1b4d55-31f1-4e30-a287-717846eeff3c`.
 It passed 232 local actual-WASM checks and nine live no-key checks. See the
 [public deployment record](../../reports/public-getblock-20261122/README.md).
+The [public benchmark](../../reports/public-getblock-benchmark-20261122/README.md)
+separates cold origin reads, response-cache hits, platform CPU and per-million
+request costs. Cache hits in this deployment still execute the Worker.
 
 The earlier accepted production Worker version is
 `50aaba11-468b-4c57-b1ad-ddc999ea9152`. Recent recovery reads use the existing

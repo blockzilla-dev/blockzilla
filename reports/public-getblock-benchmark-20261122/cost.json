@@ -1,0 +1,124 @@
+{
+  "schema": "public-getblock-cost-v1",
+  "ratesVerifiedAt": "2026-11-22",
+  "passed": true,
+  "workerVersion": "4d1b4d55-31f1-4e30-a287-717846eeff3c",
+  "allHttpRequests": 338,
+  "coldCpuSource": "platform-cpu.json",
+  "hitCpuSource": "paced-platform-cpu.json",
+  "settingsUnchanged": true,
+  "groups": [
+    {
+      "format": "bin",
+      "condition": "cold",
+      "meanCpuMs": 8.820041666666667,
+      "cpuSampling": {
+        "requestEstimate": 24,
+        "records": 24,
+        "interval": 1,
+        "unsampled": true
+      },
+      "ourClassBReadsPerRequest": 1,
+      "foundationClassBReadsPerRequest": 2,
+      "workerRequestsUsdPerMillion": 0.3,
+      "workerCpuUsdPerMillion": 0.17640083333333334,
+      "ourIndexReadsUsdPerMillion": 0.36,
+      "ourAccountUsdPerMillion": 0.8364008333333333,
+      "foundationBucketUsdPerMillion": 0.72,
+      "combinedVariableUsdPerMillion": 1.5564008333333332
+    },
+    {
+      "format": "bin",
+      "condition": "hit",
+      "meanCpuMs": 1.6275,
+      "cpuSampling": {
+        "requestEstimate": 64,
+        "records": 38,
+        "interval": 1.6842105263157894,
+        "unsampled": false
+      },
+      "ourClassBReadsPerRequest": 0,
+      "foundationClassBReadsPerRequest": 0,
+      "workerRequestsUsdPerMillion": 0.3,
+      "workerCpuUsdPerMillion": 0.03255,
+      "ourIndexReadsUsdPerMillion": 0.0,
+      "ourAccountUsdPerMillion": 0.33255,
+      "foundationBucketUsdPerMillion": 0.0,
+      "combinedVariableUsdPerMillion": 0.33255
+    },
+    {
+      "format": "json",
+      "condition": "cold",
+      "meanCpuMs": 35.796708333333335,
+      "cpuSampling": {
+        "requestEstimate": 24,
+        "records": 24,
+        "interval": 1,
+        "unsampled": true
+      },
+      "ourClassBReadsPerRequest": 1,
+      "foundationClassBReadsPerRequest": 2,
+      "workerRequestsUsdPerMillion": 0.3,
+      "workerCpuUsdPerMillion": 0.7159341666666668,
+      "ourIndexReadsUsdPerMillion": 0.36,
+      "ourAccountUsdPerMillion": 1.3759341666666667,
+      "foundationBucketUsdPerMillion": 0.72,
+      "combinedVariableUsdPerMillion": 2.095934166666667
+    },
+    {
+      "format": "json",
+      "condition": "hit",
+      "meanCpuMs": 1.6443125,
+      "cpuSampling": {
+        "requestEstimate": 64,
+        "records": 64,
+        "interval": 1,
+        "unsampled": true
+      },
+      "ourClassBReadsPerRequest": 0,
+      "foundationClassBReadsPerRequest": 0,
+      "workerRequestsUsdPerMillion": 0.3,
+      "workerCpuUsdPerMillion": 0.03288625,
+      "ourIndexReadsUsdPerMillion": 0.0,
+      "ourAccountUsdPerMillion": 0.33288625,
+      "foundationBucketUsdPerMillion": 0.0,
+      "combinedVariableUsdPerMillion": 0.33288625
+    }
+  ],
+  "modeledMixtures": [
+    {
+      "format": "bin",
+      "responseHitFraction": 0.9,
+      "ourAccountUsdPerMillion": 0.38293508333333337,
+      "foundationBucketUsdPerMillion": 0.072,
+      "combinedVariableUsdPerMillion": 0.4549350833333334,
+      "minimumResponseHitFractionForCombinedBelowOneUsd": 0.45463124931483345
+    },
+    {
+      "format": "json",
+      "responseHitFraction": 0.9,
+      "ourAccountUsdPerMillion": 0.43719104166666667,
+      "foundationBucketUsdPerMillion": 0.072,
+      "combinedVariableUsdPerMillion": 0.5091910416666667,
+      "minimumResponseHitFractionForCombinedBelowOneUsd": 0.6216133755109228
+    }
+  ],
+  "rates": {
+    "workerRequestUsdPerMillion": 0.3,
+    "workerCpuUsdPerMillionMilliseconds": 0.02,
+    "r2StandardClassBUsdPerMillion": 0.36,
+    "workerAccountMinimumUsdPerMonth": 5,
+    "includedWorkerRequestsPerMonth": 10000000,
+    "includedWorkerCpuMillisecondsPerMonth": 30000000,
+    "r2IncludedClassBPerAccountPerMonth": 10000000,
+    "logIllustrationUsdPerMillionRequestsAfterLogAllowance": 0.006
+  },
+  "limits": [
+    "Variable overage estimate; shared allowances and operation rounding affect invoices.",
+    "Foundation bucket operations are billed to its account, separate from our Worker and index bucket.",
+    "Existing storage, Foundation machine/network charges, startup frequency and log events are excluded.",
+    "Profiled cold reads bypass normal response-cache fill work. This is not an exact ordinary-miss price.",
+    "Binary hit CPU is adaptively sampled; JSON hit and both cold CPU groups are complete and unsampled.",
+    "The 90% hit mixture is modeled, not a measured mixed workload."
+  ]
+}

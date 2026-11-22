@@ -1,0 +1,48 @@
+{
+  "schema": "public-getblock-references-v1",
+  "provenance": "Original archived block references from 21 November 2026, reused for this benchmark; no new provider requests.",
+  "originalJsonReferenceDigest": "617843821ceb02875bb1113ded131120e702c01e96d49cd5d6c8e5c189465196",
+  "originalBinaryReferenceDigest": "add1ed3a5d6a7d9fbbe375d056b3fb37c4fcbbf62f546b1b701d1c0b787c0b42",
+  "samples": [
+    {
+      "slot": 470987967,
+      "jsonSha256": "c4b1975a554979145bf7124a44bac3b227088cf1c79ac5d520a7f5b7a44206b0",
+      "binarySha256": "afe23d5bc1bd8fafb60b173d053c9d3b5d65f5c9e4a43139ef5d863ff4fcb150"
+    },
+    {
+      "slot": 471096104,
+      "jsonSha256": "c17db9c7d485f4e4b3e6595dcdfc1e34617224a2bce3efee8b70a19e50dccdd5",
+      "binarySha256": "88d9b8379bd9fd9380fdf04920a0cf767786a2d2358cb9e6a512b1c761cfde6a"
+    },
+    {
+      "slot": 471204030,
+      "jsonSha256": "16a05c47d65a8f1e8cf044f60a075ba0c3d3de8c7fc466f2d57a2aa8015cf668",
+      "binarySha256": "b5f005fdb361ded0cd68ac47cafedfdf0feb5ba238842e55756536c0fd02e2df"
+    },
+    {
+      "slot": 471311999,
+      "jsonSha256": "c10f8b9aaa3f2ddc3e18e8581938c0738a545ca5d7175dc5b554af2285c9e774",
+      "binarySha256": "9773f38e4ab377281f32c95b87bacdb78b7b6326f43b8ea6f6efa64ab8ec75cf"
+    },
+    {
+      "slot": 470555971,
+      "jsonSha256": "2b955b420e98d124742667ddfb00bbb12b6eb736d3e6fc8b1b2ed46d7c72ce7d",
+      "binarySha256": "c0fc8383e217705dde28612195cc165e95b2163c73743e5cb1586aab220c8415"
+    },
+    {
+      "slot": 470663944,
+      "jsonSha256": "bed833a434be2dafcab86daafdd1b5b18c2d01c37e93048528a7953013afd005",
+      "binarySha256": "64ac916826fef959e8786beea3723836e22c7bbc40f3431617ff58be175a4775"
+    },
+    {
+      "slot": 470771932,
+      "jsonSha256": "a9f32819f8ef9b3f024392e68487d8261c9bdd2613b414923787777d0cba5170",
+      "binarySha256": "dab59abd834b055e114e76eb34245f5b1506ec9518c4496f89a29e4b34db764b"
+    },
+    {
+      "slot": 470879999,
+      "jsonSha256": "d175745a35a80b37a24a0c57d73a6e0af318ceeaf4beb7669160dcc3429c5ba7",
+      "binarySha256": "977d110e3d2328889faee91eda72703b9dee3ee4e7cb7edc3a12ce58f429296a"
+    }
+  ]
+}
