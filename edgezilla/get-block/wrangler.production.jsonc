@@ -1,0 +1,66 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "blockzilla-get-block",
+  "account_id": "8df0426c80fcd1a04ed439f441db9ff8",
+  "main": "build/index.js",
+  "compatibility_date": "2026-11-21",
+  "workers_dev": true,
+  "preview_urls": false,
+  "routes": [
+    { "pattern": "getblock.blockzilla.dev", "custom_domain": true }
+  ],
+  "build": {
+    "command": "worker-build --release . --no-default-features --features worker"
+  },
+  "vars": {
+    "BZ_ARCHIVE_SOURCE": "s3",
+    "BZ_ARCHIVE_PREFIX": "compact-v2/blockzilla-20261004",
+    "BZ_ARCHIVE_LAYOUT": "stored",
+    "BZ_ARCHIVE_GENERATION": "foundation-query-20261121-cpu-auth-v11",
+    "BZ_METADATA_SCHEMA": "current",
+    "BZ_MESSAGE_SCHEMA_OVERRIDES": "{\"0\":\"may24\",\"1\":\"may24\",\"2\":\"may24\"}",
+    "BZ_SLOT_INDEX": "sparse",
+    "BZ_HTTP_GET_ONLY": "true",
+    "BZ_AUTH_CACHE_SCOPE": "4a84b9e29a65488ca474ac05e896b626",
+    "BZ_RESOLUTION_PREFIX": "serving/foundation-resolution-20261121-v1",
+    "BZ_RESOLUTION_GENERATION": "foundation-resolution-20261121-v1",
+    "BZ_RESOLUTION_SLOTS": "470987967,471096104,471204030,471311999,470555971,470663944,470771932,470879999",
+    "BZ_FOUNDATION_LOOKUP_URL": "https://stream.blockzilla.dev",
+    "BZ_FOUNDATION_LOOKUP_GENERATION": "foundation-direct-resolver-20261122-v1",
+    "BZ_FOUNDATION_LOOKUP_TIMEOUT_MS": "2000",
+    "BZ_FOUNDATION_LOOKUP_BODY_TIMEOUT_MS": "5000",
+    "BZ_FOUNDATION_BINARY_RESOLVE_MODE": "block",
+    "BZ_FOUNDATION_LOOKUP_MODE": "recent-only",
+    "BZ_FOUNDATION_RECENT_SOURCE": "{\"genesis_hash\":\"5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d\",\"node_identity\":\"J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ\",\"agave_revision\":\"agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d\",\"session_id\":\"000000000000000018ea5078fdda19df-13e843\"}"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "BZ_RPC_API_KEYS",
+      "id": "4a84b9e29a65488ca474ac05e896b626"
+    }
+  ],
+  "analytics_engine_datasets": [
+    {
+      "binding": "BZ_RPC_METRICS",
+      "dataset": "blockzilla_rpc_metrics"
+    }
+  ],
+  "limits": {
+    "cpu_ms": 30000,
+    "subrequests": 10000
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 0.01,
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true
+    }
+  },
+  "r2_buckets": [
+    {
+      "binding": "BZ_RESOLUTION",
+      "bucket_name": "blockzilla-get-block-index"
+    }
+  ]
+}

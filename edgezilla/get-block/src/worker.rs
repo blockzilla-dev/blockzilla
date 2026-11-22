@@ -1,7 +1,26 @@
+use crate::archive_cache::ArchiveByteCache;
+use crate::archive_schema::{MessageSchema, MetadataSchema};
 use crate::rpc_access::{
     BackendReadTracker, DirectCacheVariant, RpcApiKeyRecord, api_key_digest, direct_cache_identity,
     parse_bearer_key, rpc_method_for_metrics,
 };
+use crate::storage_metrics::{StorageBackend, StorageMetrics, StorageSnapshot};
+mod base58;
+mod block_base64;
+mod bundle_object;
+#[cfg(feature = "cli")]
+pub mod client;
+mod foundation_archive;
+mod foundation_first;
+mod native_hash;
+mod native_reader;
+mod resolution;
+mod recent_recovery;
+mod response_fill;
+mod stored;
+mod stream_parts;
+mod transaction;
+mod vote_proof;
 use base64::Engine as _;
 use base64::engine::general_purpose::STANDARD as BASE64;
 use blockzilla_archive_v2::{
@@ -32,7 +51,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value, json};
 use sha2::{Digest, Sha256};
 use std::{
-    cell::RefCell,
+    cell::{Cell, RefCell},
     collections::BTreeMap,
     io::{Read, Write},
     rc::Rc,
@@ -55,6 +74,23 @@ const LOG_MESSAGES_BYTES_LIMIT: usize = 10 * 1000;
 const RPC_API_KEYS_BINDING: &str = "BZ_RPC_API_KEYS";
 const RPC_METRICS_BINDING: &str = "BZ_RPC_METRICS";
 const RPC_REQUEST_BODY_MAX_BYTES: usize = 1024 * 1024;
+const MAX_ARCHIVE_RANGE_BYTES: usize = 16 * 1024 * 1024;
+const MAX_DECODED_BLOCK_BYTES: usize = 32 * 1024 * 1024;
+const MAX_CACHED_RANGE_BYTES: usize = 1024 * 1024;
+
+// Only immutable archive bytes enter this cache. Keys include the complete
+// source identity and an explicit publication generation. No request handles,
+// credentials, API-key records, or customer data are retained here.
+thread_local! {
+    static ARCHIVE_BYTES: RefCell<ArchiveByteCache> = RefCell::new(ArchiveByteCache::new(4 * 1024 * 1024, 512));
+}
+
+#[derive(Clone)]
+struct ArchiveCache {
+    origin: String,
+    generation: String,
+    context: Rc<worker::Context>,
+}
 
 fn base58_32(bytes: &[u8; 32]) -> String {
     let mut buf = [0u8; five8::BASE58_ENCODED_32_MAX_LEN];
@@ -74,7 +110,7 @@ fn base58_bytes(bytes: &[u8]) -> String {
     match bytes.len() {
         32 => base58_32(bytes.try_into().expect("checked 32-byte base58 input")),
         64 => base58_64(bytes.try_into().expect("checked 64-byte base58 input")),
-        _ => bs58::encode(bytes).into_string(),
+        _ => base58::encode(bytes),
     }
 }
 
@@ -82,7 +118,24 @@ const JSON_STREAM_CHUNK_BYTES: usize = 64 * 1024;
 
 struct JsonByteWriter {
     output: JsonByteOutput,
+    // One bounded request-local table; it holds completed immutable encodings,
+    // never request handles or live I/O. Allocate only when a key is written.
+    encoded_keys: Vec<EncodedJsonKey>,
 }
+
+#[derive(Clone, Copy)]
+struct EncodedJsonKey {
+    key: [u8; 32],
+    quoted: [u8; five8::BASE58_ENCODED_32_MAX_LEN + 2],
+    len: u8,
+}
+
+const ENCODED_JSON_KEYS: usize = 256;
+const EMPTY_ENCODED_JSON_KEY: EncodedJsonKey = EncodedJsonKey {
+    key: [0; 32],
+    quoted: [0; five8::BASE58_ENCODED_32_MAX_LEN + 2],
+    len: 0,
+};
 
 enum JsonByteOutput {
     Buffered(Vec<u8>),
@@ -101,6 +154,7 @@ impl JsonByteWriter {
     fn with_capacity(capacity: usize) -> Self {
         Self {
             output: JsonByteOutput::Buffered(Vec::with_capacity(capacity)),
+            encoded_keys: Vec::new(),
         }
     }
 
@@ -119,6 +173,7 @@ impl JsonByteWriter {
                 max_capacity: threshold,
                 failed: false,
             },
+            encoded_keys: Vec::new(),
         }
     }
 
@@ -140,6 +195,13 @@ impl JsonByteWriter {
         match &self.output {
             JsonByteOutput::Buffered(_) => 0,
             JsonByteOutput::Channel { sent_bytes, .. } => *sent_bytes,
+        }
+    }
+
+    fn pending_bytes(&self) -> usize {
+        match &self.output {
+            JsonByteOutput::Buffered(bytes) => bytes.len(),
+            JsonByteOutput::Channel { current, .. } => current.len(),
         }
     }
 
@@ -201,18 +263,69 @@ impl JsonByteWriter {
     }
 
     fn base58_32(&mut self, bytes: &[u8; 32]) {
-        let mut buf = [0u8; five8::BASE58_ENCODED_32_MAX_LEN];
-        let len = five8::encode_32(bytes, &mut buf) as usize;
-        self.raw(b"\"");
-        self.raw(&buf[..len]);
-        self.raw(b"\"");
+        if self.encoded_keys.is_empty() {
+            self.encoded_keys
+                .resize(ENCODED_JSON_KEYS, EMPTY_ENCODED_JSON_KEY);
+        }
+        // Public keys are normally distributed. A collision changes only the
+        // hit rate: every lookup compares all 32 bytes before reuse.
+        let hash = u32::from_le_bytes(bytes[..4].try_into().expect("four bytes"))
+            ^ u32::from_le_bytes(bytes[12..16].try_into().expect("four bytes"))
+            ^ u32::from_le_bytes(bytes[28..].try_into().expect("four bytes"));
+        let index = (hash.wrapping_mul(0x9e37_79b1) >> 24) as usize;
+        let entry = &mut self.encoded_keys[index];
+        if entry.len == 0 || entry.key != *bytes {
+            let output: &mut [u8; five8::BASE58_ENCODED_32_MAX_LEN] = (&mut entry.quoted
+                [1..five8::BASE58_ENCODED_32_MAX_LEN + 1])
+                .try_into()
+                .expect("fixed Base58 buffer");
+            let len = five8::encode_32(bytes, output) as usize;
+            entry.key = *bytes;
+            entry.quoted[0] = b'"';
+            entry.quoted[len + 1] = b'"';
+            entry.len = (len + 2) as u8;
+        }
+        Self::append_output(&mut self.output, &entry.quoted[..entry.len as usize]);
     }
 
     fn base58_64(&mut self, bytes: &[u8; 64]) {
-        let mut buf = [0u8; five8::BASE58_ENCODED_64_MAX_LEN];
-        let len = five8::encode_64(bytes, &mut buf) as usize;
+        let mut quoted = [b'"'; five8::BASE58_ENCODED_64_MAX_LEN + 2];
+        let output: &mut [u8; five8::BASE58_ENCODED_64_MAX_LEN] = (&mut quoted
+            [1..five8::BASE58_ENCODED_64_MAX_LEN + 1])
+            .try_into()
+            .expect("fixed Base58 buffer");
+        let len = five8::encode_64(bytes, output) as usize;
+        quoted[len + 1] = b'"';
+        self.raw(&quoted[..len + 2]);
+    }
+
+    fn quoted_ui_amount(&mut self, digits: &[u8], decimals: u8) {
         self.raw(b"\"");
-        self.raw(&buf[..len]);
+        if decimals == 0 || digits == b"0" {
+            self.raw(digits);
+        } else if digits.len() > usize::from(decimals) {
+            let split = digits.len() - usize::from(decimals);
+            self.raw(&digits[..split]);
+            let mut end = digits.len();
+            while end > split && digits[end - 1] == b'0' {
+                end -= 1;
+            }
+            if end > split {
+                self.raw(b".");
+                self.raw(&digits[split..end]);
+            }
+        } else {
+            // u8 decimals cap the fractional field at 255 digits.
+            let mut output = [b'0'; 257];
+            output[1] = b'.';
+            let start = 2 + usize::from(decimals) - digits.len();
+            output[start..start + digits.len()].copy_from_slice(digits);
+            let mut end = start + digits.len();
+            while output[end - 1] == b'0' {
+                end -= 1;
+            }
+            self.raw(&output[..end]);
+        }
         self.raw(b"\"");
     }
 
@@ -238,24 +351,25 @@ impl JsonByteWriter {
         self.raw(b"]");
     }
 
-    fn write_raw(&mut self, mut bytes: &[u8]) {
-        match &mut self.output {
+    fn write_raw(&mut self, bytes: &[u8]) {
+        Self::append_output(&mut self.output, bytes);
+    }
+
+    fn append_output(output: &mut JsonByteOutput, bytes: &[u8]) {
+        match output {
             JsonByteOutput::Buffered(out) => out.extend_from_slice(bytes),
             JsonByteOutput::Channel {
                 current,
-                threshold,
                 len,
                 max_capacity,
                 ..
             } => {
                 *len = len.saturating_add(bytes.len());
-                while !bytes.is_empty() {
-                    let available = threshold.saturating_sub(current.len()).max(1);
-                    let take = available.min(bytes.len());
-                    current.extend_from_slice(&bytes[..take]);
-                    *max_capacity = (*max_capacity).max(current.capacity());
-                    bytes = &bytes[take..];
-                }
+                // Flush points are asynchronous and remain at record
+                // boundaries. Splitting this synchronous append did not bound
+                // the chunk: after threshold it copied one byte per iteration.
+                current.extend_from_slice(bytes);
+                *max_capacity = (*max_capacity).max(current.capacity());
             }
         }
     }
@@ -296,6 +410,99 @@ impl Write for JsonByteWriter {
 
     fn flush(&mut self) -> std::io::Result<()> {
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod json_writer_tests {
+    use super::*;
+    use futures_util::FutureExt;
+
+    #[test]
+    fn channel_preserves_record_bytes_and_flush_boundaries() {
+        let (sender, mut receiver) = mpsc::channel(4);
+        let mut writer = JsonByteWriter::channel(1024, sender);
+        let prefix = vec![b'a'; 1017];
+        let record = vec![b'b'; 2301];
+        writer.raw(&prefix);
+        writer.raw(&record);
+        assert_eq!(writer.pending_bytes(), prefix.len() + record.len());
+        assert_eq!(writer.sent_bytes(), 0);
+        writer.flush_chunk_async().now_or_never().unwrap().unwrap();
+        let chunk = receiver.next().now_or_never().unwrap().unwrap().unwrap();
+        assert_eq!(chunk, [prefix, record].concat());
+        assert_eq!(writer.pending_bytes(), 0);
+        assert_eq!(writer.len(), chunk.len());
+        assert_eq!(writer.sent_bytes(), chunk.len());
+    }
+
+    #[test]
+    fn closed_channel_aborts_without_claiming_delivery() {
+        let (sender, receiver) = mpsc::channel(1);
+        let mut writer = JsonByteWriter::channel(1024, sender);
+        writer.raw(b"{\"unfinished\":");
+        drop(receiver);
+        let error = writer
+            .flush_chunk_async()
+            .now_or_never()
+            .unwrap()
+            .unwrap_err();
+        assert!(error.contains("response stream closed"));
+        assert_eq!(writer.sent_bytes(), 0);
+    }
+
+    #[test]
+    fn key_memo_is_lazy_bounded_and_collision_safe() {
+        let mut writer = JsonByteWriter::with_capacity(0);
+        assert!(writer.encoded_keys.is_empty());
+        let mut collision = [0; 32];
+        collision[4] = 255; // Same hash words as the all-zero key.
+        let keys = [[0; 32], collision, [0; 32], [255; 32], [1; 32], collision];
+        let mut expected = Vec::new();
+        for key in &keys {
+            writer.base58_32(key);
+            expected
+                .extend_from_slice(&serde_json::to_vec(&bs58::encode(key).into_string()).unwrap());
+        }
+        for value in 0u32..1024 {
+            let mut key = [99; 32];
+            key[..4].copy_from_slice(&value.to_le_bytes());
+            writer.base58_32(&key);
+            expected
+                .extend_from_slice(&serde_json::to_vec(&bs58::encode(key).into_string()).unwrap());
+        }
+        assert_eq!(writer.encoded_keys.len(), ENCODED_JSON_KEYS);
+        assert!(std::mem::size_of::<EncodedJsonKey>() * ENCODED_JSON_KEYS <= 20 * 1024);
+        assert_eq!(writer.into_inner(), expected);
+    }
+
+    #[test]
+    fn quoted_signatures_match_reference_without_allocating_key_memo() {
+        for signature in [[0; 64], [1; 64], [255; 64]] {
+            let mut writer = JsonByteWriter::with_capacity(0);
+            writer.base58_64(&signature);
+            assert!(writer.encoded_keys.is_empty());
+            assert_eq!(
+                writer.into_inner(),
+                serde_json::to_vec(&bs58::encode(signature).into_string()).unwrap()
+            );
+        }
+    }
+
+    #[test]
+    fn decimal_strings_match_existing_rpc_formatter_for_all_u8_scales() {
+        for decimals in 0u8..=255 {
+            for amount in [0u64, 1, 5, 10, 100, 123_456, 1_000_000_000, u64::MAX] {
+                let mut digits = itoa::Buffer::new();
+                let mut writer = JsonByteWriter::with_capacity(0);
+                writer.quoted_ui_amount(digits.format(amount).as_bytes(), decimals);
+                assert_eq!(
+                    writer.into_inner(),
+                    serde_json::to_vec(&ui_amount_string(amount, decimals)).unwrap(),
+                    "amount={amount} decimals={decimals}"
+                );
+            }
+        }
     }
 }
 
@@ -514,6 +721,7 @@ struct ProfileHandle(Rc<RefCell<RequestProfile>>);
 #[serde(rename_all = "camelCase")]
 struct RequestProfile {
     started_ms: f64,
+    source_ranges_only: bool,
     events: Vec<ProfileEvent>,
 }
 
@@ -536,10 +744,19 @@ struct ProfileSummary {
 
 impl ProfileHandle {
     fn new() -> Self {
+        Self::with_source_ranges_only(false)
+    }
+
+    fn with_source_ranges_only(source_ranges_only: bool) -> Self {
         Self(Rc::new(RefCell::new(RequestProfile {
             started_ms: now_ms(),
+            source_ranges_only,
             events: Vec::new(),
         })))
+    }
+
+    fn source_ranges_only(&self) -> bool {
+        self.0.borrow().source_ranges_only
     }
 
     fn record_elapsed(
@@ -581,7 +798,9 @@ impl ProfileHandle {
             .collect::<Vec<_>>();
         json!({
             "totalMs": round_ms((now_ms() - profile.started_ms).max(0.0)),
-            "events": profile.events.clone(),
+            "cacheMode": if profile.source_ranges_only { "source" } else { "full" },
+            "events": profile.events.iter().take(32).cloned().collect::<Vec<_>>(),
+            "eventsTruncated": profile.events.len() > 32,
             "summary": summary,
         })
     }
@@ -614,9 +833,30 @@ fn request_profile(req: &Request) -> Option<ProfileHandle> {
         matches!(key.as_ref(), "debug" | "profile")
             && matches!(value.as_ref(), "1" | "true" | "yes" | "on")
     });
-    enabled.then(ProfileHandle::new)
+    if enabled {
+        Some(ProfileHandle::new())
+    } else {
+        url.query_pairs()
+            .any(|(key, value)| key == "profile" && value == "source")
+            .then(|| ProfileHandle::with_source_ranges_only(true))
+    }
 }
 
+fn allow_index_and_auth_cache(profile: Option<&ProfileHandle>) -> bool {
+    profile.is_none_or(ProfileHandle::source_ranges_only)
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn now_ms() -> f64 {
+    static START: std::sync::OnceLock<std::time::Instant> = std::sync::OnceLock::new();
+    START
+        .get_or_init(std::time::Instant::now)
+        .elapsed()
+        .as_secs_f64()
+        * 1000.0
+}
+
+#[cfg(target_arch = "wasm32")]
 fn now_ms() -> f64 {
     let global = js_sys::global();
     if let Ok(performance) = js_sys::Reflect::get(&global, &JsValue::from_str("performance"))
@@ -638,11 +878,34 @@ fn round_ms(value: f64) -> f64 {
 
 #[event(fetch)]
 async fn main(req: Request, env: worker::Env, ctx: worker::Context) -> Result<Response> {
-    if req.method() == Method::Get && direct_block_route(&req.path()).is_some() {
-        return handle_direct_block(req, env, ctx).await;
-    }
-    if req.method() == Method::Post && req.path() == "/" {
+    if req.method() == Method::Post
+        && req.path() == "/"
+        && optional_var(&env, "BZ_HTTP_GET_ONLY").as_deref() != Some("true")
+    {
         return handle_rpc(req, env).await;
+    }
+    if req.method() != Method::Get {
+        let mut response = json_error(405, "method_not_allowed", "Use HTTP GET")?;
+        response.headers_mut().set("Allow", "GET")?;
+        return Ok(response);
+    }
+    if req
+        .path()
+        .strip_prefix("/block/")
+        .is_some_and(|path| path.ends_with(".resolution"))
+    {
+        return resolution::handle_index(req, env, ctx).await;
+    }
+    if req.method() == Method::Get && direct_block_route(&req.path()).is_some() {
+        let path = req.path();
+        let json = direct_block_route(&path)
+            .is_some_and(|(_, slot)| direct_transport(slot) == "http_json");
+        let response = handle_direct_block(req, env, ctx).await?;
+        return if json && response.status_code() >= 400 {
+            direct_json_rpc_error(response).await
+        } else {
+            Ok(response)
+        };
     }
 
     Router::new()
@@ -652,14 +915,45 @@ async fn main(req: Request, env: worker::Env, ctx: worker::Context) -> Result<Re
         .await
 }
 
+async fn direct_json_rpc_error(mut response: Response) -> Result<Response> {
+    let status = response.status_code();
+    let headers = response.headers().clone();
+    let value: Value = response.json().await?;
+    let body = if value.get("jsonrpc").and_then(Value::as_str) == Some("2.0") {
+        value
+    } else {
+        let code = if status == 400 { -32602 } else { -32000 };
+        error_response(
+            Value::from(1),
+            code,
+            value
+                .pointer("/error/message")
+                .and_then(Value::as_str)
+                .unwrap_or("Block request failed"),
+        )
+    };
+    headers.delete("Content-Length")?;
+    Ok(Response::from_json(&body)?
+        .with_status(status)
+        .with_headers(headers))
+}
+
 async fn handle_direct_block(
     req: Request,
     env: worker::Env,
     ctx: worker::Context,
 ) -> Result<Response> {
+    let ctx = Rc::new(ctx);
     let request_started = now_ms();
     let profile = request_profile(&req);
-    let api_key = match authenticate_api_request(&req, &env).await {
+    let auth_started = now_ms();
+    let auth = match authenticate_api_key_with_cache_policy(
+        &req,
+        &env,
+        allow_index_and_auth_cache(profile.as_ref()),
+    )
+    .await
+    {
         Ok(record) => record,
         Err(RpcAuthError::Unauthorized) => return api_unauthorized_response(),
         Err(RpcAuthError::Unavailable) => {
@@ -671,6 +965,83 @@ async fn handle_direct_block(
             );
         }
     };
+    if let Some(profile) = &profile {
+        profile.record_elapsed("authentication", auth_started, 0, auth.cache_status, None);
+        let placement = req.headers().get("cf-placement")?.unwrap_or_default();
+        let colo = req.cf().map(|cf| cf.colo()).unwrap_or_default();
+        profile.record_elapsed(
+            "worker_placement",
+            now_ms(),
+            0,
+            format!("colo={colo};placement={placement}"),
+            None,
+        );
+    }
+    let auth_cache_status = auth.cache_status;
+    let auth_cache_tier = auth.cache_tier;
+    let archive_backend = archive_backend_label(&env);
+    let archive_layout = if optional_var(&env, "BZ_SLOT_BUNDLE_PREFIX").is_some() {
+        "bundle-v1"
+    } else {
+        "compact-v2"
+    };
+    let mut response =
+        handle_authenticated_direct_block(req, env, ctx, profile, auth.record, request_started)
+            .await?;
+    add_auth_cache_headers(&mut response, auth_cache_status, auth_cache_tier)?;
+    response
+        .headers_mut()
+        .set("X-Blockzilla-Archive-Backend", archive_backend)?;
+    response
+        .headers_mut()
+        .set("X-Blockzilla-Archive-Layout", archive_layout)?;
+    Ok(response)
+}
+
+fn archive_backend_label(env: &worker::Env) -> &'static str {
+    if optional_var(env, "BZ_NATIVE_READER_URL").is_some() {
+        return "reader";
+    }
+    match optional_var(env, "BZ_ARCHIVE_SOURCE")
+        .as_deref()
+        .unwrap_or("auto")
+    {
+        "r2" | "cloudflare" | "cloudflare-r2" => "r2",
+        "s3" | "backblaze" | "b2" => "s3",
+        "auto" if env.bucket(&r2_binding_name(env)).is_ok() => "r2",
+        "auto" => "s3",
+        _ => "unknown",
+    }
+}
+
+fn add_auth_cache_headers(
+    response: &mut Response,
+    cache_status: &str,
+    cache_tier: &str,
+) -> Result<()> {
+    response.headers_mut().set(
+        "X-Blockzilla-Auth-Cache",
+        &cache_status.to_ascii_uppercase(),
+    )?;
+    response.headers_mut().set(
+        "X-Blockzilla-Auth-KV-Reads",
+        if cache_status == "hit" { "0" } else { "1" },
+    )?;
+    response.headers_mut().set(
+        "X-Blockzilla-Auth-Cache-Tier",
+        &cache_tier.to_ascii_uppercase(),
+    )?;
+    Ok(())
+}
+
+async fn handle_authenticated_direct_block(
+    req: Request,
+    env: worker::Env,
+    ctx: Rc<worker::Context>,
+    profile: Option<ProfileHandle>,
+    api_key: RpcApiKeyRecord,
+    request_started: f64,
+) -> Result<Response> {
     let metrics = match rpc_metrics(&env, profile.as_ref()) {
         Ok(metrics) => metrics,
         Err(response) => return Ok(response),
@@ -689,6 +1060,11 @@ async fn handle_direct_block(
     };
     let method = mode.metric_method();
     let transport = direct_transport(raw_slot);
+    if mode == RouteBlockMode::Full && raw_slot.ends_with(".compact") {
+        return recent_recovery::handle(
+            req, env, ctx, profile, api_key, request_started, metrics, raw_slot,
+        ).await;
+    }
     let request = match parse_block_request(&req, raw_slot) {
         Ok(request) => request,
         Err(response) => {
@@ -702,6 +1078,18 @@ async fn handle_direct_block(
             );
         }
     };
+    let r2_probe = req.url()?.query_pairs().any(|(key, value)| key == "r2_probe" && value == "1");
+    if r2_probe && (optional_var(&env, "BZ_R2_PROBE_ENABLED").as_deref() != Some("true")
+        || profile.is_none() || mode != RouteBlockMode::Full
+        || request.format != BlockResponseFormat::Wincode)
+    {
+        return finish_metered_response(
+            json_error(404, "probe_unavailable", "R2 diagnostics are not enabled for this request")?,
+            &api_key, &metrics,
+            MeteredRequest::new(method, "invalid_request", "bypass", transport, 0, 0),
+            request_started, profile.as_ref(),
+        );
+    }
     if request.format == BlockResponseFormat::Wincode && req.headers().get("Range")?.is_some() {
         return finish_metered_response(
             json_error_profiled(
@@ -718,14 +1106,49 @@ async fn handle_direct_block(
         );
     }
     let access_mode = block_bin_access_mode(&req);
+    let client_locator = resolution::query_locator(&req);
+    let client_binary = req
+        .url()?
+        .query_pairs()
+        .any(|(key, value)| key == "access" && value == "client");
+    let json_hint = request.format == BlockResponseFormat::Json
+        && mode == RouteBlockMode::Full
+        && client_locator.is_some();
+    let json_locator = if json_hint {
+        client_locator.as_deref()
+    } else {
+        None
+    };
+    if client_binary && (request.format != BlockResponseFormat::Wincode || client_locator.is_none())
+    {
+        return finish_metered_response(
+            json_error(
+                400,
+                "invalid_locator",
+                "Client binary needs a locator from the resolution response",
+            )?,
+            &api_key,
+            &metrics,
+            MeteredRequest::new(method, "invalid_request", "bypass", transport, 0, 0),
+            request_started,
+            profile.as_ref(),
+        );
+    }
     let cache_key = if profile.is_none() {
-        Some(canonical_block_cache_key(
+        let mut key = canonical_block_cache_key(
             &req,
             request,
             mode,
             access_mode,
             &archive_cache_generation(&env),
-        )?)
+        )?;
+        if client_binary || json_hint {
+            key.push_str("&client=");
+            key.push_str(&api_key_digest(
+                client_locator.as_deref().unwrap_or_default(),
+            ));
+        }
+        Some(key)
     } else {
         None
     };
@@ -737,6 +1160,12 @@ async fn handle_direct_block(
                 response
                     .headers_mut()
                     .set("Cache-Control", "private, no-store")?;
+                response
+                    .headers_mut()
+                    .set("X-Blockzilla-Cache-Fill", "HIT")?;
+                response
+                    .headers_mut()
+                    .set("X-Blockzilla-Foundation-Result", "RESPONSE_CACHE")?;
                 return finish_metered_response(
                     response,
                     &api_key,
@@ -759,8 +1188,57 @@ async fn handle_direct_block(
             }
         }
     }
+    let mut fill_leader = None;
+    let mut fill_status = "BYPASS";
+    if cache_status == "miss"
+        && let Some(key) = cache_key.as_ref()
+    {
+        match response_fill::admit(key) {
+            response_fill::Admission::Leader(leader) => {
+                fill_leader = Some(leader);
+                fill_status = "LEADER";
+            }
+            response_fill::Admission::Follower(completion) => {
+                if response_fill::wait(completion).await
+                    && let Ok(Some(response)) = Cache::default().get(key.clone(), false).await
+                {
+                    let mut response = response_with_mutable_headers(response);
+                    response
+                        .headers_mut()
+                        .set("Cache-Control", "private, no-store")?;
+                    response
+                        .headers_mut()
+                        .set("X-Blockzilla-Cache-Fill", "COALESCED")?;
+                    response
+                        .headers_mut()
+                        .set("X-Blockzilla-Foundation-Result", "RESPONSE_CACHE")?;
+                    return finish_metered_response(
+                        response,
+                        &api_key,
+                        &metrics,
+                        MeteredRequest::new(method, "ok", "hit", transport, 0, 0),
+                        request_started,
+                        profile.as_ref(),
+                    );
+                }
+                // A failed/evicted fill or a bounded wait must not make the
+                // request depend on a missing cache entry. Read independently.
+                fill_status = "FALLBACK";
+            }
+            response_fill::Admission::Untracked => {}
+        }
+    }
     let source = match WorkerSource::from_env(&env, profile.clone()) {
-        Ok(source) => source,
+        Ok(mut source) => {
+            if allow_index_and_auth_cache(profile.as_ref()) {
+                source.cache = Some(ArchiveCache {
+                    origin: req.url()?.origin().ascii_serialization(),
+                    generation: archive_cache_generation(&env),
+                    context: ctx.clone(),
+                });
+            }
+            source
+        }
         Err(err) => {
             return finish_metered_response(
                 json_error_profiled(500, "config_error", &err, profile.as_ref())?,
@@ -773,67 +1251,213 @@ async fn handle_direct_block(
         }
     };
 
-    let route_started = now_ms();
-    let (mut response, outcome) = match request.format {
-        BlockResponseFormat::Json => match render_route_block_bytes(&source, request, mode).await {
-            Ok(Some(bytes)) => {
-                source.record_elapsed(
-                    "route_total",
-                    route_started,
-                    bytes.len() as u64,
-                    "json_streamed",
-                    None,
-                );
-                (
-                    json_bytes_response_profiled(bytes, BLOCK_CACHE_CONTROL, profile.as_ref())?,
-                    "ok",
-                )
-            }
-            Ok(None) => {
-                source.record_elapsed("route_total", route_started, 0, "json_empty", None);
-                (
-                    cached_json_response_profiled(
-                        &json!({ "ok": true, "empty": true, "slot": request.slot }),
-                        ERROR_CACHE_CONTROL,
-                        profile.as_ref(),
-                    )?,
-                    "not_found",
-                )
-            }
-            Err(err) => {
-                console_error!("block route failed for slot {}: {}", request.slot, err);
-                source.record_elapsed("route_total", route_started, 0, "json_error", None);
-                (
-                    json_error_profiled(
-                        502,
-                        "blockzilla_decode_error",
-                        &format!("failed to fetch slot {}: {err}", request.slot),
-                        profile.as_ref(),
-                    )?,
-                    "backend_error",
-                )
-            }
-        },
-        BlockResponseFormat::Wincode => {
-            match fetch_block_bundle_bytes(&source, request.slot, access_mode).await {
-                Ok(Some(bytes)) => {
+    // One lookup runs only after auth, response-cache lookup and fill admission.
+    // The result is request-local; it is consumed by exactly one renderer.
+    let mut foundation_status = "DISABLED";
+    if let Some(config) = source.foundation_lookup.as_ref() {
+        foundation_status = if config.archive_lookup_enabled() { "BYPASS" } else { "RECENT_ONLY" };
+        if config.archive_lookup_enabled()
+            && mode == RouteBlockMode::Full
+            && client_locator.is_none()
+            && !client_binary
+            && access_mode == BlockBinAccessMode::Include
+        {
+            let route = foundation_archive::cached_route(&source, request.slot).await;
+            let route_hit = route.is_some();
+            let lookup = if let Some(route) = route {
+                Ok(foundation_first::Outcome::NotCached {
+                    source: Some(route),
+                })
+            } else {
+                source.backend_read.mark();
+                source.storage_metrics.attempt_foundation_lookup_http();
+                config.lookup(&source, request.slot).await
+            };
+            match lookup {
+                Ok(result @ foundation_first::Outcome::Complete { .. }) => {
+                    foundation_status = "COMPLETE";
+                    source.foundation_prepared.borrow_mut().replace(result);
+                }
+                Ok(result @ foundation_first::Outcome::Resolution { .. }) => {
+                    foundation_status = "RESOLUTION";
+                    source.foundation_prepared.borrow_mut().replace(result);
+                }
+                Ok(foundation_first::Outcome::NotCached {
+                    source: Some(route),
+                }) => {
+                    foundation_status = if route_hit { "ROUTE_CACHE" } else { "ARCHIVE" };
+                    if !route_hit {
+                        foundation_archive::cache_route(&source, request.slot, &route);
+                    }
+                    source.foundation_prepared.borrow_mut().replace(
+                        foundation_first::Outcome::NotCached {
+                            source: Some(route),
+                        },
+                    );
+                }
+                Ok(foundation_first::Outcome::NotCached { source: None }) => {
+                    foundation_status = "FALLBACK";
+                }
+                Ok(foundation_first::Outcome::TransportFailure(reason)) => {
+                    foundation_status = "FALLBACK";
                     source.record_elapsed(
-                        "route_total",
-                        route_started,
-                        bytes.len() as u64,
-                        "wincode_bundle",
+                        "foundation_fallback",
+                        now_ms(),
+                        0,
+                        format!("{reason:?}"),
                         None,
                     );
-                    (
-                        block_bundle_response_profiled(bytes, profile.as_ref())?,
-                        "ok",
-                    )
+                }
+                Ok(foundation_first::Outcome::Unavailable(reason)) => {
+                    let (status, code) = match reason {
+                        foundation_first::Unavailable::Unavailable => (404, "block_unavailable"),
+                        foundation_first::Unavailable::Pruned => (410, "block_pruned"),
+                        foundation_first::Unavailable::Incomplete => (409, "block_incomplete"),
+                        foundation_first::Unavailable::NotFinalized => (409, "block_not_finalized"),
+                        foundation_first::Unavailable::CoverageUnavailable => {
+                            (404, "coverage_unavailable")
+                        }
+                        foundation_first::Unavailable::SourceChanged => (409, "source_changed"),
+                        foundation_first::Unavailable::HashMismatch => (409, "hash_mismatch"),
+                    };
+                    let mut response = json_error_profiled(status, code, code, profile.as_ref())?;
+                    response
+                        .headers_mut()
+                        .set("X-Blockzilla-Foundation-Result", code)?;
+                    return finish_metered_response(
+                        response,
+                        &api_key,
+                        &metrics,
+                        MeteredRequest::new(method, "not_found", cache_status, transport, 0, 0)
+                            .with_storage(source.storage_metrics.snapshot()),
+                        request_started,
+                        profile.as_ref(),
+                    );
+                }
+                Err(error) => {
+                    let mut response = json_error_profiled(
+                        502,
+                        "foundation_lookup_error",
+                        &error,
+                        profile.as_ref(),
+                    )?;
+                    response
+                        .headers_mut()
+                        .set("X-Blockzilla-Foundation-Result", "REJECTED")?;
+                    return finish_metered_response(
+                        response,
+                        &api_key,
+                        &metrics,
+                        MeteredRequest::new(method, "backend_error", cache_status, transport, 0, 0)
+                            .with_storage(source.storage_metrics.snapshot()),
+                        request_started,
+                        profile.as_ref(),
+                    );
+                }
+            }
+        }
+    }
+
+    if source.foundation_prepared.borrow().is_none()
+        && source.slot_bundle.is_some()
+        && !bundle_object::covered(&source, request.slot)
+    {
+        return finish_metered_response(
+            json_error_profiled(
+                404,
+                "block_unavailable",
+                "This test serves only its admitted slot bundles",
+                profile.as_ref(),
+            )?,
+            &api_key,
+            &metrics,
+            MeteredRequest::new(method, "not_found", cache_status, transport, 0, 0),
+            request_started,
+            profile.as_ref(),
+        );
+    }
+
+    if profile
+        .as_ref()
+        .is_some_and(ProfileHandle::source_ranges_only)
+        && !resolution::covered(&source, request.slot)
+        && !bundle_object::covered(&source, request.slot)
+        && source.foundation_prepared.borrow().is_none()
+    {
+        return finish_metered_response(
+            json_error_profiled(
+                400,
+                "unsupported_profile",
+                "Source-only profiling requires an admitted per-slot index",
+                profile.as_ref(),
+            )?,
+            &api_key,
+            &metrics,
+            MeteredRequest::new(method, "invalid_request", "bypass", transport, 0, 0),
+            request_started,
+            profile.as_ref(),
+        );
+    }
+
+    if r2_probe {
+        let prepared = source.foundation_prepared.borrow_mut().take();
+        let result = match prepared {
+            Some(foundation_first::Outcome::NotCached { source: Some(route) }) => {
+                resolution::r2_probe_response(&source, request.slot, route).await
+            }
+            _ => Err("R2 diagnostics require an admitted Foundation archive route".into()),
+        };
+        let (mut response, outcome) = match result {
+            Ok(response) => (response, "ok"),
+            Err(error) => (json_error_profiled(502, "r2_probe_error", &error, profile.as_ref())?, "backend_error"),
+        };
+        response.headers_mut().set("X-Blockzilla-Foundation-Result", foundation_status)?;
+        return finish_metered_response(response, &api_key, &metrics,
+            MeteredRequest::new(method, outcome, "bypass", "http_r2_probe", 0, source.billable_backend_reads())
+                .with_storage(source.storage_metrics.snapshot()),
+            request_started, profile.as_ref());
+    }
+
+    let route_started = now_ms();
+    let (mut response, outcome) = match request.format {
+        BlockResponseFormat::Json => {
+            let buffered_profile = profile.is_some()
+                && req
+                    .url()?
+                    .query_pairs()
+                    .any(|(key, value)| key == "profile_body" && value == "buffered");
+            let rendered = if buffered_profile {
+                render_route_block_bytes(&source, request, mode, json_locator)
+                    .await
+                    .and_then(|body| {
+                        body.map(|bytes| {
+                            let mut response = json_bytes_response_profiled(
+                                bytes,
+                                ERROR_CACHE_CONTROL,
+                                profile.as_ref(),
+                            )
+                            .map_err(|e| e.to_string())?;
+                            response
+                                .headers_mut()
+                                .set("X-Blockzilla-Body", "profile-buffered")
+                                .map_err(|e| e.to_string())?;
+                            Ok(response)
+                        })
+                        .transpose()
+                    })
+            } else {
+                render_route_block_response(&source, request, mode, json_locator).await
+            };
+            match rendered {
+                Ok(Some(response)) => {
+                    source.record_elapsed("route_total", route_started, 0, "json_streamed", None);
+                    (response, "ok")
                 }
                 Ok(None) => {
-                    source.record_elapsed("route_total", route_started, 0, "wincode_empty", None);
+                    source.record_elapsed("route_total", route_started, 0, "json_empty", None);
                     (
                         cached_json_response_profiled(
-                            &json!({ "ok": true, "empty": true, "slot": request.slot }),
+                            &success_response(Value::from(1), Value::Null),
                             ERROR_CACHE_CONTROL,
                             profile.as_ref(),
                         )?,
@@ -841,22 +1465,167 @@ async fn handle_direct_block(
                     )
                 }
                 Err(err) => {
-                    console_error!("wincode route failed for slot {}: {}", request.slot, err);
-                    source.record_elapsed("route_total", route_started, 0, "wincode_error", None);
+                    console_error!("block route failed for slot {}: {}", request.slot, err);
+                    source.record_elapsed("route_total", route_started, 0, "json_error", None);
                     (
-                        json_error_profiled(
-                            502,
-                            "blockzilla_decode_error",
-                            &format!("failed to fetch slot {}: {err}", request.slot),
+                        json_rpc_response_profiled(
+                            error_response(
+                                Value::from(1),
+                                -32000,
+                                format!("failed to fetch slot {}: {err}", request.slot),
+                            ),
                             profile.as_ref(),
-                        )?,
+                        )?
+                        .with_status(502),
                         "backend_error",
                     )
                 }
             }
         }
+        BlockResponseFormat::Wincode => {
+            let prepared = source.foundation_prepared.borrow_mut().take();
+            if let Some(prepared) = prepared {
+                match foundation_binary_response(
+                    &source,
+                    request.slot,
+                    prepared,
+                    &ctx,
+                    &metrics,
+                    &api_key,
+                )
+                .await
+                {
+                    Ok(response) => (response, "ok"),
+                    Err(error) => (
+                        json_error_profiled(
+                            502,
+                            "foundation_block_error",
+                            &error,
+                            profile.as_ref(),
+                        )?,
+                        "backend_error",
+                    ),
+                }
+            } else if bundle_object::covered(&source, request.slot) {
+                if client_binary || access_mode != BlockBinAccessMode::Include {
+                    (
+                        json_error_profiled(
+                            400,
+                            "unsupported_bundle_variant",
+                            "Stored slot bundles require full access data without a client locator",
+                            profile.as_ref(),
+                        )?,
+                        "invalid_request",
+                    )
+                } else {
+                    match bundle_object::binary_response(
+                        &source,
+                        request.slot,
+                        &ctx,
+                        &metrics,
+                        &api_key,
+                    )
+                    .await
+                    {
+                        Ok(response) => (response, "ok"),
+                        Err(err) => (
+                            json_error_profiled(502, "bundle_error", &err, profile.as_ref())?,
+                            "backend_error",
+                        ),
+                    }
+                }
+            } else if client_binary && !resolution::covered(&source, request.slot) {
+                (
+                    json_error_profiled(
+                        400,
+                        "invalid_locator",
+                        "Client slot is outside admitted resolution coverage",
+                        profile.as_ref(),
+                    )?,
+                    "invalid_request",
+                )
+            } else if resolution::covered(&source, request.slot) {
+                match resolution::binary_response(
+                    &source,
+                    request.slot,
+                    access_mode == BlockBinAccessMode::Include,
+                    if client_binary {
+                        client_locator.as_deref()
+                    } else {
+                        None
+                    },
+                    &ctx,
+                    &metrics,
+                    &api_key,
+                )
+                .await
+                {
+                    Ok(response) => (response, "ok"),
+                    Err(err) => (
+                        json_error_profiled(502, "resolution_error", &err, profile.as_ref())?,
+                        "backend_error",
+                    ),
+                }
+            } else {
+                match fetch_block_bundle_bytes(&source, request.slot, access_mode).await {
+                    Ok(Some(bytes)) => {
+                        source.record_elapsed(
+                            "route_total",
+                            route_started,
+                            bytes.len() as u64,
+                            "wincode_bundle",
+                            None,
+                        );
+                        (
+                            block_bundle_response_profiled(bytes, profile.as_ref())?,
+                            "ok",
+                        )
+                    }
+                    Ok(None) => {
+                        source.record_elapsed(
+                            "route_total",
+                            route_started,
+                            0,
+                            "wincode_empty",
+                            None,
+                        );
+                        (
+                            json_error_profiled(
+                                404,
+                                "block_unavailable",
+                                "This archive has no block for the requested slot",
+                                profile.as_ref(),
+                            )?,
+                            "not_found",
+                        )
+                    }
+                    Err(err) => {
+                        console_error!("wincode route failed for slot {}: {}", request.slot, err);
+                        source.record_elapsed(
+                            "route_total",
+                            route_started,
+                            0,
+                            "wincode_error",
+                            None,
+                        );
+                        (
+                            json_error_profiled(
+                                502,
+                                "blockzilla_decode_error",
+                                &format!("failed to fetch slot {}: {err}", request.slot),
+                                profile.as_ref(),
+                            )?,
+                            "backend_error",
+                        )
+                    }
+                }
+            }
+        }
     };
     let billable_backend_reads = source.billable_backend_reads();
+    response
+        .headers_mut()
+        .set("X-Blockzilla-Foundation-Result", foundation_status)?;
 
     let cache_write = if outcome == "ok"
         && response.status_code() == 200
@@ -885,6 +1654,9 @@ async fn handle_direct_block(
     response
         .headers_mut()
         .set("Cache-Control", "private, no-store")?;
+    response
+        .headers_mut()
+        .set("X-Blockzilla-Cache-Fill", fill_status)?;
     let response = finish_metered_response(
         response,
         &api_key,
@@ -896,15 +1668,21 @@ async fn handle_direct_block(
             transport,
             0,
             billable_backend_reads,
-        ),
+        )
+        .with_storage(source.storage_metrics.snapshot()),
         request_started,
         profile.as_ref(),
     )?;
     if response.status_code() != 503
         && let Some((cache_key, cache_response)) = cache_write
     {
+        let fill_leader = fill_leader.take();
         ctx.wait_until(async move {
-            if let Err(err) = Cache::default().put(cache_key, cache_response).await {
+            let result = Cache::default().put(cache_key, cache_response).await;
+            if let Some(leader) = fill_leader {
+                leader.finish(result.is_ok());
+            }
+            if let Err(err) = result {
                 console_error!(
                     "{}",
                     json!({
@@ -965,7 +1743,9 @@ fn direct_block_route(path: &str) -> Option<(RouteBlockMode, &str)> {
 }
 
 fn direct_transport(raw_slot: &str) -> &'static str {
-    if raw_slot.ends_with(".bin") && !raw_slot.ends_with(".proto.bin") {
+    if raw_slot.ends_with(".compact") {
+        "http_compact"
+    } else if raw_slot.ends_with(".bin") && !raw_slot.ends_with(".proto.bin") {
         "http_binary"
     } else if !raw_slot.contains('.') || raw_slot.ends_with(".json") {
         "http_json"
@@ -975,9 +1755,43 @@ fn direct_transport(raw_slot: &str) -> &'static str {
 }
 
 fn archive_cache_generation(env: &worker::Env) -> String {
-    let prefix =
-        optional_var(env, "BZ_ARCHIVE_PREFIX").unwrap_or_else(|| "blockzilla-v2".to_string());
-    api_key_digest(&format!("direct-render-v1\0{}", prefix.trim_matches('/')))[..16].to_string()
+    // A source switch or a repaired publication must not reuse old bytes.
+    let fields = [
+        "BZ_ARCHIVE_SOURCE",
+        "BZ_ARCHIVE_PREFIX",
+        "BZ_ARCHIVE_GENERATION",
+        "BZ_ARCHIVE_LAYOUT",
+        "BZ_SLOT_INDEX",
+        "BZ_R2_BUCKET_BINDING",
+        "BZ_S3_ENDPOINT",
+        "BZ_S3_BUCKET",
+        "BZ_MESSAGE_SCHEMA_OVERRIDES",
+        "BZ_METADATA_SCHEMA",
+        "BZ_RESOLUTION_PREFIX",
+        "BZ_RESOLUTION_GENERATION",
+        "BZ_RESOLUTION_BUCKET_BINDING",
+        "BZ_RESOLUTION_SLOTS",
+        "BZ_LOCATOR_SECRET",
+        "BZ_NATIVE_READER_URL",
+        "BZ_NATIVE_READER_SECRET",
+        "BZ_SLOT_BUNDLE_PREFIX",
+        "BZ_SLOT_BUNDLE_GENERATION",
+        "BZ_SLOT_BUNDLE_BUCKET_BINDING",
+        "BZ_SLOT_BUNDLE_MANIFEST",
+        "BZ_FOUNDATION_LOOKUP_URL",
+        "BZ_FOUNDATION_LOOKUP_SECRET",
+        "BZ_FOUNDATION_LOOKUP_GENERATION",
+        "BZ_FOUNDATION_BINARY_RESOLVE_MODE",
+        "BZ_FOUNDATION_LOOKUP_MODE",
+        "BZ_FOUNDATION_LOOKUP_TIMEOUT_MS",
+        "BZ_FOUNDATION_LOOKUP_BODY_TIMEOUT_MS",
+    ];
+    let identity = fields
+        .iter()
+        .map(|field| format!("{field}={}", optional_var(env, field).unwrap_or_default()))
+        .collect::<Vec<_>>()
+        .join("\0");
+    api_key_digest(&format!("direct-render-v4-base64\0{identity}"))
 }
 
 fn canonical_block_cache_key(
@@ -1005,29 +1819,43 @@ fn canonical_block_cache_key(
     Ok(url.to_string())
 }
 
-async fn handle_info(_req: Request, _ctx: RouteContext<()>) -> Result<Response> {
-    cached_json_response(
-        &json!({
-            "ok": true,
-            "name": "blockzilla-get-block",
-            "authentication": "Authorization: Bearer <api-key>",
-            "recommended": "GET /block/:slot.bin",
-            "json_compatibility": ["GET /block/:slot.json", "GET /block-lite/:slot.json"],
-            "json_rpc": {
-                "route": "POST /",
-                "methods": ["getBlock", "getBlockTime", "getVersion"],
-                "cache": "uncached"
-            },
-            "binary_formats": {
-                ".bin": "Blockzilla getBlock bundle: zstd hot-block blob plus optional block-access blob",
-                ".proto.bin": "not implemented"
-            },
-            "archive_source": "blockzilla-v2",
-            "archive_backends": ["r2", "s3"],
-            "r2_binding": "BZ_ARCHIVE_BUCKET",
-        }),
-        INFO_CACHE_CONTROL,
-    )
+async fn handle_info(_req: Request, ctx: RouteContext<()>) -> Result<Response> {
+    let get_only = optional_var(&ctx.env, "BZ_HTTP_GET_ONLY").as_deref() == Some("true");
+    let mut info = json!({
+        "ok": true,
+        "name": "blockzilla-get-block",
+        "authentication": "Authorization: Bearer <api-key>",
+        "auth_check_cache": {
+            "enabled": optional_var(&ctx.env, "BZ_AUTH_CACHE_SCOPE").is_some_and(|scope| auth_check_cache_key(&scope, "").is_some()),
+            "max_added_staleness_ms": AUTH_CHECK_TTL_MS,
+            "kv_consistency": "KV propagation delay is additional",
+        },
+        "profile_modes": {
+            "1": "bypass response, index, source-range and auth caches",
+            "source": "bypass response and source-range caches; retain index and auth caches",
+        },
+        "recommended": "GET /block/:slot.bin",
+        "json_compatibility": ["GET /block/:slot.json", "GET /block-lite/:slot.json"],
+        "methods": if get_only { vec!["GET"] } else { vec!["GET", "POST"] },
+        "json_rpc": { "route": "GET /block/:slot.json", "id": 1, "method": "getBlock", "transaction_encoding": "base64", "supported_transaction_encodings": ["base64"] },
+        "binary_formats": { ".bin": "Blockzilla getBlock Wincode bundle", ".proto.bin": "not implemented" },
+        "archive_source": "compact-v2",
+        "archive_backends": ["r2", "s3"],
+    });
+    if !get_only {
+        info["transaction_rpc"] = json!({ "route": "POST /", "method": "getTransaction", "encodings": ["json", "base64", "base58"] });
+    }
+    if let Some(generation) = optional_var(&ctx.env, "BZ_RESOLUTION_GENERATION") {
+        info["slot_resolution"] = json!({
+            "route": "GET /block/:slot.resolution",
+            "generation": generation,
+            "admitted_slots": optional_var(&ctx.env, "BZ_RESOLUTION_SLOTS").unwrap_or_default(),
+            "client_binary": "GET /block/:slot.bin?access=client&locator=<X-Blockzilla-Locator>",
+            "client_binary_format": "BZPART2! header, compressed hot block, original signatures",
+            "required_parent_fields": ["parent_slot", "blockhash", "previous_blockhash"],
+        });
+    }
+    cached_json_response(&info, INFO_CACHE_CONTROL)
 }
 
 #[derive(Clone, Copy)]
@@ -1079,6 +1907,20 @@ fn parse_block_request(
 ) -> std::result::Result<BlockRequest, Response> {
     let (slot_text, format) = parse_slot_and_format(raw_slot)?;
     let slot = slot_text.parse().map_err(|_| invalid_slot_response())?;
+    if format == BlockResponseFormat::Json
+        && req
+            .url()
+            .map_err(|_| invalid_slot_response())?
+            .query_pairs()
+            .any(|(key, value)| key == "encoding" && value != "base64")
+    {
+        return Err(json_error(
+            400,
+            "unsupported_encoding",
+            "Only base64 transaction encoding is supported",
+        )
+        .unwrap_or_else(|_| Response::error("Unsupported encoding", 400).unwrap()));
+    }
     let include_rewards = if format == BlockResponseFormat::Json {
         parse_include_rewards(req)?
     } else {
@@ -1229,6 +2071,7 @@ struct RpcExecution {
     outcome: &'static str,
     request_bytes: usize,
     billable_backend_reads: u8,
+    storage: StorageSnapshot,
 }
 
 enum RpcBodyReadError {
@@ -1271,6 +2114,7 @@ async fn handle_rpc(mut req: Request, env: worker::Env) -> Result<Response> {
                 outcome: "request_too_large",
                 request_bytes: RPC_REQUEST_BODY_MAX_BYTES,
                 billable_backend_reads: 0,
+                storage: StorageSnapshot::default(),
             };
             return finish_metered_rpc(
                 execution,
@@ -1292,6 +2136,7 @@ async fn handle_rpc(mut req: Request, env: worker::Env) -> Result<Response> {
                 outcome: "body_read_error",
                 request_bytes: 0,
                 billable_backend_reads: 0,
+                storage: StorageSnapshot::default(),
             };
             return finish_metered_rpc(
                 execution,
@@ -1336,6 +2181,7 @@ async fn handle_rpc(mut req: Request, env: worker::Env) -> Result<Response> {
                 outcome: "internal_error",
                 request_bytes,
                 billable_backend_reads: 0,
+                storage: StorageSnapshot::default(),
             }
         }
     };
@@ -1376,6 +2222,7 @@ async fn execute_rpc_body(
                 outcome: "parse_error",
                 request_bytes,
                 billable_backend_reads: 0,
+                storage: StorageSnapshot::default(),
             });
         }
     };
@@ -1397,9 +2244,33 @@ async fn execute_rpc_body(
             outcome: "batch_rejected",
             request_bytes,
             billable_backend_reads: 0,
+            storage: StorageSnapshot::default(),
         });
     }
 
+    // POST is reserved for getTransaction. Block requests retain their GET
+    // transport and cache contract.
+    if let Some(other) = value
+        .get("method")
+        .and_then(Value::as_str)
+        .filter(|method| *method != "getTransaction")
+    {
+        return Ok(RpcExecution {
+            response: json_rpc_response_profiled(
+                error_response(
+                    value.get("id").cloned().unwrap_or(Value::Null),
+                    -32601,
+                    format!("Method not found: {other}"),
+                ),
+                profile.as_ref(),
+            )?,
+            method,
+            outcome: "rpc_error",
+            request_bytes,
+            billable_backend_reads: 0,
+            storage: StorageSnapshot::default(),
+        });
+    }
     if let Some(local_response) = local_rpc_response(&value) {
         let outcome = if local_response.get("error").is_some() {
             "rpc_error"
@@ -1415,6 +2286,7 @@ async fn execute_rpc_body(
             outcome,
             request_bytes,
             billable_backend_reads: 0,
+            storage: StorageSnapshot::default(),
         });
     }
 
@@ -1433,6 +2305,7 @@ async fn execute_rpc_body(
                 outcome: "config_error",
                 request_bytes,
                 billable_backend_reads: 0,
+                storage: StorageSnapshot::default(),
             });
         }
     };
@@ -1456,6 +2329,7 @@ async fn execute_rpc_body(
                 outcome: "ok",
                 request_bytes,
                 billable_backend_reads: source.billable_backend_reads(),
+                storage: source.storage_metrics.snapshot(),
             });
         }
         Ok(Some(StreamedRpcBody::Stream(body))) => {
@@ -1470,6 +2344,7 @@ async fn execute_rpc_body(
                 outcome: "ok",
                 request_bytes,
                 billable_backend_reads: source.billable_backend_reads(),
+                storage: source.storage_metrics.snapshot(),
             });
         }
         Ok(None) => {}
@@ -1481,6 +2356,7 @@ async fn execute_rpc_body(
                 outcome: "rpc_error",
                 request_bytes,
                 billable_backend_reads: source.billable_backend_reads(),
+                storage: source.storage_metrics.snapshot(),
             });
         }
     }
@@ -1498,6 +2374,7 @@ async fn execute_rpc_body(
         outcome,
         request_bytes,
         billable_backend_reads: source.billable_backend_reads(),
+        storage: source.storage_metrics.snapshot(),
     })
 }
 
@@ -1533,6 +2410,12 @@ fn local_rpc_response(value: &Value) -> Option<Value> {
     }
 
     let validation = match method {
+        "getTransaction" => crate::transaction_rpc::parse_params(request.params.as_ref())
+            .map(|_| ())
+            .map_err(|error| RpcError {
+                code: error.code,
+                message: error.message,
+            }),
         "getBlock" => get_block_params(&request).map(|_| ()),
         "getBlockTime" => params_array(&request).and_then(|params| {
             params
@@ -1566,6 +2449,377 @@ fn local_rpc_response(value: &Value) -> Option<Value> {
     }
 }
 
+const AUTH_CHECK_TTL_MS: f64 = 5_000.0;
+const AUTH_CHECK_MAX_ENTRIES: usize = 256;
+const AUTH_CHECK_MAX_BYTES: usize = 128 * 1024;
+const AUTH_EDGE_MAX_BODY_BYTES: usize = 1024;
+
+struct AuthCheckEntry {
+    scope_digest: String,
+    record: RpcApiKeyRecord,
+    checked_at_ms: f64,
+    expires_at_ms: f64,
+    payload_bytes: usize,
+}
+
+/// Only completed, validated positive records enter this private isolate cache.
+/// Expiry is not extended on hits. It adds at most five seconds to the
+/// staleness of a KV observation; KV propagation is a separate constraint.
+struct AuthCheckCache {
+    entries: std::collections::VecDeque<AuthCheckEntry>,
+    payload_bytes: usize,
+    entry_limit: usize,
+    byte_limit: usize,
+}
+
+impl AuthCheckCache {
+    fn new(entry_limit: usize, byte_limit: usize) -> Self {
+        let entry_limit = entry_limit.min(
+            byte_limit.saturating_sub(std::mem::size_of::<Self>())
+                / std::mem::size_of::<AuthCheckEntry>(),
+        );
+        Self {
+            entries: std::collections::VecDeque::with_capacity(entry_limit),
+            payload_bytes: 0,
+            entry_limit,
+            byte_limit,
+        }
+    }
+
+    fn allocated_bytes(&self) -> usize {
+        std::mem::size_of::<Self>()
+            .saturating_add(
+                self.entries
+                    .capacity()
+                    .saturating_mul(std::mem::size_of::<AuthCheckEntry>()),
+            )
+            .saturating_add(self.payload_bytes)
+    }
+
+    fn prune(&mut self, now: f64) {
+        self.entries.retain(|entry| {
+            now.is_finite() && now >= entry.checked_at_ms && now < entry.expires_at_ms
+        });
+        self.payload_bytes = self.entries.iter().map(|entry| entry.payload_bytes).sum();
+    }
+
+    fn get(&mut self, scope_digest: &str, now: f64) -> Option<RpcApiKeyRecord> {
+        self.prune(now);
+        let index = self
+            .entries
+            .iter()
+            .position(|entry| entry.scope_digest == scope_digest)?;
+        let entry = self.entries.remove(index)?;
+        let record = entry.record.clone();
+        self.entries.push_back(entry);
+        Some(record)
+    }
+
+    fn insert_completed(
+        &mut self,
+        scope_digest: String,
+        record: &RpcApiKeyRecord,
+        checked_at_ms: f64,
+        completed_at_ms: f64,
+    ) {
+        self.prune(completed_at_ms);
+        let expires_at_ms = checked_at_ms + AUTH_CHECK_TTL_MS;
+        if self.entry_limit == 0
+            || !checked_at_ms.is_finite()
+            || !completed_at_ms.is_finite()
+            || !expires_at_ms.is_finite()
+            || completed_at_ms < checked_at_ms
+            || completed_at_ms >= expires_at_ms
+            || record.validate().is_err()
+            || !record.is_enabled()
+        {
+            return;
+        }
+        let record = record.clone();
+        let payload_bytes = scope_digest
+            .capacity()
+            .saturating_add(record.key_id.capacity())
+            .saturating_add(record.customer_id.capacity())
+            .saturating_add(record.label.capacity());
+        if let Some(index) = self
+            .entries
+            .iter()
+            .position(|entry| entry.scope_digest == scope_digest)
+        {
+            if let Some(old) = self.entries.remove(index) {
+                self.payload_bytes -= old.payload_bytes;
+            }
+        }
+        while !self.entries.is_empty()
+            && (self.entries.len() >= self.entry_limit
+                || self.allocated_bytes().saturating_add(payload_bytes) > self.byte_limit)
+        {
+            if let Some(old) = self.entries.pop_front() {
+                self.payload_bytes -= old.payload_bytes;
+            }
+        }
+        if self.allocated_bytes().saturating_add(payload_bytes) > self.byte_limit {
+            return;
+        }
+        self.payload_bytes += payload_bytes;
+        self.entries.push_back(AuthCheckEntry {
+            scope_digest,
+            record,
+            checked_at_ms,
+            expires_at_ms,
+            payload_bytes,
+        });
+    }
+}
+
+thread_local! {
+    // No API key, binding object, request, response, stream, or pending I/O is retained.
+    static AUTH_CHECKS: RefCell<AuthCheckCache> = RefCell::new(AuthCheckCache::new(AUTH_CHECK_MAX_ENTRIES, AUTH_CHECK_MAX_BYTES));
+}
+
+fn auth_check_cache_key(scope: &str, key_digest: &str) -> Option<String> {
+    if scope.is_empty() || scope.len() > 128 || scope.chars().any(char::is_control) {
+        return None;
+    }
+    Some(api_key_digest(&format!(
+        "auth-check-v1\0{RPC_API_KEYS_BINDING}\0{scope}\0{key_digest}"
+    )))
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct AuthEdgeEnvelope {
+    version: u8,
+    origin_digest: String,
+    scope_digest: String,
+    key_digest: String,
+    checked_at_utc_ms: f64,
+    record: RpcApiKeyRecord,
+}
+
+struct AuthEdgeHit {
+    record: RpcApiKeyRecord,
+    checked_at_utc_ms: f64,
+}
+
+#[cfg(target_arch = "wasm32")]
+fn auth_check_utc_ms() -> f64 {
+    js_sys::Date::now()
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn auth_check_utc_ms() -> f64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|value| value.as_millis() as f64)
+        .unwrap_or(f64::NAN)
+}
+
+fn auth_digest_is_valid(value: &str) -> bool {
+    value.len() == 64
+        && value
+            .bytes()
+            .all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte))
+}
+
+fn auth_edge_cache_key(origin: &str, scope_digest: &str) -> Option<String> {
+    if origin.len() > 512 || !auth_digest_is_valid(scope_digest) {
+        return None;
+    }
+    let url = worker::Url::parse(origin).ok()?;
+    if !matches!(url.scheme(), "http" | "https") || url.origin().ascii_serialization() != origin {
+        return None;
+    }
+    Some(format!(
+        "{origin}/__blockzilla-auth-positive/v1/{scope_digest}"
+    ))
+}
+
+fn auth_edge_remaining_ttl_ms(checked_at_utc_ms: f64, now_utc_ms: f64) -> Option<f64> {
+    if !checked_at_utc_ms.is_finite()
+        || !now_utc_ms.is_finite()
+        || checked_at_utc_ms < 0.0
+        || checked_at_utc_ms.fract() != 0.0
+        || checked_at_utc_ms > 9_007_199_254_740_991.0
+        || now_utc_ms < checked_at_utc_ms
+    {
+        return None;
+    }
+    let remaining = AUTH_CHECK_TTL_MS - (now_utc_ms - checked_at_utc_ms);
+    (remaining > 0.0 && remaining <= AUTH_CHECK_TTL_MS).then_some(remaining)
+}
+
+fn validate_auth_edge_envelope(
+    bytes: &[u8],
+    origin: &str,
+    scope_digest: &str,
+    key_digest: &str,
+    now_utc_ms: f64,
+) -> Option<AuthEdgeHit> {
+    if bytes.is_empty()
+        || bytes.len() > AUTH_EDGE_MAX_BODY_BYTES
+        || !auth_digest_is_valid(scope_digest)
+        || !auth_digest_is_valid(key_digest)
+    {
+        return None;
+    }
+    let envelope: AuthEdgeEnvelope = serde_json::from_slice(bytes).ok()?;
+    if envelope.version != 1
+        || envelope.origin_digest != api_key_digest(origin)
+        || envelope.scope_digest != scope_digest
+        || envelope.key_digest != key_digest
+        || envelope.record.validate().is_err()
+        || !envelope.record.is_enabled()
+    {
+        return None;
+    }
+    auth_edge_remaining_ttl_ms(envelope.checked_at_utc_ms, now_utc_ms)?;
+    Some(AuthEdgeHit {
+        checked_at_utc_ms: envelope.checked_at_utc_ms,
+        record: envelope.record,
+    })
+}
+
+fn encode_auth_edge_envelope(
+    origin: &str,
+    scope_digest: &str,
+    key_digest: &str,
+    record: &RpcApiKeyRecord,
+    checked_at_utc_ms: f64,
+    now_utc_ms: f64,
+) -> Option<(Vec<u8>, u32)> {
+    if !auth_digest_is_valid(scope_digest)
+        || !auth_digest_is_valid(key_digest)
+        || record.validate().is_err()
+        || !record.is_enabled()
+    {
+        return None;
+    }
+    let remaining = auth_edge_remaining_ttl_ms(checked_at_utc_ms, now_utc_ms)?;
+    let bytes = serde_json::to_vec(&AuthEdgeEnvelope {
+        version: 1,
+        origin_digest: api_key_digest(origin),
+        scope_digest: scope_digest.into(),
+        key_digest: key_digest.into(),
+        checked_at_utc_ms,
+        record: record.clone(),
+    })
+    .ok()?;
+    if bytes.len() > AUTH_EDGE_MAX_BODY_BYTES {
+        return None;
+    }
+    // Cache TTL has whole-second precision. The embedded UTC deadline is
+    // authoritative, including after a slow cache publication.
+    Some((bytes, (remaining / 1000.0).ceil() as u32))
+}
+
+fn promote_auth_edge_hit(
+    cache: &mut AuthCheckCache,
+    scope_digest: String,
+    hit: &AuthEdgeHit,
+    local_now_ms: f64,
+    utc_now_ms: f64,
+) -> bool {
+    // Recompute at promotion; time spent since envelope validation is not free.
+    let Some(remaining_ttl_ms) = auth_edge_remaining_ttl_ms(hit.checked_at_utc_ms, utc_now_ms)
+    else {
+        return false;
+    };
+    // A fresh runtime can have local_now_ms smaller than the record's age.
+    // A negative local anchor is valid; insert_completed preserves its deadline.
+    let local_checked_ms = local_now_ms - (AUTH_CHECK_TTL_MS - remaining_ttl_ms);
+    cache.insert_completed(scope_digest, &hit.record, local_checked_ms, local_now_ms);
+    true
+}
+
+async fn read_auth_edge(
+    cache_url: &str,
+    origin: &str,
+    scope_digest: &str,
+    key_digest: &str,
+) -> Option<AuthEdgeHit> {
+    let mut response = Cache::default()
+        .get(cache_url.to_string(), false)
+        .await
+        .ok()??;
+    if response.status_code() != 200 {
+        return None;
+    }
+    let declared = response
+        .headers()
+        .get("Content-Length")
+        .ok()??
+        .parse::<usize>()
+        .ok()
+        .filter(|length| (1..=AUTH_EDGE_MAX_BODY_BYTES).contains(length))?;
+    let mut bytes = Vec::with_capacity(declared);
+    let mut stream = response.stream().ok()?;
+    while let Some(chunk) = stream.next().await {
+        let chunk = chunk.ok()?;
+        if bytes.len().saturating_add(chunk.len()) > declared {
+            return None;
+        }
+        bytes.extend_from_slice(&chunk);
+    }
+    if bytes.len() != declared {
+        return None;
+    }
+    validate_auth_edge_envelope(
+        &bytes,
+        origin,
+        scope_digest,
+        key_digest,
+        auth_check_utc_ms(),
+    )
+}
+
+async fn publish_auth_edge(
+    cache_url: &str,
+    origin: &str,
+    scope_digest: &str,
+    key_digest: &str,
+    record: &RpcApiKeyRecord,
+    checked_at_utc_ms: f64,
+) {
+    let Some((bytes, ttl_seconds)) = encode_auth_edge_envelope(
+        origin,
+        scope_digest,
+        key_digest,
+        record,
+        checked_at_utc_ms,
+        auth_check_utc_ms(),
+    ) else {
+        return;
+    };
+    let length = bytes.len();
+    let Ok(mut response) = Response::from_bytes(bytes) else {
+        return;
+    };
+    if response
+        .headers_mut()
+        .set("Content-Type", "application/json")
+        .is_err()
+        || response
+            .headers_mut()
+            .set("Content-Length", &length.to_string())
+            .is_err()
+        || response
+            .headers_mut()
+            .set("Cache-Control", &format!("public, max-age={ttl_seconds}"))
+            .is_err()
+    {
+        return;
+    }
+    // A cache outage must never invalidate a successful KV observation.
+    let _ = Cache::default().put(cache_url.to_string(), response).await;
+}
+
+struct AuthenticatedApiKey {
+    record: RpcApiKeyRecord,
+    cache_status: &'static str,
+    cache_tier: &'static str,
+}
+
 enum RpcAuthError {
     Unauthorized,
     Unavailable,
@@ -1575,6 +2829,17 @@ async fn authenticate_api_request(
     req: &Request,
     env: &worker::Env,
 ) -> std::result::Result<RpcApiKeyRecord, RpcAuthError> {
+    // Keep the existing POST/getTransaction contract: each call reads KV.
+    authenticate_api_key_with_cache_policy(req, env, false)
+        .await
+        .map(|authenticated| authenticated.record)
+}
+
+async fn authenticate_api_key_with_cache_policy(
+    req: &Request,
+    env: &worker::Env,
+    allow_cache: bool,
+) -> std::result::Result<AuthenticatedApiKey, RpcAuthError> {
     let authorization = req
         .headers()
         .get("Authorization")
@@ -1591,6 +2856,51 @@ async fn authenticate_api_request(
         );
         RpcAuthError::Unavailable
     })?;
+    let cache_key = allow_cache
+        .then(|| optional_var(env, "BZ_AUTH_CACHE_SCOPE"))
+        .flatten()
+        .and_then(|scope| auth_check_cache_key(&scope, &digest));
+    if let Some(cache_key) = &cache_key {
+        if let Some(record) = AUTH_CHECKS.with(|cache| cache.borrow_mut().get(cache_key, now_ms()))
+        {
+            return Ok(AuthenticatedApiKey {
+                record,
+                cache_status: "hit",
+                cache_tier: "memory",
+            });
+        }
+    }
+    let edge = cache_key.as_ref().and_then(|scope_digest| {
+        let origin = req.url().ok()?.origin().ascii_serialization();
+        Some((auth_edge_cache_key(&origin, scope_digest)?, origin))
+    });
+    if let (Some(scope_digest), Some((cache_url, origin))) = (&cache_key, &edge) {
+        if let Some(hit) = read_auth_edge(cache_url, origin, scope_digest, &digest).await {
+            // Sample the local clock first so conversion is conservative if
+            // local timers advance between the two observations.
+            let local_now_ms = now_ms();
+            let utc_now_ms = auth_check_utc_ms();
+            let fresh = AUTH_CHECKS.with(|cache| {
+                promote_auth_edge_hit(
+                    &mut cache.borrow_mut(),
+                    scope_digest.clone(),
+                    &hit,
+                    local_now_ms,
+                    utc_now_ms,
+                )
+            });
+            if fresh {
+                return Ok(AuthenticatedApiKey {
+                    record: hit.record,
+                    cache_status: "hit",
+                    cache_tier: "edge",
+                });
+            }
+        }
+    }
+    // Count the TTL from read start, so a slow KV read cannot extend it.
+    let checked_at_ms = now_ms();
+    let checked_at_utc_ms = auth_check_utc_ms();
     let record = keys
         .get(&digest)
         .json::<RpcApiKeyRecord>()
@@ -1620,7 +2930,279 @@ async fn authenticate_api_request(
     if !record.is_enabled() {
         return Err(RpcAuthError::Unauthorized);
     }
-    Ok(record)
+    if let (Some(scope_digest), Some((cache_url, origin))) = (&cache_key, &edge) {
+        // Await publication so a completed warmup is available to other isolates.
+        publish_auth_edge(
+            cache_url,
+            origin,
+            scope_digest,
+            &digest,
+            &record,
+            checked_at_utc_ms,
+        )
+        .await;
+    }
+    let cache_status = if let Some(cache_key) = cache_key {
+        AUTH_CHECKS.with(|cache| {
+            cache
+                .borrow_mut()
+                .insert_completed(cache_key, &record, checked_at_ms, now_ms());
+        });
+        "miss"
+    } else {
+        "bypass"
+    };
+    Ok(AuthenticatedApiKey {
+        record,
+        cache_status,
+        cache_tier: if cache_status == "bypass" {
+            "bypass"
+        } else {
+            "kv"
+        },
+    })
+}
+
+#[cfg(test)]
+mod auth_check_cache_tests {
+    use super::*;
+    use crate::rpc_access::RpcApiKeyStatus;
+
+    fn enabled() -> RpcApiKeyRecord {
+        RpcApiKeyRecord {
+            key_id: "key_test".into(),
+            customer_id: "customer_test".into(),
+            label: "Private test record".into(),
+            status: RpcApiKeyStatus::Enabled,
+        }
+    }
+
+    #[test]
+    fn expires_at_five_seconds_without_sliding_on_hits() {
+        let mut cache = AuthCheckCache::new(2, 4096);
+        cache.insert_completed("digest".into(), &enabled(), 100.0, 200.0);
+        assert_eq!(cache.get("digest", 200.0), Some(enabled()));
+        assert_eq!(cache.get("digest", 5099.0), Some(enabled()));
+        assert_eq!(cache.get("digest", 5100.0), None);
+        assert!(cache.entries.is_empty());
+    }
+
+    #[test]
+    fn completed_slow_reads_do_not_extend_the_check_deadline() {
+        let mut cache = AuthCheckCache::new(2, 4096);
+        cache.insert_completed("late".into(), &enabled(), 100.0, 5100.0);
+        assert!(cache.get("late", 5100.0).is_none());
+        cache.insert_completed("nearly_late".into(), &enabled(), 100.0, 5099.0);
+        assert!(cache.get("nearly_late", 5099.0).is_some());
+        assert!(cache.get("nearly_late", 5100.0).is_none());
+    }
+
+    #[test]
+    fn failures_invalid_records_and_invalid_clocks_never_enter_cache() {
+        let mut cache = AuthCheckCache::new(2, 4096);
+        let mut disabled = enabled();
+        disabled.status = RpcApiKeyStatus::Disabled;
+        cache.insert_completed("disabled".into(), &disabled, 0.0, 1.0);
+        let mut invalid = enabled();
+        invalid.customer_id.clear();
+        cache.insert_completed("invalid".into(), &invalid, 0.0, 1.0);
+        cache.insert_completed("nan".into(), &enabled(), f64::NAN, 1.0);
+        cache.insert_completed("infinite".into(), &enabled(), 0.0, f64::INFINITY);
+        cache.insert_completed("backwards".into(), &enabled(), 10.0, 9.0);
+        assert!(cache.entries.is_empty());
+        cache.insert_completed("valid".into(), &enabled(), 10.0, 10.0);
+        assert!(
+            cache.get("valid", 9.0).is_none(),
+            "clock rollback fails closed"
+        );
+    }
+
+    #[test]
+    fn bounds_entry_count_bytes_and_owned_record_clones() {
+        let mut cache = AuthCheckCache::new(2, 4096);
+        let mut record = enabled();
+        cache.insert_completed("a".into(), &record, 0.0, 0.0);
+        record.label = "Changed outside cache".into();
+        assert_eq!(cache.get("a", 1.0), Some(enabled()));
+        cache.insert_completed("b".into(), &enabled(), 0.0, 1.0);
+        cache.get("a", 2.0);
+        cache.insert_completed("c".into(), &enabled(), 0.0, 2.0);
+        assert!(
+            cache.get("b", 2.0).is_none(),
+            "least-recent entry is evicted"
+        );
+        assert_eq!(cache.entries.len(), 2);
+
+        let mut bounded = AuthCheckCache::new(2, 512);
+        for index in 0..256 {
+            bounded.insert_completed(format!("{index:064x}"), &enabled(), 0.0, 1.0);
+            assert!(bounded.allocated_bytes() <= 512);
+            assert!(bounded.entries.len() <= 2);
+        }
+        let mut full = AuthCheckCache::new(AUTH_CHECK_MAX_ENTRIES, AUTH_CHECK_MAX_BYTES);
+        for index in 0..1024 {
+            full.insert_completed(format!("{index:064x}"), &enabled(), 0.0, 1.0);
+            assert!(full.allocated_bytes() <= AUTH_CHECK_MAX_BYTES);
+            assert!(full.entries.len() <= AUTH_CHECK_MAX_ENTRIES);
+        }
+    }
+
+    #[test]
+    fn separates_namespace_scopes_without_retaining_the_api_key() {
+        let raw = "bz_live_example_private_key_abcdefghijklmnopqrstuvwxyz012345";
+        let digest = api_key_digest(raw);
+        let first = auth_check_cache_key("namespace_a", &digest).unwrap();
+        let second = auth_check_cache_key("namespace_b", &digest).unwrap();
+        assert_ne!(first, second);
+        assert_eq!(first.len(), 64);
+        assert!(!first.contains(raw));
+        assert!(!first.contains("namespace_a"));
+        assert!(auth_check_cache_key("", &digest).is_none());
+        assert!(auth_check_cache_key(&"x".repeat(129), &digest).is_none());
+        assert!(auth_check_cache_key("bad\nscope", &digest).is_none());
+    }
+
+    #[test]
+    fn edge_envelope_rejects_stale_future_disabled_and_wrong_identity() {
+        let origin = "https://auth.example";
+        let digest = api_key_digest("private fixture key");
+        let scope = auth_check_cache_key("namespace_a", &digest).unwrap();
+        let (bytes, ttl) =
+            encode_auth_edge_envelope(origin, &scope, &digest, &enabled(), 10_000.0, 10_001.0)
+                .unwrap();
+        assert_eq!(ttl, 5);
+        assert!(validate_auth_edge_envelope(&bytes, origin, &scope, &digest, 14_999.0).is_some());
+        for now in [9_999.0, 15_000.0, f64::NAN, f64::INFINITY] {
+            assert!(validate_auth_edge_envelope(&bytes, origin, &scope, &digest, now).is_none());
+        }
+        assert!(
+            validate_auth_edge_envelope(&bytes, "https://other.example", &scope, &digest, 10_001.0)
+                .is_none()
+        );
+        let wrong = api_key_digest("wrong identity");
+        assert!(validate_auth_edge_envelope(&bytes, origin, &wrong, &digest, 10_001.0).is_none());
+        assert!(validate_auth_edge_envelope(&bytes, origin, &scope, &wrong, 10_001.0).is_none());
+        let value: Value = serde_json::from_slice(&bytes).unwrap();
+        for (field, replacement) in [
+            ("version", json!(2)),
+            ("originDigest", json!(wrong)),
+            ("checkedAtUtcMs", json!(10_002)),
+            ("unknown", json!(true)),
+        ] {
+            let mut bad = value.clone();
+            bad[field] = replacement;
+            assert!(
+                validate_auth_edge_envelope(
+                    &serde_json::to_vec(&bad).unwrap(),
+                    origin,
+                    &scope,
+                    &digest,
+                    10_001.0
+                )
+                .is_none()
+            );
+        }
+        for (field, replacement) in [("status", json!("disabled")), ("customerId", json!(""))] {
+            let mut bad = value.clone();
+            bad["record"][field] = replacement;
+            assert!(
+                validate_auth_edge_envelope(
+                    &serde_json::to_vec(&bad).unwrap(),
+                    origin,
+                    &scope,
+                    &digest,
+                    10_001.0
+                )
+                .is_none()
+            );
+        }
+        assert!(
+            validate_auth_edge_envelope(b"not JSON", origin, &scope, &digest, 10_001.0).is_none()
+        );
+        assert!(
+            validate_auth_edge_envelope(
+                &vec![b' '; AUTH_EDGE_MAX_BODY_BYTES + 1],
+                origin,
+                &scope,
+                &digest,
+                10_001.0
+            )
+            .is_none()
+        );
+    }
+
+    #[test]
+    fn edge_promotion_preserves_deadline_after_delay_in_a_fresh_runtime() {
+        let origin = "https://auth.example";
+        let digest = api_key_digest("private fixture key");
+        let scope = auth_check_cache_key("namespace_a", &digest).unwrap();
+        let (bytes, _) =
+            encode_auth_edge_envelope(origin, &scope, &digest, &enabled(), 10_000.0, 10_000.0)
+                .unwrap();
+        let hit = validate_auth_edge_envelope(&bytes, origin, &scope, &digest, 14_000.0).unwrap();
+        let mut cache = AuthCheckCache::new(2, 4096);
+        // Promotion happens500ms later. The new isolate's local clock is only20ms.
+        assert!(promote_auth_edge_hit(
+            &mut cache,
+            scope.clone(),
+            &hit,
+            20.0,
+            14_500.0
+        ));
+        assert!(cache.entries.front().unwrap().checked_at_ms < 0.0);
+        assert_eq!(cache.get(&scope, 20.0), Some(enabled()));
+        assert_eq!(cache.get(&scope, 519.0), Some(enabled()));
+        assert_eq!(cache.get(&scope, 520.0), None);
+        assert!(!promote_auth_edge_hit(
+            &mut cache,
+            scope.clone(),
+            &hit,
+            600.0,
+            15_000.0
+        ));
+        assert!(cache.entries.is_empty());
+    }
+
+    #[test]
+    fn edge_encoding_is_bounded_positive_only_and_origin_scoped() {
+        let origin = "https://auth.example";
+        let digest = api_key_digest("private fixture key");
+        let scope = auth_check_cache_key("namespace_a", &digest).unwrap();
+        let key = auth_edge_cache_key(origin, &scope).unwrap();
+        assert_eq!(
+            key,
+            format!("{origin}/__blockzilla-auth-positive/v1/{scope}")
+        );
+        assert_ne!(
+            auth_edge_cache_key("https://other.example", &scope).unwrap(),
+            key
+        );
+        assert!(!key.contains("private fixture key"));
+        assert!(auth_edge_cache_key("https://auth.example/path", &scope).is_none());
+        let mut record = enabled();
+        record.key_id = "k".repeat(64);
+        record.customer_id = "c".repeat(64);
+        record.label = "\\".repeat(128);
+        let (bytes, _) =
+            encode_auth_edge_envelope(origin, &scope, &digest, &record, 10_000.0, 10_000.0)
+                .unwrap();
+        assert!(bytes.len() <= AUTH_EDGE_MAX_BODY_BYTES);
+        record.status = RpcApiKeyStatus::Disabled;
+        assert!(
+            encode_auth_edge_envelope(origin, &scope, &digest, &record, 10_000.0, 10_000.0)
+                .is_none()
+        );
+        for (checked, now) in [
+            (f64::NAN, 10_000.0),
+            (10_000.0, 9_999.0),
+            (10_000.0, 15_000.0),
+        ] {
+            assert!(
+                encode_auth_edge_envelope(origin, &scope, &digest, &enabled(), checked, now)
+                    .is_none()
+            );
+        }
+    }
 }
 
 async fn read_rpc_body(req: &mut Request) -> std::result::Result<Vec<u8>, RpcBodyReadError> {
@@ -1661,15 +3243,20 @@ fn finish_metered_rpc(
         "json_rpc",
         execution.request_bytes,
         execution.billable_backend_reads,
-    );
-    finish_metered_response(
+    )
+    .with_storage(execution.storage);
+    let mut response = finish_metered_response(
         execution.response,
         api_key,
         metrics,
         metering,
         request_started,
         profile,
-    )
+    )?;
+    response
+        .headers_mut()
+        .set("Cache-Control", "private, no-store")?;
+    Ok(response)
 }
 
 struct MeteredRequest {
@@ -1679,6 +3266,7 @@ struct MeteredRequest {
     transport: &'static str,
     request_bytes: usize,
     billable_backend_reads: u8,
+    storage: StorageSnapshot,
 }
 
 impl MeteredRequest {
@@ -1697,7 +3285,13 @@ impl MeteredRequest {
             transport,
             request_bytes,
             billable_backend_reads: billable_backend_reads.min(1),
+            storage: StorageSnapshot::default(),
         }
+    }
+
+    fn with_storage(mut self, storage: StorageSnapshot) -> Self {
+        self.storage = storage;
+        self
     }
 }
 
@@ -1710,6 +3304,14 @@ fn finish_metered_response(
     profile: Option<&ProfileHandle>,
 ) -> Result<Response> {
     let status = response.status_code();
+    if metering.cache_status == "hit" {
+        response
+            .headers_mut()
+            .set("X-Blockzilla-Origin-Expected-Bytes", "0")?;
+        response
+            .headers_mut()
+            .set("X-Blockzilla-Storage-Bytes-Mode", "response-cache")?;
+    }
     let latency_ms = (now_ms() - request_started).max(0.0);
     response.headers_mut().set(
         "X-Blockzilla-Cache",
@@ -1723,6 +3325,7 @@ fn finish_metered_response(
             "1"
         },
     )?;
+    apply_storage_headers(&mut response, metering.storage)?;
     let point = AnalyticsEngineDataPointBuilder::new()
         .indexes([api_key.key_id.as_str()])
         .blobs([
@@ -1738,6 +3341,21 @@ fn finish_metered_response(
             status as f64,
             latency_ms,
             metering.request_bytes as f64,
+            metering.storage.r2_gets as f64,
+            metering.storage.r2_heads as f64,
+            metering.storage.r2_bytes as f64,
+            metering.storage.s3_gets as f64,
+            metering.storage.s3_heads as f64,
+            metering.storage.s3_bytes as f64,
+            metering.storage.archive_memory_hits as f64,
+            metering.storage.archive_edge_hits as f64,
+            metering.storage.r2_get_successes as f64,
+            metering.storage.r2_head_successes as f64,
+            metering.storage.s3_get_successes as f64,
+            metering.storage.s3_head_successes as f64,
+            metering.storage.foundation_r2_gets as f64,
+            metering.storage.foundation_r2_bytes as f64,
+            metering.storage.foundation_r2_get_successes as f64,
         ]);
     if point.write_to(metrics).is_err() {
         console_error!(
@@ -1766,9 +3384,25 @@ fn finish_metered_response(
                 "1"
             },
         )?;
+        apply_storage_headers(&mut unavailable, metering.storage)?;
         return Ok(unavailable);
     }
     Ok(response)
+}
+
+fn apply_storage_headers(response: &mut Response, storage: StorageSnapshot) -> Result<()> {
+    for (name, value) in storage.headers() {
+        response.headers_mut().set(name, &value.to_string())?;
+    }
+    response.headers_mut().set(
+        "X-Blockzilla-Reader",
+        if storage.reader_http_requests > 0 {
+            "native-r2"
+        } else {
+            "none"
+        },
+    )?;
+    Ok(())
 }
 
 fn cache_receipt_value(cache_status: &str) -> &'static str {
@@ -1914,6 +3548,7 @@ async fn handle_one(source: &WorkerSource, value: Value) -> Value {
     }
 
     let result = match method {
+        "getTransaction" => transaction::handle(source, &request).await,
         "getBlock" => handle_get_block(source, &request).await,
         "getBlockTime" => handle_get_block_time(source, &request).await,
         "getVersion" => Ok(json!({
@@ -2212,21 +3847,205 @@ async fn render_route_block_bytes(
     source: &WorkerSource,
     request: BlockRequest,
     mode: RouteBlockMode,
+    locator: Option<&str>,
 ) -> std::result::Result<Option<Vec<u8>>, String> {
-    let Some(block) = fetch_block(source, request.slot, AccessFetchMode::Full).await? else {
+    let Some(block) = fetch_direct_json_block(source, request.slot, locator).await? else {
         return Ok(None);
     };
     let config = GetBlockConfig {
         transaction_details: TransactionDetails::Full,
         rewards: request.include_rewards,
     };
-    match mode {
-        RouteBlockMode::Full => stream_get_block_full_value(source, &block, config)
-            .await
-            .map(Some),
-        RouteBlockMode::Lite => stream_get_block_lite_value(source, &block, config)
-            .await
-            .map(Some),
+    let bytes = match mode {
+        RouteBlockMode::Full => {
+            let mut writer = JsonByteWriter::with_capacity(block.decoded_len.saturating_mul(3));
+            block_base64::stream_full_value_into(source, &block, config, &mut writer).await?;
+            writer.into_inner()
+        }
+        RouteBlockMode::Lite => stream_get_block_lite_value(source, &block, config).await?,
+    };
+    stream_json_rpc_success(&Value::from(1), bytes).map(Some)
+}
+
+async fn render_route_block_response(
+    source: &WorkerSource,
+    request: BlockRequest,
+    mode: RouteBlockMode,
+    locator: Option<&str>,
+) -> std::result::Result<Option<Response>, String> {
+    if mode == RouteBlockMode::Lite {
+        return render_route_block_bytes(source, request, mode, locator)
+            .await?
+            .map(|bytes| {
+                json_bytes_response_profiled(bytes, BLOCK_CACHE_CONTROL, source.profile.as_ref())
+                    .map_err(|e| e.to_string())
+            })
+            .transpose();
+    }
+    let Some(block) = fetch_direct_json_block(source, request.slot, locator).await? else {
+        return Ok(None);
+    };
+    let config = GetBlockConfig {
+        transaction_details: TransactionDetails::Full,
+        rewards: request.include_rewards,
+    };
+    let body = stream_json_rpc_get_block_success_body_with_policy(
+        source.clone(),
+        Value::from(1),
+        block,
+        config,
+        true,
+        true,
+    );
+    let mut response =
+        json_stream_response_profiled(body, BLOCK_CACHE_CONTROL, source.profile.as_ref())
+            .map_err(|e| e.to_string())?;
+    response
+        .headers_mut()
+        .set("X-Blockzilla-Body", "json-stream")
+        .map_err(|e| e.to_string())?;
+    Ok(Some(response))
+}
+
+async fn fetch_direct_json_block(
+    source: &WorkerSource,
+    slot: u64,
+    locator: Option<&str>,
+) -> std::result::Result<Option<FetchedHotBlock>, String> {
+    let prepared = source.foundation_prepared.borrow_mut().take();
+    if let Some(prepared) = prepared {
+        let block = match prepared {
+            foundation_first::Outcome::Complete {
+                response,
+                locator,
+                length,
+                digest,
+            } => {
+                let bytes =
+                    foundation_first::read_complete_verified(response, length, digest).await?;
+                bundle_object::decode_complete_bundle(source, slot, &bytes, &locator)?
+            }
+            foundation_first::Outcome::Resolution { checked, .. } => {
+                resolution::fetch_checked_block(source, slot, checked).await?
+            }
+            foundation_first::Outcome::NotCached {
+                source: Some(route),
+            } => resolution::fetch_foundation_block(source, slot, route).await?,
+            _ => return Err("Foundation result was not prepared for rendering".into()),
+        };
+        return Ok(Some(block));
+    }
+    if bundle_object::covered(source, slot) {
+        if locator.is_some() {
+            return Err("Stored slot bundles do not accept a client locator".into());
+        }
+        return bundle_object::fetch_block(source, slot).await;
+    }
+    if let Some(token) = locator {
+        resolution::fetch_block_with_hint(source, slot, token).await
+    } else {
+        fetch_block(source, slot, AccessFetchMode::Full).await
+    }
+}
+
+async fn foundation_binary_response(
+    source: &WorkerSource,
+    slot: u64,
+    prepared: foundation_first::Outcome,
+    ctx: &Rc<worker::Context>,
+    metrics: &AnalyticsEngineDataset,
+    key: &RpcApiKeyRecord,
+) -> std::result::Result<Response, String> {
+    match prepared {
+        foundation_first::Outcome::NotCached {
+            source: Some(route),
+        } => {
+            resolution::foundation_archive_binary_response(source, slot, route, ctx, metrics, key)
+                .await
+        }
+        foundation_first::Outcome::Resolution { checked, .. } => {
+            resolution::binary_response_checked(source, slot, checked, ctx, metrics, key).await
+        }
+        foundation_first::Outcome::Complete {
+            response,
+            length,
+            digest,
+            ..
+        } => {
+            let (_, body) = response.into_parts();
+            let parts = stream_parts::response_and_completion_from_parts(
+                Vec::new(),
+                body,
+                length as u64,
+                Vec::new(),
+                worker::ResponseBody::Empty,
+                0,
+                Vec::new(),
+            )
+            .map_err(|e| e.to_string())?;
+            let mut response = parts.response;
+            response
+                .headers_mut()
+                .set("Content-Type", foundation_first::BUNDLE_TYPE)
+                .map_err(|e| e.to_string())?;
+            response
+                .headers_mut()
+                .set("Cache-Control", BLOCK_CACHE_CONTROL)
+                .map_err(|e| e.to_string())?;
+            response
+                .headers_mut()
+                .set("ETag", &format!("\"{}\"", hex_lower(&digest)))
+                .map_err(|e| e.to_string())?;
+            response
+                .headers_mut()
+                .set("X-Blockzilla-Body", "native-stream")
+                .map_err(|e| e.to_string())?;
+            response
+                .headers_mut()
+                .set("X-Blockzilla-Storage-Bytes-Mode", "streamed-completion")
+                .map_err(|e| e.to_string())?;
+            response
+                .headers_mut()
+                .set("X-Blockzilla-Origin-Expected-Bytes", "0")
+                .map_err(|e| e.to_string())?;
+            response
+                .headers_mut()
+                .set(
+                    "X-Blockzilla-Foundation-Expected-Bytes",
+                    &length.to_string(),
+                )
+                .map_err(|e| e.to_string())?;
+            add_profile_headers(response.headers(), source.profile.as_ref())
+                .map_err(|e| e.to_string())?;
+            let dataset = metrics.clone();
+            let key_id = key.key_id.clone();
+            let customer_id = key.customer_id.clone();
+            ctx.wait_until(async move {
+                let Ok(value) = wasm_bindgen_futures::JsFuture::from(parts.completion).await else {
+                    console_error!("Foundation complete body failed or was cancelled");
+                    return;
+                };
+                let bytes = js_sys::Reflect::get(&value, &JsValue::from_str("hotBytes"))
+                    .ok()
+                    .and_then(|v| v.as_f64())
+                    .unwrap_or(0.0);
+                let mut doubles = [0.0; 20];
+                doubles[7] = bytes;
+                let _ = AnalyticsEngineDataPointBuilder::new()
+                    .indexes([key_id.as_str()])
+                    .blobs([
+                        customer_id.as_str(),
+                        "getBlock",
+                        "foundation_body_complete",
+                        "continuation",
+                        "http_binary",
+                    ])
+                    .doubles(doubles)
+                    .write_to(&dataset);
+            });
+            Ok(response)
+        }
+        _ => Err("Foundation result was not prepared for binary rendering".into()),
     }
 }
 
@@ -2234,9 +4053,11 @@ struct FetchedHotBlock {
     epoch: u64,
     index_row: ArchiveV2GetBlockIndexRow,
     row: ArchiveV2HotBlockIndexRow,
-    block_bytes: Vec<u8>,
+    decoded_len: usize,
     block: ArchiveV2HotBlockBlob,
     access: Option<FetchedAccess>,
+    message_schema: MessageSchema,
+    metadata_schema: MetadataSchema,
 }
 
 struct FetchedAccessLite {
@@ -2361,6 +4182,15 @@ async fn fetch_block(
     slot: u64,
     access_mode: AccessFetchMode,
 ) -> std::result::Result<Option<FetchedHotBlock>, String> {
+    if bundle_object::covered(source, slot) {
+        return bundle_object::fetch_block(source, slot).await;
+    }
+    if resolution::covered(source, slot) {
+        return resolution::fetch_block(source, slot).await;
+    }
+    if source.stored_compact {
+        return stored::fetch_block(source, slot, access_mode).await;
+    }
     let total_started = now_ms();
     let epoch = epoch_for_slot(slot);
     let Some(index_row) = read_get_block_index_row(source, epoch, slot).await? else {
@@ -2376,6 +4206,9 @@ async fn fetch_block_bundle_bytes(
     slot: u64,
     access_mode: BlockBinAccessMode,
 ) -> std::result::Result<Option<Vec<u8>>, String> {
+    if source.stored_compact {
+        return stored::fetch_bundle(source, slot, access_mode).await;
+    }
     let total_started = now_ms();
     let epoch = epoch_for_slot(slot);
     let Some(index_row) = read_get_block_index_row_with_access(
@@ -2390,28 +4223,32 @@ async fn fetch_block_bundle_bytes(
         return Ok(None);
     };
     let blocks_path = epoch_file(&source.archive_prefix, epoch, ARCHIVE_V2_BLOCKS_FILE);
-    let hot_block = fetch_compressed_block(source, &blocks_path, &index_row).await?;
-    let block_access = if access_mode == BlockBinAccessMode::Include {
-        let access_path = epoch_file(&source.archive_prefix, epoch, ARCHIVE_V2_BLOCK_ACCESS_FILE);
-        let started = now_ms();
-        let bytes = source
-            .get_range(
-                &access_path,
-                index_row.access_offset,
-                index_row.access_len as usize,
-            )
-            .await?;
-        source.record_elapsed(
-            "access_fetch",
-            started,
-            bytes.len() as u64,
-            "block_access_bundle",
-            None,
-        );
-        Some(bytes)
-    } else {
-        None
+    let block_fetch = fetch_compressed_block(source, &blocks_path, &index_row);
+    let access_fetch = async {
+        if access_mode == BlockBinAccessMode::Include {
+            let access_path =
+                epoch_file(&source.archive_prefix, epoch, ARCHIVE_V2_BLOCK_ACCESS_FILE);
+            let started = now_ms();
+            let bytes = source
+                .get_cached_range(
+                    &access_path,
+                    index_row.access_offset,
+                    index_row.access_len as usize,
+                )
+                .await?;
+            source.record_elapsed(
+                "access_fetch",
+                started,
+                bytes.len() as u64,
+                "block_access_bundle",
+                None,
+            );
+            Ok(Some(bytes))
+        } else {
+            Ok::<_, String>(None)
+        }
     };
+    let (hot_block, block_access) = future::try_join(block_fetch, access_fetch).await?;
     let started = now_ms();
     let bundle = BlockzillaGetBlockBundleV1 {
         version: WINCODE_BLOCKZILLA_GET_BLOCK_BUNDLE_VERSION,
@@ -2465,7 +4302,7 @@ async fn read_get_block_index_row_with_access(
         .ok_or_else(|| "get-block index row offset overflow".to_string())?;
     let started = now_ms();
     let bytes = source
-        .get_range(&index_path, offset, ARCHIVE_V2_GET_BLOCK_INDEX_ROW_LEN)
+        .get_cached_range(&index_path, offset, ARCHIVE_V2_GET_BLOCK_INDEX_ROW_LEN)
         .await?;
     let row = ArchiveV2GetBlockIndexRow {
         block_offset: u64::from_le_bytes(bytes[0..8].try_into().unwrap()),
@@ -2500,7 +4337,7 @@ async fn fetch_block_from_get_block_index(
         };
         let started = now_ms();
         let bytes = source
-            .get_range(
+            .get_cached_range(
                 access_path,
                 index_row.access_offset,
                 index_row.access_len as usize,
@@ -2572,9 +4409,11 @@ async fn fetch_block_from_get_block_index(
         epoch,
         index_row,
         row,
-        block_bytes,
+        decoded_len: block_bytes.len(),
         block,
         access,
+        message_schema: MessageSchema::Current,
+        metadata_schema: MetadataSchema::Current,
     }))
 }
 
@@ -2585,7 +4424,7 @@ async fn fetch_compressed_block(
 ) -> std::result::Result<Vec<u8>, String> {
     let started = now_ms();
     let compressed = source
-        .get_range(
+        .get_cached_range(
             blocks_path,
             index_row.block_offset,
             index_row.block_len as usize,
@@ -2607,13 +4446,26 @@ fn decode_zstd_block_bytes(
     compressed: &[u8],
 ) -> std::result::Result<Vec<u8>, String> {
     let started = now_ms();
-    let mut decoder = StreamingDecoder::new(compressed)
-        .map_err(|err| format!("zstd-decode init slot {slot}: {err}"))?;
+    let mut decoder =
+        StreamingDecoder::new_with_max_window_size(compressed, MAX_DECODED_BLOCK_BYTES as u64)
+            .map_err(|err| format!("zstd-decode init slot {slot}: {err}"))?;
     let content_size = usize::try_from(decoder.decoder.content_size()).unwrap_or(0);
+    if content_size > MAX_DECODED_BLOCK_BYTES {
+        return Err(format!(
+            "slot {slot} decoded block exceeds {MAX_DECODED_BLOCK_BYTES} bytes"
+        ));
+    }
     let mut block_bytes = Vec::with_capacity(content_size);
     decoder
+        .by_ref()
+        .take((MAX_DECODED_BLOCK_BYTES + 1) as u64)
         .read_to_end(&mut block_bytes)
         .map_err(|err| format!("zstd-decode read slot {slot}: {err}"))?;
+    if block_bytes.len() > MAX_DECODED_BLOCK_BYTES {
+        return Err(format!(
+            "slot {slot} decoded block exceeds {MAX_DECODED_BLOCK_BYTES} bytes"
+        ));
+    }
     source.record_elapsed(
         "zstd_decode",
         started,
@@ -2865,6 +4717,17 @@ async fn render_block_value(
     );
     if config.rewards {
         out.insert(
+            "numRewardPartitions".into(),
+            fetched
+                .block
+                .header
+                .rewards
+                .as_ref()
+                .and_then(|rewards| rewards.num_partitions)
+                .map(Value::from)
+                .unwrap_or(Value::Null),
+        );
+        out.insert(
             "rewards".to_string(),
             rewards_value(&mut resolver, fetched.block.header.rewards.as_ref()).await?,
         );
@@ -2934,6 +4797,17 @@ fn stream_json_rpc_get_block_success_body(
     fetched: FetchedHotBlock,
     config: GetBlockConfig,
 ) -> mpsc::Receiver<std::result::Result<Vec<u8>, worker::Error>> {
+    stream_json_rpc_get_block_success_body_with_policy(source, id, fetched, config, false, false)
+}
+
+fn stream_json_rpc_get_block_success_body_with_policy(
+    source: WorkerSource,
+    id: Value,
+    fetched: FetchedHotBlock,
+    config: GetBlockConfig,
+    abort_render_errors: bool,
+    base64_transactions: bool,
+) -> mpsc::Receiver<std::result::Result<Vec<u8>, worker::Error>> {
     let (sender, receiver) = mpsc::channel(4);
     let mut error_sender = sender.clone();
     wasm_bindgen_futures::spawn_local(async move {
@@ -2941,7 +4815,11 @@ fn stream_json_rpc_get_block_success_body(
         let mut w = JsonByteWriter::channel(JSON_STREAM_CHUNK_BYTES, sender);
         let result = async {
             stream_json_rpc_success_prefix(&mut w);
-            stream_get_block_value_into(&source, &fetched, config, &mut w).await?;
+            if base64_transactions {
+                block_base64::stream_full_value_into(&source, &fetched, config, &mut w).await?;
+            } else {
+                stream_get_block_value_into(&source, &fetched, config, &mut w).await?;
+            }
             stream_json_rpc_success_suffix(&mut w, &id)?;
             Ok::<(), String>(())
         }
@@ -2963,7 +4841,7 @@ fn stream_json_rpc_get_block_success_body(
             Err(err) => {
                 let message = format!("failed to stream getBlock response: {err}");
                 console_error!("{message}");
-                if w.sent_bytes() == 0 {
+                if !abort_render_errors && w.sent_bytes() == 0 {
                     let fallback = serde_json::to_vec(&error_response(id, -32000, message.clone()))
                         .map_err(|err| worker::Error::RustError(err.to_string()));
                     match fallback {
@@ -3066,6 +4944,7 @@ async fn stream_get_block_value_into(
         );
         w.raw(b",\"rewards\":");
         stream_rewards_value(w, &mut resolver, fetched.block.header.rewards.as_ref()).await?;
+        stream_reward_partitions(w, fetched.block.header.rewards.as_ref());
     }
 
     if matches!(config.transaction_details, TransactionDetails::Signatures) {
@@ -3154,6 +5033,7 @@ async fn stream_get_block_full_value_into(
     if config.rewards {
         w.raw(b",\"rewards\":");
         stream_rewards_value(w, &mut resolver, fetched.block.header.rewards.as_ref()).await?;
+        stream_reward_partitions(w, fetched.block.header.rewards.as_ref());
     }
     w.raw(b",\"transactions\":[");
 
@@ -3171,7 +5051,7 @@ async fn stream_get_block_full_value_into(
             config.rewards,
         )
         .await?;
-        if index & 0x3f == 0x3f {
+        if index & 0x3f == 0x3f || w.pending_bytes() >= JSON_STREAM_CHUNK_BYTES {
             w.flush_chunk_async().await?;
         }
     }
@@ -3216,6 +5096,7 @@ async fn stream_get_block_accounts_value_into(
     if config.rewards {
         w.raw(b",\"rewards\":");
         stream_rewards_value(w, &mut resolver, fetched.block.header.rewards.as_ref()).await?;
+        stream_reward_partitions(w, fetched.block.header.rewards.as_ref());
     }
     w.raw(b",\"transactions\":[");
 
@@ -3233,7 +5114,7 @@ async fn stream_get_block_accounts_value_into(
             config.rewards,
         )
         .await?;
-        if index & 0x3f == 0x3f {
+        if index & 0x3f == 0x3f || w.pending_bytes() >= JSON_STREAM_CHUNK_BYTES {
             w.flush_chunk_async().await?;
         }
     }
@@ -3260,8 +5141,7 @@ fn full_json_capacity_hint(
     full_access: &ArchiveV2BlockAccessBlob,
 ) -> usize {
     fetched
-        .block_bytes
-        .len()
+        .decoded_len
         .saturating_mul(7)
         .saturating_add(full_access.signatures.len().saturating_mul(2))
         .saturating_add(fetched.block.tx_rows.len().saturating_mul(256))
@@ -3284,8 +5164,7 @@ async fn stream_get_block_lite_value(
         .as_ref()
         .ok_or_else(|| "streamed lite block route requires block access".to_string())?;
     let estimated = fetched
-        .block_bytes
-        .len()
+        .decoded_len
         .saturating_add(full_access.signatures.len().saturating_mul(2))
         .saturating_add(4096);
     let mut w = JsonByteWriter::with_capacity(estimated);
@@ -3295,6 +5174,7 @@ async fn stream_get_block_lite_value(
     if config.rewards {
         w.raw(b",\"rewards\":");
         stream_rewards_value(&mut w, &mut resolver, fetched.block.header.rewards.as_ref()).await?;
+        stream_reward_partitions(&mut w, fetched.block.header.rewards.as_ref());
     }
     w.raw(b",\"transactions\":[");
 
@@ -3344,8 +5224,14 @@ async fn stream_full_transaction_entry(
     signature_index: &mut usize,
     include_rewards: bool,
 ) -> std::result::Result<(), String> {
-    let message = decode_message(&fetched.block, row)?;
-    let meta = decode_metadata(&fetched.block, row)?;
+    let mut message = decode_message(&fetched.block, row, fetched.message_schema)?;
+    vote_proof::resolve_message(
+        &mut message,
+        resolver,
+        transaction_signature_bytes(fetched, row, *signature_index)?,
+    )
+    .await?;
+    let meta = decode_metadata(&fetched.block, row, fetched.metadata_schema)?;
 
     w.raw(b"{\"transaction\":{\"signatures\":");
     stream_transaction_signatures(w, fetched, row, signature_index)?;
@@ -3366,7 +5252,13 @@ async fn stream_lite_transaction_entry(
     row: &ArchiveV2HotTxRow,
     signature_index: &mut usize,
 ) -> std::result::Result<(), String> {
-    let message = decode_message(&fetched.block, row)?;
+    let mut message = decode_message(&fetched.block, row, fetched.message_schema)?;
+    vote_proof::resolve_message(
+        &mut message,
+        resolver,
+        transaction_signature_bytes(fetched, row, *signature_index)?,
+    )
+    .await?;
 
     w.raw(b"{\"transaction\":{\"signatures\":");
     stream_transaction_signatures(w, fetched, row, signature_index)?;
@@ -3384,8 +5276,8 @@ async fn stream_accounts_transaction_entry(
     signature_index: &mut usize,
     include_rewards: bool,
 ) -> std::result::Result<(), String> {
-    let message = decode_account_message_lite(&fetched.block, row)?;
-    let meta = decode_metadata(&fetched.block, row)?;
+    let message = decode_account_message_lite(&fetched.block, row, fetched.message_schema)?;
+    let meta = decode_metadata(&fetched.block, row, fetched.metadata_schema)?;
     let meta_lite = meta.as_ref().map(account_meta_lite_from_compact);
 
     w.raw(b"{\"transaction\":");
@@ -3439,6 +5331,27 @@ async fn stream_account_transaction_lite_value(
     stream_transaction_signatures(w, fetched, row, signature_index)?;
     w.raw(b"}");
     Ok(())
+}
+
+fn transaction_signature_bytes<'a>(
+    fetched: &'a FetchedHotBlock,
+    row: &ArchiveV2HotTxRow,
+    signature_index: usize,
+) -> std::result::Result<&'a [u8], String> {
+    let access = fetched
+        .access
+        .as_ref()
+        .ok_or_else(|| "transaction has no signature access data".to_string())?;
+    let start = signature_index
+        .checked_mul(SIGNATURE_BYTES as usize)
+        .ok_or_else(|| "signature offset overflow".to_string())?;
+    let end = start
+        .checked_add(usize::from(row.signature_count) * SIGNATURE_BYTES as usize)
+        .ok_or_else(|| "signature end overflow".to_string())?;
+    access
+        .signatures()
+        .get(start..end)
+        .ok_or_else(|| "transaction signature window is incomplete".to_string())
 }
 
 fn stream_transaction_signatures(
@@ -3561,6 +5474,20 @@ async fn stream_account_key_object(
     Ok(())
 }
 
+fn transaction_config_value(config: &CompactTransactionConfig) -> Value {
+    json!({ "computeUnitLimit": config.compute_unit_limit, "heapSize": config.heap_size,
+        "loadedAccountsDataSizeLimit": config.loaded_accounts_data_size_limit,
+        "priorityFee": config.priority_fee })
+}
+
+fn stream_reward_partitions(
+    w: &mut JsonByteWriter,
+    rewards: Option<&blockzilla_archive_v2::ArchiveV2HotRewards>,
+) {
+    w.raw(b",\"numRewardPartitions\":");
+    w.option_u64(rewards.and_then(|rewards| rewards.num_partitions));
+}
+
 async fn stream_message_value(
     w: &mut JsonByteWriter,
     resolver: &mut Resolver<'_>,
@@ -3578,6 +5505,7 @@ async fn stream_message_value(
                 &message.instructions,
                 None,
                 account_objects,
+                None,
             )
             .await
         }
@@ -3591,6 +5519,7 @@ async fn stream_message_value(
                 &message.instructions,
                 Some(&message.address_table_lookups),
                 account_objects,
+                None,
             )
             .await
         }
@@ -3604,6 +5533,7 @@ async fn stream_message_value(
                 &message.instructions,
                 None,
                 account_objects,
+                Some(&message.config),
             )
             .await
         }
@@ -3619,6 +5549,7 @@ async fn stream_message_fields_value(
     instructions: &[blockzilla_archive_v2::ArchiveV2HotInstruction],
     address_table_lookups: Option<&[OwnedCompactAddressTableLookup]>,
     account_objects: bool,
+    transaction_config: Option<&CompactTransactionConfig>,
 ) -> std::result::Result<(), String> {
     w.raw(b"{\"accountKeys\":");
     if account_objects {
@@ -3640,6 +5571,10 @@ async fn stream_message_fields_value(
     if let Some(lookups) = address_table_lookups {
         w.raw(b",\"addressTableLookups\":");
         stream_address_table_lookups_value(w, resolver, lookups).await?;
+    }
+    if let Some(config) = transaction_config {
+        w.raw(b",\"transactionConfig\":");
+        w.json(&transaction_config_value(config))?;
     }
     w.raw(b"}");
     Ok(())
@@ -3864,9 +5799,11 @@ fn stream_ui_token_amount_value(
     decimals: u8,
     _ui_amount_null: bool,
 ) -> std::result::Result<(), String> {
-    w.raw(b"{\"amount\":");
-    w.string(&amount.to_string())?;
-    w.raw(b",\"decimals\":");
+    let mut buffer = itoa::Buffer::new();
+    let digits = buffer.format(amount).as_bytes();
+    w.raw(b"{\"amount\":\"");
+    w.raw(digits);
+    w.raw(b"\",\"decimals\":");
     w.u64(u64::from(decimals));
     w.raw(b",\"uiAmount\":");
     if amount == 0 {
@@ -3875,7 +5812,7 @@ fn stream_ui_token_amount_value(
         w.json(&ui_amount_number(amount, decimals))?;
     }
     w.raw(b",\"uiAmountString\":");
-    w.string(&ui_amount_string(amount, decimals))?;
+    w.quoted_ui_amount(digits, decimals);
     w.raw(b"}");
     Ok(())
 }
@@ -4392,8 +6329,8 @@ async fn account_transactions_value(
     for row in &fetched.block.tx_rows {
         let tx_signatures =
             take_signatures(&signatures, &mut signature_index, row.signature_count)?;
-        let message = decode_account_message_lite(&fetched.block, row)?;
-        let meta = decode_metadata(&fetched.block, row)?;
+        let message = decode_account_message_lite(&fetched.block, row, fetched.message_schema)?;
+        let meta = decode_metadata(&fetched.block, row, fetched.metadata_schema)?;
         let meta_lite = meta.as_ref().map(account_meta_lite_from_compact);
         out.push(json!({
             "transaction": account_transaction_lite_value(resolver, &message, meta_lite.as_ref(), tx_signatures).await?,
@@ -4472,7 +6409,17 @@ async fn transactions_value(
     for row in &fetched.block.tx_rows {
         let tx_signatures =
             take_signatures(&signatures, &mut signature_index, row.signature_count)?;
-        let message = decode_message(&fetched.block, row)?;
+        let mut message = decode_message(&fetched.block, row, fetched.message_schema)?;
+        vote_proof::resolve_message(
+            &mut message,
+            resolver,
+            transaction_signature_bytes(
+                fetched,
+                row,
+                signature_index - usize::from(row.signature_count),
+            )?,
+        )
+        .await?;
         let transaction =
             transaction_value(resolver, &message, tx_signatures, !include_meta).await?;
         if lite {
@@ -4480,7 +6427,7 @@ async fn transactions_value(
             continue;
         }
         let meta = if include_meta {
-            decode_metadata(&fetched.block, row)?
+            decode_metadata(&fetched.block, row, fetched.metadata_schema)?
         } else {
             None
         };
@@ -4664,10 +6611,11 @@ async fn signatures_value(
 fn decode_message(
     block: &ArchiveV2HotBlockBlob,
     row: &ArchiveV2HotTxRow,
+    schema: MessageSchema,
 ) -> std::result::Result<ArchiveV2HotMessagePayload, String> {
     if row.flags & ARCHIVE_V2_TX_FLAG_TX_RAW_FALLBACK != 0 {
         return Err(format!(
-            "tx_index {} uses raw transaction fallback, which this renderer cannot serve yet",
+            "tx_index {} has an unsupported raw transaction",
             row.tx_index
         ));
     }
@@ -4678,19 +6626,23 @@ fn decode_message(
         "message",
         row.tx_index,
     )?;
-    wincode::config::deserialize(bytes, wincode_leb128_config())
+    crate::archive_schema::decode_message(schema, bytes)
         .map_err(|err| format!("decode message tx_index {}: {err}", row.tx_index))
 }
 
 fn decode_metadata(
     block: &ArchiveV2HotBlockBlob,
     row: &ArchiveV2HotTxRow,
+    schema: MetadataSchema,
 ) -> std::result::Result<Option<CompactMetaV1>, String> {
-    if row.flags & ARCHIVE_V2_TX_FLAG_HAS_METADATA == 0 || row.metadata_len == 0 {
+    if row.flags & ARCHIVE_V2_TX_FLAG_HAS_METADATA == 0 {
         return Ok(None);
     }
     if row.flags & ARCHIVE_V2_TX_FLAG_METADATA_RAW_FALLBACK != 0 {
-        return Ok(None);
+        return Err(format!(
+            "tx_index {} has unsupported raw execution metadata",
+            row.tx_index
+        ));
     }
     let bytes = region_slice(
         &block.metadata_bytes,
@@ -4699,48 +6651,39 @@ fn decode_metadata(
         "metadata",
         row.tx_index,
     )?;
-    match wincode::config::deserialize(bytes, wincode_leb128_config()) {
-        Ok(meta) => Ok(Some(meta)),
-        Err(primary_err) => wincode::config::deserialize::<LegacyCompactMetaV1, _>(
-            bytes,
-            wincode_leb128_config(),
-        )
-        .map_err(|legacy_err| {
-            format!(
-                "decode metadata tx_index {}: {primary_err}; legacy err fallback: {legacy_err}",
-                row.tx_index
-            )
-        })
-        .and_then(|meta| {
-            CompactMetaV1::try_from(meta).map_err(|err| {
-                format!(
-                    "decode legacy metadata error tx_index {}: {err}",
-                    row.tx_index
-                )
-            })
-        })
-        .map(Some),
-    }
+    crate::archive_schema::decode_metadata(schema, bytes)
+        .map(Some)
+        .map_err(|err| format!("decode metadata tx_index {}: {err}", row.tx_index))
 }
 
 fn decode_account_message_lite(
     block: &ArchiveV2HotBlockBlob,
     row: &ArchiveV2HotTxRow,
+    schema: MessageSchema,
 ) -> std::result::Result<AccountMessageLite, String> {
-    if row.flags & ARCHIVE_V2_TX_FLAG_TX_RAW_FALLBACK != 0 {
-        return Err(format!(
-            "tx_index {} uses raw transaction fallback, which this renderer cannot serve yet",
-            row.tx_index
-        ));
-    }
-    let bytes = region_slice(
-        &block.message_bytes,
-        row.message_offset,
-        row.message_len,
-        "message",
-        row.tx_index,
-    )?;
-    decode_account_message_lite_bytes(bytes, row.tx_index)
+    let message = decode_message(block, row, schema)?;
+    let version = match &message {
+        ArchiveV2HotMessagePayload::Legacy(_) => AccountMessageVersion::Legacy,
+        ArchiveV2HotMessagePayload::V0(_) => AccountMessageVersion::V0,
+        ArchiveV2HotMessagePayload::V1(_) => AccountMessageVersion::V1,
+    };
+    let (header, account_keys, instructions) = match message {
+        ArchiveV2HotMessagePayload::Legacy(message) => {
+            (message.header, message.account_keys, message.instructions)
+        }
+        ArchiveV2HotMessagePayload::V0(message) => {
+            (message.header, message.account_keys, message.instructions)
+        }
+        ArchiveV2HotMessagePayload::V1(message) => {
+            (message.header, message.account_keys, message.instructions)
+        }
+    };
+    Ok(AccountMessageLite {
+        header,
+        account_keys,
+        program_id_indices: message_program_id_indices(&instructions),
+        version,
+    })
 }
 
 fn decode_account_message_lite_bytes(
@@ -5057,6 +7000,7 @@ async fn message_value(
                 &message.instructions,
                 None,
                 account_objects,
+                None,
             )
             .await
         }
@@ -5069,6 +7013,7 @@ async fn message_value(
                 &message.instructions,
                 Some(&message.address_table_lookups),
                 account_objects,
+                None,
             )
             .await
         }
@@ -5081,6 +7026,7 @@ async fn message_value(
                 &message.instructions,
                 None,
                 account_objects,
+                Some(&message.config),
             )
             .await
         }
@@ -5095,6 +7041,7 @@ async fn message_fields_value(
     instructions: &[blockzilla_archive_v2::ArchiveV2HotInstruction],
     address_table_lookups: Option<&[OwnedCompactAddressTableLookup]>,
     account_objects: bool,
+    transaction_config: Option<&CompactTransactionConfig>,
 ) -> std::result::Result<Value, String> {
     let keys_value = if account_objects {
         let program_id_indices = message_program_id_indices(instructions);
@@ -5114,7 +7061,7 @@ async fn message_fields_value(
     out.insert("accountKeys".to_string(), keys_value);
     out.insert(
         "instructions".to_string(),
-        instruction_array_value(instructions)?,
+        instruction_array_value(instructions, Some(resolver))?,
     );
     out.insert(
         "recentBlockhash".to_string(),
@@ -5138,6 +7085,9 @@ async fn message_fields_value(
             }));
         }
         out.insert("addressTableLookups".to_string(), Value::Array(items));
+    }
+    if let Some(config) = transaction_config {
+        out.insert("transactionConfig".into(), transaction_config_value(config));
     }
     Ok(Value::Object(out))
 }
@@ -5238,6 +7188,7 @@ fn is_reserved_readonly_account(pubkey: &str) -> bool {
 
 fn instruction_array_value(
     instructions: &[blockzilla_archive_v2::ArchiveV2HotInstruction],
+    resolver: Option<&Resolver<'_>>,
 ) -> std::result::Result<Value, String> {
     Ok(Value::Array(
         instructions
@@ -5246,7 +7197,7 @@ fn instruction_array_value(
                 Ok(json!({
                     "programIdIndex": instruction.program_id_index,
                     "accounts": instruction.accounts,
-                    "data": instruction_data_base58(&instruction.data, None)?,
+                    "data": instruction_data_base58(&instruction.data, resolver)?,
                     "stackHeight": 1,
                 }))
             })
@@ -6040,6 +7991,21 @@ struct WorkerSource {
     backend: ArchiveBackend,
     profile: Option<ProfileHandle>,
     backend_read: BackendReadTracker,
+    storage_metrics: StorageMetrics,
+    stored_compact: bool,
+    use_dense_slot_index: bool,
+    cache: Option<ArchiveCache>,
+    object_sizes: Rc<RefCell<BTreeMap<String, u64>>>,
+    signature_locator: Option<transaction::LocatorConfig>,
+    message_schema_overrides: BTreeMap<u64, MessageSchema>,
+    metadata_schema_override: Option<MetadataSchema>,
+    cache_write_bytes: Rc<Cell<usize>>,
+    resolution: Option<resolution::Config>,
+    native_reader: Option<native_reader::Config>,
+    slot_bundle: Option<bundle_object::Config>,
+    foundation_lookup: Option<foundation_first::Config>,
+    // Request-local transport state. This cell is never stored in a global cache.
+    foundation_prepared: Rc<RefCell<Option<foundation_first::Outcome>>>,
 }
 
 #[derive(Clone)]
@@ -6071,9 +8037,29 @@ impl WorkerSource {
     ) -> std::result::Result<Self, String> {
         let source = optional_var(env, "BZ_ARCHIVE_SOURCE").unwrap_or_else(|| "auto".to_string());
         let archive_prefix = optional_var(env, "BZ_ARCHIVE_PREFIX")
-            .unwrap_or_else(|| "blockzilla-v2".to_string())
+            .unwrap_or_else(|| "compact-v2/blockzilla-20261004".to_string())
             .trim_matches('/')
             .to_string();
+        let generation = required_var(env, "BZ_ARCHIVE_GENERATION")?;
+        if generation.is_empty() || generation.len() > 128 {
+            return Err("BZ_ARCHIVE_GENERATION must contain 1 to 128 bytes".into());
+        }
+        let stored_compact = match optional_var(env, "BZ_ARCHIVE_LAYOUT")
+            .as_deref()
+            .unwrap_or("stored")
+        {
+            "stored" => true,
+            "legacy-access" => false,
+            _ => return Err("BZ_ARCHIVE_LAYOUT must be stored or legacy-access".into()),
+        };
+        let use_dense_slot_index = match optional_var(env, "BZ_SLOT_INDEX")
+            .as_deref()
+            .unwrap_or("sparse")
+        {
+            "dense" => true,
+            "sparse" => false,
+            _ => return Err("BZ_SLOT_INDEX must be sparse or dense".into()),
+        };
         let backend = match source.as_str() {
             "auto" => {
                 let binding = r2_binding_name(env);
@@ -6097,11 +8083,31 @@ impl WorkerSource {
                 );
             }
         };
+        let native_reader = native_reader::Config::from_env(env, &archive_prefix)?;
+        let foundation_lookup = foundation_first::Config::from_env(env, &archive_prefix)?;
         Ok(Self {
             archive_prefix,
             backend,
             profile,
             backend_read: BackendReadTracker::default(),
+            storage_metrics: StorageMetrics::default(),
+            cache_write_bytes: Rc::new(Cell::new(0)),
+            message_schema_overrides: crate::archive_schema::message_schema_overrides(
+                optional_var(env, "BZ_MESSAGE_SCHEMA_OVERRIDES").as_deref(),
+            )?,
+            metadata_schema_override: crate::archive_schema::metadata_schema_override(
+                optional_var(env, "BZ_METADATA_SCHEMA").as_deref(),
+            )?,
+            stored_compact,
+            use_dense_slot_index,
+            cache: None,
+            object_sizes: Rc::new(RefCell::new(BTreeMap::new())),
+            signature_locator: transaction::LocatorConfig::from_env(env)?,
+            resolution: resolution::Config::from_env(env)?,
+            native_reader,
+            slot_bundle: bundle_object::Config::from_env(env)?,
+            foundation_lookup,
+            foundation_prepared: Rc::new(RefCell::new(None)),
         })
     }
 
@@ -6131,6 +8137,12 @@ impl WorkerSource {
         if len == 0 {
             return Ok(Vec::new());
         }
+        if len > MAX_ARCHIVE_RANGE_BYTES {
+            return Err(format!(
+                "archive range exceeds the {MAX_ARCHIVE_RANGE_BYTES}-byte Worker limit"
+            ));
+        }
+        ensure_js_safe_range(offset, len)?;
         let bytes = self.get_range_inner(path, offset, len).await?;
         if bytes.len() != len {
             return Err(format!(
@@ -6140,6 +8152,209 @@ impl WorkerSource {
             ));
         }
         Ok(bytes)
+    }
+
+    fn range_cache_key(&self, path: &str, offset: u64, len: usize) -> Option<String> {
+        let cache = self.cache.as_ref()?;
+        Some(format!(
+            "{}/__blockzilla-archive/v1/{}/{}",
+            cache.origin,
+            cache.generation,
+            api_key_digest(&format!("range\0{path}\0{offset}\0{len}"))
+        ))
+    }
+
+    async fn cached_bytes(&self, key: &str, expected: usize) -> Option<Vec<u8>> {
+        if let Some(bytes) = ARCHIVE_BYTES.with(|cache| cache.borrow_mut().get(key)) {
+            if bytes.len() == expected {
+                self.storage_metrics.memory_hit();
+                return Some(bytes);
+            }
+        }
+        let started = now_ms();
+        if let Ok(Some(mut response)) = Cache::default().get(key.to_string(), false).await {
+            // Cache entries are written only by this Worker under a private
+            // content namespace. Check the size before buffering a cache body.
+            let length = response
+                .headers()
+                .get("Content-Length")
+                .ok()
+                .flatten()
+                .and_then(|value| value.parse::<usize>().ok());
+            if response.status_code() == 200 && length == Some(expected) {
+                if let Ok(bytes) = response.bytes().await {
+                    if bytes.len() == expected {
+                        if expected <= 64 * 1024 {
+                            ARCHIVE_BYTES.with(|cache| {
+                                cache.borrow_mut().insert(key.to_string(), bytes.clone())
+                            });
+                        }
+                        self.storage_metrics.edge_hit();
+                        self.record_elapsed(
+                            "archive_cache_hit",
+                            started,
+                            bytes.len() as u64,
+                            "range",
+                            None,
+                        );
+                        return Some(bytes);
+                    }
+                }
+            }
+        }
+        None
+    }
+
+    fn cache_bytes(&self, key: String, bytes: &[u8]) {
+        let Some(cache) = &self.cache else {
+            return;
+        };
+        if bytes.len() <= 64 * 1024 {
+            ARCHIVE_BYTES.with(|cache| cache.borrow_mut().insert(key.clone(), bytes.to_vec()));
+        }
+        // Background cache writes retain their bodies until completion. Bound
+        // the total queued payload independently of network-read admission.
+        let queued = self.cache_write_bytes.get().saturating_add(bytes.len());
+        if queued > 8 * 1024 * 1024 {
+            return;
+        }
+        self.cache_write_bytes.set(queued);
+        let Ok(mut response) = Response::from_bytes(bytes.to_vec()) else {
+            return;
+        };
+        if response
+            .headers_mut()
+            .set("Cache-Control", BLOCK_CACHE_CONTROL)
+            .is_err()
+            || response
+                .headers_mut()
+                .set("Content-Length", &bytes.len().to_string())
+                .is_err()
+        {
+            return;
+        }
+        // Complete cache writes after response creation, outside its latency.
+        cache.context.wait_until(async move {
+            if let Err(error) = Cache::default().put(key, response).await {
+                console_error!("{}", json!({"event":"archive_cache_error", "operation":"put", "error":error.to_string()}));
+            }
+        });
+    }
+
+    async fn get_cached_range(
+        &self,
+        path: &str,
+        offset: u64,
+        len: usize,
+    ) -> std::result::Result<Vec<u8>, String> {
+        if len == 0 {
+            return Ok(Vec::new());
+        }
+        let key = (len <= MAX_CACHED_RANGE_BYTES)
+            .then(|| self.range_cache_key(path, offset, len))
+            .flatten();
+        if let Some(key) = &key {
+            if let Some(bytes) = self.cached_bytes(key, len).await {
+                return Ok(bytes);
+            }
+        }
+        let bytes = self.get_range(path, offset, len).await?;
+        if let Some(key) = key {
+            self.cache_bytes(key, &bytes);
+        }
+        Ok(bytes)
+    }
+
+    async fn object_size(&self, path: &str) -> std::result::Result<Option<u64>, String> {
+        if let Some(size) = self.object_sizes.borrow().get(path).copied() {
+            return Ok(Some(size));
+        }
+        let key = self.cache.as_ref().map(|cache| {
+            format!(
+                "{}/__blockzilla-archive/v1/{}/{}",
+                cache.origin,
+                cache.generation,
+                api_key_digest(&format!("size\0{path}"))
+            )
+        });
+        if let Some(key) = &key {
+            if let Some(bytes) = self.cached_bytes(key, 8).await {
+                let size = u64::from_le_bytes(bytes.try_into().expect("checked cached size"));
+                self.object_sizes
+                    .borrow_mut()
+                    .insert(path.to_string(), size);
+                return Ok(Some(size));
+            }
+        }
+        self.backend_read.mark();
+        let size = match &self.backend {
+            ArchiveBackend::R2 { bucket, .. } => {
+                self.storage_metrics.attempt_head(StorageBackend::R2);
+                let object = bucket
+                    .head(path.trim_start_matches('/'))
+                    .await
+                    .map_err(|err| format!("R2 HEAD {path}: {err}"))?;
+                self.storage_metrics
+                    .complete_head(StorageBackend::R2, object.is_some());
+                object.map(|object| object.size())
+            }
+            ArchiveBackend::S3(source) => {
+                let (url, headers) = source.signed_request("HEAD", path, None)?;
+                let mut init = RequestInit::new();
+                init.with_method(Method::Head).with_headers(headers);
+                let request = Request::new_with_init(&url, &init).map_err(|err| err.to_string())?;
+                self.storage_metrics.attempt_head(StorageBackend::S3);
+                let response = Fetch::Request(request)
+                    .send()
+                    .await
+                    .map_err(|err| err.to_string())?;
+                self.storage_metrics
+                    .complete_head(StorageBackend::S3, response.status_code() == 200);
+                match response.status_code() {
+                    404 => None,
+                    200 => Some(
+                        response
+                            .headers()
+                            .get("Content-Length")
+                            .map_err(|err| err.to_string())?
+                            .ok_or_else(|| "S3 HEAD is missing Content-Length".to_string())?
+                            .parse::<u64>()
+                            .map_err(|err| err.to_string())?,
+                    ),
+                    status => return Err(format!("S3 HEAD {path} returned HTTP {status}")),
+                }
+            }
+        };
+        if let (Some(key), Some(size)) = (key, size) {
+            self.cache_bytes(key, &size.to_le_bytes());
+        }
+        if let Some(size) = size {
+            self.object_sizes
+                .borrow_mut()
+                .insert(path.to_string(), size);
+        }
+        // Do not retain missing objects: later archive publication must become visible.
+        Ok(size)
+    }
+
+    fn remember_object_size(&self, path: &str, size: u64) {
+        if self
+            .object_sizes
+            .borrow_mut()
+            .insert(path.to_string(), size)
+            .is_some()
+        {
+            return;
+        }
+        if let Some(cache) = &self.cache {
+            let key = format!(
+                "{}/__blockzilla-archive/v1/{}/{}",
+                cache.origin,
+                cache.generation,
+                api_key_digest(&format!("size\0{path}"))
+            );
+            self.cache_bytes(key, &size.to_le_bytes());
+        }
     }
 
     async fn get_range_inner(
@@ -6174,6 +8389,7 @@ impl WorkerSource {
             length: len as u64,
         });
         self.backend_read.mark();
+        self.storage_metrics.attempt_get(StorageBackend::R2);
         let object = request
             .execute()
             .await
@@ -6184,6 +8400,7 @@ impl WorkerSource {
                 "R2 GET {path} via {binding} returned missing object"
             ));
         };
+        self.remember_object_size(path, object.size());
         let Some(body) = object.body() else {
             self.record_elapsed(&profile_name, started, 0, detail, None);
             return Err(format!(
@@ -6194,6 +8411,8 @@ impl WorkerSource {
             .bytes()
             .await
             .map_err(|err| format!("read R2 GET {path} via {binding}: {err}"))?;
+        self.storage_metrics
+            .complete_get(StorageBackend::R2, bytes.len(), bytes.len() == len);
         self.record_elapsed(
             &profile_name,
             started,
@@ -6219,32 +8438,44 @@ impl WorkerSource {
         let request = request_with_headers(&url, headers)
             .map_err(|err| format!("build S3 GET {path} {range}: {err}"))?;
         self.backend_read.mark();
+        self.storage_metrics.attempt_get(StorageBackend::S3);
         let mut response = Fetch::Request(request)
             .send()
             .await
             .map_err(|err| format!("S3 GET {path} {range}: {err}"))?;
         let status = response.status_code();
-        if status != 206 && status != 200 {
-            let body = response
-                .text()
-                .await
-                .unwrap_or_else(|err| format!("<failed to read error body: {err}>"));
-            self.record_elapsed(
-                &profile_name,
-                started,
-                body.len() as u64,
-                detail,
-                Some(status),
-            );
+        if status != 206 {
+            self.record_elapsed(&profile_name, started, 0, detail, Some(status));
             return Err(format!(
-                "S3 GET {path} returned HTTP {status} for {range}: {}",
-                short_error_body(&body)
+                "S3 GET {path} returned HTTP {status} for {range}; an exact partial response is required"
             ));
+        }
+        let content_range = response
+            .headers()
+            .get("Content-Range")
+            .map_err(|err| err.to_string())?
+            .ok_or_else(|| "S3 partial response is missing Content-Range".to_string())?;
+        validate_content_range(&content_range, offset, len)?;
+        if let Some(total) = content_range
+            .rsplit_once('/')
+            .and_then(|(_, total)| total.parse::<u64>().ok())
+        {
+            self.remember_object_size(path, total);
+        }
+        let content_length = response
+            .headers()
+            .get("Content-Length")
+            .map_err(|err| err.to_string())?
+            .and_then(|value| value.parse::<usize>().ok());
+        if content_length != Some(len) {
+            return Err("S3 partial response has an invalid Content-Length".into());
         }
         let bytes = response
             .bytes()
             .await
             .map_err(|err| format!("read S3 GET {path} {range}: {err}"))?;
+        self.storage_metrics
+            .complete_get(StorageBackend::S3, bytes.len(), bytes.len() == len);
         self.record_elapsed(
             &profile_name,
             started,
@@ -6287,6 +8518,15 @@ impl S3Source {
         path: &str,
         range: Option<&str>,
     ) -> std::result::Result<(String, Headers), String> {
+        self.signed_request("GET", path, range)
+    }
+
+    fn signed_request(
+        &self,
+        method: &str,
+        path: &str,
+        range: Option<&str>,
+    ) -> std::result::Result<(String, Headers), String> {
         let key = path.trim_start_matches('/');
         let canonical_uri = format!(
             "/{}/{}",
@@ -6314,7 +8554,7 @@ impl S3Source {
             .collect::<Vec<_>>()
             .join(";");
         let canonical_request = format!(
-            "GET\n{canonical_uri}\n\n{canonical_headers}\n{signed_headers}\nUNSIGNED-PAYLOAD"
+            "{method}\n{canonical_uri}\n\n{canonical_headers}\n{signed_headers}\nUNSIGNED-PAYLOAD"
         );
         let credential_scope = format!("{date}/{}/s3/aws4_request", self.region);
         let string_to_sign = format!(
@@ -6374,6 +8614,27 @@ fn s3_range_header(offset: u64, len: usize) -> std::result::Result<String, Strin
         .and_then(|value| value.checked_sub(1))
         .ok_or_else(|| "range end overflow".to_string())?;
     Ok(format!("bytes={offset}-{end}"))
+}
+
+fn validate_content_range(value: &str, offset: u64, len: usize) -> std::result::Result<(), String> {
+    let expected_end = offset
+        .checked_add(len as u64)
+        .and_then(|end| end.checked_sub(1))
+        .ok_or_else(|| "range end overflow".to_string())?;
+    let (range, total) = value
+        .strip_prefix("bytes ")
+        .and_then(|value| value.split_once('/'))
+        .ok_or_else(|| "invalid S3 Content-Range".to_string())?;
+    let expected = format!("{offset}-{expected_end}");
+    if range != expected
+        || total
+            .parse::<u64>()
+            .ok()
+            .is_none_or(|total| total <= expected_end)
+    {
+        return Err("S3 Content-Range differs from the requested range".into());
+    }
+    Ok(())
 }
 
 fn ensure_js_safe_range(offset: u64, len: usize) -> std::result::Result<(), String> {
@@ -6580,12 +8841,50 @@ fn add_profile_headers(headers: &Headers, profile: Option<&ProfileHandle>) -> Re
         headers.set("Server-Timing", &server_timing)?;
     }
     headers.set("X-BZ-Profile", &profile.profile_json().to_string())?;
+    headers.set(
+        "X-Blockzilla-Profile-Mode",
+        if profile.source_ranges_only() {
+            "source"
+        } else {
+            "full"
+        },
+    )?;
     Ok(())
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn validates_exact_partial_response_bounds() {
+        assert!(validate_content_range("bytes 10-19/20", 10, 10).is_ok());
+        for value in [
+            "bytes 0-19/20",
+            "bytes 10-20/30",
+            "bytes 10-19/19",
+            "bytes 10-19/*",
+            "10-19/20",
+        ] {
+            assert!(validate_content_range(value, 10, 10).is_err());
+        }
+        assert!(validate_content_range("bytes 0-0/1", u64::MAX, 2).is_err());
+    }
+
+    #[test]
+    fn renders_optional_v1_transaction_config() {
+        let value = transaction_config_value(&CompactTransactionConfig {
+            priority_fee: Some(42),
+            compute_unit_limit: None,
+            loaded_accounts_data_size_limit: Some(65_536),
+            heap_size: None,
+        });
+        assert_eq!(
+            value,
+            json!({"priorityFee":42, "computeUnitLimit":null,
+            "loadedAccountsDataSizeLimit":65536, "heapSize":null})
+        );
+    }
 
     #[test]
     fn decodes_v1_account_message_after_transaction_config() {

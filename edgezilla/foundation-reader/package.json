@@ -1,0 +1,7 @@
+{
+  "name": "blockzilla-foundation-reader",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node test/native-reader.test.mjs" },
+  "devDependencies": { "wrangler": "4.129.0", "miniflare": "5.20260903.0-alpha" }
+}

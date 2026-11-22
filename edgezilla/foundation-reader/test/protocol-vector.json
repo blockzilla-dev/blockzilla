@@ -1,0 +1,10 @@
+{
+  "secret": "foundation-reader-protocol-test-secret-0123456789",
+  "expires": "1800000030",
+  "key": "compact-v2/blockzilla-20261004/epoch-1090/archive-v2-blocks.zstd",
+  "offset": "15917107745",
+  "length": "117962",
+  "object_length": "63486272838",
+  "etag": "\"55095261656b29000364d6621a28a17e-947\"",
+  "mac": "32997aad9972f513740b9ecd5b5b480f261be8f69e7e76ef58e175e39bdf7b2a"
+}
