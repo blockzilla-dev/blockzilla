@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "checkedAt": "2026-11-22T11:12:22.462493+00:00",
+  "versions": {
+    "blockzilla-get-block-bundle-test": "8142880e-9475-4c45-b3a1-dc16b538d52f",
+    "blockzilla-get-block-native-fast": "bf0bedfc-7216-4550-8e79-b671a93318f8",
+    "blockzilla-get-block": "2359b1b3-d95b-4e3b-bffc-b4161aac406f"
+  },
+  "frozenSourceIdentityMatches": true,
+  "primaryRequests": 119,
+  "supplementRequests": 10,
+  "successfulHttpRequests": 129,
+  "jsonReferenceMatches": 87,
+  "originalBinaryMatches": 40,
+  "localWasmBundleChecks": 32,
+  "localExistingPathChecks": 10,
+  "nativeFrameUnitTests": 2,
+  "newR2Objects": 4,
+  "newR2Bytes": 1012959,
+  "fullEpochMigration": false,
+  "foundationServiceDeployed": false,
+  "temporaryUploaderDeleted": true,
+  "publicSecretScanPassed": true,
+  "diffWhitespaceCheckPassed": true
+}

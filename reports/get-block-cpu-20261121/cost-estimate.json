@@ -1,0 +1,522 @@
+{
+  "schema": "blockzilla-v11-variable-cost-v1",
+  "createdAt": "2026-11-21T21:46:20.880279+00:00",
+  "worker": "blockzilla-get-block",
+  "version": "2359b1b3-d95b-4e3b-bffc-b4161aac406f",
+  "rates": {
+    "workerRequestsUsdPerMillion": 0.3,
+    "workerCpuUsdPerMillionMs": 0.02,
+    "kvReadsUsdPerMillion": 0.5,
+    "r2StandardClassBUsdPerMillion": 0.36,
+    "r2StandardStorageUsdPerGbMonth": 0.015
+  },
+  "sources": {
+    "workers": "https://developers.cloudflare.com/workers/platform/pricing/",
+    "kv": "https://developers.cloudflare.com/kv/platform/pricing/",
+    "r2": "https://developers.cloudflare.com/r2/pricing/",
+    "analyticsEngine": "https://developers.cloudflare.com/analytics/analytics-engine/pricing/"
+  },
+  "ratesVerifiedAt": "2026-11-21",
+  "phases": {
+    "fullyColdJson": {
+      "receiptFile": "reports/get-block-cpu-20261121/cpu-full-json-stages.json",
+      "requests": 8,
+      "objectOperations": {
+        "r2_reads": 8,
+        "r2_gets": 8,
+        "r2_heads": 0,
+        "s3_reads": 16,
+        "s3_gets": 16,
+        "s3_heads": 0,
+        "kv_reads": 8
+      },
+      "authCache": {
+        "BYPASS": 8
+      },
+      "responseCache": {
+        "BYPASS": 8
+      },
+      "profileMode": {
+        "full": 8
+      },
+      "allClientSamplesOk": true,
+      "platformCountsMatchClientPlan": true,
+      "cpu": {
+        "selectedQuery": "fullyColdJson",
+        "observedRequests": 8,
+        "countMatchesPlan": true,
+        "errors": 0,
+        "cpuTimeUs": 311271,
+        "startupCpuTimeUs": 15603,
+        "meanCpuMs": 38.908875,
+        "meanCpuIncludingAttributedStartupMs": 40.85925,
+        "cpuP50Ms": 31.7,
+        "cpuP95Ms": 90.079,
+        "cpuUsdPerMillionRequestsBeforeAllowances": 0.7781775,
+        "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.817185
+      },
+      "estimate": {
+        "unit": "USD per one million HTTP requests before account allowances",
+        "owner": {
+          "workerRequests": 0.3,
+          "kvReads": 0.5,
+          "r2IndexReads": 0.36,
+          "cpu": 0.7781775000000001
+        },
+        "foundation": {
+          "r2SourceReads": 0.72
+        },
+        "combinedBaseExcludingCpu": 1.88,
+        "ownerTotal": 1.9381775,
+        "foundationTotal": 0.72,
+        "combinedTotal": 2.6581775,
+        "conservativeIncludingAttributedStartup": {
+          "ownerCpu": 0.817185,
+          "ownerTotal": 1.9771850000000002,
+          "combinedTotal": 2.6971849999999997
+        },
+        "observedBatchUsdBeforeAllowances": 2.126542e-05
+      }
+    },
+    "sourceJson": {
+      "receiptFile": "reports/get-block-cpu-20261121/cpu-source-json-stages.json",
+      "requests": 8,
+      "objectOperations": {
+        "r2_reads": 0,
+        "r2_gets": 0,
+        "r2_heads": 0,
+        "s3_reads": 16,
+        "s3_gets": 16,
+        "s3_heads": 0,
+        "kv_reads": 1
+      },
+      "authCache": {
+        "MISS": 1,
+        "HIT": 7
+      },
+      "responseCache": {
+        "BYPASS": 8
+      },
+      "profileMode": {
+        "source": 8
+      },
+      "allClientSamplesOk": true,
+      "platformCountsMatchClientPlan": true,
+      "cpu": {
+        "selectedQuery": "sourceJson",
+        "observedRequests": 8,
+        "countMatchesPlan": true,
+        "errors": 0,
+        "cpuTimeUs": 371115,
+        "startupCpuTimeUs": 0,
+        "meanCpuMs": 46.389375,
+        "meanCpuIncludingAttributedStartupMs": 46.389375,
+        "cpuP50Ms": 40.449,
+        "cpuP95Ms": 78.086,
+        "cpuUsdPerMillionRequestsBeforeAllowances": 0.9277875,
+        "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.9277875
+      },
+      "estimate": {
+        "unit": "USD per one million HTTP requests before account allowances",
+        "owner": {
+          "workerRequests": 0.3,
+          "kvReads": 0.0625,
+          "r2IndexReads": 0.0,
+          "cpu": 0.9277875
+        },
+        "foundation": {
+          "r2SourceReads": 0.72
+        },
+        "combinedBaseExcludingCpu": 1.0825,
+        "ownerTotal": 1.2902875,
+        "foundationTotal": 0.72,
+        "combinedTotal": 2.0102875,
+        "conservativeIncludingAttributedStartup": {
+          "ownerCpu": 0.9277875,
+          "ownerTotal": 1.2902875,
+          "combinedTotal": 2.0102875
+        },
+        "observedBatchUsdBeforeAllowances": 1.60823e-05
+      }
+    },
+    "cachedJson": {
+      "receiptFile": "reports/get-block-cpu-20261121/cpu-cached-json.json",
+      "requests": 16,
+      "objectOperations": {
+        "r2_reads": 0,
+        "r2_gets": 0,
+        "r2_heads": 0,
+        "s3_reads": 0,
+        "s3_gets": 0,
+        "s3_heads": 0,
+        "kv_reads": 1
+      },
+      "authCache": {
+        "MISS": 1,
+        "HIT": 15
+      },
+      "responseCache": {
+        "HIT": 16
+      },
+      "profileMode": {
+        "null": 16
+      },
+      "allClientSamplesOk": true,
+      "platformCountsMatchClientPlan": false,
+      "cpu": {
+        "selectedQuery": "cachedJson",
+        "observedRequests": 24,
+        "countMatchesPlan": false,
+        "errors": 0,
+        "cpuTimeUs": 109588,
+        "startupCpuTimeUs": 23670,
+        "meanCpuMs": 4.566166666666667,
+        "meanCpuIncludingAttributedStartupMs": 5.552416666666667,
+        "cpuP50Ms": 2.003,
+        "cpuP95Ms": 4.44,
+        "cpuUsdPerMillionRequestsBeforeAllowances": 0.09132333333333334,
+        "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.11104833333333333
+      },
+      "estimate": {
+        "unit": "USD per one million HTTP requests before account allowances",
+        "owner": {
+          "workerRequests": 0.3,
+          "kvReads": 0.03125,
+          "r2IndexReads": 0.0
+        },
+        "foundation": {
+          "r2SourceReads": 0.0
+        },
+        "combinedBaseExcludingCpu": 0.33125
+      }
+    },
+    "indexWarmup": {
+      "receiptFile": "reports/get-block-cpu-20261121/cpu-source-warmup.json",
+      "requests": 8,
+      "objectOperations": {
+        "r2_reads": 0,
+        "r2_gets": 0,
+        "r2_heads": 0,
+        "s3_reads": 0,
+        "s3_gets": 0,
+        "s3_heads": 0,
+        "kv_reads": 1
+      },
+      "authCache": {
+        "MISS": 1,
+        "HIT": 7
+      },
+      "responseCache": {
+        "HIT": 8
+      },
+      "profileMode": {},
+      "allClientSamplesOk": true,
+      "platformCountsMatchClientPlan": true,
+      "cpu": {
+        "selectedQuery": "indexWarmup",
+        "observedRequests": 8,
+        "countMatchesPlan": true,
+        "errors": 0,
+        "cpuTimeUs": 51009,
+        "startupCpuTimeUs": 25009,
+        "meanCpuMs": 6.376125,
+        "meanCpuIncludingAttributedStartupMs": 9.50225,
+        "cpuP50Ms": 2.406,
+        "cpuP95Ms": 33.847,
+        "cpuUsdPerMillionRequestsBeforeAllowances": 0.1275225,
+        "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.19004500000000002
+      },
+      "estimate": {
+        "unit": "USD per one million HTTP requests before account allowances",
+        "owner": {
+          "workerRequests": 0.3,
+          "kvReads": 0.0625,
+          "r2IndexReads": 0.0,
+          "cpu": 0.1275225
+        },
+        "foundation": {
+          "r2SourceReads": 0.0
+        },
+        "combinedBaseExcludingCpu": 0.3625,
+        "ownerTotal": 0.4900225,
+        "foundationTotal": 0.0,
+        "combinedTotal": 0.4900225,
+        "conservativeIncludingAttributedStartup": {
+          "ownerCpu": 0.19004500000000002,
+          "ownerTotal": 0.5525450000000001,
+          "combinedTotal": 0.5525450000000001
+        },
+        "observedBatchUsdBeforeAllowances": 3.9201800000000005e-06
+      }
+    },
+    "mainMixed": {
+      "receiptFile": "reports/get-block-cpu-20261121/main.json",
+      "requests": 176,
+      "objectOperations": {
+        "r2_reads": 32,
+        "r2_gets": 32,
+        "r2_heads": 0,
+        "s3_reads": 96,
+        "s3_gets": 96,
+        "s3_heads": 0,
+        "kv_reads": 31
+      },
+      "authCache": {
+        "BYPASS": 24,
+        "MISS": 7,
+        "HIT": 145
+      },
+      "responseCache": {
+        "BYPASS": 48,
+        "MISS": 32,
+        "HIT": 96
+      },
+      "profileMode": {
+        "full": 24,
+        "null": 128,
+        "source": 24
+      },
+      "allClientSamplesOk": true,
+      "platformCountsMatchClientPlan": true,
+      "cpu": {
+        "selectedQuery": "mainMixed",
+        "observedRequests": 176,
+        "countMatchesPlan": true,
+        "errors": 0,
+        "cpuTimeUs": 1901658,
+        "startupCpuTimeUs": 24558,
+        "meanCpuMs": 10.804875,
+        "meanCpuIncludingAttributedStartupMs": 10.94440909090909,
+        "cpuP50Ms": 1.791,
+        "cpuP95Ms": 54.329,
+        "cpuUsdPerMillionRequestsBeforeAllowances": 0.21609750000000003,
+        "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.21888818181818182
+      },
+      "estimate": {
+        "unit": "USD per one million HTTP requests before account allowances",
+        "owner": {
+          "workerRequests": 0.3,
+          "kvReads": 0.08806818181818182,
+          "r2IndexReads": 0.06545454545454545,
+          "cpu": 0.2160975
+        },
+        "foundation": {
+          "r2SourceReads": 0.19636363636363638
+        },
+        "combinedBaseExcludingCpu": 0.6498863636363637,
+        "ownerTotal": 0.6696202272727273,
+        "foundationTotal": 0.19636363636363638,
+        "combinedTotal": 0.8659838636363637,
+        "conservativeIncludingAttributedStartup": {
+          "ownerCpu": 0.21888818181818182,
+          "ownerTotal": 0.6724109090909092,
+          "combinedTotal": 0.8687745454545456
+        },
+        "observedBatchUsdBeforeAllowances": 0.00015241316000000002
+      }
+    },
+    "cachedJsonRecheck": {
+      "receiptFile": "reports/get-block-cpu-20261121/cpu-cached-json-recheck.json",
+      "requests": 24,
+      "objectOperations": {
+        "r2_reads": 0,
+        "r2_gets": 0,
+        "r2_heads": 0,
+        "s3_reads": 0,
+        "s3_gets": 0,
+        "s3_heads": 0,
+        "kv_reads": 1
+      },
+      "authCache": {
+        "MISS": 1,
+        "HIT": 23
+      },
+      "responseCache": {
+        "HIT": 24
+      },
+      "profileMode": {
+        "null": 24
+      },
+      "allClientSamplesOk": true,
+      "platformCountsMatchClientPlan": true,
+      "cpu": {
+        "selectedQuery": "cachedJsonRecheck",
+        "observedRequests": 24,
+        "countMatchesPlan": true,
+        "errors": 0,
+        "cpuTimeUs": 59054,
+        "startupCpuTimeUs": 16328,
+        "meanCpuMs": 2.4605833333333336,
+        "meanCpuIncludingAttributedStartupMs": 3.1409166666666666,
+        "cpuP50Ms": 1.444,
+        "cpuP95Ms": 3.007,
+        "cpuUsdPerMillionRequestsBeforeAllowances": 0.04921166666666667,
+        "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.06281833333333334
+      },
+      "estimate": {
+        "unit": "USD per one million HTTP requests before account allowances",
+        "owner": {
+          "workerRequests": 0.3,
+          "kvReads": 0.020833333333333332,
+          "r2IndexReads": 0.0,
+          "cpu": 0.049211666666666674
+        },
+        "foundation": {
+          "r2SourceReads": 0.0
+        },
+        "combinedBaseExcludingCpu": 0.3208333333333333,
+        "ownerTotal": 0.370045,
+        "foundationTotal": 0.0,
+        "combinedTotal": 0.370045,
+        "conservativeIncludingAttributedStartup": {
+          "ownerCpu": 0.06281833333333334,
+          "ownerTotal": 0.38365166666666667,
+          "combinedTotal": 0.38365166666666667
+        },
+        "observedBatchUsdBeforeAllowances": 8.88108e-06
+      }
+    }
+  },
+  "costFloor": {
+    "twoSourceGets": 0.72,
+    "oneWorkerRequest": 0.3,
+    "combinedZeroCpuZeroKvTwoSourceReadsPerMillion": 1.02,
+    "fullyColdThreeObjectReadsPlusOneKvPlusOneRequestExcludingCpu": 1.88,
+    "scope": "Marginal Standard rates across both accounts; before included usage, rounding, CPU, storage and subscription. Two distinct original objects require two object operations."
+  },
+  "cpuTarget": {
+    "targetUsdPerMillionRequests": 1.0,
+    "requiresMeanCpuMsStrictlyBelow": 50.0,
+    "formula": "0.02 * mean CPU milliseconds per request",
+    "meansNotQuantiles": true,
+    "measuredFullyColdInvocationCpuUsdPerMillion": 0.7781775000000001,
+    "measuredFullyColdConservativeIncludingStartupCpuUsdPerMillion": 0.817185,
+    "sampleTargetMetIncludingAttributedStartup": true
+  },
+  "authCache": {
+    "ttlMs": 5000,
+    "maxRecords": 256,
+    "maxBytes": 131072,
+    "scope": "Completed successful checks only, scoped by KV identity and key digest. TTL adds at most five seconds to a KV observation; KV propagation delay is separate. Fully cold profile=1 bypasses lookup and population."
+  },
+  "indexStorage": {
+    "publishedObjects": 8,
+    "publishedBytes": 625602,
+    "unchangedByV11": true,
+    "actualEightObjectUsdPerMonthBeforeAllowance": 9.384029999999999e-06,
+    "sampleExtrapolatedGbPer432000BlockEpoch": 33.78,
+    "sampleExtrapolatedUsdPerEpochMonth": 0.5067,
+    "extrapolationOnlyNotFullEpochCoverage": true
+  },
+  "excludedOrUnknown": [
+    "Shared account included allowances and current account usage are unknown; this is not an invoice forecast.",
+    "Workers Paid minimum subscription is $5/month and is not allocated to this one endpoint here.",
+    "R2 billing-unit rounding, existing archive storage, index generation/PUTs, and Workers Logs charges are separate.",
+    "Analytics Engine documentation currently says usage is not yet billed; its published future point/query rates are not added as current costs.",
+    "Provider fees, physical R2 cache state, and future traffic distribution are unknown.",
+    "Cache hits still invoke the outer authentication and metrics Worker. The current customer price uses a different billable-request denominator; this report estimates cost per HTTP request, not profit."
+  ],
+  "notes": [
+    "fullyColdJson is application-cache cold, not a proof of physical storage cache misses.",
+    "sourceJson deliberately retains auth/index caches and forces the two Foundation ranges. It is not fully cold.",
+    "indexWarmup HTTP calls and CPU are reported separately; preparation is not free.",
+    "mainMixed combines JSON, binary, no-access and resolution requests and must not be described as all-cold JSON.",
+    "startupCpuTimeUs is excluded from invocation cpuTimeUs by the API. A separate conservative allocation includes startup; neither is presented as an exact invoice.",
+    "Per-million serving models use all HTTP requests as the denominator. Existing customer billing charges archive-backed requests only. A sub-dollar average per HTTP request does not establish sub-dollar cost per billable backend request."
+  ],
+  "jsonOnlyResponseHitMixModels": {
+    "fullyColdMissActualAuth": {
+      "targetUsdPerMillion": 1.0,
+      "missCost": 2.6581775,
+      "hitCost": 0.370045,
+      "formula": "h > (missCost - 1) / (missCost - hitCost)",
+      "requiredResponseHitFractionStrictlyGreaterThan": 0.7246859611495401,
+      "scope": "JSON-only variable-cost model. Each logical block request is one HTTP call; preparatory requests and fixed/storage charges are separate. CPU and KV miss rates are this small sample, not a guaranteed future workload."
+    },
+    "sourceReadMissActualAuth": {
+      "targetUsdPerMillion": 1.0,
+      "missCost": 2.0102875,
+      "hitCost": 0.370045,
+      "formula": "h > (missCost - 1) / (missCost - hitCost)",
+      "requiredResponseHitFractionStrictlyGreaterThan": 0.6159378872331378,
+      "scope": "JSON-only variable-cost model. Each logical block request is one HTTP call; preparatory requests and fixed/storage charges are separate. CPU and KV miss rates are this small sample, not a guaranteed future workload."
+    },
+    "sourceReadMissIdealAuthHits": {
+      "targetUsdPerMillion": 1.0,
+      "missCost": 1.9477875,
+      "hitCost": 0.34921166666666664,
+      "formula": "h > (missCost - 1) / (missCost - hitCost)",
+      "requiredResponseHitFractionStrictlyGreaterThan": 0.5928949257438001,
+      "scope": "JSON-only variable-cost model. Each logical block request is one HTTP call; preparatory requests and fixed/storage charges are separate. CPU and KV miss rates are this small sample, not a guaranteed future workload."
+    },
+    "fullyColdMissConservativeIncludingStartup": {
+      "targetUsdPerMillion": 1.0,
+      "missCost": 2.6971849999999997,
+      "hitCost": 0.38365166666666667,
+      "formula": "h > (missCost - 1) / (missCost - hitCost)",
+      "requiredResponseHitFractionStrictlyGreaterThan": 0.7335900354436216,
+      "scope": "JSON-only variable-cost model. Each logical block request is one HTTP call; preparatory requests and fixed/storage charges are separate. CPU and KV miss rates are this small sample, not a guaranteed future workload."
+    },
+    "sourceReadMissConservativeIncludingStartup": {
+      "targetUsdPerMillion": 1.0,
+      "missCost": 2.0102875,
+      "hitCost": 0.38365166666666667,
+      "formula": "h > (missCost - 1) / (missCost - hitCost)",
+      "requiredResponseHitFractionStrictlyGreaterThan": 0.6210901538604984,
+      "scope": "JSON-only variable-cost model. Each logical block request is one HTTP call; preparatory requests and fixed/storage charges are separate. CPU and KV miss rates are this small sample, not a guaranteed future workload."
+    },
+    "costFunction": "C(h) = h * C_hit + (1-h) * C_miss. h is the complete-response hit fraction; source cache hits can reduce cost further."
+  },
+  "idealAuthAndIndexHitSourcePhase": {
+    "owner": {
+      "workerRequests": 0.3,
+      "cpu": 0.9277875,
+      "kvReads": 0,
+      "r2IndexReads": 0
+    },
+    "foundation": 0.72,
+    "combinedTotal": 1.9477875,
+    "scope": "Ideal auth/index HIT case. Source JSON CPU is measured; zero auth/index operations are an explicit scenario, not all observed source calls."
+  },
+  "separateIndexPreparation": {
+    "observedRequests": 8,
+    "observedBatchUsdBeforeAllowances": 3.9201800000000005e-06,
+    "perMillionPreparatoryHttpRequests": 0.4900225,
+    "amortizedExtraCostPerMillionLogicalBlockReadsAtReuse": {
+      "1": 0.4900225,
+      "2": 0.24501125,
+      "10": 0.049002250000000004,
+      "100": 0.004900225
+    },
+    "scope": "One resolution preparation request per distinct block, amortized over k later block requests. This sample preparation hit pre-existing complete response caches and had zero R2 reads; a fresh index fetch can add an R2 operation.",
+    "oneWarmupPerSourceReadObservedCpuUsdPerMillionLogicalBlockReads": 1.05531
+  },
+  "jsonMixAtEightyPercentResponseHits": {
+    "fullyColdMissActualAuth": {
+      "responseHitFraction": 0.8,
+      "ownerUsdPerMillionHttp": 0.6836715,
+      "foundationUsdPerMillionHttp": 0.144,
+      "combinedUsdPerMillionHttp": 0.8276715000000001,
+      "conservativeCombinedIncludingAttributedStartup": 0.8463583333333333,
+      "assumption": "80%complete response HITs; remaining20% use the named JSON miss phase. Sample CPU and auth miss rates are held fixed; this is a scenario, not observed80%JSON traffic."
+    },
+    "sourceReadMissActualAuth": {
+      "responseHitFraction": 0.8,
+      "ownerUsdPerMillionHttp": 0.5540935,
+      "foundationUsdPerMillionHttp": 0.144,
+      "combinedUsdPerMillionHttp": 0.6980935,
+      "conservativeCombinedIncludingAttributedStartup": 0.7089788333333333,
+      "assumption": "80%complete response HITs; remaining20% use the named JSON miss phase. Sample CPU and auth miss rates are held fixed; this is a scenario, not observed80%JSON traffic."
+    }
+  },
+  "observedMixedRun": {
+    "httpRequests": 176,
+    "jsonOnly": false,
+    "responseHitFraction": 0.5454545454545454,
+    "ownerUsdPerMillionHttp": 0.6696202272727273,
+    "foundationUsdPerMillionHttp": 0.19636363636363638,
+    "combinedUsdPerMillionHttp": 0.8659838636363637,
+    "conservativeCombinedIncludingAttributedStartup": 0.8687745454545456,
+    "scope": "Actual observed176-request mix includes JSON,binary,no-access,resolution and benchmark profiling; not all-cold JSON."
+  }
+}

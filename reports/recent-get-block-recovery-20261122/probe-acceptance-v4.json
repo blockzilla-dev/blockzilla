@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "artifact": {
+    "build": "/Users/augustin/Developement/ferno/blockzilla-v1/.codex-tmp/recent-get-block-recovery-20261122/worker-build-v4/index.js",
+    "wasmSha256": "abdf6f5a4a57e44fb0c9b343ced6c980f4a61e92eb20d597ef8453a4e6fc323b",
+    "compatibilityDate": "2026-09-10"
+  },
+  "checks": [
+    "disabled diagnostic makes no backend call",
+    "diagnostic requires cache-bypass profile",
+    "diagnostic requires binary route",
+    "slot 470555971: exact concurrent native ranges and bounded timing",
+    "slot 470663944: exact concurrent native ranges and bounded timing",
+    "slot 470771932: exact concurrent native ranges and bounded timing",
+    "slot 470879999: exact concurrent native ranges and bounded timing",
+    "source short: rejected without retry or resolver call",
+    "source long: rejected without retry or resolver call",
+    "source error: rejected without retry or resolver call",
+    "source stall: rejected without retry or resolver call"
+  ],
+  "scope": "Actual release WASM with original four block ranges in local runtime; no hosted latency claim."
+}

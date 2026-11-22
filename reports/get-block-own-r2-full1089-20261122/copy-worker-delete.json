@@ -1,0 +1,16 @@
+{
+  "status": "DELETED",
+  "worker": "blockzilla-epoch1089-copy-20261122",
+  "deletedAt": "2026-11-21T23:57:38.616464+00:00",
+  "apiSuccess": true,
+  "verifiedAbsentHttpStatus": 404,
+  "finalCodeVersion": "4aa040fd-2df1-4eaa-9e42-f5f74f904c80",
+  "retainedR2SourceObjects": 2,
+  "retainedR2ResolutionObjects": 4,
+  "sourceAndConfigRetained": true,
+  "sourcePath": "/Users/augustin/Developement/ferno/blockzilla-v1/.codex-tmp/get-block-owner-full1089-20261122/copy-worker.mjs",
+  "sourceSha256": "1b8ae55985b2c1e6d012bf5b2a6b986c20553b0a072ab646ef369852d3085569",
+  "configPath": "/Users/augustin/Developement/ferno/blockzilla-v1/.codex-tmp/get-block-owner-full1089-20261122/wrangler.jsonc",
+  "controllerPath": "/Users/augustin/Developement/ferno/blockzilla-v1/.codex-tmp/get-block-owner-full1089-20261122/copy-controller.py",
+  "foundationWrites": 0
+}

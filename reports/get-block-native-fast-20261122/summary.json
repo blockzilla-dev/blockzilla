@@ -1,0 +1,4011 @@
+{
+  "schema": "blockzilla.native-fast-summary.v1",
+  "status": "validated",
+  "startedAt": "2026-11-22T08:17:17.449Z",
+  "completedAt": "2026-11-22T08:17:55.450Z",
+  "deployments": {
+    "fastVersion": "ddc5f9ff-8704-4c99-ba20-e712047ba360",
+    "baselineVersion": "c757f003-018e-45db-b1b0-8a2decca8868",
+    "fastWasmSha256": "8052a36fbc971f3c2596b237cf4721e8e981da9d5872e15a203aff57ddc19d3c",
+    "archiveCacheGeneration": "owner-native-fast-20261122-final-v1",
+    "sampling": 0.01
+  },
+  "plan": {
+    "requests": 109,
+    "fastRequests": 65,
+    "baselineRequests": 8,
+    "heliusRequests": 36,
+    "slots": [
+      470555971,
+      470663944,
+      470771932,
+      470879999
+    ],
+    "retries": 0,
+    "timeoutMs": 90000,
+    "quietGapMs": 2200,
+    "sequentialExceptBurst": true,
+    "burstConcurrency": 16,
+    "dispatcherMaximumConnections": {
+      "fast": 16,
+      "baseline": 1,
+      "helius": 1
+    },
+    "providerOptions": {
+      "encoding": "base64",
+      "rewards": false,
+      "transactionDetails": "full",
+      "maxSupportedTransactionVersion": 1,
+      "commitment": "finalized"
+    }
+  },
+  "proof": {
+    "requests": 109,
+    "successful": 109,
+    "errors": 0,
+    "jsonResponses": 100,
+    "jsonMatchesSavedReference": 100,
+    "binaryMatchesOriginal": 4,
+    "fastFullColdRequests": 20,
+    "fastFullColdThreeGetAuthBypass": 20,
+    "sourceRequests": 4,
+    "sourceIndexCached": 4,
+    "sourceIndexAndAuthCached": 3,
+    "responseHitRequests": 16,
+    "responseHitsWithZeroStorageReads": 16,
+    "burst": {
+      "requests": 16,
+      "cacheCounts": {
+        "MISS": 4,
+        "HIT": 12
+      },
+      "fillCounts": {
+        "LEADER": 4,
+        "HIT": 8,
+        "COALESCED": 4
+      },
+      "getAttempts": 4,
+      "authKvReads": 13,
+      "authHitRequests": 3,
+      "freshMissObserved": true,
+      "leaderSourceReadsObserved": true
+    }
+  },
+  "windows": [
+    {
+      "phase": "plain_full_cold",
+      "startedAt": "2026-11-22T08:17:17.454Z",
+      "networkCompletedAt": "2026-11-22T08:17:24.272Z",
+      "validationCompletedAt": "2026-11-22T08:17:24.272Z",
+      "requests": 24,
+      "fastRequests": 8,
+      "baselineRequests": 8,
+      "heliusRequests": 8,
+      "fastFirstRequestAt": "2026-11-22T08:17:17.992Z",
+      "fastLastRequestCompletedAt": "2026-11-22T08:17:23.829Z",
+      "concurrent": false
+    },
+    {
+      "phase": "resolution_download",
+      "startedAt": "2026-11-22T08:17:26.473Z",
+      "networkCompletedAt": "2026-11-22T08:17:26.886Z",
+      "validationCompletedAt": "2026-11-22T08:17:26.887Z",
+      "requests": 4,
+      "fastRequests": 4,
+      "baselineRequests": 0,
+      "heliusRequests": 0,
+      "fastFirstRequestAt": "2026-11-22T08:17:26.474Z",
+      "fastLastRequestCompletedAt": "2026-11-22T08:17:26.886Z",
+      "concurrent": false
+    },
+    {
+      "phase": "hinted_full_cold",
+      "startedAt": "2026-11-22T08:17:29.088Z",
+      "networkCompletedAt": "2026-11-22T08:17:32.807Z",
+      "validationCompletedAt": "2026-11-22T08:17:32.807Z",
+      "requests": 16,
+      "fastRequests": 8,
+      "baselineRequests": 0,
+      "heliusRequests": 8,
+      "fastFirstRequestAt": "2026-11-22T08:17:29.088Z",
+      "fastLastRequestCompletedAt": "2026-11-22T08:17:32.806Z",
+      "concurrent": false
+    },
+    {
+      "phase": "source_only",
+      "startedAt": "2026-11-22T08:17:35.010Z",
+      "networkCompletedAt": "2026-11-22T08:17:36.438Z",
+      "validationCompletedAt": "2026-11-22T08:17:36.438Z",
+      "requests": 8,
+      "fastRequests": 4,
+      "baselineRequests": 0,
+      "heliusRequests": 4,
+      "fastFirstRequestAt": "2026-11-22T08:17:35.010Z",
+      "fastLastRequestCompletedAt": "2026-11-22T08:17:36.360Z",
+      "concurrent": false
+    },
+    {
+      "phase": "cold_binary",
+      "startedAt": "2026-11-22T08:17:38.640Z",
+      "networkCompletedAt": "2026-11-22T08:17:39.466Z",
+      "validationCompletedAt": "2026-11-22T08:17:39.466Z",
+      "requests": 4,
+      "fastRequests": 4,
+      "baselineRequests": 0,
+      "heliusRequests": 0,
+      "fastFirstRequestAt": "2026-11-22T08:17:38.640Z",
+      "fastLastRequestCompletedAt": "2026-11-22T08:17:39.466Z",
+      "concurrent": false
+    },
+    {
+      "phase": "burst_index_auth_warmup",
+      "startedAt": "2026-11-22T08:17:41.666Z",
+      "networkCompletedAt": "2026-11-22T08:17:41.699Z",
+      "validationCompletedAt": "2026-11-22T08:17:41.699Z",
+      "requests": 1,
+      "fastRequests": 1,
+      "baselineRequests": 0,
+      "heliusRequests": 0,
+      "fastFirstRequestAt": "2026-11-22T08:17:41.666Z",
+      "fastLastRequestCompletedAt": "2026-11-22T08:17:41.699Z",
+      "concurrent": false
+    },
+    {
+      "phase": "ordinary_burst",
+      "startedAt": "2026-11-22T08:17:43.900Z",
+      "networkCompletedAt": "2026-11-22T08:17:44.261Z",
+      "validationCompletedAt": "2026-11-22T08:17:45.252Z",
+      "requests": 16,
+      "fastRequests": 16,
+      "baselineRequests": 0,
+      "heliusRequests": 0,
+      "fastFirstRequestAt": "2026-11-22T08:17:43.903Z",
+      "fastLastRequestCompletedAt": "2026-11-22T08:17:44.261Z",
+      "concurrent": true
+    },
+    {
+      "phase": "ordinary_warmup",
+      "startedAt": "2026-11-22T08:17:47.455Z",
+      "networkCompletedAt": "2026-11-22T08:17:48.182Z",
+      "validationCompletedAt": "2026-11-22T08:17:48.182Z",
+      "requests": 4,
+      "fastRequests": 4,
+      "baselineRequests": 0,
+      "heliusRequests": 0,
+      "fastFirstRequestAt": "2026-11-22T08:17:47.455Z",
+      "fastLastRequestCompletedAt": "2026-11-22T08:17:48.182Z",
+      "concurrent": false
+    },
+    {
+      "phase": "response_hits",
+      "startedAt": "2026-11-22T08:17:50.384Z",
+      "networkCompletedAt": "2026-11-22T08:17:55.448Z",
+      "validationCompletedAt": "2026-11-22T08:17:55.448Z",
+      "requests": 32,
+      "fastRequests": 16,
+      "baselineRequests": 0,
+      "heliusRequests": 16,
+      "fastFirstRequestAt": "2026-11-22T08:17:50.384Z",
+      "fastLastRequestCompletedAt": "2026-11-22T08:17:55.448Z",
+      "concurrent": false
+    }
+  ],
+  "phases": [
+    {
+      "phase": "plain_full_cold",
+      "targets": {
+        "baseline": {
+          "n": 8,
+          "ttfbMs": {
+            "p50": 175.127,
+            "p95": 413.928,
+            "p99": 413.928
+          },
+          "totalMs": {
+            "p50": 204.109,
+            "p95": 439.192,
+            "p99": 439.192
+          },
+          "headersMs": {
+            "p50": 173.544,
+            "p95": 410.196,
+            "p99": 410.196
+          },
+          "encodedBodyTransferMs": {
+            "p50": 25.755,
+            "p95": 38.561,
+            "p99": 38.561
+          },
+          "counters": {
+            "requests": 8,
+            "responseCacheCounts": {
+              "BYPASS": 8
+            },
+            "fillCounts": {
+              "UNREPORTED": 8
+            },
+            "authCacheCounts": {
+              "BYPASS": 8
+            },
+            "authKvReads": 8,
+            "r2GetAttempts": 24,
+            "s3GetAttempts": 0,
+            "originHeadAttempts": 0,
+            "readerHttpAttempts": 0,
+            "bufferedOriginBytesAtHeaders": 2032818,
+            "streamedExpectedOriginBytes": 0,
+            "archiveMemoryHits": 0,
+            "archiveEdgeHits": 0,
+            "encodedEntityBytes": 3279605,
+            "decodedBodyBytes": 21833148,
+            "newClientSockets": 1
+          },
+          "stagesMs": {
+            "authentication": {
+              "p50": 3,
+              "p95": 30,
+              "p99": 30
+            },
+            "block_body": {
+              "p50": 0,
+              "p95": 2,
+              "p99": 2
+            },
+            "block_headers": {
+              "p50": 76,
+              "p95": 194,
+              "p99": 194
+            },
+            "resolution_access_decode": {
+              "p50": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "resolution_body": {
+              "p50": 0,
+              "p95": 1,
+              "p99": 1
+            },
+            "resolution_decode": {
+              "p50": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "resolution_fetch_total": {
+              "p50": 111,
+              "p95": 238,
+              "p99": 238
+            },
+            "resolution_headers": {
+              "p50": 35,
+              "p95": 61,
+              "p99": 61
+            },
+            "resolution_total": {
+              "p50": 35,
+              "p95": 61,
+              "p99": 61
+            },
+            "signature_body": {
+              "p50": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "signature_headers": {
+              "p50": 51,
+              "p95": 64,
+              "p99": 64
+            },
+            "source_ranges_parallel": {
+              "p50": 76,
+              "p95": 195,
+              "p99": 195
+            },
+            "stored_block_decode": {
+              "p50": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "worker_placement": {
+              "p50": 0,
+              "p95": 0,
+              "p99": 0
+            }
+          }
+        },
+        "fast": {
+          "n": 8,
+          "ttfbMs": {
+            "p50": 174.555,
+            "p95": 278.992,
+            "p99": 278.992
+          },
+          "totalMs": {
+            "p50": 201.444,
+            "p95": 306.56,
+            "p99": 306.56
+          },
+          "headersMs": {
+            "p50": 174.074,
+            "p95": 277.883,
+            "p99": 277.883
+          },
+          "encodedBodyTransferMs": {
+            "p50": 21.961,
+            "p95": 30.008,
+            "p99": 30.008
+          },
+          "counters": {
+            "requests": 8,
+            "responseCacheCounts": {
+              "BYPASS": 8
+            },
+            "fillCounts": {
+              "BYPASS": 8
+            },
+            "authCacheCounts": {
+              "BYPASS": 8
+            },
+            "authKvReads": 8,
+            "r2GetAttempts": 24,
+            "s3GetAttempts": 0,
+            "originHeadAttempts": 0,
+            "readerHttpAttempts": 0,
+            "bufferedOriginBytesAtHeaders": 2032818,
+            "streamedExpectedOriginBytes": 0,
+            "archiveMemoryHits": 0,
+            "archiveEdgeHits": 0,
+            "encodedEntityBytes": 3279841,
+            "decodedBodyBytes": 21833148,
+            "newClientSockets": 1
+          },
+          "stagesMs": {
+            "authentication": {
+              "p50": 3,
+              "p95": 4,
+              "p99": 4
+            },
+            "block_body": {
+              "p50": 0,
+              "p95": 6,
+              "p99": 6
+            },
+            "block_headers": {
+              "p50": 59,
+              "p95": 83,
+              "p99": 83
+            },
+            "resolution_access_decode": {
+              "p50": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "resolution_body": {
+              "p50": 0,
+              "p95": 2,
+              "p99": 2
+            },
+            "resolution_decode": {
+              "p50": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "resolution_fetch_total": {
+              "p50": 115,
+              "p95": 141,
+              "p99": 141
+            },
+            "resolution_headers": {
+              "p50": 45,
+              "p95": 75,
+              "p99": 75
+            },
+            "resolution_total": {
+              "p50": 45,
+              "p95": 77,
+              "p99": 77
+            },
+            "signature_body": {
+              "p50": 0,
+              "p95": 2,
+              "p99": 2
+            },
+            "signature_headers": {
+              "p50": 51,
+              "p95": 88,
+              "p99": 88
+            },
+            "source_ranges_parallel": {
+              "p50": 62,
+              "p95": 89,
+              "p99": 89
+            },
+            "stored_block_decode": {
+              "p50": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "worker_placement": {
+              "p50": 0,
+              "p95": 0,
+              "p99": 0
+            }
+          }
+        },
+        "helius": {
+          "n": 8,
+          "ttfbMs": {
+            "p50": 53.316,
+            "p95": 88.462,
+            "p99": 88.462
+          },
+          "totalMs": {
+            "p50": 114.054,
+            "p95": 143.234,
+            "p99": 143.234
+          },
+          "headersMs": {
+            "p50": 53.179,
+            "p95": 87.897,
+            "p99": 87.897
+          },
+          "encodedBodyTransferMs": {
+            "p50": 54.535,
+            "p95": 74.079,
+            "p99": 74.079
+          },
+          "counters": {
+            "requests": 8,
+            "responseCacheCounts": {
+              "UNREPORTED": 8
+            },
+            "fillCounts": {
+              "UNREPORTED": 8
+            },
+            "authCacheCounts": {
+              "UNREPORTED": 8
+            },
+            "authKvReads": 0,
+            "r2GetAttempts": 0,
+            "s3GetAttempts": 0,
+            "originHeadAttempts": 0,
+            "readerHttpAttempts": 0,
+            "bufferedOriginBytesAtHeaders": 0,
+            "streamedExpectedOriginBytes": 0,
+            "archiveMemoryHits": 0,
+            "archiveEdgeHits": 0,
+            "encodedEntityBytes": 5323724,
+            "decodedBodyBytes": 21833148,
+            "newClientSockets": 1
+          },
+          "stagesMs": {}
+        }
+      }
+    },
+    {
+      "phase": "resolution_download",
+      "targets": {
+        "fast": {
+          "n": 4,
+          "ttfbMs": {
+            "p50": 96.972,
+            "p95": 124.18,
+            "p99": 124.18
+          },
+          "totalMs": {
+            "p50": 97.509,
+            "p95": 131.846,
+            "p99": 131.846
+          },
+          "headersMs": {
+            "p50": 96.852,
+            "p95": 124.102,
+            "p99": 124.102
+          },
+          "encodedBodyTransferMs": {
+            "p50": 0.837,
+            "p95": 7.714,
+            "p99": 7.714
+          },
+          "counters": {
+            "requests": 4,
+            "responseCacheCounts": {
+              "MISS": 4
+            },
+            "fillCounts": {
+              "UNREPORTED": 4
+            },
+            "authCacheCounts": {
+              "MISS": 1,
+              "HIT": 3
+            },
+            "authKvReads": 1,
+            "r2GetAttempts": 4,
+            "s3GetAttempts": 0,
+            "originHeadAttempts": 0,
+            "readerHttpAttempts": 0,
+            "bufferedOriginBytesAtHeaders": 315117,
+            "streamedExpectedOriginBytes": 0,
+            "archiveMemoryHits": 0,
+            "archiveEdgeHits": 0,
+            "encodedEntityBytes": 315117,
+            "decodedBodyBytes": 315117,
+            "newClientSockets": 1
+          },
+          "stagesMs": {}
+        }
+      }
+    },
+    {
+      "phase": "hinted_full_cold",
+      "targets": {
+        "fast": {
+          "n": 8,
+          "ttfbMs": {
+            "p50": 133.146,
+            "p95": 327.124,
+            "p99": 327.124
+          },
+          "totalMs": {
+            "p50": 162.114,
+            "p95": 342.777,
+            "p99": 342.777
+          },
+          "headersMs": {
+            "p50": 132.641,
+            "p95": 326.923,
+            "p99": 326.923
+          },
+          "encodedBodyTransferMs": {
+            "p50": 17.058,
+            "p95": 28.722,
+            "p99": 28.722
+          },
+          "counters": {
+            "requests": 8,
+            "responseCacheCounts": {
+              "BYPASS": 8
+            },
+            "fillCounts": {
+              "BYPASS": 8
+            },
+            "authCacheCounts": {
+              "BYPASS": 8
+            },
+            "authKvReads": 8,
+            "r2GetAttempts": 24,
+            "s3GetAttempts": 0,
+            "originHeadAttempts": 0,
+            "readerHttpAttempts": 0,
+            "bufferedOriginBytesAtHeaders": 2032818,
+            "streamedExpectedOriginBytes": 0,
+            "archiveMemoryHits": 0,
+            "archiveEdgeHits": 0,
+            "encodedEntityBytes": 3279052,
+            "decodedBodyBytes": 21833148,
+            "newClientSockets": 0
+          },
+          "stagesMs": {
+            "authentication": {
+              "p50": 3,
+              "p95": 7,
+              "p99": 7
+            },
+            "block_body": {
+              "p50": 0,
+              "p95": 3,
+              "p99": 3
+            },
+            "block_headers": {
+              "p50": 55,
+              "p95": 87,
+              "p99": 87
+            },
+            "resolution_access_decode": {
+              "p50": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "resolution_body": {
+              "p50": 0,
+              "p95": 1,
+              "p99": 1
+            },
+            "resolution_decode": {
+              "p50": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "resolution_fetch_total": {
+              "p50": 56,
+              "p95": 206,
+              "p99": 206
+            },
+            "resolution_headers": {
+              "p50": 41,
+              "p95": 49,
+              "p99": 49
+            },
+            "resolution_total": {
+              "p50": 42,
+              "p95": 49,
+              "p99": 49
+            },
+            "signature_body": {
+              "p50": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "signature_headers": {
+              "p50": 50,
+              "p95": 206,
+              "p99": 206
+            },
+            "source_ranges_parallel": {
+              "p50": 56,
+              "p95": 206,
+              "p99": 206
+            },
+            "stored_block_decode": {
+              "p50": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "worker_placement": {
+              "p50": 0,
+              "p95": 0,
+              "p99": 0
+            }
+          }
+        },
+        "helius": {
+          "n": 8,
+          "ttfbMs": {
+            "p50": 50.195,
+            "p95": 242.506,
+            "p99": 242.506
+          },
+          "totalMs": {
+            "p50": 105.586,
+            "p95": 304.497,
+            "p99": 304.497
+          },
+          "headersMs": {
+            "p50": 50.097,
+            "p95": 242.365,
+            "p99": 242.365
+          },
+          "encodedBodyTransferMs": {
+            "p50": 58.745,
+            "p95": 68.077,
+            "p99": 68.077
+          },
+          "counters": {
+            "requests": 8,
+            "responseCacheCounts": {
+              "UNREPORTED": 8
+            },
+            "fillCounts": {
+              "UNREPORTED": 8
+            },
+            "authCacheCounts": {
+              "UNREPORTED": 8
+            },
+            "authKvReads": 0,
+            "r2GetAttempts": 0,
+            "s3GetAttempts": 0,
+            "originHeadAttempts": 0,
+            "readerHttpAttempts": 0,
+            "bufferedOriginBytesAtHeaders": 0,
+            "streamedExpectedOriginBytes": 0,
+            "archiveMemoryHits": 0,
+            "archiveEdgeHits": 0,
+            "encodedEntityBytes": 5323724,
+            "decodedBodyBytes": 21833148,
+            "newClientSockets": 1
+          },
+          "stagesMs": {}
+        }
+      }
+    },
+    {
+      "phase": "source_only",
+      "targets": {
+        "fast": {
+          "n": 4,
+          "ttfbMs": {
+            "p50": 93.613,
+            "p95": 105.415,
+            "p99": 105.415
+          },
+          "totalMs": {
+            "p50": 121.065,
+            "p95": 127.174,
+            "p99": 127.174
+          },
+          "headersMs": {
+            "p50": 93.304,
+            "p95": 104.862,
+            "p99": 104.862
+          },
+          "encodedBodyTransferMs": {
+            "p50": 15.292,
+            "p95": 31.819,
+            "p99": 31.819
+          },
+          "counters": {
+            "requests": 4,
+            "responseCacheCounts": {
+              "BYPASS": 4
+            },
+            "fillCounts": {
+              "BYPASS": 4
+            },
+            "authCacheCounts": {
+              "MISS": 1,
+              "HIT": 3
+            },
+            "authKvReads": 1,
+            "r2GetAttempts": 8,
+            "s3GetAttempts": 0,
+            "originHeadAttempts": 0,
+            "readerHttpAttempts": 0,
+            "bufferedOriginBytesAtHeaders": 701292,
+            "streamedExpectedOriginBytes": 0,
+            "archiveMemoryHits": 4,
+            "archiveEdgeHits": 0,
+            "encodedEntityBytes": 1640373,
+            "decodedBodyBytes": 10916574,
+            "newClientSockets": 0
+          },
+          "stagesMs": {
+            "authentication": {
+              "p50": 0,
+              "p95": 4,
+              "p99": 4
+            },
+            "block_body": {
+              "p50": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "block_headers": {
+              "p50": 58,
+              "p95": 60,
+              "p99": 60
+            },
+            "resolution_access_decode": {
+              "p50": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "resolution_decode": {
+              "p50": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "resolution_fetch_total": {
+              "p50": 58,
+              "p95": 61,
+              "p99": 61
+            },
+            "resolution_total": {
+              "p50": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "signature_body": {
+              "p50": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "signature_headers": {
+              "p50": 50,
+              "p95": 61,
+              "p99": 61
+            },
+            "source_ranges_parallel": {
+              "p50": 58,
+              "p95": 61,
+              "p99": 61
+            },
+            "stored_block_decode": {
+              "p50": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "worker_placement": {
+              "p50": 0,
+              "p95": 0,
+              "p99": 0
+            }
+          }
+        },
+        "helius": {
+          "n": 4,
+          "ttfbMs": {
+            "p50": 43.747,
+            "p95": 63.43,
+            "p99": 63.43
+          },
+          "totalMs": {
+            "p50": 95.459,
+            "p95": 132.818,
+            "p99": 132.818
+          },
+          "headersMs": {
+            "p50": 43.6,
+            "p95": 63.321,
+            "p99": 63.321
+          },
+          "encodedBodyTransferMs": {
+            "p50": 49.507,
+            "p95": 76.29,
+            "p99": 76.29
+          },
+          "counters": {
+            "requests": 4,
+            "responseCacheCounts": {
+              "UNREPORTED": 4
+            },
+            "fillCounts": {
+              "UNREPORTED": 4
+            },
+            "authCacheCounts": {
+              "UNREPORTED": 4
+            },
+            "authKvReads": 0,
+            "r2GetAttempts": 0,
+            "s3GetAttempts": 0,
+            "originHeadAttempts": 0,
+            "readerHttpAttempts": 0,
+            "bufferedOriginBytesAtHeaders": 0,
+            "streamedExpectedOriginBytes": 0,
+            "archiveMemoryHits": 0,
+            "archiveEdgeHits": 0,
+            "encodedEntityBytes": 2661862,
+            "decodedBodyBytes": 10916574,
+            "newClientSockets": 0
+          },
+          "stagesMs": {}
+        }
+      }
+    },
+    {
+      "phase": "cold_binary",
+      "targets": {
+        "fast": {
+          "n": 4,
+          "ttfbMs": {
+            "p50": 156.576,
+            "p95": 320.924,
+            "p99": 320.924
+          },
+          "totalMs": {
+            "p50": 160.174,
+            "p95": 343.639,
+            "p99": 343.639
+          },
+          "headersMs": {
+            "p50": 156.461,
+            "p95": 320.825,
+            "p99": 320.825
+          },
+          "encodedBodyTransferMs": {
+            "p50": 3.737,
+            "p95": 22.814,
+            "p99": 22.814
+          },
+          "counters": {
+            "requests": 4,
+            "responseCacheCounts": {
+              "BYPASS": 4
+            },
+            "fillCounts": {
+              "BYPASS": 4
+            },
+            "authCacheCounts": {
+              "BYPASS": 4
+            },
+            "authKvReads": 4,
+            "r2GetAttempts": 12,
+            "s3GetAttempts": 0,
+            "originHeadAttempts": 0,
+            "readerHttpAttempts": 0,
+            "bufferedOriginBytesAtHeaders": 315117,
+            "streamedExpectedOriginBytes": 701292,
+            "archiveMemoryHits": 0,
+            "archiveEdgeHits": 0,
+            "encodedEntityBytes": 1012959,
+            "decodedBodyBytes": 1012959,
+            "newClientSockets": 1
+          },
+          "stagesMs": {
+            "authentication": {
+              "p50": 3,
+              "p95": 4,
+              "p99": 4
+            },
+            "block_headers": {
+              "p50": 58,
+              "p95": 92,
+              "p99": 92
+            },
+            "resolution_body": {
+              "p50": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "resolution_decode": {
+              "p50": 0,
+              "p95": 0,
+              "p99": 0
+            },
+            "resolution_headers": {
+              "p50": 39,
+              "p95": 54,
+              "p99": 54
+            },
+            "resolution_total": {
+              "p50": 39,
+              "p95": 54,
+              "p99": 54
+            },
+            "signature_headers": {
+              "p50": 65,
+              "p95": 95,
+              "p99": 95
+            },
+            "worker_placement": {
+              "p50": 0,
+              "p95": 0,
+              "p99": 0
+            }
+          }
+        }
+      }
+    },
+    {
+      "phase": "burst_index_auth_warmup",
+      "targets": {
+        "fast": {
+          "n": 1,
+          "ttfbMs": {
+            "p50": 30.518,
+            "p95": 30.518,
+            "p99": 30.518
+          },
+          "totalMs": {
+            "p50": 31.859,
+            "p95": 31.859,
+            "p99": 31.859
+          },
+          "headersMs": {
+            "p50": 30.446,
+            "p95": 30.446,
+            "p99": 30.446
+          },
+          "encodedBodyTransferMs": {
+            "p50": 1.449,
+            "p95": 1.449,
+            "p99": 1.449
+          },
+          "counters": {
+            "requests": 1,
+            "responseCacheCounts": {
+              "HIT": 1
+            },
+            "fillCounts": {
+              "UNREPORTED": 1
+            },
+            "authCacheCounts": {
+              "MISS": 1
+            },
+            "authKvReads": 1,
+            "r2GetAttempts": 0,
+            "s3GetAttempts": 0,
+            "originHeadAttempts": 0,
+            "readerHttpAttempts": 0,
+            "bufferedOriginBytesAtHeaders": 0,
+            "streamedExpectedOriginBytes": 0,
+            "archiveMemoryHits": 0,
+            "archiveEdgeHits": 0,
+            "encodedEntityBytes": 75677,
+            "decodedBodyBytes": 75677,
+            "newClientSockets": 0
+          },
+          "stagesMs": {}
+        }
+      }
+    },
+    {
+      "phase": "ordinary_burst",
+      "targets": {
+        "fast": {
+          "n": 16,
+          "ttfbMs": {
+            "p50": 187.001,
+            "p95": 310.892,
+            "p99": 310.892
+          },
+          "totalMs": {
+            "p50": 334.92,
+            "p95": 355.797,
+            "p99": 355.797
+          },
+          "headersMs": {
+            "p50": 186.582,
+            "p95": 305.129,
+            "p99": 305.129
+          },
+          "encodedBodyTransferMs": {
+            "p50": 84.092,
+            "p95": 168.698,
+            "p99": 168.698
+          },
+          "counters": {
+            "requests": 16,
+            "responseCacheCounts": {
+              "MISS": 4,
+              "HIT": 12
+            },
+            "fillCounts": {
+              "LEADER": 4,
+              "HIT": 8,
+              "COALESCED": 4
+            },
+            "authCacheCounts": {
+              "HIT": 3,
+              "MISS": 13
+            },
+            "authKvReads": 13,
+            "r2GetAttempts": 4,
+            "s3GetAttempts": 0,
+            "originHeadAttempts": 0,
+            "readerHttpAttempts": 0,
+            "bufferedOriginBytesAtHeaders": 345580,
+            "streamedExpectedOriginBytes": 0,
+            "archiveMemoryHits": 1,
+            "archiveEdgeHits": 7,
+            "encodedEntityBytes": 6904327,
+            "decodedBodyBytes": 40501168,
+            "newClientSockets": 15
+          },
+          "stagesMs": {}
+        }
+      }
+    },
+    {
+      "phase": "ordinary_warmup",
+      "targets": {
+        "fast": {
+          "n": 4,
+          "ttfbMs": {
+            "p50": 97.074,
+            "p95": 120.609,
+            "p99": 120.609
+          },
+          "totalMs": {
+            "p50": 103.514,
+            "p95": 145.389,
+            "p99": 145.389
+          },
+          "headersMs": {
+            "p50": 96.968,
+            "p95": 120.468,
+            "p99": 120.468
+          },
+          "encodedBodyTransferMs": {
+            "p50": 17.321,
+            "p95": 25.358,
+            "p99": 25.358
+          },
+          "counters": {
+            "requests": 4,
+            "responseCacheCounts": {
+              "HIT": 1,
+              "MISS": 3
+            },
+            "fillCounts": {
+              "HIT": 1,
+              "LEADER": 3
+            },
+            "authCacheCounts": {
+              "MISS": 1,
+              "HIT": 3
+            },
+            "authKvReads": 1,
+            "r2GetAttempts": 6,
+            "s3GetAttempts": 0,
+            "originHeadAttempts": 0,
+            "readerHttpAttempts": 0,
+            "bufferedOriginBytesAtHeaders": 528502,
+            "streamedExpectedOriginBytes": 0,
+            "archiveMemoryHits": 3,
+            "archiveEdgeHits": 0,
+            "encodedEntityBytes": 1655115,
+            "decodedBodyBytes": 10916574,
+            "newClientSockets": 0
+          },
+          "stagesMs": {}
+        }
+      }
+    },
+    {
+      "phase": "response_hits",
+      "targets": {
+        "fast": {
+          "n": 16,
+          "ttfbMs": {
+            "p50": 25.406,
+            "p95": 119.265,
+            "p99": 119.265
+          },
+          "totalMs": {
+            "p50": 52.512,
+            "p95": 230.392,
+            "p99": 230.392
+          },
+          "headersMs": {
+            "p50": 24.809,
+            "p95": 119.05,
+            "p99": 119.05
+          },
+          "encodedBodyTransferMs": {
+            "p50": 23.945,
+            "p95": 201.4,
+            "p99": 201.4
+          },
+          "counters": {
+            "requests": 16,
+            "responseCacheCounts": {
+              "HIT": 16
+            },
+            "fillCounts": {
+              "HIT": 16
+            },
+            "authCacheCounts": {
+              "HIT": 15,
+              "MISS": 1
+            },
+            "authKvReads": 1,
+            "r2GetAttempts": 0,
+            "s3GetAttempts": 0,
+            "originHeadAttempts": 0,
+            "readerHttpAttempts": 0,
+            "bufferedOriginBytesAtHeaders": 0,
+            "streamedExpectedOriginBytes": 0,
+            "archiveMemoryHits": 0,
+            "archiveEdgeHits": 0,
+            "encodedEntityBytes": 6835960,
+            "decodedBodyBytes": 43666296,
+            "newClientSockets": 0
+          },
+          "stagesMs": {}
+        },
+        "helius": {
+          "n": 16,
+          "ttfbMs": {
+            "p50": 48.92,
+            "p95": 99.45,
+            "p99": 99.45
+          },
+          "totalMs": {
+            "p50": 94.544,
+            "p95": 149.215,
+            "p99": 149.215
+          },
+          "headersMs": {
+            "p50": 48.697,
+            "p95": 99.385,
+            "p99": 99.385
+          },
+          "encodedBodyTransferMs": {
+            "p50": 49.565,
+            "p95": 72.212,
+            "p99": 72.212
+          },
+          "counters": {
+            "requests": 16,
+            "responseCacheCounts": {
+              "UNREPORTED": 16
+            },
+            "fillCounts": {
+              "UNREPORTED": 16
+            },
+            "authCacheCounts": {
+              "UNREPORTED": 16
+            },
+            "authKvReads": 0,
+            "r2GetAttempts": 0,
+            "s3GetAttempts": 0,
+            "originHeadAttempts": 0,
+            "readerHttpAttempts": 0,
+            "bufferedOriginBytesAtHeaders": 0,
+            "streamedExpectedOriginBytes": 0,
+            "archiveMemoryHits": 0,
+            "archiveEdgeHits": 0,
+            "encodedEntityBytes": 10647448,
+            "decodedBodyBytes": 43666296,
+            "newClientSockets": 1
+          },
+          "stagesMs": {}
+        }
+      }
+    }
+  ],
+  "conditionedSourceAuthHitSubset": {
+    "slots": [
+      470663944,
+      470771932,
+      470879999
+    ],
+    "fast": {
+      "n": 3,
+      "ttfbMs": {
+        "p50": 93.613,
+        "p95": 100.234,
+        "p99": 100.234
+      },
+      "totalMs": {
+        "p50": 123.812,
+        "p95": 127.174,
+        "p99": 127.174
+      },
+      "headersMs": {
+        "p50": 93.304,
+        "p95": 99.996,
+        "p99": 99.996
+      },
+      "encodedBodyTransferMs": {
+        "p50": 21.897,
+        "p95": 31.819,
+        "p99": 31.819
+      }
+    },
+    "heliusSameSlots": {
+      "n": 3,
+      "ttfbMs": {
+        "p50": 43.747,
+        "p95": 63.43,
+        "p99": 63.43
+      },
+      "totalMs": {
+        "p50": 120.313,
+        "p95": 132.818,
+        "p99": 132.818
+      },
+      "headersMs": {
+        "p50": 43.6,
+        "p95": 63.321,
+        "p99": 63.321
+      },
+      "encodedBodyTransferMs": {
+        "p50": 68.21,
+        "p95": 76.29,
+        "p99": 76.29
+      }
+    },
+    "counters": {
+      "requests": 3,
+      "responseCacheCounts": {
+        "BYPASS": 3
+      },
+      "fillCounts": {
+        "BYPASS": 3
+      },
+      "authCacheCounts": {
+        "HIT": 3
+      },
+      "authKvReads": 0,
+      "r2GetAttempts": 6,
+      "s3GetAttempts": 0,
+      "originHeadAttempts": 0,
+      "readerHttpAttempts": 0,
+      "bufferedOriginBytesAtHeaders": 528502,
+      "streamedExpectedOriginBytes": 0,
+      "archiveMemoryHits": 3,
+      "archiveEdgeHits": 0,
+      "encodedEntityBytes": 1233756,
+      "decodedBodyBytes": 8385251,
+      "newClientSockets": 0
+    }
+  },
+  "allFastCounters": {
+    "requests": 65,
+    "responseCacheCounts": {
+      "BYPASS": 24,
+      "MISS": 11,
+      "HIT": 30
+    },
+    "fillCounts": {
+      "BYPASS": 24,
+      "UNREPORTED": 5,
+      "LEADER": 7,
+      "HIT": 25,
+      "COALESCED": 4
+    },
+    "authCacheCounts": {
+      "BYPASS": 20,
+      "MISS": 18,
+      "HIT": 27
+    },
+    "authKvReads": 38,
+    "r2GetAttempts": 82,
+    "s3GetAttempts": 0,
+    "originHeadAttempts": 0,
+    "readerHttpAttempts": 0,
+    "bufferedOriginBytesAtHeaders": 6271244,
+    "streamedExpectedOriginBytes": 701292,
+    "archiveMemoryHits": 8,
+    "archiveEdgeHits": 7,
+    "encodedEntityBytes": 24998421,
+    "decodedBodyBytes": 151070661,
+    "newClientSockets": 18
+  },
+  "allBaselineCounters": {
+    "requests": 8,
+    "responseCacheCounts": {
+      "BYPASS": 8
+    },
+    "fillCounts": {
+      "UNREPORTED": 8
+    },
+    "authCacheCounts": {
+      "BYPASS": 8
+    },
+    "authKvReads": 8,
+    "r2GetAttempts": 24,
+    "s3GetAttempts": 0,
+    "originHeadAttempts": 0,
+    "readerHttpAttempts": 0,
+    "bufferedOriginBytesAtHeaders": 2032818,
+    "streamedExpectedOriginBytes": 0,
+    "archiveMemoryHits": 0,
+    "archiveEdgeHits": 0,
+    "encodedEntityBytes": 3279605,
+    "decodedBodyBytes": 21833148,
+    "newClientSockets": 1
+  },
+  "plainColdPerSlotAndRound": [
+    {
+      "slot": 470555971,
+      "round": 0,
+      "targets": {
+        "baseline": {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:17:17.456Z",
+          "completedAt": "2026-11-22T08:17:17.991Z",
+          "totalMs": 439.192,
+          "ttfbMs": 413.928,
+          "headersMs": 410.196,
+          "cache": "BYPASS",
+          "fill": null,
+          "auth": {
+            "cache": "BYPASS",
+            "kvReads": 1
+          },
+          "r2GetAttempts": 3,
+          "stagesMs": {
+            "authentication": 30,
+            "block_body": 0,
+            "block_headers": 81,
+            "resolution_access_decode": 0,
+            "resolution_body": 0,
+            "resolution_decode": 0,
+            "resolution_fetch_total": 142,
+            "resolution_headers": 61,
+            "resolution_total": 61,
+            "signature_body": 0,
+            "signature_headers": 64,
+            "source_ranges_parallel": 81,
+            "stored_block_decode": 0,
+            "worker_placement": 0
+          },
+          "transport": {
+            "connectionId": 1,
+            "socketUse": 1,
+            "socketReused": false,
+            "timelineMs": {
+              "requestCreated": 10.57,
+              "requestHeadersSent": 123.874,
+              "requestBodySent": 124.066,
+              "responseHeadersParsed": 408.18,
+              "firstEncodedBodyByte": 410.06,
+              "lastEncodedBodyChunk": 436.309,
+              "fetchHeadersResolved": 410.922,
+              "firstDecodedBodyByte": 414.678,
+              "encodedBodyComplete": 436.48,
+              "decodedBodyComplete": 438.553
+            },
+            "encodedBodyBytes": 405955,
+            "encodedBodyChunks": 92,
+            "socketBytesReadDelta": 410492,
+            "sentToResponseHeadersMs": 284.114,
+            "encodedBodyTransferMs": 26.42
+          }
+        },
+        "fast": {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:17:17.992Z",
+          "completedAt": "2026-11-22T08:17:18.376Z",
+          "totalMs": 306.56,
+          "ttfbMs": 278.992,
+          "headersMs": 277.883,
+          "cache": "BYPASS",
+          "fill": "BYPASS",
+          "auth": {
+            "cache": "BYPASS",
+            "kvReads": 1
+          },
+          "r2GetAttempts": 3,
+          "stagesMs": {
+            "authentication": 3,
+            "block_body": 0,
+            "block_headers": 56,
+            "resolution_access_decode": 0,
+            "resolution_body": 1,
+            "resolution_decode": 0,
+            "resolution_fetch_total": 112,
+            "resolution_headers": 53,
+            "resolution_total": 54,
+            "signature_body": 0,
+            "signature_headers": 58,
+            "source_ranges_parallel": 58,
+            "stored_block_decode": 0,
+            "worker_placement": 0
+          },
+          "transport": {
+            "connectionId": 2,
+            "socketUse": 1,
+            "socketReused": false,
+            "timelineMs": {
+              "requestCreated": 1.523,
+              "requestHeadersSent": 31.06,
+              "requestBodySent": 31.087,
+              "responseHeadersParsed": 276.007,
+              "firstEncodedBodyByte": 277.611,
+              "lastEncodedBodyChunk": 304.925,
+              "fetchHeadersResolved": 277.886,
+              "firstDecodedBodyByte": 279.004,
+              "encodedBodyComplete": 305.051,
+              "decodedBodyComplete": 306.553
+            },
+            "encodedBodyBytes": 406580,
+            "encodedBodyChunks": 91,
+            "socketBytesReadDelta": 411174,
+            "sentToResponseHeadersMs": 244.92,
+            "encodedBodyTransferMs": 27.44
+          }
+        },
+        "helius": {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:17:18.376Z",
+          "completedAt": "2026-11-22T08:17:18.584Z",
+          "totalMs": 143.234,
+          "ttfbMs": 88.462,
+          "headersMs": 87.897,
+          "cache": "UNREPORTED",
+          "fill": null,
+          "auth": null,
+          "r2GetAttempts": null,
+          "stagesMs": {},
+          "transport": {
+            "connectionId": 3,
+            "socketUse": 1,
+            "socketReused": false,
+            "timelineMs": {
+              "requestCreated": 1.268,
+              "requestHeadersSent": 31.663,
+              "requestBodySent": 32.721,
+              "responseHeadersParsed": 87.336,
+              "firstEncodedBodyByte": 87.793,
+              "lastEncodedBodyChunk": 142.308,
+              "fetchHeadersResolved": 87.928,
+              "firstDecodedBodyByte": 88.494,
+              "encodedBodyComplete": 142.328,
+              "decodedBodyComplete": 143.259
+            },
+            "encodedBodyBytes": 624866,
+            "encodedBodyChunks": 160,
+            "socketBytesReadDelta": 626414,
+            "sentToResponseHeadersMs": 54.615,
+            "encodedBodyTransferMs": 54.535
+          }
+        }
+      },
+      "fastMinusBaselineMs": -132.633
+    },
+    {
+      "slot": 470663944,
+      "round": 0,
+      "targets": {
+        "baseline": {
+          "slot": 470663944,
+          "round": 0,
+          "startedAt": "2026-11-22T08:17:18.584Z",
+          "completedAt": "2026-11-22T08:17:19.124Z",
+          "totalMs": 204.487,
+          "ttfbMs": 165.581,
+          "headersMs": 164.388,
+          "cache": "BYPASS",
+          "fill": null,
+          "auth": {
+            "cache": "BYPASS",
+            "kvReads": 1
+          },
+          "r2GetAttempts": 3,
+          "stagesMs": {
+            "authentication": 4,
+            "block_body": 0,
+            "block_headers": 53,
+            "resolution_access_decode": 0,
+            "resolution_body": 0,
+            "resolution_decode": 0,
+            "resolution_fetch_total": 90,
+            "resolution_headers": 36,
+            "resolution_total": 36,
+            "signature_body": 0,
+            "signature_headers": 54,
+            "source_ranges_parallel": 54,
+            "stored_block_decode": 0,
+            "worker_placement": 0
+          },
+          "transport": {
+            "connectionId": 1,
+            "socketUse": 2,
+            "socketReused": true,
+            "timelineMs": {
+              "requestCreated": 0.407,
+              "requestHeadersSent": 2.142,
+              "requestBodySent": 2.243,
+              "responseHeadersParsed": 163.847,
+              "fetchHeadersResolved": 164.385,
+              "firstEncodedBodyByte": 165.387,
+              "lastEncodedBodyChunk": 203.919,
+              "firstDecodedBodyByte": 165.586,
+              "encodedBodyComplete": 203.948,
+              "decodedBodyComplete": 204.475
+            },
+            "encodedBodyBytes": 594663,
+            "encodedBodyChunks": 43,
+            "socketBytesReadDelta": 599251,
+            "sentToResponseHeadersMs": 161.604,
+            "encodedBodyTransferMs": 38.561
+          }
+        },
+        "fast": {
+          "slot": 470663944,
+          "round": 0,
+          "startedAt": "2026-11-22T08:17:19.124Z",
+          "completedAt": "2026-11-22T08:17:19.450Z",
+          "totalMs": 206.494,
+          "ttfbMs": 174.555,
+          "headersMs": 174.074,
+          "cache": "BYPASS",
+          "fill": "BYPASS",
+          "auth": {
+            "cache": "BYPASS",
+            "kvReads": 1
+          },
+          "r2GetAttempts": 3,
+          "stagesMs": {
+            "authentication": 4,
+            "block_body": 0,
+            "block_headers": 62,
+            "resolution_access_decode": 0,
+            "resolution_body": 2,
+            "resolution_decode": 0,
+            "resolution_fetch_total": 126,
+            "resolution_headers": 62,
+            "resolution_total": 64,
+            "signature_body": 0,
+            "signature_headers": 46,
+            "source_ranges_parallel": 62,
+            "stored_block_decode": 0,
+            "worker_placement": 0
+          },
+          "transport": {
+            "connectionId": 2,
+            "socketUse": 2,
+            "socketReused": true,
+            "timelineMs": {
+              "requestCreated": 1.042,
+              "requestHeadersSent": 1.806,
+              "requestBodySent": 3.424,
+              "responseHeadersParsed": 173.608,
+              "fetchHeadersResolved": 174.079,
+              "firstEncodedBodyByte": 174.362,
+              "lastEncodedBodyChunk": 204.261,
+              "firstDecodedBodyByte": 174.567,
+              "encodedBodyComplete": 204.37,
+              "decodedBodyComplete": 206.495
+            },
+            "encodedBodyBytes": 595296,
+            "encodedBodyChunks": 44,
+            "socketBytesReadDelta": 599926,
+            "sentToResponseHeadersMs": 170.184,
+            "encodedBodyTransferMs": 30.008
+          }
+        },
+        "helius": {
+          "slot": 470663944,
+          "round": 0,
+          "startedAt": "2026-11-22T08:17:19.451Z",
+          "completedAt": "2026-11-22T08:17:19.700Z",
+          "totalMs": 128.511,
+          "ttfbMs": 54.16,
+          "headersMs": 54.052,
+          "cache": "UNREPORTED",
+          "fill": null,
+          "auth": null,
+          "r2GetAttempts": null,
+          "stagesMs": {},
+          "transport": {
+            "connectionId": 3,
+            "socketUse": 2,
+            "socketReused": true,
+            "timelineMs": {
+              "requestCreated": 0.405,
+              "requestHeadersSent": 0.763,
+              "requestBodySent": 1.113,
+              "responseHeadersParsed": 53.624,
+              "firstEncodedBodyByte": 53.922,
+              "lastEncodedBodyChunk": 127.969,
+              "fetchHeadersResolved": 54.048,
+              "firstDecodedBodyByte": 54.164,
+              "encodedBodyComplete": 128.001,
+              "decodedBodyComplete": 128.491
+            },
+            "encodedBodyBytes": 917353,
+            "encodedBodyChunks": 158,
+            "socketBytesReadDelta": 919177,
+            "sentToResponseHeadersMs": 52.511,
+            "encodedBodyTransferMs": 74.079
+          }
+        }
+      },
+      "fastMinusBaselineMs": 2.007
+    },
+    {
+      "slot": 470771932,
+      "round": 0,
+      "targets": {
+        "baseline": {
+          "slot": 470771932,
+          "round": 0,
+          "startedAt": "2026-11-22T08:17:19.700Z",
+          "completedAt": "2026-11-22T08:17:20.000Z",
+          "totalMs": 204.109,
+          "ttfbMs": 175.751,
+          "headersMs": 174.224,
+          "cache": "BYPASS",
+          "fill": null,
+          "auth": {
+            "cache": "BYPASS",
+            "kvReads": 1
+          },
+          "r2GetAttempts": 3,
+          "stagesMs": {
+            "authentication": 5,
+            "block_body": 0,
+            "block_headers": 76,
+            "resolution_access_decode": 0,
+            "resolution_body": 0,
+            "resolution_decode": 0,
+            "resolution_fetch_total": 111,
+            "resolution_headers": 35,
+            "resolution_total": 35,
+            "signature_body": 0,
+            "signature_headers": 40,
+            "source_ranges_parallel": 76,
+            "stored_block_decode": 0,
+            "worker_placement": 0
+          },
+          "transport": {
+            "connectionId": 1,
+            "socketUse": 3,
+            "socketReused": true,
+            "timelineMs": {
+              "requestCreated": 0.533,
+              "requestHeadersSent": 1.096,
+              "requestBodySent": 1.213,
+              "responseHeadersParsed": 173.67,
+              "firstEncodedBodyByte": 174.071,
+              "lastEncodedBodyChunk": 200.652,
+              "fetchHeadersResolved": 174.223,
+              "firstDecodedBodyByte": 175.758,
+              "encodedBodyComplete": 200.685,
+              "decodedBodyComplete": 204.101
+            },
+            "encodedBodyBytes": 447228,
+            "encodedBodyChunks": 36,
+            "socketBytesReadDelta": 451796,
+            "sentToResponseHeadersMs": 172.457,
+            "encodedBodyTransferMs": 26.614
+          }
+        },
+        "fast": {
+          "slot": 470771932,
+          "round": 0,
+          "startedAt": "2026-11-22T08:17:20.000Z",
+          "completedAt": "2026-11-22T08:17:20.283Z",
+          "totalMs": 201.444,
+          "ttfbMs": 179.069,
+          "headersMs": 178.885,
+          "cache": "BYPASS",
+          "fill": "BYPASS",
+          "auth": {
+            "cache": "BYPASS",
+            "kvReads": 1
+          },
+          "r2GetAttempts": 3,
+          "stagesMs": {
+            "authentication": 3,
+            "block_body": 0,
+            "block_headers": 59,
+            "resolution_access_decode": 0,
+            "resolution_body": 2,
+            "resolution_decode": 0,
+            "resolution_fetch_total": 136,
+            "resolution_headers": 75,
+            "resolution_total": 77,
+            "signature_body": 2,
+            "signature_headers": 51,
+            "source_ranges_parallel": 59,
+            "stored_block_decode": 0,
+            "worker_placement": 0
+          },
+          "transport": {
+            "connectionId": 2,
+            "socketUse": 3,
+            "socketReused": true,
+            "timelineMs": {
+              "requestCreated": 0.388,
+              "requestHeadersSent": 1.782,
+              "requestBodySent": 1.869,
+              "responseHeadersParsed": 178.529,
+              "firstEncodedBodyByte": 178.783,
+              "lastEncodedBodyChunk": 201.024,
+              "fetchHeadersResolved": 178.885,
+              "firstDecodedBodyByte": 179.075,
+              "encodedBodyComplete": 201.049,
+              "decodedBodyComplete": 201.438
+            },
+            "encodedBodyBytes": 447992,
+            "encodedBodyChunks": 33,
+            "socketBytesReadDelta": 452567,
+            "sentToResponseHeadersMs": 176.66,
+            "encodedBodyTransferMs": 22.266
+          }
+        },
+        "helius": {
+          "slot": 470771932,
+          "round": 0,
+          "startedAt": "2026-11-22T08:17:20.283Z",
+          "completedAt": "2026-11-22T08:17:20.534Z",
+          "totalMs": 131.328,
+          "ttfbMs": 69.651,
+          "headersMs": 69.472,
+          "cache": "UNREPORTED",
+          "fill": null,
+          "auth": null,
+          "r2GetAttempts": null,
+          "stagesMs": {},
+          "transport": {
+            "connectionId": 3,
+            "socketUse": 3,
+            "socketReused": true,
+            "timelineMs": {
+              "requestCreated": 0.347,
+              "requestHeadersSent": 1.941,
+              "requestBodySent": 2.447,
+              "responseHeadersParsed": 69.087,
+              "firstEncodedBodyByte": 69.37,
+              "lastEncodedBodyChunk": 128.085,
+              "fetchHeadersResolved": 69.478,
+              "firstDecodedBodyByte": 69.665,
+              "encodedBodyComplete": 128.118,
+              "decodedBodyComplete": 131.328
+            },
+            "encodedBodyBytes": 855199,
+            "encodedBodyChunks": 184,
+            "socketBytesReadDelta": 857225,
+            "sentToResponseHeadersMs": 66.64,
+            "encodedBodyTransferMs": 58.748
+          }
+        }
+      },
+      "fastMinusBaselineMs": -2.665
+    },
+    {
+      "slot": 470879999,
+      "round": 0,
+      "targets": {
+        "baseline": {
+          "slot": 470879999,
+          "round": 0,
+          "startedAt": "2026-11-22T08:17:20.534Z",
+          "completedAt": "2026-11-22T08:17:20.742Z",
+          "totalMs": 179.99,
+          "ttfbMs": 175.127,
+          "headersMs": 173.544,
+          "cache": "BYPASS",
+          "fill": null,
+          "auth": {
+            "cache": "BYPASS",
+            "kvReads": 1
+          },
+          "r2GetAttempts": 3,
+          "stagesMs": {
+            "authentication": 4,
+            "block_body": 0,
+            "block_headers": 84,
+            "resolution_access_decode": 0,
+            "resolution_body": 0,
+            "resolution_decode": 0,
+            "resolution_fetch_total": 114,
+            "resolution_headers": 30,
+            "resolution_total": 30,
+            "signature_body": 0,
+            "signature_headers": 56,
+            "source_ranges_parallel": 84,
+            "stored_block_decode": 0,
+            "worker_placement": 0
+          },
+          "transport": {
+            "connectionId": 1,
+            "socketUse": 4,
+            "socketReused": true,
+            "timelineMs": {
+              "requestCreated": 0.404,
+              "requestHeadersSent": 1.924,
+              "requestBodySent": 2.472,
+              "responseHeadersParsed": 173.162,
+              "fetchHeadersResolved": 173.543,
+              "firstEncodedBodyByte": 173.716,
+              "lastEncodedBodyChunk": 178.866,
+              "firstDecodedBodyByte": 175.135,
+              "encodedBodyComplete": 178.897,
+              "decodedBodyComplete": 179.986
+            },
+            "encodedBodyBytes": 190876,
+            "encodedBodyChunks": 14,
+            "socketBytesReadDelta": 195382,
+            "sentToResponseHeadersMs": 170.69,
+            "encodedBodyTransferMs": 5.181
+          }
+        },
+        "fast": {
+          "slot": 470879999,
+          "round": 0,
+          "startedAt": "2026-11-22T08:17:20.742Z",
+          "completedAt": "2026-11-22T08:17:20.944Z",
+          "totalMs": 177.06,
+          "ttfbMs": 169.92,
+          "headersMs": 169.652,
+          "cache": "BYPASS",
+          "fill": "BYPASS",
+          "auth": {
+            "cache": "BYPASS",
+            "kvReads": 1
+          },
+          "r2GetAttempts": 3,
+          "stagesMs": {
+            "authentication": 3,
+            "block_body": 0,
+            "block_headers": 64,
+            "resolution_access_decode": 0,
+            "resolution_body": 0,
+            "resolution_decode": 0,
+            "resolution_fetch_total": 108,
+            "resolution_headers": 44,
+            "resolution_total": 44,
+            "signature_body": 0,
+            "signature_headers": 63,
+            "source_ranges_parallel": 64,
+            "stored_block_decode": 0,
+            "worker_placement": 0
+          },
+          "transport": {
+            "connectionId": 2,
+            "socketUse": 4,
+            "socketReused": true,
+            "timelineMs": {
+              "requestCreated": 0.697,
+              "requestHeadersSent": 4.235,
+              "requestBodySent": 4.497,
+              "responseHeadersParsed": 169.299,
+              "fetchHeadersResolved": 169.657,
+              "firstEncodedBodyByte": 169.83,
+              "lastEncodedBodyChunk": 176.377,
+              "firstDecodedBodyByte": 169.937,
+              "encodedBodyComplete": 176.402,
+              "decodedBodyComplete": 177.064
+            },
+            "encodedBodyBytes": 190604,
+            "encodedBodyChunks": 15,
+            "socketBytesReadDelta": 195146,
+            "sentToResponseHeadersMs": 164.802,
+            "encodedBodyTransferMs": 6.572
+          }
+        },
+        "helius": {
+          "slot": 470879999,
+          "round": 0,
+          "startedAt": "2026-11-22T08:17:20.944Z",
+          "completedAt": "2026-11-22T08:17:21.050Z",
+          "totalMs": 80.143,
+          "ttfbMs": 48.77,
+          "headersMs": 48.663,
+          "cache": "UNREPORTED",
+          "fill": null,
+          "auth": null,
+          "r2GetAttempts": null,
+          "stagesMs": {},
+          "transport": {
+            "connectionId": 3,
+            "socketUse": 4,
+            "socketReused": true,
+            "timelineMs": {
+              "requestCreated": 0.251,
+              "requestHeadersSent": 1.742,
+              "requestBodySent": 2.147,
+              "responseHeadersParsed": 48.372,
+              "firstEncodedBodyByte": 48.578,
+              "lastEncodedBodyChunk": 78.874,
+              "fetchHeadersResolved": 48.663,
+              "firstDecodedBodyByte": 48.775,
+              "encodedBodyComplete": 78.89,
+              "decodedBodyComplete": 80.134
+            },
+            "encodedBodyBytes": 264444,
+            "encodedBodyChunks": 64,
+            "socketBytesReadDelta": 265574,
+            "sentToResponseHeadersMs": 46.225,
+            "encodedBodyTransferMs": 30.312
+          }
+        }
+      },
+      "fastMinusBaselineMs": -2.93
+    },
+    {
+      "slot": 470555971,
+      "round": 1,
+      "targets": {
+        "baseline": {
+          "slot": 470555971,
+          "round": 1,
+          "startedAt": "2026-11-22T08:17:21.304Z",
+          "completedAt": "2026-11-22T08:17:21.559Z",
+          "totalMs": 177.481,
+          "ttfbMs": 153.064,
+          "headersMs": 152.391,
+          "cache": "BYPASS",
+          "fill": null,
+          "auth": {
+            "cache": "BYPASS",
+            "kvReads": 1
+          },
+          "r2GetAttempts": 3,
+          "stagesMs": {
+            "authentication": 2,
+            "block_body": 1,
+            "block_headers": 45,
+            "resolution_access_decode": 0,
+            "resolution_body": 1,
+            "resolution_decode": 0,
+            "resolution_fetch_total": 86,
+            "resolution_headers": 34,
+            "resolution_total": 35,
+            "signature_body": 0,
+            "signature_headers": 51,
+            "source_ranges_parallel": 51,
+            "stored_block_decode": 0,
+            "worker_placement": 0
+          },
+          "transport": {
+            "connectionId": 1,
+            "socketUse": 5,
+            "socketReused": true,
+            "timelineMs": {
+              "requestCreated": 0.302,
+              "requestHeadersSent": 3.111,
+              "requestBodySent": 3.253,
+              "responseHeadersParsed": 152.04,
+              "firstEncodedBodyByte": 152.314,
+              "lastEncodedBodyChunk": 173.684,
+              "fetchHeadersResolved": 152.393,
+              "firstDecodedBodyByte": 153.071,
+              "encodedBodyComplete": 173.702,
+              "decodedBodyComplete": 177.475
+            },
+            "encodedBodyBytes": 406619,
+            "encodedBodyChunks": 32,
+            "socketBytesReadDelta": 411196,
+            "sentToResponseHeadersMs": 148.787,
+            "encodedBodyTransferMs": 21.388
+          }
+        },
+        "fast": {
+          "slot": 470555971,
+          "round": 1,
+          "startedAt": "2026-11-22T08:17:21.050Z",
+          "completedAt": "2026-11-22T08:17:21.304Z",
+          "totalMs": 197.203,
+          "ttfbMs": 173.586,
+          "headersMs": 173.228,
+          "cache": "BYPASS",
+          "fill": "BYPASS",
+          "auth": {
+            "cache": "BYPASS",
+            "kvReads": 1
+          },
+          "r2GetAttempts": 3,
+          "stagesMs": {
+            "authentication": 4,
+            "block_body": 0,
+            "block_headers": 55,
+            "resolution_access_decode": 0,
+            "resolution_body": 0,
+            "resolution_decode": 0,
+            "resolution_fetch_total": 98,
+            "resolution_headers": 43,
+            "resolution_total": 43,
+            "signature_body": 0,
+            "signature_headers": 51,
+            "source_ranges_parallel": 55,
+            "stored_block_decode": 0,
+            "worker_placement": 0
+          },
+          "transport": {
+            "connectionId": 2,
+            "socketUse": 5,
+            "socketReused": true,
+            "timelineMs": {
+              "requestCreated": 0.264,
+              "requestHeadersSent": 1.669,
+              "requestBodySent": 1.755,
+              "responseHeadersParsed": 172.741,
+              "firstEncodedBodyByte": 173.124,
+              "lastEncodedBodyChunk": 195.075,
+              "fetchHeadersResolved": 173.229,
+              "firstDecodedBodyByte": 173.591,
+              "encodedBodyComplete": 195.085,
+              "decodedBodyComplete": 197.198
+            },
+            "encodedBodyBytes": 405803,
+            "encodedBodyChunks": 35,
+            "socketBytesReadDelta": 410369,
+            "sentToResponseHeadersMs": 170.986,
+            "encodedBodyTransferMs": 21.961
+          }
+        },
+        "helius": {
+          "slot": 470555971,
+          "round": 1,
+          "startedAt": "2026-11-22T08:17:21.559Z",
+          "completedAt": "2026-11-22T08:17:21.717Z",
+          "totalMs": 91.112,
+          "ttfbMs": 44.441,
+          "headersMs": 44.266,
+          "cache": "UNREPORTED",
+          "fill": null,
+          "auth": null,
+          "r2GetAttempts": null,
+          "stagesMs": {},
+          "transport": {
+            "connectionId": 3,
+            "socketUse": 5,
+            "socketReused": true,
+            "timelineMs": {
+              "requestCreated": 0.232,
+              "requestHeadersSent": 0.987,
+              "requestBodySent": 1.182,
+              "responseHeadersParsed": 43.948,
+              "firstEncodedBodyByte": 44.169,
+              "lastEncodedBodyChunk": 90.467,
+              "fetchHeadersResolved": 44.262,
+              "firstDecodedBodyByte": 44.444,
+              "encodedBodyComplete": 90.491,
+              "decodedBodyComplete": 91.104
+            },
+            "encodedBodyBytes": 624866,
+            "encodedBodyChunks": 89,
+            "socketBytesReadDelta": 626110,
+            "sentToResponseHeadersMs": 42.766,
+            "encodedBodyTransferMs": 46.322
+          }
+        }
+      },
+      "fastMinusBaselineMs": 19.722
+    },
+    {
+      "slot": 470663944,
+      "round": 1,
+      "targets": {
+        "baseline": {
+          "slot": 470663944,
+          "round": 1,
+          "startedAt": "2026-11-22T08:17:22.140Z",
+          "completedAt": "2026-11-22T08:17:22.451Z",
+          "totalMs": 163.538,
+          "ttfbMs": 134.672,
+          "headersMs": 133.827,
+          "cache": "BYPASS",
+          "fill": null,
+          "auth": {
+            "cache": "BYPASS",
+            "kvReads": 1
+          },
+          "r2GetAttempts": 3,
+          "stagesMs": {
+            "authentication": 2,
+            "block_body": 2,
+            "block_headers": 53,
+            "resolution_access_decode": 0,
+            "resolution_body": 1,
+            "resolution_decode": 0,
+            "resolution_fetch_total": 85,
+            "resolution_headers": 29,
+            "resolution_total": 30,
+            "signature_body": 0,
+            "signature_headers": 52,
+            "source_ranges_parallel": 55,
+            "stored_block_decode": 0,
+            "worker_placement": 0
+          },
+          "transport": {
+            "connectionId": 1,
+            "socketUse": 6,
+            "socketReused": true,
+            "timelineMs": {
+              "requestCreated": 0.456,
+              "requestHeadersSent": 1.227,
+              "requestBodySent": 1.322,
+              "responseHeadersParsed": 131.392,
+              "firstEncodedBodyByte": 132.964,
+              "lastEncodedBodyChunk": 162.634,
+              "fetchHeadersResolved": 133.1,
+              "firstDecodedBodyByte": 134.683,
+              "encodedBodyComplete": 162.647,
+              "decodedBodyComplete": 163.539
+            },
+            "encodedBodyBytes": 594656,
+            "encodedBodyChunks": 44,
+            "socketBytesReadDelta": 599263,
+            "sentToResponseHeadersMs": 130.07,
+            "encodedBodyTransferMs": 29.683
+          }
+        },
+        "fast": {
+          "slot": 470663944,
+          "round": 1,
+          "startedAt": "2026-11-22T08:17:21.717Z",
+          "completedAt": "2026-11-22T08:17:22.140Z",
+          "totalMs": 279.615,
+          "ttfbMs": 255.953,
+          "headersMs": 255.587,
+          "cache": "BYPASS",
+          "fill": "BYPASS",
+          "auth": {
+            "cache": "BYPASS",
+            "kvReads": 1
+          },
+          "r2GetAttempts": 3,
+          "stagesMs": {
+            "authentication": 4,
+            "block_body": 6,
+            "block_headers": 83,
+            "resolution_access_decode": 0,
+            "resolution_body": 1,
+            "resolution_decode": 0,
+            "resolution_fetch_total": 141,
+            "resolution_headers": 51,
+            "resolution_total": 52,
+            "signature_body": 0,
+            "signature_headers": 51,
+            "source_ranges_parallel": 89,
+            "stored_block_decode": 0,
+            "worker_placement": 0
+          },
+          "transport": {
+            "connectionId": 2,
+            "socketUse": 6,
+            "socketReused": true,
+            "timelineMs": {
+              "requestCreated": 0.994,
+              "requestHeadersSent": 1.361,
+              "requestBodySent": 1.663,
+              "responseHeadersParsed": 255.218,
+              "firstEncodedBodyByte": 255.491,
+              "lastEncodedBodyChunk": 276.985,
+              "fetchHeadersResolved": 255.589,
+              "firstDecodedBodyByte": 255.959,
+              "encodedBodyComplete": 276.995,
+              "decodedBodyComplete": 279.589
+            },
+            "encodedBodyBytes": 595733,
+            "encodedBodyChunks": 44,
+            "socketBytesReadDelta": 600353,
+            "sentToResponseHeadersMs": 253.555,
+            "encodedBodyTransferMs": 21.504
+          }
+        },
+        "helius": {
+          "slot": 470663944,
+          "round": 1,
+          "startedAt": "2026-11-22T08:17:22.451Z",
+          "completedAt": "2026-11-22T08:17:22.680Z",
+          "totalMs": 114.054,
+          "ttfbMs": 45.339,
+          "headersMs": 45.228,
+          "cache": "UNREPORTED",
+          "fill": null,
+          "auth": null,
+          "r2GetAttempts": null,
+          "stagesMs": {},
+          "transport": {
+            "connectionId": 3,
+            "socketUse": 6,
+            "socketReused": true,
+            "timelineMs": {
+              "requestCreated": 0.401,
+              "requestHeadersSent": 1.457,
+              "requestBodySent": 1.713,
+              "responseHeadersParsed": 44.953,
+              "firstEncodedBodyByte": 45.137,
+              "lastEncodedBodyChunk": 112.401,
+              "fetchHeadersResolved": 45.226,
+              "firstDecodedBodyByte": 45.343,
+              "encodedBodyComplete": 112.418,
+              "decodedBodyComplete": 114.047
+            },
+            "encodedBodyBytes": 917353,
+            "encodedBodyChunks": 160,
+            "socketBytesReadDelta": 919203,
+            "sentToResponseHeadersMs": 43.24,
+            "encodedBodyTransferMs": 67.281
+          }
+        }
+      },
+      "fastMinusBaselineMs": 116.077
+    },
+    {
+      "slot": 470771932,
+      "round": 1,
+      "targets": {
+        "baseline": {
+          "slot": 470771932,
+          "round": 1,
+          "startedAt": "2026-11-22T08:17:22.999Z",
+          "completedAt": "2026-11-22T08:17:23.402Z",
+          "totalMs": 303.989,
+          "ttfbMs": 277.866,
+          "headersMs": 277.454,
+          "cache": "BYPASS",
+          "fill": null,
+          "auth": {
+            "cache": "BYPASS",
+            "kvReads": 1
+          },
+          "r2GetAttempts": 3,
+          "stagesMs": {
+            "authentication": 3,
+            "block_body": 1,
+            "block_headers": 168,
+            "resolution_access_decode": 0,
+            "resolution_body": 0,
+            "resolution_decode": 0,
+            "resolution_fetch_total": 217,
+            "resolution_headers": 48,
+            "resolution_total": 48,
+            "signature_body": 0,
+            "signature_headers": 45,
+            "source_ranges_parallel": 169,
+            "stored_block_decode": 0,
+            "worker_placement": 0
+          },
+          "transport": {
+            "connectionId": 1,
+            "socketUse": 7,
+            "socketReused": true,
+            "timelineMs": {
+              "requestCreated": 0.237,
+              "requestHeadersSent": 1.661,
+              "requestBodySent": 1.749,
+              "responseHeadersParsed": 277.157,
+              "firstEncodedBodyByte": 277.374,
+              "lastEncodedBodyChunk": 303.104,
+              "fetchHeadersResolved": 277.455,
+              "firstDecodedBodyByte": 277.87,
+              "encodedBodyComplete": 303.129,
+              "decodedBodyComplete": 303.981
+            },
+            "encodedBodyBytes": 448855,
+            "encodedBodyChunks": 35,
+            "socketBytesReadDelta": 453452,
+            "sentToResponseHeadersMs": 275.408,
+            "encodedBodyTransferMs": 25.755
+          }
+        },
+        "fast": {
+          "slot": 470771932,
+          "round": 1,
+          "startedAt": "2026-11-22T08:17:22.680Z",
+          "completedAt": "2026-11-22T08:17:22.999Z",
+          "totalMs": 227.687,
+          "ttfbMs": 202.62,
+          "headersMs": 202.182,
+          "cache": "BYPASS",
+          "fill": "BYPASS",
+          "auth": {
+            "cache": "BYPASS",
+            "kvReads": 1
+          },
+          "r2GetAttempts": 3,
+          "stagesMs": {
+            "authentication": 4,
+            "block_body": 1,
+            "block_headers": 58,
+            "resolution_access_decode": 0,
+            "resolution_body": 0,
+            "resolution_decode": 0,
+            "resolution_fetch_total": 130,
+            "resolution_headers": 42,
+            "resolution_total": 42,
+            "signature_body": 0,
+            "signature_headers": 88,
+            "source_ranges_parallel": 88,
+            "stored_block_decode": 0,
+            "worker_placement": 0
+          },
+          "transport": {
+            "connectionId": 2,
+            "socketUse": 7,
+            "socketReused": true,
+            "timelineMs": {
+              "requestCreated": 0.253,
+              "requestHeadersSent": 0.82,
+              "requestBodySent": 0.912,
+              "responseHeadersParsed": 201.805,
+              "firstEncodedBodyByte": 202.069,
+              "lastEncodedBodyChunk": 227.021,
+              "fetchHeadersResolved": 202.18,
+              "firstDecodedBodyByte": 202.625,
+              "encodedBodyComplete": 227.038,
+              "decodedBodyComplete": 227.679
+            },
+            "encodedBodyBytes": 447219,
+            "encodedBodyChunks": 33,
+            "socketBytesReadDelta": 451821,
+            "sentToResponseHeadersMs": 200.893,
+            "encodedBodyTransferMs": 24.969
+          }
+        },
+        "helius": {
+          "slot": 470771932,
+          "round": 1,
+          "startedAt": "2026-11-22T08:17:23.402Z",
+          "completedAt": "2026-11-22T08:17:23.633Z",
+          "totalMs": 143.084,
+          "ttfbMs": 84.415,
+          "headersMs": 84.288,
+          "cache": "UNREPORTED",
+          "fill": null,
+          "auth": null,
+          "r2GetAttempts": null,
+          "stagesMs": {},
+          "transport": {
+            "connectionId": 3,
+            "socketUse": 7,
+            "socketReused": true,
+            "timelineMs": {
+              "requestCreated": 0.257,
+              "requestHeadersSent": 1.662,
+              "requestBodySent": 1.87,
+              "responseHeadersParsed": 83.982,
+              "firstEncodedBodyByte": 84.182,
+              "lastEncodedBodyChunk": 140.686,
+              "fetchHeadersResolved": 84.287,
+              "firstDecodedBodyByte": 84.419,
+              "encodedBodyComplete": 140.703,
+              "decodedBodyComplete": 143.077
+            },
+            "encodedBodyBytes": 855199,
+            "encodedBodyChunks": 184,
+            "socketBytesReadDelta": 857250,
+            "sentToResponseHeadersMs": 82.112,
+            "encodedBodyTransferMs": 56.521
+          }
+        }
+      },
+      "fastMinusBaselineMs": -76.302
+    },
+    {
+      "slot": 470879999,
+      "round": 1,
+      "targets": {
+        "baseline": {
+          "slot": 470879999,
+          "round": 1,
+          "startedAt": "2026-11-22T08:17:23.830Z",
+          "completedAt": "2026-11-22T08:17:24.135Z",
+          "totalMs": 279.048,
+          "ttfbMs": 272.997,
+          "headersMs": 270.949,
+          "cache": "BYPASS",
+          "fill": null,
+          "auth": {
+            "cache": "BYPASS",
+            "kvReads": 1
+          },
+          "r2GetAttempts": 3,
+          "stagesMs": {
+            "authentication": 3,
+            "block_body": 1,
+            "block_headers": 194,
+            "resolution_access_decode": 0,
+            "resolution_body": 0,
+            "resolution_decode": 0,
+            "resolution_fetch_total": 238,
+            "resolution_headers": 43,
+            "resolution_total": 43,
+            "signature_body": 0,
+            "signature_headers": 43,
+            "source_ranges_parallel": 195,
+            "stored_block_decode": 0,
+            "worker_placement": 0
+          },
+          "transport": {
+            "connectionId": 1,
+            "socketUse": 8,
+            "socketReused": true,
+            "timelineMs": {
+              "requestCreated": 0.24,
+              "requestHeadersSent": 1.858,
+              "requestBodySent": 1.972,
+              "responseHeadersParsed": 270.641,
+              "fetchHeadersResolved": 270.951,
+              "firstEncodedBodyByte": 272.793,
+              "lastEncodedBodyChunk": 275.93,
+              "firstDecodedBodyByte": 273.002,
+              "encodedBodyComplete": 275.951,
+              "decodedBodyComplete": 279.023
+            },
+            "encodedBodyBytes": 190753,
+            "encodedBodyChunks": 15,
+            "socketBytesReadDelta": 195253,
+            "sentToResponseHeadersMs": 268.669,
+            "encodedBodyTransferMs": 3.158
+          }
+        },
+        "fast": {
+          "slot": 470879999,
+          "round": 1,
+          "startedAt": "2026-11-22T08:17:23.634Z",
+          "completedAt": "2026-11-22T08:17:23.829Z",
+          "totalMs": 162.589,
+          "ttfbMs": 157.318,
+          "headersMs": 155.69,
+          "cache": "BYPASS",
+          "fill": "BYPASS",
+          "auth": {
+            "cache": "BYPASS",
+            "kvReads": 1
+          },
+          "r2GetAttempts": 3,
+          "stagesMs": {
+            "authentication": 3,
+            "block_body": 0,
+            "block_headers": 70,
+            "resolution_access_decode": 0,
+            "resolution_body": 0,
+            "resolution_decode": 0,
+            "resolution_fetch_total": 115,
+            "resolution_headers": 45,
+            "resolution_total": 45,
+            "signature_body": 0,
+            "signature_headers": 65,
+            "source_ranges_parallel": 70,
+            "stored_block_decode": 0,
+            "worker_placement": 0
+          },
+          "transport": {
+            "connectionId": 2,
+            "socketUse": 8,
+            "socketReused": true,
+            "timelineMs": {
+              "requestCreated": 0.304,
+              "requestHeadersSent": 1.798,
+              "requestBodySent": 1.899,
+              "responseHeadersParsed": 155.415,
+              "fetchHeadersResolved": 155.694,
+              "firstEncodedBodyByte": 157.114,
+              "lastEncodedBodyChunk": 160.984,
+              "firstDecodedBodyByte": 157.319,
+              "encodedBodyComplete": 160.996,
+              "decodedBodyComplete": 162.558
+            },
+            "encodedBodyBytes": 190614,
+            "encodedBodyChunks": 13,
+            "socketBytesReadDelta": 195140,
+            "sentToResponseHeadersMs": 153.516,
+            "encodedBodyTransferMs": 3.882
+          }
+        },
+        "helius": {
+          "slot": 470879999,
+          "round": 1,
+          "startedAt": "2026-11-22T08:17:24.135Z",
+          "completedAt": "2026-11-22T08:17:24.271Z",
+          "totalMs": 84.218,
+          "ttfbMs": 53.316,
+          "headersMs": 53.179,
+          "cache": "UNREPORTED",
+          "fill": null,
+          "auth": null,
+          "r2GetAttempts": null,
+          "stagesMs": {},
+          "transport": {
+            "connectionId": 3,
+            "socketUse": 8,
+            "socketReused": true,
+            "timelineMs": {
+              "requestCreated": 0.236,
+              "requestHeadersSent": 1.67,
+              "requestBodySent": 1.898,
+              "responseHeadersParsed": 52.923,
+              "firstEncodedBodyByte": 53.102,
+              "lastEncodedBodyChunk": 78.262,
+              "fetchHeadersResolved": 53.179,
+              "firstDecodedBodyByte": 53.321,
+              "encodedBodyComplete": 78.287,
+              "decodedBodyComplete": 84.207
+            },
+            "encodedBodyBytes": 264444,
+            "encodedBodyChunks": 64,
+            "socketBytesReadDelta": 265582,
+            "sentToResponseHeadersMs": 51.025,
+            "encodedBodyTransferMs": 25.185
+          }
+        }
+      },
+      "fastMinusBaselineMs": -116.459
+    }
+  ],
+  "hintedColdRequests": [
+    {
+      "slot": 470555971,
+      "round": 0,
+      "startedAt": "2026-11-22T08:17:29.088Z",
+      "completedAt": "2026-11-22T08:17:29.358Z",
+      "totalMs": 180.456,
+      "ttfbMs": 159.474,
+      "headersMs": 157.645,
+      "cache": "BYPASS",
+      "fill": "BYPASS",
+      "auth": {
+        "cache": "BYPASS",
+        "kvReads": 1
+      },
+      "r2GetAttempts": 3,
+      "stagesMs": {
+        "authentication": 4,
+        "block_body": 0,
+        "block_headers": 87,
+        "resolution_access_decode": 0,
+        "resolution_body": 1,
+        "resolution_decode": 0,
+        "resolution_fetch_total": 87,
+        "resolution_headers": 41,
+        "resolution_total": 42,
+        "signature_body": 0,
+        "signature_headers": 47,
+        "source_ranges_parallel": 87,
+        "stored_block_decode": 0,
+        "worker_placement": 0
+      },
+      "transport": {
+        "connectionId": 2,
+        "socketUse": 11,
+        "socketReused": true,
+        "timelineMs": {
+          "requestCreated": 0.324,
+          "requestHeadersSent": 1.793,
+          "requestBodySent": 1.967,
+          "responseHeadersParsed": 154.328,
+          "firstEncodedBodyByte": 157.035,
+          "lastEncodedBodyChunk": 178.66,
+          "fetchHeadersResolved": 157.638,
+          "firstDecodedBodyByte": 159.483,
+          "encodedBodyComplete": 178.685,
+          "decodedBodyComplete": 180.454
+        },
+        "encodedBodyBytes": 406486,
+        "encodedBodyChunks": 28,
+        "socketBytesReadDelta": 411091,
+        "sentToResponseHeadersMs": 152.361,
+        "encodedBodyTransferMs": 21.65
+      }
+    },
+    {
+      "slot": 470663944,
+      "round": 0,
+      "startedAt": "2026-11-22T08:17:29.733Z",
+      "completedAt": "2026-11-22T08:17:30.016Z",
+      "totalMs": 162.114,
+      "ttfbMs": 133.146,
+      "headersMs": 132.641,
+      "cache": "BYPASS",
+      "fill": "BYPASS",
+      "auth": {
+        "cache": "BYPASS",
+        "kvReads": 1
+      },
+      "r2GetAttempts": 3,
+      "stagesMs": {
+        "authentication": 3,
+        "block_body": 0,
+        "block_headers": 46,
+        "resolution_access_decode": 0,
+        "resolution_body": 0,
+        "resolution_decode": 0,
+        "resolution_fetch_total": 47,
+        "resolution_headers": 43,
+        "resolution_total": 43,
+        "signature_body": 0,
+        "signature_headers": 47,
+        "source_ranges_parallel": 47,
+        "stored_block_decode": 0,
+        "worker_placement": 0
+      },
+      "transport": {
+        "connectionId": 2,
+        "socketUse": 12,
+        "socketReused": true,
+        "timelineMs": {
+          "requestCreated": 0.314,
+          "requestHeadersSent": 1.594,
+          "requestBodySent": 1.704,
+          "responseHeadersParsed": 131.881,
+          "firstEncodedBodyByte": 132.452,
+          "lastEncodedBodyChunk": 160.624,
+          "fetchHeadersResolved": 132.637,
+          "firstDecodedBodyByte": 133.153,
+          "encodedBodyComplete": 160.633,
+          "decodedBodyComplete": 162.107
+        },
+        "encodedBodyBytes": 595408,
+        "encodedBodyChunks": 43,
+        "socketBytesReadDelta": 600045,
+        "sentToResponseHeadersMs": 130.177,
+        "encodedBodyTransferMs": 28.181
+      }
+    },
+    {
+      "slot": 470771932,
+      "round": 0,
+      "startedAt": "2026-11-22T08:17:30.258Z",
+      "completedAt": "2026-11-22T08:17:30.487Z",
+      "totalMs": 126.652,
+      "ttfbMs": 97.918,
+      "headersMs": 96.463,
+      "cache": "BYPASS",
+      "fill": "BYPASS",
+      "auth": {
+        "cache": "BYPASS",
+        "kvReads": 1
+      },
+      "r2GetAttempts": 3,
+      "stagesMs": {
+        "authentication": 3,
+        "block_body": 0,
+        "block_headers": 56,
+        "resolution_access_decode": 0,
+        "resolution_body": 1,
+        "resolution_decode": 0,
+        "resolution_fetch_total": 56,
+        "resolution_headers": 44,
+        "resolution_total": 45,
+        "signature_body": 0,
+        "signature_headers": 51,
+        "source_ranges_parallel": 56,
+        "stored_block_decode": 0,
+        "worker_placement": 0
+      },
+      "transport": {
+        "connectionId": 2,
+        "socketUse": 13,
+        "socketReused": true,
+        "timelineMs": {
+          "requestCreated": 0.275,
+          "requestHeadersSent": 0.655,
+          "requestBodySent": 0.757,
+          "responseHeadersParsed": 96.051,
+          "fetchHeadersResolved": 96.462,
+          "firstEncodedBodyByte": 97.796,
+          "lastEncodedBodyChunk": 125.276,
+          "firstDecodedBodyByte": 97.926,
+          "encodedBodyComplete": 125.288,
+          "decodedBodyComplete": 126.637
+        },
+        "encodedBodyBytes": 447246,
+        "encodedBodyChunks": 33,
+        "socketBytesReadDelta": 451876,
+        "sentToResponseHeadersMs": 95.294,
+        "encodedBodyTransferMs": 27.492
+      }
+    },
+    {
+      "slot": 470879999,
+      "round": 0,
+      "startedAt": "2026-11-22T08:17:30.704Z",
+      "completedAt": "2026-11-22T08:17:30.862Z",
+      "totalMs": 122.265,
+      "ttfbMs": 117.858,
+      "headersMs": 117.497,
+      "cache": "BYPASS",
+      "fill": "BYPASS",
+      "auth": {
+        "cache": "BYPASS",
+        "kvReads": 1
+      },
+      "r2GetAttempts": 3,
+      "stagesMs": {
+        "authentication": 3,
+        "block_body": 0,
+        "block_headers": 55,
+        "resolution_access_decode": 0,
+        "resolution_body": 0,
+        "resolution_decode": 0,
+        "resolution_fetch_total": 55,
+        "resolution_headers": 38,
+        "resolution_total": 38,
+        "signature_body": 0,
+        "signature_headers": 50,
+        "source_ranges_parallel": 55,
+        "stored_block_decode": 0,
+        "worker_placement": 0
+      },
+      "transport": {
+        "connectionId": 2,
+        "socketUse": 14,
+        "socketReused": true,
+        "timelineMs": {
+          "requestCreated": 0.253,
+          "requestHeadersSent": 0.561,
+          "requestBodySent": 0.649,
+          "responseHeadersParsed": 117.129,
+          "fetchHeadersResolved": 117.493,
+          "firstEncodedBodyByte": 117.699,
+          "lastEncodedBodyChunk": 121.056,
+          "firstDecodedBodyByte": 117.861,
+          "encodedBodyComplete": 121.075,
+          "decodedBodyComplete": 122.255
+        },
+        "encodedBodyBytes": 190773,
+        "encodedBodyChunks": 14,
+        "socketBytesReadDelta": 195314,
+        "sentToResponseHeadersMs": 116.48,
+        "encodedBodyTransferMs": 3.376
+      }
+    },
+    {
+      "slot": 470555971,
+      "round": 1,
+      "startedAt": "2026-11-22T08:17:31.152Z",
+      "completedAt": "2026-11-22T08:17:31.388Z",
+      "totalMs": 175.69,
+      "ttfbMs": 156.425,
+      "headersMs": 156.227,
+      "cache": "BYPASS",
+      "fill": "BYPASS",
+      "auth": {
+        "cache": "BYPASS",
+        "kvReads": 1
+      },
+      "r2GetAttempts": 3,
+      "stagesMs": {
+        "authentication": 3,
+        "block_body": 1,
+        "block_headers": 87,
+        "resolution_access_decode": 0,
+        "resolution_body": 0,
+        "resolution_decode": 0,
+        "resolution_fetch_total": 88,
+        "resolution_headers": 38,
+        "resolution_total": 38,
+        "signature_body": 0,
+        "signature_headers": 50,
+        "source_ranges_parallel": 88,
+        "stored_block_decode": 0,
+        "worker_placement": 0
+      },
+      "transport": {
+        "connectionId": 2,
+        "socketUse": 15,
+        "socketReused": true,
+        "timelineMs": {
+          "requestCreated": 0.277,
+          "requestHeadersSent": 2.726,
+          "requestBodySent": 2.832,
+          "responseHeadersParsed": 155.934,
+          "firstEncodedBodyByte": 156.153,
+          "lastEncodedBodyChunk": 173.18,
+          "fetchHeadersResolved": 156.228,
+          "firstDecodedBodyByte": 156.43,
+          "encodedBodyComplete": 173.211,
+          "decodedBodyComplete": 175.668
+        },
+        "encodedBodyBytes": 406427,
+        "encodedBodyChunks": 27,
+        "socketBytesReadDelta": 410996,
+        "sentToResponseHeadersMs": 153.102,
+        "encodedBodyTransferMs": 17.058
+      }
+    },
+    {
+      "slot": 470663944,
+      "round": 1,
+      "startedAt": "2026-11-22T08:17:31.641Z",
+      "completedAt": "2026-11-22T08:17:31.931Z",
+      "totalMs": 168.985,
+      "ttfbMs": 138.77,
+      "headersMs": 138.259,
+      "cache": "BYPASS",
+      "fill": "BYPASS",
+      "auth": {
+        "cache": "BYPASS",
+        "kvReads": 1
+      },
+      "r2GetAttempts": 3,
+      "stagesMs": {
+        "authentication": 3,
+        "block_body": 2,
+        "block_headers": 57,
+        "resolution_access_decode": 0,
+        "resolution_body": 0,
+        "resolution_decode": 0,
+        "resolution_fetch_total": 59,
+        "resolution_headers": 49,
+        "resolution_total": 49,
+        "signature_body": 0,
+        "signature_headers": 58,
+        "source_ranges_parallel": 59,
+        "stored_block_decode": 0,
+        "worker_placement": 0
+      },
+      "transport": {
+        "connectionId": 2,
+        "socketUse": 16,
+        "socketReused": true,
+        "timelineMs": {
+          "requestCreated": 0.269,
+          "requestHeadersSent": 0.521,
+          "requestBodySent": 0.607,
+          "responseHeadersParsed": 137.847,
+          "firstEncodedBodyByte": 138.132,
+          "lastEncodedBodyChunk": 165.481,
+          "fetchHeadersResolved": 138.256,
+          "firstDecodedBodyByte": 138.774,
+          "encodedBodyComplete": 166.854,
+          "decodedBodyComplete": 168.96
+        },
+        "encodedBodyBytes": 594818,
+        "encodedBodyChunks": 43,
+        "socketBytesReadDelta": 599460,
+        "sentToResponseHeadersMs": 137.24,
+        "encodedBodyTransferMs": 28.722
+      }
+    },
+    {
+      "slot": 470771932,
+      "round": 1,
+      "startedAt": "2026-11-22T08:17:32.120Z",
+      "completedAt": "2026-11-22T08:17:32.554Z",
+      "totalMs": 342.777,
+      "ttfbMs": 327.124,
+      "headersMs": 326.923,
+      "cache": "BYPASS",
+      "fill": "BYPASS",
+      "auth": {
+        "cache": "BYPASS",
+        "kvReads": 1
+      },
+      "r2GetAttempts": 3,
+      "stagesMs": {
+        "authentication": 3,
+        "block_body": 3,
+        "block_headers": 53,
+        "resolution_access_decode": 0,
+        "resolution_body": 0,
+        "resolution_decode": 0,
+        "resolution_fetch_total": 206,
+        "resolution_headers": 42,
+        "resolution_total": 42,
+        "signature_body": 0,
+        "signature_headers": 206,
+        "source_ranges_parallel": 206,
+        "stored_block_decode": 0,
+        "worker_placement": 0
+      },
+      "transport": {
+        "connectionId": 2,
+        "socketUse": 17,
+        "socketReused": true,
+        "timelineMs": {
+          "requestCreated": 0.289,
+          "requestHeadersSent": 1.731,
+          "requestBodySent": 1.819,
+          "responseHeadersParsed": 326.604,
+          "firstEncodedBodyByte": 326.851,
+          "lastEncodedBodyChunk": 337.521,
+          "fetchHeadersResolved": 326.924,
+          "firstDecodedBodyByte": 327.129,
+          "encodedBodyComplete": 337.531,
+          "decodedBodyComplete": 342.743
+        },
+        "encodedBodyBytes": 446877,
+        "encodedBodyChunks": 33,
+        "socketBytesReadDelta": 451481,
+        "sentToResponseHeadersMs": 324.785,
+        "encodedBodyTransferMs": 10.68
+      }
+    },
+    {
+      "slot": 470879999,
+      "round": 1,
+      "startedAt": "2026-11-22T08:17:32.653Z",
+      "completedAt": "2026-11-22T08:17:32.806Z",
+      "totalMs": 127.856,
+      "ttfbMs": 122.776,
+      "headersMs": 122.183,
+      "cache": "BYPASS",
+      "fill": "BYPASS",
+      "auth": {
+        "cache": "BYPASS",
+        "kvReads": 1
+      },
+      "r2GetAttempts": 3,
+      "stagesMs": {
+        "authentication": 7,
+        "block_body": 0,
+        "block_headers": 53,
+        "resolution_access_decode": 0,
+        "resolution_body": 0,
+        "resolution_decode": 0,
+        "resolution_fetch_total": 54,
+        "resolution_headers": 39,
+        "resolution_total": 39,
+        "signature_body": 0,
+        "signature_headers": 54,
+        "source_ranges_parallel": 54,
+        "stored_block_decode": 0,
+        "worker_placement": 0
+      },
+      "transport": {
+        "connectionId": 2,
+        "socketUse": 18,
+        "socketReused": true,
+        "timelineMs": {
+          "requestCreated": 0.264,
+          "requestHeadersSent": 4.258,
+          "requestBodySent": 4.448,
+          "responseHeadersParsed": 121.473,
+          "firstEncodedBodyByte": 121.989,
+          "lastEncodedBodyChunk": 126.337,
+          "fetchHeadersResolved": 122.168,
+          "firstDecodedBodyByte": 122.777,
+          "encodedBodyComplete": 126.351,
+          "decodedBodyComplete": 127.846
+        },
+        "encodedBodyBytes": 191017,
+        "encodedBodyChunks": 13,
+        "socketBytesReadDelta": 195554,
+        "sentToResponseHeadersMs": 117.025,
+        "encodedBodyTransferMs": 4.362
+      }
+    }
+  ],
+  "sourceOnlyRequests": [
+    {
+      "slot": 470555971,
+      "round": 0,
+      "startedAt": "2026-11-22T08:17:35.010Z",
+      "completedAt": "2026-11-22T08:17:35.191Z",
+      "totalMs": 121.065,
+      "ttfbMs": 105.415,
+      "headersMs": 104.862,
+      "cache": "BYPASS",
+      "fill": "BYPASS",
+      "auth": {
+        "cache": "MISS",
+        "kvReads": 1
+      },
+      "r2GetAttempts": 2,
+      "stagesMs": {
+        "authentication": 4,
+        "block_body": 0,
+        "block_headers": 60,
+        "resolution_access_decode": 0,
+        "resolution_decode": 0,
+        "resolution_fetch_total": 60,
+        "resolution_total": 0,
+        "signature_body": 0,
+        "signature_headers": 53,
+        "source_ranges_parallel": 60,
+        "stored_block_decode": 0,
+        "worker_placement": 0
+      },
+      "transport": {
+        "connectionId": 2,
+        "socketUse": 19,
+        "socketReused": true,
+        "timelineMs": {
+          "requestCreated": 0.225,
+          "requestHeadersSent": 1.619,
+          "requestBodySent": 1.703,
+          "responseHeadersParsed": 104.575,
+          "firstEncodedBodyByte": 104.79,
+          "lastEncodedBodyChunk": 120.07,
+          "fetchHeadersResolved": 104.867,
+          "firstDecodedBodyByte": 105.419,
+          "encodedBodyComplete": 120.082,
+          "decodedBodyComplete": 121.065
+        },
+        "encodedBodyBytes": 406617,
+        "encodedBodyChunks": 29,
+        "socketBytesReadDelta": 410806,
+        "sentToResponseHeadersMs": 102.872,
+        "encodedBodyTransferMs": 15.292
+      }
+    },
+    {
+      "slot": 470663944,
+      "round": 0,
+      "startedAt": "2026-11-22T08:17:35.345Z",
+      "completedAt": "2026-11-22T08:17:35.585Z",
+      "totalMs": 127.174,
+      "ttfbMs": 93.613,
+      "headersMs": 93.304,
+      "cache": "BYPASS",
+      "fill": "BYPASS",
+      "auth": {
+        "cache": "HIT",
+        "kvReads": 0
+      },
+      "r2GetAttempts": 2,
+      "stagesMs": {
+        "authentication": 0,
+        "block_body": 0,
+        "block_headers": 58,
+        "resolution_access_decode": 0,
+        "resolution_decode": 0,
+        "resolution_fetch_total": 58,
+        "resolution_total": 0,
+        "signature_body": 0,
+        "signature_headers": 50,
+        "source_ranges_parallel": 58,
+        "stored_block_decode": 0,
+        "worker_placement": 0
+      },
+      "transport": {
+        "connectionId": 2,
+        "socketUse": 20,
+        "socketReused": true,
+        "timelineMs": {
+          "requestCreated": 0.253,
+          "requestHeadersSent": 1.689,
+          "requestBodySent": 1.771,
+          "responseHeadersParsed": 92.951,
+          "firstEncodedBodyByte": 93.229,
+          "lastEncodedBodyChunk": 125.038,
+          "fetchHeadersResolved": 93.304,
+          "firstDecodedBodyByte": 93.616,
+          "encodedBodyComplete": 125.048,
+          "decodedBodyComplete": 127.165
+        },
+        "encodedBodyBytes": 595194,
+        "encodedBodyChunks": 45,
+        "socketBytesReadDelta": 599437,
+        "sentToResponseHeadersMs": 91.18,
+        "encodedBodyTransferMs": 31.819
+      }
+    },
+    {
+      "slot": 470771932,
+      "round": 0,
+      "startedAt": "2026-11-22T08:17:35.817Z",
+      "completedAt": "2026-11-22T08:17:36.028Z",
+      "totalMs": 123.812,
+      "ttfbMs": 100.234,
+      "headersMs": 99.996,
+      "cache": "BYPASS",
+      "fill": "BYPASS",
+      "auth": {
+        "cache": "HIT",
+        "kvReads": 0
+      },
+      "r2GetAttempts": 2,
+      "stagesMs": {
+        "authentication": 0,
+        "block_body": 0,
+        "block_headers": 60,
+        "resolution_access_decode": 0,
+        "resolution_decode": 0,
+        "resolution_fetch_total": 61,
+        "resolution_total": 0,
+        "signature_body": 0,
+        "signature_headers": 61,
+        "source_ranges_parallel": 61,
+        "stored_block_decode": 0,
+        "worker_placement": 0
+      },
+      "transport": {
+        "connectionId": 2,
+        "socketUse": 21,
+        "socketReused": true,
+        "timelineMs": {
+          "requestCreated": 0.271,
+          "requestHeadersSent": 0.534,
+          "requestBodySent": 0.616,
+          "responseHeadersParsed": 99.625,
+          "firstEncodedBodyByte": 99.884,
+          "lastEncodedBodyChunk": 121.77,
+          "fetchHeadersResolved": 99.994,
+          "firstDecodedBodyByte": 100.239,
+          "encodedBodyComplete": 121.781,
+          "decodedBodyComplete": 123.805
+        },
+        "encodedBodyBytes": 447624,
+        "encodedBodyChunks": 35,
+        "socketBytesReadDelta": 451859,
+        "sentToResponseHeadersMs": 99.009,
+        "encodedBodyTransferMs": 21.897
+      }
+    },
+    {
+      "slot": 470879999,
+      "round": 0,
+      "startedAt": "2026-11-22T08:17:36.247Z",
+      "completedAt": "2026-11-22T08:17:36.360Z",
+      "totalMs": 88.799,
+      "ttfbMs": 85.487,
+      "headersMs": 84.634,
+      "cache": "BYPASS",
+      "fill": "BYPASS",
+      "auth": {
+        "cache": "HIT",
+        "kvReads": 0
+      },
+      "r2GetAttempts": 2,
+      "stagesMs": {
+        "authentication": 0,
+        "block_body": 0,
+        "block_headers": 52,
+        "resolution_access_decode": 0,
+        "resolution_decode": 0,
+        "resolution_fetch_total": 52,
+        "resolution_total": 0,
+        "signature_body": 0,
+        "signature_headers": 45,
+        "source_ranges_parallel": 52,
+        "stored_block_decode": 0,
+        "worker_placement": 0
+      },
+      "transport": {
+        "connectionId": 2,
+        "socketUse": 22,
+        "socketReused": true,
+        "timelineMs": {
+          "requestCreated": 0.251,
+          "requestHeadersSent": 1.681,
+          "requestBodySent": 1.764,
+          "responseHeadersParsed": 84.271,
+          "firstEncodedBodyByte": 84.554,
+          "lastEncodedBodyChunk": 86.747,
+          "fetchHeadersResolved": 84.633,
+          "firstDecodedBodyByte": 85.492,
+          "encodedBodyComplete": 86.756,
+          "decodedBodyComplete": 88.789
+        },
+        "encodedBodyBytes": 190938,
+        "encodedBodyChunks": 14,
+        "socketBytesReadDelta": 195063,
+        "sentToResponseHeadersMs": 82.507,
+        "encodedBodyTransferMs": 2.202
+      }
+    }
+  ],
+  "burst": {
+    "counters": {
+      "requests": 16,
+      "responseCacheCounts": {
+        "MISS": 4,
+        "HIT": 12
+      },
+      "fillCounts": {
+        "LEADER": 4,
+        "HIT": 8,
+        "COALESCED": 4
+      },
+      "authCacheCounts": {
+        "HIT": 3,
+        "MISS": 13
+      },
+      "authKvReads": 13,
+      "r2GetAttempts": 4,
+      "s3GetAttempts": 0,
+      "originHeadAttempts": 0,
+      "readerHttpAttempts": 0,
+      "bufferedOriginBytesAtHeaders": 345580,
+      "streamedExpectedOriginBytes": 0,
+      "archiveMemoryHits": 1,
+      "archiveEdgeHits": 7,
+      "encodedEntityBytes": 6904327,
+      "decodedBodyBytes": 40501168,
+      "newClientSockets": 15
+    },
+    "latency": {
+      "n": 16,
+      "ttfbMs": {
+        "p50": 187.001,
+        "p95": 310.892,
+        "p99": 310.892
+      },
+      "totalMs": {
+        "p50": 334.92,
+        "p95": 355.797,
+        "p99": 355.797
+      },
+      "headersMs": {
+        "p50": 186.582,
+        "p95": 305.129,
+        "p99": 305.129
+      },
+      "encodedBodyTransferMs": {
+        "p50": 84.092,
+        "p95": 168.698,
+        "p99": 168.698
+      }
+    },
+    "requests": [
+      {
+        "slot": 470555971,
+        "round": 0,
+        "startedAt": "2026-11-22T08:17:43.903Z",
+        "completedAt": "2026-11-22T08:17:44.041Z",
+        "totalMs": 138.138,
+        "ttfbMs": 124.02,
+        "headersMs": 123.893,
+        "cache": "MISS",
+        "fill": "LEADER",
+        "auth": {
+          "cache": "HIT",
+          "kvReads": 0
+        },
+        "r2GetAttempts": 2,
+        "stagesMs": {},
+        "transport": {
+          "connectionId": 2,
+          "socketUse": 26,
+          "socketReused": true,
+          "timelineMs": {
+            "requestCreated": 0.235,
+            "requestHeadersSent": 8.705,
+            "requestBodySent": 8.745,
+            "responseHeadersParsed": 123.58,
+            "firstEncodedBodyByte": 123.838,
+            "lastEncodedBodyChunk": 135.591,
+            "fetchHeadersResolved": 123.909,
+            "firstDecodedBodyByte": 124.041,
+            "encodedBodyComplete": 135.603,
+            "decodedBodyComplete": 138.148
+          },
+          "encodedBodyBytes": 405663,
+          "encodedBodyChunks": 26,
+          "socketBytesReadDelta": 407246,
+          "sentToResponseHeadersMs": 114.835,
+          "encodedBodyTransferMs": 11.765
+        }
+      },
+      {
+        "slot": 470555971,
+        "round": 0,
+        "startedAt": "2026-11-22T08:17:43.903Z",
+        "completedAt": "2026-11-22T08:17:44.239Z",
+        "totalMs": 336.319,
+        "ttfbMs": 211.598,
+        "headersMs": 204.506,
+        "cache": "HIT",
+        "fill": "HIT",
+        "auth": {
+          "cache": "MISS",
+          "kvReads": 1
+        },
+        "r2GetAttempts": 0,
+        "stagesMs": {},
+        "transport": {
+          "connectionId": 7,
+          "socketUse": 1,
+          "socketReused": false,
+          "timelineMs": {
+            "requestCreated": 0.083,
+            "requestHeadersSent": 26.698,
+            "requestBodySent": 26.702,
+            "responseHeadersParsed": 204.298,
+            "firstEncodedBodyByte": 204.444,
+            "lastEncodedBodyChunk": 309.319,
+            "fetchHeadersResolved": 204.509,
+            "firstDecodedBodyByte": 211.603,
+            "encodedBodyComplete": 309.326,
+            "decodedBodyComplete": 336.312
+          },
+          "encodedBodyBytes": 440239,
+          "encodedBodyChunks": 400,
+          "socketBytesReadDelta": 444365,
+          "sentToResponseHeadersMs": 177.596,
+          "encodedBodyTransferMs": 104.882
+        }
+      },
+      {
+        "slot": 470555971,
+        "round": 0,
+        "startedAt": "2026-11-22T08:17:43.904Z",
+        "completedAt": "2026-11-22T08:17:44.232Z",
+        "totalMs": 328.324,
+        "ttfbMs": 266.342,
+        "headersMs": 258.879,
+        "cache": "MISS",
+        "fill": "LEADER",
+        "auth": {
+          "cache": "MISS",
+          "kvReads": 1
+        },
+        "r2GetAttempts": 2,
+        "stagesMs": {},
+        "transport": {
+          "connectionId": 8,
+          "socketUse": 1,
+          "socketReused": false,
+          "timelineMs": {
+            "requestCreated": 0.076,
+            "requestHeadersSent": 25.078,
+            "requestBodySent": 25.101,
+            "responseHeadersParsed": 258.368,
+            "fetchHeadersResolved": 258.877,
+            "firstEncodedBodyByte": 258.973,
+            "lastEncodedBodyChunk": 319.902,
+            "firstDecodedBodyByte": 266.344,
+            "encodedBodyComplete": 319.912,
+            "decodedBodyComplete": 328.315
+          },
+          "encodedBodyBytes": 405599,
+          "encodedBodyChunks": 97,
+          "socketBytesReadDelta": 407198,
+          "sentToResponseHeadersMs": 233.267,
+          "encodedBodyTransferMs": 60.939
+        }
+      },
+      {
+        "slot": 470555971,
+        "round": 0,
+        "startedAt": "2026-11-22T08:17:43.904Z",
+        "completedAt": "2026-11-22T08:17:44.242Z",
+        "totalMs": 337.935,
+        "ttfbMs": 166.529,
+        "headersMs": 166.338,
+        "cache": "HIT",
+        "fill": "HIT",
+        "auth": {
+          "cache": "MISS",
+          "kvReads": 1
+        },
+        "r2GetAttempts": 0,
+        "stagesMs": {},
+        "transport": {
+          "connectionId": 9,
+          "socketUse": 1,
+          "socketReused": false,
+          "timelineMs": {
+            "requestCreated": 0.073,
+            "requestHeadersSent": 24.895,
+            "requestBodySent": 24.902,
+            "responseHeadersParsed": 166.116,
+            "firstEncodedBodyByte": 166.284,
+            "lastEncodedBodyChunk": 306.059,
+            "fetchHeadersResolved": 166.338,
+            "firstDecodedBodyByte": 166.531,
+            "encodedBodyComplete": 306.062,
+            "decodedBodyComplete": 337.934
+          },
+          "encodedBodyBytes": 441953,
+          "encodedBodyChunks": 547,
+          "socketBytesReadDelta": 447075,
+          "sentToResponseHeadersMs": 141.214,
+          "encodedBodyTransferMs": 139.778
+        }
+      },
+      {
+        "slot": 470555971,
+        "round": 0,
+        "startedAt": "2026-11-22T08:17:43.905Z",
+        "completedAt": "2026-11-22T08:17:44.255Z",
+        "totalMs": 349.898,
+        "ttfbMs": 304.593,
+        "headersMs": 303.113,
+        "cache": "HIT",
+        "fill": "COALESCED",
+        "auth": {
+          "cache": "HIT",
+          "kvReads": 0
+        },
+        "r2GetAttempts": 0,
+        "stagesMs": {},
+        "transport": {
+          "connectionId": 10,
+          "socketUse": 1,
+          "socketReused": false,
+          "timelineMs": {
+            "requestCreated": 0.06,
+            "requestHeadersSent": 27.479,
+            "requestBodySent": 27.492,
+            "responseHeadersParsed": 302.685,
+            "firstEncodedBodyByte": 303.01,
+            "lastEncodedBodyChunk": 344.476,
+            "fetchHeadersResolved": 303.109,
+            "firstDecodedBodyByte": 304.594,
+            "encodedBodyComplete": 344.488,
+            "decodedBodyComplete": 349.894
+          },
+          "encodedBodyBytes": 432431,
+          "encodedBodyChunks": 258,
+          "socketBytesReadDelta": 435446,
+          "sentToResponseHeadersMs": 275.193,
+          "encodedBodyTransferMs": 41.478
+        }
+      },
+      {
+        "slot": 470555971,
+        "round": 0,
+        "startedAt": "2026-11-22T08:17:43.905Z",
+        "completedAt": "2026-11-22T08:17:44.244Z",
+        "totalMs": 338.597,
+        "ttfbMs": 139.536,
+        "headersMs": 139.265,
+        "cache": "HIT",
+        "fill": "HIT",
+        "auth": {
+          "cache": "MISS",
+          "kvReads": 1
+        },
+        "r2GetAttempts": 0,
+        "stagesMs": {},
+        "transport": {
+          "connectionId": 11,
+          "socketUse": 1,
+          "socketReused": false,
+          "timelineMs": {
+            "requestCreated": 0.053,
+            "requestHeadersSent": 28.741,
+            "requestBodySent": 28.744,
+            "responseHeadersParsed": 139.05,
+            "firstEncodedBodyByte": 139.216,
+            "lastEncodedBodyChunk": 304.578,
+            "fetchHeadersResolved": 139.264,
+            "firstDecodedBodyByte": 139.537,
+            "encodedBodyComplete": 304.582,
+            "decodedBodyComplete": 338.58
+          },
+          "encodedBodyBytes": 442854,
+          "encodedBodyChunks": 593,
+          "socketBytesReadDelta": 448347,
+          "sentToResponseHeadersMs": 110.306,
+          "encodedBodyTransferMs": 165.366
+        }
+      },
+      {
+        "slot": 470555971,
+        "round": 0,
+        "startedAt": "2026-11-22T08:17:43.905Z",
+        "completedAt": "2026-11-22T08:17:44.261Z",
+        "totalMs": 355.797,
+        "ttfbMs": 263.834,
+        "headersMs": 262.557,
+        "cache": "HIT",
+        "fill": "COALESCED",
+        "auth": {
+          "cache": "MISS",
+          "kvReads": 1
+        },
+        "r2GetAttempts": 0,
+        "stagesMs": {},
+        "transport": {
+          "connectionId": 12,
+          "socketUse": 1,
+          "socketReused": false,
+          "timelineMs": {
+            "requestCreated": 0.068,
+            "requestHeadersSent": 23.911,
+            "requestBodySent": 23.915,
+            "responseHeadersParsed": 262.115,
+            "firstEncodedBodyByte": 262.463,
+            "lastEncodedBodyChunk": 346.55,
+            "fetchHeadersResolved": 262.555,
+            "firstDecodedBodyByte": 263.834,
+            "encodedBodyComplete": 346.555,
+            "decodedBodyComplete": 355.794
+          },
+          "encodedBodyBytes": 443787,
+          "encodedBodyChunks": 511,
+          "socketBytesReadDelta": 448826,
+          "sentToResponseHeadersMs": 238.2,
+          "encodedBodyTransferMs": 84.092
+        }
+      },
+      {
+        "slot": 470555971,
+        "round": 0,
+        "startedAt": "2026-11-22T08:17:43.907Z",
+        "completedAt": "2026-11-22T08:17:44.244Z",
+        "totalMs": 337.239,
+        "ttfbMs": 166.805,
+        "headersMs": 166.616,
+        "cache": "HIT",
+        "fill": "HIT",
+        "auth": {
+          "cache": "MISS",
+          "kvReads": 1
+        },
+        "r2GetAttempts": 0,
+        "stagesMs": {},
+        "transport": {
+          "connectionId": 13,
+          "socketUse": 1,
+          "socketReused": false,
+          "timelineMs": {
+            "requestCreated": 0.188,
+            "requestHeadersSent": 25.548,
+            "requestBodySent": 25.553,
+            "responseHeadersParsed": 166.253,
+            "firstEncodedBodyByte": 166.526,
+            "lastEncodedBodyChunk": 302.26,
+            "fetchHeadersResolved": 166.617,
+            "firstDecodedBodyByte": 166.813,
+            "encodedBodyComplete": 302.266,
+            "decodedBodyComplete": 337.241
+          },
+          "encodedBodyBytes": 441823,
+          "encodedBodyChunks": 546,
+          "socketBytesReadDelta": 446917,
+          "sentToResponseHeadersMs": 140.7,
+          "encodedBodyTransferMs": 135.74
+        }
+      },
+      {
+        "slot": 470555971,
+        "round": 0,
+        "startedAt": "2026-11-22T08:17:43.907Z",
+        "completedAt": "2026-11-22T08:17:44.242Z",
+        "totalMs": 334.362,
+        "ttfbMs": 132.418,
+        "headersMs": 132.138,
+        "cache": "HIT",
+        "fill": "HIT",
+        "auth": {
+          "cache": "MISS",
+          "kvReads": 1
+        },
+        "r2GetAttempts": 0,
+        "stagesMs": {},
+        "transport": {
+          "connectionId": 14,
+          "socketUse": 1,
+          "socketReused": false,
+          "timelineMs": {
+            "requestCreated": 0.103,
+            "requestHeadersSent": 26.494,
+            "requestBodySent": 26.497,
+            "responseHeadersParsed": 131.786,
+            "firstEncodedBodyByte": 132.05,
+            "lastEncodedBodyChunk": 300.742,
+            "fetchHeadersResolved": 132.136,
+            "firstDecodedBodyByte": 132.421,
+            "encodedBodyComplete": 300.748,
+            "decodedBodyComplete": 334.358
+          },
+          "encodedBodyBytes": 443960,
+          "encodedBodyChunks": 566,
+          "socketBytesReadDelta": 449311,
+          "sentToResponseHeadersMs": 105.289,
+          "encodedBodyTransferMs": 168.698
+        }
+      },
+      {
+        "slot": 470555971,
+        "round": 0,
+        "startedAt": "2026-11-22T08:17:43.908Z",
+        "completedAt": "2026-11-22T08:17:44.143Z",
+        "totalMs": 234.676,
+        "ttfbMs": 154.027,
+        "headersMs": 153.84,
+        "cache": "MISS",
+        "fill": "LEADER",
+        "auth": {
+          "cache": "MISS",
+          "kvReads": 1
+        },
+        "r2GetAttempts": 0,
+        "stagesMs": {},
+        "transport": {
+          "connectionId": 15,
+          "socketUse": 1,
+          "socketReused": false,
+          "timelineMs": {
+            "requestCreated": 0.093,
+            "requestHeadersSent": 24.502,
+            "requestBodySent": 24.506,
+            "responseHeadersParsed": 153.588,
+            "firstEncodedBodyByte": 153.778,
+            "lastEncodedBodyChunk": 226.742,
+            "fetchHeadersResolved": 153.841,
+            "firstDecodedBodyByte": 154.03,
+            "encodedBodyComplete": 226.754,
+            "decodedBodyComplete": 234.652
+          },
+          "encodedBodyBytes": 405516,
+          "encodedBodyChunks": 93,
+          "socketBytesReadDelta": 407121,
+          "sentToResponseHeadersMs": 129.082,
+          "encodedBodyTransferMs": 72.976
+        }
+      },
+      {
+        "slot": 470555971,
+        "round": 0,
+        "startedAt": "2026-11-22T08:17:43.909Z",
+        "completedAt": "2026-11-22T08:17:44.148Z",
+        "totalMs": 238.879,
+        "ttfbMs": 187.001,
+        "headersMs": 186.582,
+        "cache": "MISS",
+        "fill": "LEADER",
+        "auth": {
+          "cache": "MISS",
+          "kvReads": 1
+        },
+        "r2GetAttempts": 0,
+        "stagesMs": {},
+        "transport": {
+          "connectionId": 16,
+          "socketUse": 1,
+          "socketReused": false,
+          "timelineMs": {
+            "requestCreated": 0.061,
+            "requestHeadersSent": 24.9,
+            "requestBodySent": 24.904,
+            "responseHeadersParsed": 186.325,
+            "firstEncodedBodyByte": 186.524,
+            "lastEncodedBodyChunk": 227.929,
+            "fetchHeadersResolved": 186.581,
+            "firstDecodedBodyByte": 187.003,
+            "encodedBodyComplete": 227.936,
+            "decodedBodyComplete": 238.869
+          },
+          "encodedBodyBytes": 404669,
+          "encodedBodyChunks": 94,
+          "socketBytesReadDelta": 406246,
+          "sentToResponseHeadersMs": 161.421,
+          "encodedBodyTransferMs": 41.412
+        }
+      },
+      {
+        "slot": 470555971,
+        "round": 0,
+        "startedAt": "2026-11-22T08:17:43.909Z",
+        "completedAt": "2026-11-22T08:17:44.253Z",
+        "totalMs": 343.877,
+        "ttfbMs": 310.892,
+        "headersMs": 305.129,
+        "cache": "HIT",
+        "fill": "COALESCED",
+        "auth": {
+          "cache": "HIT",
+          "kvReads": 0
+        },
+        "r2GetAttempts": 0,
+        "stagesMs": {},
+        "transport": {
+          "connectionId": 17,
+          "socketUse": 1,
+          "socketReused": false,
+          "timelineMs": {
+            "requestCreated": 0.073,
+            "requestHeadersSent": 25.07,
+            "requestBodySent": 25.073,
+            "responseHeadersParsed": 304.689,
+            "firstEncodedBodyByte": 305.035,
+            "lastEncodedBodyChunk": 339.123,
+            "fetchHeadersResolved": 305.128,
+            "firstDecodedBodyByte": 310.894,
+            "encodedBodyComplete": 341.79,
+            "decodedBodyComplete": 343.87
+          },
+          "encodedBodyBytes": 429724,
+          "encodedBodyChunks": 166,
+          "socketBytesReadDelta": 432156,
+          "sentToResponseHeadersMs": 279.616,
+          "encodedBodyTransferMs": 36.755
+        }
+      },
+      {
+        "slot": 470555971,
+        "round": 0,
+        "startedAt": "2026-11-22T08:17:43.909Z",
+        "completedAt": "2026-11-22T08:17:44.233Z",
+        "totalMs": 323.208,
+        "ttfbMs": 204.966,
+        "headersMs": 198.876,
+        "cache": "HIT",
+        "fill": "HIT",
+        "auth": {
+          "cache": "MISS",
+          "kvReads": 1
+        },
+        "r2GetAttempts": 0,
+        "stagesMs": {},
+        "transport": {
+          "connectionId": 18,
+          "socketUse": 1,
+          "socketReused": false,
+          "timelineMs": {
+            "requestCreated": 0.059,
+            "requestHeadersSent": 24.822,
+            "requestBodySent": 24.825,
+            "responseHeadersParsed": 198.603,
+            "firstEncodedBodyByte": 198.778,
+            "lastEncodedBodyChunk": 293.251,
+            "fetchHeadersResolved": 198.874,
+            "firstDecodedBodyByte": 204.968,
+            "encodedBodyComplete": 293.26,
+            "decodedBodyComplete": 323.204
+          },
+          "encodedBodyBytes": 439784,
+          "encodedBodyChunks": 368,
+          "socketBytesReadDelta": 443694,
+          "sentToResponseHeadersMs": 173.778,
+          "encodedBodyTransferMs": 94.482
+        }
+      },
+      {
+        "slot": 470555971,
+        "round": 0,
+        "startedAt": "2026-11-22T08:17:43.910Z",
+        "completedAt": "2026-11-22T08:17:44.261Z",
+        "totalMs": 351.197,
+        "ttfbMs": 259.52,
+        "headersMs": 258.551,
+        "cache": "HIT",
+        "fill": "COALESCED",
+        "auth": {
+          "cache": "MISS",
+          "kvReads": 1
+        },
+        "r2GetAttempts": 0,
+        "stagesMs": {},
+        "transport": {
+          "connectionId": 19,
+          "socketUse": 1,
+          "socketReused": false,
+          "timelineMs": {
+            "requestCreated": 0.075,
+            "requestHeadersSent": 29.972,
+            "requestBodySent": 29.989,
+            "responseHeadersParsed": 258.395,
+            "firstEncodedBodyByte": 258.521,
+            "lastEncodedBodyChunk": 342.402,
+            "fetchHeadersResolved": 258.551,
+            "firstDecodedBodyByte": 259.523,
+            "encodedBodyComplete": 342.405,
+            "decodedBodyComplete": 351.185
+          },
+          "encodedBodyBytes": 443719,
+          "encodedBodyChunks": 483,
+          "socketBytesReadDelta": 448573,
+          "sentToResponseHeadersMs": 228.406,
+          "encodedBodyTransferMs": 83.884
+        }
+      },
+      {
+        "slot": 470555971,
+        "round": 0,
+        "startedAt": "2026-11-22T08:17:43.910Z",
+        "completedAt": "2026-11-22T08:17:44.240Z",
+        "totalMs": 330.163,
+        "ttfbMs": 205.002,
+        "headersMs": 196.683,
+        "cache": "HIT",
+        "fill": "HIT",
+        "auth": {
+          "cache": "MISS",
+          "kvReads": 1
+        },
+        "r2GetAttempts": 0,
+        "stagesMs": {},
+        "transport": {
+          "connectionId": 20,
+          "socketUse": 1,
+          "socketReused": false,
+          "timelineMs": {
+            "requestCreated": 0.052,
+            "requestHeadersSent": 26.923,
+            "requestBodySent": 26.931,
+            "responseHeadersParsed": 196.05,
+            "firstEncodedBodyByte": 196.616,
+            "lastEncodedBodyChunk": 293.265,
+            "fetchHeadersResolved": 196.681,
+            "firstDecodedBodyByte": 205.003,
+            "encodedBodyComplete": 293.294,
+            "decodedBodyComplete": 330.156
+          },
+          "encodedBodyBytes": 439935,
+          "encodedBodyChunks": 396,
+          "socketBytesReadDelta": 444022,
+          "sentToResponseHeadersMs": 169.119,
+          "encodedBodyTransferMs": 96.678
+        }
+      },
+      {
+        "slot": 470555971,
+        "round": 0,
+        "startedAt": "2026-11-22T08:17:43.910Z",
+        "completedAt": "2026-11-22T08:17:44.245Z",
+        "totalMs": 334.92,
+        "ttfbMs": 142.419,
+        "headersMs": 142.299,
+        "cache": "HIT",
+        "fill": "HIT",
+        "auth": {
+          "cache": "MISS",
+          "kvReads": 1
+        },
+        "r2GetAttempts": 0,
+        "stagesMs": {},
+        "transport": {
+          "connectionId": 21,
+          "socketUse": 1,
+          "socketReused": false,
+          "timelineMs": {
+            "requestCreated": 0.055,
+            "requestHeadersSent": 29.591,
+            "requestBodySent": 29.596,
+            "responseHeadersParsed": 142.06,
+            "firstEncodedBodyByte": 142.241,
+            "lastEncodedBodyChunk": 301.968,
+            "fetchHeadersResolved": 142.297,
+            "firstDecodedBodyByte": 142.42,
+            "encodedBodyComplete": 301.971,
+            "decodedBodyComplete": 334.916
+          },
+          "encodedBodyBytes": 442671,
+          "encodedBodyChunks": 598,
+          "socketBytesReadDelta": 448136,
+          "sentToResponseHeadersMs": 112.464,
+          "encodedBodyTransferMs": 159.73
+        }
+      }
+    ],
+    "validationDeferred": true,
+    "networkCompletedAt": "2026-11-22T08:17:44.261Z",
+    "validationCompletedAt": "2026-11-22T08:17:45.252Z",
+    "interpretation": "Four leader admissions, four coalesced cache reads and eight normal cache hits were observed. Total object GETs were four; auth used thirteen KV reads. Sharing is per isolate and concurrent requests can also arrive after a fill completes. This result does not prove one global fill or cached auth for every burst execution."
+  },
+  "slowestResponseHit": {
+    "slot": 470555971,
+    "round": 3,
+    "startedAt": "2026-11-22T08:17:54.291Z",
+    "completedAt": "2026-11-22T08:17:54.580Z",
+    "totalMs": 230.392,
+    "ttfbMs": 28.897,
+    "headersMs": 21.028,
+    "cache": "HIT",
+    "fill": "HIT",
+    "auth": {
+      "cache": "HIT",
+      "kvReads": 0
+    },
+    "r2GetAttempts": 0,
+    "stagesMs": {},
+    "transport": {
+      "connectionId": 2,
+      "socketUse": 43,
+      "socketReused": true,
+      "timelineMs": {
+        "requestCreated": 0.584,
+        "requestHeadersSent": 2.053,
+        "requestBodySent": 2.138,
+        "responseHeadersParsed": 20.738,
+        "fetchHeadersResolved": 21.035,
+        "firstEncodedBodyByte": 28.798,
+        "lastEncodedBodyChunk": 230.184,
+        "firstDecodedBodyByte": 28.907,
+        "encodedBodyComplete": 230.198,
+        "decodedBodyComplete": 230.39
+      },
+      "encodedBodyBytes": 423152,
+      "encodedBodyChunks": 70,
+      "socketBytesReadDelta": 425335,
+      "sentToResponseHeadersMs": 18.6,
+      "encodedBodyTransferMs": 201.4
+    }
+  },
+  "connections": {
+    "byTarget": {
+      "fast": {
+        "sockets": 18,
+        "requestSends": 65
+      },
+      "baseline": {
+        "sockets": 1,
+        "requestSends": 8
+      },
+      "helius": {
+        "sockets": 3,
+        "requestSends": 36
+      }
+    },
+    "fullColdRequestsReuse": {
+      "newSocketRequests": 2,
+      "reusedSocketRequests": 18
+    }
+  },
+  "cpuEvidence": {
+    "stackProfileCaptured": false,
+    "priorProfileVersion": "367152ef-a37b-4f7b-9e95-b41f9571979d",
+    "priorDiagnosticDataWindow": [
+      "2026-11-22T08:14:59.382Z",
+      "2026-11-22T08:15:02.008Z"
+    ],
+    "priorCaptureApiWindow": [
+      "2026-11-22T08:15:00.881Z",
+      "2026-11-22T08:15:02.102Z"
+    ],
+    "priorCaptureResult": {
+      "httpStatus": 404,
+      "cloudflareCode": 10393
+    },
+    "overlappedFinalRun": false,
+    "platformPhaseMetrics": "Collected separately by the metrics agent; exact intervals and planned counts are in windows. Adaptive sample intervals must be retained."
+  },
+  "findings": [
+    "All 109 calls succeeded. All 100 full Base64 JSON results match the saved independent reference and the live same-block results. The four complete binary bodies match the original V1 bundle SHA-256 values.",
+    "Plain cold JSON is still slower than Helius. The optimized p50 was 201.444 ms, compared with 204.109 ms for the unchanged native Worker and 114.054 ms for Helius in the same phase.",
+    "Hinted server-cold JSON uses the same three object GETs and a KV read, with all owner application caches bypassed. Its p50 was 162.114 ms, compared with Helius at 105.586 ms in that phase. Prior locator downloads are a separate cost.",
+    "Source-only JSON proves cached index and two source GETs in all four calls. Auth was cached in three calls; the other call used one KV read. Source-only is not fully cold.",
+    "All sixteen measured response hits used zero object GETs. Their p50 was 52.512 ms, compared with Helius at 94.544 ms. Their p95 was 230.392 ms, compared with Helius at 149.215 ms.",
+    "The slowest response HIT used a reused socket, Auth HIT/KV0 and zero source reads. Headers arrived at 21.028 ms; the compressed entity transfer took 201.400 ms. This tail is not an observed origin read or a client reconnect.",
+    "The concurrent burst passed all sixteen full JSON parity checks. It used four GETs, four LEADER receipts, four COALESCED receipts and eight ordinary HIT receipts. One resolution/auth warm request did not guarantee an auth HIT in each burst execution; thirteen KV reads occurred.",
+    "Earlier and later phases have different runtime, service-cache and network histories. The phase latency difference alone does not prove a causal speedup from locator hints. Per-request stage, storage and transport evidence is preserved."
+  ],
+  "limits": [
+    "The sample uses four fixed blocks from one epoch and one client location. p95 and p99 are the largest value for groups with eight or fewer calls. It does not show a global provider ranking.",
+    "Full cold bypasses owner caches only. Cloudflare physical storage and service cache state, and Helius cache state, remain unknown.",
+    "The final deployment uses a fresh archive/response generation. No root smoke request preceded this run, and the instrumented diagnostic used a different version and cache generation.",
+    "A persistent per-origin dispatcher was used. The fast pool allowed sixteen connections for the concurrent burst; first socket setup and reuse remain visible in the raw trace. A numeric diagnostic header was sent to all targets and does not change the Worker canonical cache key.",
+    "Burst JSON validation ran after all response bodies completed. Its local validation time is outside the network phase. No per-request client CPU is attributed during concurrent work.",
+    "Worker profile clocks can remain unchanged during synchronous work. Zero decode/render milliseconds do not mean zero CPU. CPU cost must come from separate platform evidence.",
+    "Binary source byte counters are snapshots at response headers. The expected streamed byte count is separate from actual buffered bytes. Exact binary parity proves complete delivery but is not a final backend byte receipt.",
+    "The new and unchanged native Workers use the same full source objects, original offsets and source ETags. No archive or resolution object was copied by the benchmark.",
+    "No retry, post-run probe or extra data request was made. Locator tokens and credentials are absent from public reports."
+  ],
+  "artifacts": {
+    "raw": "reports/get-block-native-fast-20261122/main.json",
+    "rawSha256": "7d8eb89fed8049ab3ef666fcc7efb2f02754456f6986710654e67cca2dc88143",
+    "script": "edgezilla/get-block/scripts/bench-native-fast.mjs",
+    "localFixtureChecksPassed": 13
+  }
+}

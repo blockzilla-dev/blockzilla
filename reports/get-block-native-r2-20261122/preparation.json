@@ -1,0 +1,67 @@
+{
+  "schema": "blockzilla-foundation-native-reader-preparation-v1",
+  "prepared_user_date": "2026-11-22 Europe/Paris",
+  "recorded_utc": "2026-11-21T23:34:25.278335+00:00",
+  "status": "LOCAL_TESTS_PASSED_DEPLOYMENT_ACCESS_REQUIRED",
+  "live_benchmark_performed": false,
+  "public_api_account": "owner",
+  "public_api_unchanged_version": "2359b1b3-d95b-4e3b-bffc-b4161aac406f",
+  "reader_account": "Foundation",
+  "native_bucket": "solana-archive-data",
+  "source_prefix": "compact-v2/blockzilla-20261004",
+  "new_archive_or_index_objects": 0,
+  "validation": {
+    "native_cli_worker_tests": 99,
+    "standalone_reader_actual_workerd_checks": 12,
+    "real_two_worker_wasm_integration_checks": 5,
+    "existing_owner_resolution_checks": 18,
+    "existing_owner_baseline": "passed including historical, cache and auth tests",
+    "reader_deploy_dry_run": "passed",
+    "owner_deploy_dry_run": "passed"
+  },
+  "deployment_failure": {
+    "stage": "Foundation Workers services API, before upload",
+    "api_code": 10000,
+    "message": "Authentication error",
+    "token_verified_active": true,
+    "owner_oauth_has_foundation_account": false,
+    "required_access": "Workers Admin to create a new Worker, or Workers Editor on an existing Worker"
+  },
+  "protocol": {
+    "method": "GET",
+    "path": "/v1/range",
+    "auth": "HMAC-SHA256, Unix expiry caller+30s, receiver max60s",
+    "conditional_r2_get": true,
+    "source_range_max_bytes": 16777216,
+    "reader_response_cache": "disabled",
+    "public_auth": "unchanged; owner KV and positive cache",
+    "source_body": "native JS streams; JSON decode only on owner",
+    "fallback_after_reader_error": false
+  },
+  "metrics": {
+    "owner_index_r2": "existing fields unchanged",
+    "foundation_native_r2": "separate confirmed attempts, bytes and successes",
+    "reader_http": "separate attempts; failure can leave backend work unknown",
+    "analytics_engine": "original17doublepositionspreserved;FoundationGETs/bytes/completionsat18/19/20"
+  },
+  "files_sha256": {
+    "edgezilla/foundation-reader/src/worker.mjs": "da490159c2f11faf9e0ead3f0b98b16f7b4ee915027f53a7caa69e00971db049",
+    "edgezilla/foundation-reader/src/index.mjs": "e895ab89a33e1a20b31f7e9e103b4f5700c97814bc9c7f841b1bcb966366cb8f",
+    "edgezilla/get-block/src/worker/native_reader.rs": "bd1c9628861822d74416e0c4a07a967dfc8261d2799000edd285ed8469be78e7",
+    "edgezilla/get-block/build/index_bg.wasm": "544c9459967bdc903d5bc1cc6322bd42c25044206c1df465248effe0aa356361"
+  },
+  "evidence": {
+    "reader_tests": "../get-block-foundation-reader-20261122/reader-local-tests.json",
+    "owner_integration": "local-owner-reader.json",
+    "owner_existing_suites": "owner-suites.json",
+    "access_failure": "../get-block-foundation-reader-20261122/deployment-attempt.json",
+    "public_api_unchanged": "../get-block-foundation-reader-20261122/public-api-unchanged.json",
+    "benchmark_plan": "benchmark-plan.json"
+  },
+  "limits": [
+    "Local workerd tests prove the protocol and bytes, not Cloudflare network latency.",
+    "Cross-account calls still use HTTPS; there is no supported cross-account service binding in this setup.",
+    "At marginal Standard rates, two reader HTTP calls add two Worker invocations; R2 GET fees remain.",
+    "The live same-block Helius comparison cannot be measured until Foundation deployment access is available."
+  ]
+}

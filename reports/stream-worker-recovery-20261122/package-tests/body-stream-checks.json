@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "checks": [
+    "exact bytes use the original native chunks without a copy",
+    "short body aborts before it can complete",
+    "long body aborts before it can complete",
+    "non-byte body aborts before it can complete",
+    "upstream disconnect has a transport-specific reason",
+    "a pending upstream read times out and cancels the source",
+    "client backpressure does not consume the upstream wait budget",
+    "cumulative upstream waits bound a slow drip response",
+    "client cancellation aborts the lookup and releases the source",
+    "invalid stream, byte and timeout bounds are rejected"
+  ],
+  "scope": "Local Node native-stream helper tests; no actual-WASM or cloud latency claims."
+}

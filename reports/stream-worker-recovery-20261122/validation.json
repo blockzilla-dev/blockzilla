@@ -1,0 +1,58 @@
+{
+  "schema": "blockzilla-stream-worker-recovery-acceptance-v1",
+  "status": "PASS",
+  "completed_at": "2026-11-22T15:39:58.016332+00:00",
+  "domain": "https://getblock.blockzilla.dev",
+  "worker_versions": [
+    {
+      "version_id": "50aaba11-468b-4c57-b1ad-ddc999ea9152",
+      "percentage": 100
+    }
+  ],
+  "consumer_release": "00631e8678ad3f86afadc698d316e19404222efccb2ef1a477f735704b2b67eb",
+  "linux_tests": {
+    "sdk-tests": {
+      "passed": 50,
+      "failed": 0
+    },
+    "sidecar-tests": {
+      "passed": 54,
+      "failed": 0
+    },
+    "automatic-recovery-fixture": {
+      "passed": 1,
+      "failed": 0
+    }
+  },
+  "linux_total_passed": 105,
+  "gateway_tests_passed": 41,
+  "activation_tool_tests_passed": 7,
+  "isolated_live_recovery": {
+    "worker_blocks": 15,
+    "inline_native_controls": 29,
+    "accepted_events": 53,
+    "duplicate_events": 0,
+    "missing_sequences": 0,
+    "payload_files_written": 0
+  },
+  "production_startup_recovery": {
+    "active": false,
+    "committedBlocks": 8,
+    "committedControls": 16,
+    "completedWindows": 1,
+    "enabled": true,
+    "failedAttempts": 0,
+    "fromCursor": "000000000000000018ea5078fdda19df-13e843:p362754:e6a92580387c751df892f494c60c34ca5eed3efe002ea0ddfaa152cf890a6570",
+    "lastError": null,
+    "toCursor": "000000000000000018ea5078fdda19df-13e843:p362778:9143cd706e93417e5e0282bf4a4b5b19c57107179481fa3a8aa600e96f8202f1"
+  },
+  "same_existing_database": true,
+  "database_backup_created": false,
+  "database_restore_used": false,
+  "extra_production_block_store": false,
+  "native_processes_unchanged": true,
+  "existing_services_unchanged": true,
+  "existing_containers_unchanged": true,
+  "existing_container_count": 6,
+  "scope": "raw Rust input client; retained native history; Mac output CLI reconnect unchanged"
+}

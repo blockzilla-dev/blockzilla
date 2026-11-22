@@ -1,0 +1,207 @@
+{
+  "schema": "blockzilla.production-recent-recovery-summary.v1",
+  "status": "PASS",
+  "deployment": {
+    "account_id": "8df0426c80fcd1a04ed439f441db9ff8",
+    "worker": "blockzilla-get-block",
+    "version": "50aaba11-468b-4c57-b1ad-ddc999ea9152",
+    "wasmSha256": "abdf6f5a4a57e44fb0c9b343ced6c980f4a61e92eb20d597ef8453a4e6fc323b"
+  },
+  "startedAt": "2026-11-22T14:56:23.123Z",
+  "completedAt": "2026-11-22T14:56:46.899Z",
+  "proof": {
+    "workerRequestsAttempted": 27,
+    "workerRequests": 27,
+    "passed": 27,
+    "recentPayloads": 19,
+    "archivePayloads": 4,
+    "rejectedWithoutArchive": 4,
+    "archiveGETs": 8,
+    "archiveHEADs": 0,
+    "blockPayloadFilesWritten": 0,
+    "servingCopiesAdded": 0
+  },
+  "source": {
+    "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+    "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+    "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+    "session_id": "000000000000000018ea5078fdda19df-13e843"
+  },
+  "streamRecovery": {
+    "type": "isolated-client-connection-closed",
+    "isolatedClientConnectionOnly": true,
+    "recoveredBlocks": 4,
+    "gapFrames": 12,
+    "gapKinds": {
+      "root": 4,
+      "confirmed": 4,
+      "block": 4
+    },
+    "replayedControls": 8,
+    "exactReplay": true,
+    "savedCompleteCursor": "000000000000000018ea5078fdda19df-13e843:p327758:c9e9b5cea2a14c296b384266891bd85de424411bdeb11b23459b153c426f2f93",
+    "resumedCompleteCursor": "000000000000000018ea5078fdda19df-13e843:p327770:92dc6a54853e946b92ba7096dd38230f9590ce63d5bf21947be8541e8954a94a",
+    "rootProofs": 4,
+    "rootProofsAlreadyInGap": 1,
+    "unrootedRejectionProven": false,
+    "unrootedCandidateAlreadyFinalized": true
+  },
+  "phases": [
+    {
+      "phase": "UnrootedFinalized",
+      "requests": 1,
+      "passed": 1,
+      "statuses": {
+        "200": 1
+      },
+      "apiKeyReads": 1,
+      "archiveGETs": 0,
+      "archiveHEADs": 0,
+      "recentHttpRequests": 1,
+      "resolvePosts": 0,
+      "meanPayloadBytes": 148708.0,
+      "nativeCpuReportedRequests": 1,
+      "meanNativeCpuMs": 1.243,
+      "workerCpu": "pending matched platform data"
+    },
+    {
+      "phase": "RuntimeWarm",
+      "requests": 1,
+      "passed": 1,
+      "statuses": {
+        "200": 1
+      },
+      "apiKeyReads": 1,
+      "archiveGETs": 0,
+      "archiveHEADs": 0,
+      "recentHttpRequests": 1,
+      "resolvePosts": 0,
+      "meanPayloadBytes": 147208.0,
+      "nativeCpuReportedRequests": 1,
+      "meanNativeCpuMs": 1.032,
+      "workerCpu": "pending matched platform data"
+    },
+    {
+      "phase": "RecentCold",
+      "requests": 4,
+      "passed": 4,
+      "statuses": {
+        "200": 4
+      },
+      "apiKeyReads": 4,
+      "archiveGETs": 0,
+      "archiveHEADs": 0,
+      "recentHttpRequests": 4,
+      "resolvePosts": 0,
+      "meanPayloadBytes": 170015.5,
+      "nativeCpuReportedRequests": 4,
+      "meanNativeCpuMs": 0.97275,
+      "workerCpu": "pending matched platform data"
+    },
+    {
+      "phase": "AuthPrime",
+      "requests": 1,
+      "passed": 1,
+      "statuses": {
+        "200": 1
+      },
+      "apiKeyReads": 1,
+      "archiveGETs": 0,
+      "archiveHEADs": 0,
+      "recentHttpRequests": 1,
+      "resolvePosts": 0,
+      "meanPayloadBytes": 147208.0,
+      "nativeCpuReportedRequests": 1,
+      "meanNativeCpuMs": 1.05,
+      "workerCpu": "pending matched platform data"
+    },
+    {
+      "phase": "RecentAuthWarm",
+      "requests": 8,
+      "passed": 8,
+      "statuses": {
+        "200": 8
+      },
+      "apiKeyReads": 0,
+      "archiveGETs": 0,
+      "archiveHEADs": 0,
+      "recentHttpRequests": 8,
+      "resolvePosts": 0,
+      "meanPayloadBytes": 170015.5,
+      "nativeCpuReportedRequests": 8,
+      "meanNativeCpuMs": 0.94075,
+      "workerCpu": "pending matched platform data"
+    },
+    {
+      "phase": "RecentFinalized",
+      "requests": 4,
+      "passed": 4,
+      "statuses": {
+        "200": 4
+      },
+      "apiKeyReads": 4,
+      "archiveGETs": 0,
+      "archiveHEADs": 0,
+      "recentHttpRequests": 4,
+      "resolvePosts": 0,
+      "meanPayloadBytes": 170015.5,
+      "nativeCpuReportedRequests": 4,
+      "meanNativeCpuMs": 1.09775,
+      "workerCpu": "pending matched platform data"
+    },
+    {
+      "phase": "ArchiveFallback",
+      "requests": 4,
+      "passed": 4,
+      "statuses": {
+        "200": 4
+      },
+      "apiKeyReads": 4,
+      "archiveGETs": 8,
+      "archiveHEADs": 0,
+      "recentHttpRequests": 4,
+      "resolvePosts": 4,
+      "meanPayloadBytes": 253239.75,
+      "nativeCpuReportedRequests": 0,
+      "meanNativeCpuMs": null,
+      "workerCpu": "pending matched platform data"
+    },
+    {
+      "phase": "IdentityReject",
+      "requests": 4,
+      "passed": 4,
+      "statuses": {
+        "503": 1,
+        "410": 1,
+        "400": 1,
+        "409": 1
+      },
+      "apiKeyReads": 4,
+      "archiveGETs": 0,
+      "archiveHEADs": 0,
+      "recentHttpRequests": 3,
+      "resolvePosts": 0,
+      "meanPayloadBytes": 90.25,
+      "nativeCpuReportedRequests": 0,
+      "meanNativeCpuMs": null,
+      "workerCpu": "pending matched platform data"
+    }
+  ],
+  "workerCpuStatus": "Measured; RecentCold and RecentFinalized count-matched and unsampled; auth-warm sampled; rejection cohort count mismatch",
+  "heliusRequests": 0,
+  "nativeServiceRestarts": 0,
+  "blockPayloadFilesWritten": 0,
+  "servingCopiesAdded": 0,
+  "notes": [
+    "Exact frame SHA and every Compact V2 object hash were checked by the client. The Worker forwards the bounded native body without re-hashing it.",
+    "Recent native CPU is from checked upstream headers around read-only source, frame and root checks. It is not Worker CPU or complete HTTP server CPU.",
+    "The reference reader supplied exact expected payload identities; this does not implement discovery of an unknown lost cursor.",
+    "A payload repair does not advance past missing native controls. The same saved cursor replayed the complete original gap.",
+    "The latest candidate had already finalized; live unrooted rejection is not claimed. Separate local tests cover that case.",
+    "Archive fallback is a distinct self-contained Wincode bundle; it carries no fabricated native cursor.",
+    "Only the four original archive control blocks were checked here. This is not proof of full historical archive coverage.",
+    "Cost and Worker CPU claims require version-filtered, count-matched platform data."
+  ],
+  "platformCpuReport": "production-platform-cpu.json",
+  "costReport": "production-cost.json"
+}

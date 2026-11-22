@@ -1,0 +1,46 @@
+{
+  "block_files_written": 0,
+  "expected_authorized_keys_before_sha256": "7b569d42ace0b16ff6e82f5dca470dc99c4685fbd85db5fc09ee29ebdad38000",
+  "expected_old_line_sha256": "5b2bf6f7afd8c234a9b1886f69898014c52205251f93407b12c9b363df506177",
+  "files": {
+    "beam_ssh_forced.py": {
+      "bytes": 4176,
+      "sha256": "b4c23647dea39f467508f0af8789b882ae1b776ff6da85bbc2e5f3071335aa9a"
+    },
+    "beam_ssh_gateway.py": {
+      "bytes": 29962,
+      "sha256": "93ef3aef5593c417c2e224bf945906228b4c3d30fb60b92e4894b7827d68a54a"
+    },
+    "deploy_beam_recovery.py": {
+      "bytes": 8519,
+      "sha256": "7f732a4233c252100167f53b76799481d47b610758b560c65d5b371f3b0c61a1"
+    },
+    "test_beam_ssh_forced.py": {
+      "bytes": 4584,
+      "sha256": "f9eaf7d1ed6f2e232244c0439541dab446f080fd35b05aa37966bd5f4bddf9e1"
+    },
+    "test_beam_ssh_gateway.py": {
+      "bytes": 26023,
+      "sha256": "0eff6e31d7d341fb91975738b4303acb9930dc8fa448f28b8da32a2a24546586"
+    },
+    "test_beam_ssh_recovery.py": {
+      "bytes": 12079,
+      "sha256": "76890ff7bb4581c4ab4b0e91657d4447b5aa587ef8eee4899ad8fecf8e867b31"
+    },
+    "test_deploy_beam_recovery.py": {
+      "bytes": 5455,
+      "sha256": "221317d8fe458e849cc33eb8c5fc740b0b65cd55f4577df8bb86a251ecc1b72e"
+    }
+  },
+  "frozen_directory": "/Users/augustin/Developement/ferno/blockzilla-v1/.codex-tmp/stream-worker-recovery-20261122/gateway-release",
+  "new_gateway": "/home/ubuntu/live/hivezilla-validator-20260930/releases/native-relay-recovery-20261122-93ef3aef5593c417/beam_ssh_gateway.py",
+  "old_gateway": "/home/ubuntu/live/hivezilla-validator-20260930/releases/native-relay-access-20261122-c74ca0aa24f762ed/beam_ssh_gateway.py",
+  "restart_required": false,
+  "schema": "blockzilla-recovery-gateway-freeze-v1",
+  "status": "LOCAL_TESTS_PASSED_NOT_DEPLOYED",
+  "target_release": "/home/ubuntu/live/hivezilla-validator-20260930/releases/native-relay-recovery-20261122-93ef3aef5593c417",
+  "tests": {
+    "command": "python3 -m unittest test_beam_ssh_recovery test_beam_ssh_gateway test_beam_ssh_forced test_deploy_beam_recovery",
+    "passed": 41
+  }
+}

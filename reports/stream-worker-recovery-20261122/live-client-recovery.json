@@ -1,0 +1,556 @@
+{
+  "accepted_events": 53,
+  "dependency_reads": 0,
+  "disconnected_after": "000000000000000018ea5078fdda19df-13e843:p357561:acbdc85091905bc886a71abecd54d59013f950dc18c9dfcdf866209ba2da013a",
+  "duplicate_events": 0,
+  "evidence_sha256": "4024f931892ba5a73ce86fe405fe19d50c2c7465aac501914a725def8475e61d",
+  "final_cursor": "000000000000000018ea5078fdda19df-13e843:p357611:21713e28575d622b7a789cfdd28674b554e920be95e3f0de2a3886f227ac9ff9",
+  "fixed_target": "000000000000000018ea5078fdda19df-13e843:p357605:7a515f74c368d53c7cb8d8e96067707d3b042501d4a508e6cd625447f4e778cb",
+  "frames": [
+    {
+      "bank_id": 350482,
+      "bytes": 335992,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357559:6633fccb15688c134ba8150148d28fb371b8765984c27c2c674eec37a5cccb85",
+      "kind": "block",
+      "objects": 12,
+      "phase": "before_disconnect",
+      "sha256": "6633fccb15688c134ba8150148d28fb371b8765984c27c2c674eec37a5cccb85",
+      "slot": 472592068
+    },
+    {
+      "bank_id": 350482,
+      "bytes": 1570,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357560:40e70bb1bd30ec887b3643be8ba2719b8dd590cc2cebacee4d13ad496bdc38e8",
+      "kind": "confirmed",
+      "objects": 0,
+      "phase": "before_disconnect",
+      "sha256": "40e70bb1bd30ec887b3643be8ba2719b8dd590cc2cebacee4d13ad496bdc38e8",
+      "slot": 472592068
+    },
+    {
+      "bank_id": 350482,
+      "bytes": 1558,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357561:acbdc85091905bc886a71abecd54d59013f950dc18c9dfcdf866209ba2da013a",
+      "kind": "root",
+      "objects": 0,
+      "phase": "before_disconnect",
+      "sha256": "acbdc85091905bc886a71abecd54d59013f950dc18c9dfcdf866209ba2da013a",
+      "slot": 472592068
+    },
+    {
+      "bank_id": 350483,
+      "bytes": 149236,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357562:5477e2ef25c5e4dbb01a335bb4c9ae973601bc09f1a43db9769601ed9376fb33",
+      "kind": "block",
+      "objects": 12,
+      "phase": "worker_recovery",
+      "sha256": "5477e2ef25c5e4dbb01a335bb4c9ae973601bc09f1a43db9769601ed9376fb33",
+      "slot": 472592069
+    },
+    {
+      "bank_id": 350483,
+      "bytes": 1579,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357563:c3c99c6414afb3ea7c325824c77abb45e62a98ebe39660c9cdd43537f392c1d6",
+      "kind": "confirmed",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "c3c99c6414afb3ea7c325824c77abb45e62a98ebe39660c9cdd43537f392c1d6",
+      "slot": 472592069
+    },
+    {
+      "bank_id": 350483,
+      "bytes": 1567,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357564:2a4726ad3996d8478a4e1665c3d0be8e8532f5222dce243b934c26886fcb0a64",
+      "kind": "root",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "2a4726ad3996d8478a4e1665c3d0be8e8532f5222dce243b934c26886fcb0a64",
+      "slot": 472592069
+    },
+    {
+      "bank_id": 350484,
+      "bytes": 169997,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357565:f630c81d66b71400b11054b83a022937c95af45ea36a57bc15551ae8d8cab50b",
+      "kind": "block",
+      "objects": 12,
+      "phase": "worker_recovery",
+      "sha256": "f630c81d66b71400b11054b83a022937c95af45ea36a57bc15551ae8d8cab50b",
+      "slot": 472592070
+    },
+    {
+      "bank_id": 350484,
+      "bytes": 1576,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357566:97442d1ad7a3a3205522621e5e968823ac07d0ddfcad19d9096ae01c03451051",
+      "kind": "confirmed",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "97442d1ad7a3a3205522621e5e968823ac07d0ddfcad19d9096ae01c03451051",
+      "slot": 472592070
+    },
+    {
+      "bank_id": 350485,
+      "bytes": 218251,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357567:47b35e4b3a36867f0cd15ef8dcafd4ef359a3cba1bd13d3ee97d949c4129de97",
+      "kind": "block",
+      "objects": 12,
+      "phase": "worker_recovery",
+      "sha256": "47b35e4b3a36867f0cd15ef8dcafd4ef359a3cba1bd13d3ee97d949c4129de97",
+      "slot": 472592071
+    },
+    {
+      "bank_id": 350484,
+      "bytes": 1564,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357568:e11a00332e388bf0e11a9e49c9f12a53700a4b9c0bdaf3535b2ccd88eef20384",
+      "kind": "root",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "e11a00332e388bf0e11a9e49c9f12a53700a4b9c0bdaf3535b2ccd88eef20384",
+      "slot": 472592070
+    },
+    {
+      "bank_id": 350485,
+      "bytes": 1571,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357569:6531d82fd1f6b049a2a52767add7c1ab947304055cc2dff127caa5a6724b6cbe",
+      "kind": "confirmed",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "6531d82fd1f6b049a2a52767add7c1ab947304055cc2dff127caa5a6724b6cbe",
+      "slot": 472592071
+    },
+    {
+      "bank_id": 350486,
+      "bytes": 197769,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357570:a64b2d8fce9859bf0284d0581301b9f01be6d248f4d720bc84289ce7e760655d",
+      "kind": "block",
+      "objects": 12,
+      "phase": "worker_recovery",
+      "sha256": "a64b2d8fce9859bf0284d0581301b9f01be6d248f4d720bc84289ce7e760655d",
+      "slot": 472592072
+    },
+    {
+      "bank_id": 350485,
+      "bytes": 1559,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357571:b667155ecd65ac6eaf0f638f55bc594d6dfd57d8cc465d546f62ac12a8bd6df5",
+      "kind": "root",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "b667155ecd65ac6eaf0f638f55bc594d6dfd57d8cc465d546f62ac12a8bd6df5",
+      "slot": 472592071
+    },
+    {
+      "bank_id": 350486,
+      "bytes": 1575,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357572:2d1bb45c124e53403f2f6e307f58a0fbb7381c02f3543daeb171ebe83d27199e",
+      "kind": "confirmed",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "2d1bb45c124e53403f2f6e307f58a0fbb7381c02f3543daeb171ebe83d27199e",
+      "slot": 472592072
+    },
+    {
+      "bank_id": 350487,
+      "bytes": 161781,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357573:83d1a2b83f02947d84eb28a1ae0e7781058a61278e77b8ed7c7b38f18490e021",
+      "kind": "block",
+      "objects": 12,
+      "phase": "worker_recovery",
+      "sha256": "83d1a2b83f02947d84eb28a1ae0e7781058a61278e77b8ed7c7b38f18490e021",
+      "slot": 472592073
+    },
+    {
+      "bank_id": 350486,
+      "bytes": 1563,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357574:817a1064435e0ae21d3953b40b38fc0e77eb844e598ba32f6bfcf1aa355a681f",
+      "kind": "root",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "817a1064435e0ae21d3953b40b38fc0e77eb844e598ba32f6bfcf1aa355a681f",
+      "slot": 472592072
+    },
+    {
+      "bank_id": 350487,
+      "bytes": 1568,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357575:47f51cc36e23603d4fd7cbb5d9d5ff1f34758542d9ce1163ae2f5ccaef8341af",
+      "kind": "confirmed",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "47f51cc36e23603d4fd7cbb5d9d5ff1f34758542d9ce1163ae2f5ccaef8341af",
+      "slot": 472592073
+    },
+    {
+      "bank_id": 350487,
+      "bytes": 1556,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357576:5486284e4b0f7b8fea928e04eb344b2ca2e0acef5832409548433a1280c9e6ce",
+      "kind": "root",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "5486284e4b0f7b8fea928e04eb344b2ca2e0acef5832409548433a1280c9e6ce",
+      "slot": 472592073
+    },
+    {
+      "bank_id": 350488,
+      "bytes": 150108,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357577:b234738f99a786d96b849b4e768813579e7cab4698f39954079e5e4d04b4b2f1",
+      "kind": "block",
+      "objects": 12,
+      "phase": "worker_recovery",
+      "sha256": "b234738f99a786d96b849b4e768813579e7cab4698f39954079e5e4d04b4b2f1",
+      "slot": 472592074
+    },
+    {
+      "bank_id": 350488,
+      "bytes": 1563,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357578:9bd89d2248bb2d505375e32f97d69b9d93f53d43f828669e03a1bfc024fe9bfd",
+      "kind": "confirmed",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "9bd89d2248bb2d505375e32f97d69b9d93f53d43f828669e03a1bfc024fe9bfd",
+      "slot": 472592074
+    },
+    {
+      "bank_id": 350489,
+      "bytes": 146990,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357579:8781b75554ddee895157303cc38fd883f26ad1ed892e12c91df6eda18ac14fa8",
+      "kind": "block",
+      "objects": 12,
+      "phase": "worker_recovery",
+      "sha256": "8781b75554ddee895157303cc38fd883f26ad1ed892e12c91df6eda18ac14fa8",
+      "slot": 472592075
+    },
+    {
+      "bank_id": 350488,
+      "bytes": 1551,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357580:35415c1d9c54f897bffd1450610baf5b7fdb5aed488419480553b748b1b547bc",
+      "kind": "root",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "35415c1d9c54f897bffd1450610baf5b7fdb5aed488419480553b748b1b547bc",
+      "slot": 472592074
+    },
+    {
+      "bank_id": 350489,
+      "bytes": 1571,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357581:3b0a097be765cce5ff9a3173fbb60dc98351ff3fce3a42a61352dd42224e1839",
+      "kind": "confirmed",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "3b0a097be765cce5ff9a3173fbb60dc98351ff3fce3a42a61352dd42224e1839",
+      "slot": 472592075
+    },
+    {
+      "bank_id": 350490,
+      "bytes": 256812,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357582:30f25be7682c3bfad3ae147a168d93063913341cca918a7d3bea3ba432216e37",
+      "kind": "block",
+      "objects": 12,
+      "phase": "worker_recovery",
+      "sha256": "30f25be7682c3bfad3ae147a168d93063913341cca918a7d3bea3ba432216e37",
+      "slot": 472592076
+    },
+    {
+      "bank_id": 350489,
+      "bytes": 1559,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357583:a6bc4b2f3300b662eda64473d4ccd3ca5d9d9d35039599cf867b2cc566fcd10f",
+      "kind": "root",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "a6bc4b2f3300b662eda64473d4ccd3ca5d9d9d35039599cf867b2cc566fcd10f",
+      "slot": 472592075
+    },
+    {
+      "bank_id": 350490,
+      "bytes": 1575,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357584:de2800375b364d8e1d6f9057a0629665b3d497346cbe971f0c413d152791c5e1",
+      "kind": "confirmed",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "de2800375b364d8e1d6f9057a0629665b3d497346cbe971f0c413d152791c5e1",
+      "slot": 472592076
+    },
+    {
+      "bank_id": 350491,
+      "bytes": 182786,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357585:7315b731958eb7067db5fb650afa67a6664e4a31697d3c47368a592f6e4bbe15",
+      "kind": "block",
+      "objects": 12,
+      "phase": "worker_recovery",
+      "sha256": "7315b731958eb7067db5fb650afa67a6664e4a31697d3c47368a592f6e4bbe15",
+      "slot": 472592077
+    },
+    {
+      "bank_id": 350490,
+      "bytes": 1563,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357586:c7bdf71fa15f34a74f85a01e0b93027897a6f32597d27445d0cc646f0662142f",
+      "kind": "root",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "c7bdf71fa15f34a74f85a01e0b93027897a6f32597d27445d0cc646f0662142f",
+      "slot": 472592076
+    },
+    {
+      "bank_id": 350491,
+      "bytes": 1571,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357587:78850e66116f8665b34ea9e1d0d50d32d155b694a6a05416b17273bb0cfefdb9",
+      "kind": "confirmed",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "78850e66116f8665b34ea9e1d0d50d32d155b694a6a05416b17273bb0cfefdb9",
+      "slot": 472592077
+    },
+    {
+      "bank_id": 350491,
+      "bytes": 1559,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357588:6b10f9b52200fd3d78cdac6597a7d2814af20eccccde0ffdea17482f5561e958",
+      "kind": "root",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "6b10f9b52200fd3d78cdac6597a7d2814af20eccccde0ffdea17482f5561e958",
+      "slot": 472592077
+    },
+    {
+      "bank_id": 350492,
+      "bytes": 179770,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357589:2e3567d4d65a162b6550adb99e16c60cfd37bc8b9e1d20bdb154c641163a10bd",
+      "kind": "block",
+      "objects": 12,
+      "phase": "worker_recovery",
+      "sha256": "2e3567d4d65a162b6550adb99e16c60cfd37bc8b9e1d20bdb154c641163a10bd",
+      "slot": 472592078
+    },
+    {
+      "bank_id": 350492,
+      "bytes": 1573,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357590:185fdf9f33aac2212a09cfc5f2073c30ac6ddac6753ec2a2ddb024eef971a0e8",
+      "kind": "confirmed",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "185fdf9f33aac2212a09cfc5f2073c30ac6ddac6753ec2a2ddb024eef971a0e8",
+      "slot": 472592078
+    },
+    {
+      "bank_id": 350493,
+      "bytes": 229923,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357591:423cbc81bb1d9331ece1d6e24a866f8e18e66975e3f1fc69b8b308cd9abafed9",
+      "kind": "block",
+      "objects": 12,
+      "phase": "worker_recovery",
+      "sha256": "423cbc81bb1d9331ece1d6e24a866f8e18e66975e3f1fc69b8b308cd9abafed9",
+      "slot": 472592079
+    },
+    {
+      "bank_id": 350492,
+      "bytes": 1561,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357592:4c42becf919974a95cac82b68939f772912bbdb5e31a157ec9670e060f7fa165",
+      "kind": "root",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "4c42becf919974a95cac82b68939f772912bbdb5e31a157ec9670e060f7fa165",
+      "slot": 472592078
+    },
+    {
+      "bank_id": 350493,
+      "bytes": 1575,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357593:8efc9aa5f1bbb0ceb2986f7d673e43d10263a9a96a5122d09f482e069d06698d",
+      "kind": "confirmed",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "8efc9aa5f1bbb0ceb2986f7d673e43d10263a9a96a5122d09f482e069d06698d",
+      "slot": 472592079
+    },
+    {
+      "bank_id": 350494,
+      "bytes": 194546,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357594:5d50c622dee9fa3744d49aa2f70a241ea50ea91334d0de3c4be06a1e8ec574cf",
+      "kind": "block",
+      "objects": 12,
+      "phase": "worker_recovery",
+      "sha256": "5d50c622dee9fa3744d49aa2f70a241ea50ea91334d0de3c4be06a1e8ec574cf",
+      "slot": 472592080
+    },
+    {
+      "bank_id": 350493,
+      "bytes": 1563,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357595:4a1070d3ca8f10534f59317dbe9a5e0102cb653c3221230746786da15aaf7a8a",
+      "kind": "root",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "4a1070d3ca8f10534f59317dbe9a5e0102cb653c3221230746786da15aaf7a8a",
+      "slot": 472592079
+    },
+    {
+      "bank_id": 350494,
+      "bytes": 1569,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357596:f2e35be6b8df54b945a2913a27e9ec4d12b9463ded9053a591ab18b946d16fa6",
+      "kind": "confirmed",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "f2e35be6b8df54b945a2913a27e9ec4d12b9463ded9053a591ab18b946d16fa6",
+      "slot": 472592080
+    },
+    {
+      "bank_id": 350495,
+      "bytes": 185451,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357597:f9d8b0493277a9e3169647688377e26c2fe3637f96135833f84196bb52946c36",
+      "kind": "block",
+      "objects": 12,
+      "phase": "worker_recovery",
+      "sha256": "f9d8b0493277a9e3169647688377e26c2fe3637f96135833f84196bb52946c36",
+      "slot": 472592081
+    },
+    {
+      "bank_id": 350494,
+      "bytes": 1557,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357598:bba461ef6e15ba849e59785e3b66901d18cf05a6d38c96f674ac7553afdf1ed8",
+      "kind": "root",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "bba461ef6e15ba849e59785e3b66901d18cf05a6d38c96f674ac7553afdf1ed8",
+      "slot": 472592080
+    },
+    {
+      "bank_id": 350495,
+      "bytes": 1567,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357599:136c854935714e8ed97495c27c21481921da15888daa29a5fd0f3e72cda85510",
+      "kind": "confirmed",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "136c854935714e8ed97495c27c21481921da15888daa29a5fd0f3e72cda85510",
+      "slot": 472592081
+    },
+    {
+      "bank_id": 350495,
+      "bytes": 1555,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357600:f48393fe535ec928244a3da90eec05dd5e937ab85eb5235339091b32186e293e",
+      "kind": "root",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "f48393fe535ec928244a3da90eec05dd5e937ab85eb5235339091b32186e293e",
+      "slot": 472592081
+    },
+    {
+      "bank_id": 350496,
+      "bytes": 186813,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357601:df425dec0937f759132d3c4ba45c1c7de0ef22d271970a50911e637abbce0ed1",
+      "kind": "block",
+      "objects": 12,
+      "phase": "worker_recovery",
+      "sha256": "df425dec0937f759132d3c4ba45c1c7de0ef22d271970a50911e637abbce0ed1",
+      "slot": 472592082
+    },
+    {
+      "bank_id": 350496,
+      "bytes": 1573,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357602:41a1e25aa89aa4bdd1fa6b52dae68bc5551660a37b0e275ea56a3fedd5ee56b5",
+      "kind": "confirmed",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "41a1e25aa89aa4bdd1fa6b52dae68bc5551660a37b0e275ea56a3fedd5ee56b5",
+      "slot": 472592082
+    },
+    {
+      "bank_id": 350497,
+      "bytes": 191672,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357603:193ddc3abc630cce64f51c6bd0c86cbcd49afaba472ab6782e1be2fba968de7b",
+      "kind": "block",
+      "objects": 12,
+      "phase": "worker_recovery",
+      "sha256": "193ddc3abc630cce64f51c6bd0c86cbcd49afaba472ab6782e1be2fba968de7b",
+      "slot": 472592083
+    },
+    {
+      "bank_id": 350496,
+      "bytes": 1561,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357604:e664e59aeef8a9612beacafe10fb95f988ac4d8f4e9566fd79a7147f5ae1a6bb",
+      "kind": "root",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "e664e59aeef8a9612beacafe10fb95f988ac4d8f4e9566fd79a7147f5ae1a6bb",
+      "slot": 472592082
+    },
+    {
+      "bank_id": 350497,
+      "bytes": 1574,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357605:7a515f74c368d53c7cb8d8e96067707d3b042501d4a508e6cd625447f4e778cb",
+      "kind": "confirmed",
+      "objects": 0,
+      "phase": "worker_recovery",
+      "sha256": "7a515f74c368d53c7cb8d8e96067707d3b042501d4a508e6cd625447f4e778cb",
+      "slot": 472592083
+    },
+    {
+      "bank_id": 350498,
+      "bytes": 191654,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357606:3419e65299b3e59348d1ef3bc624c0ada00aa64e2b368f9961c957c4978a5781",
+      "kind": "block",
+      "objects": 12,
+      "phase": "after_resume",
+      "sha256": "3419e65299b3e59348d1ef3bc624c0ada00aa64e2b368f9961c957c4978a5781",
+      "slot": 472592084
+    },
+    {
+      "bank_id": 350497,
+      "bytes": 1562,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357607:e4dd09dce9aa137cd85030d56135dd2ba1d2c3f728e7dc2e4fd38f90b295fe6b",
+      "kind": "root",
+      "objects": 0,
+      "phase": "after_resume",
+      "sha256": "e4dd09dce9aa137cd85030d56135dd2ba1d2c3f728e7dc2e4fd38f90b295fe6b",
+      "slot": 472592083
+    },
+    {
+      "bank_id": 350498,
+      "bytes": 1573,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357608:496fa58802805b497061d629d06f40b9dafe7bf8bff40fdf8e0901a78c8ddfd6",
+      "kind": "confirmed",
+      "objects": 0,
+      "phase": "after_resume",
+      "sha256": "496fa58802805b497061d629d06f40b9dafe7bf8bff40fdf8e0901a78c8ddfd6",
+      "slot": 472592084
+    },
+    {
+      "bank_id": 350498,
+      "bytes": 1561,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357609:844b55e5c0ef18ac007e399aec4167418fb747092d45c0b5a6ee6a0e21e3adad",
+      "kind": "root",
+      "objects": 0,
+      "phase": "after_resume",
+      "sha256": "844b55e5c0ef18ac007e399aec4167418fb747092d45c0b5a6ee6a0e21e3adad",
+      "slot": 472592084
+    },
+    {
+      "bank_id": 350499,
+      "bytes": 166370,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357610:013495bbfa63b650f820394fa59208062b82a2725640bec27414ba4bd4a89416",
+      "kind": "block",
+      "objects": 12,
+      "phase": "after_resume",
+      "sha256": "013495bbfa63b650f820394fa59208062b82a2725640bec27414ba4bd4a89416",
+      "slot": 472592085
+    },
+    {
+      "bank_id": 350499,
+      "bytes": 1567,
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p357611:21713e28575d622b7a789cfdd28674b554e920be95e3f0de2a3886f227ac9ff9",
+      "kind": "confirmed",
+      "objects": 0,
+      "phase": "after_resume",
+      "sha256": "21713e28575d622b7a789cfdd28674b554e920be95e3f0de2a3886f227ac9ff9",
+      "slot": 472592085
+    }
+  ],
+  "initial_cursor": "000000000000000018ea5078fdda19df-13e843:p357558:763e2e5605466f7611b9b0d3343166a6cca957722ade1f03d7a9e2d506d6c765",
+  "inline_native_controls": 29,
+  "missing_sequences": 0,
+  "pages": 1,
+  "payload_files_written": 0,
+  "recovered_cursor": "000000000000000018ea5078fdda19df-13e843:p357605:7a515f74c368d53c7cb8d8e96067707d3b042501d4a508e6cd625447f4e778cb",
+  "schema": "blockzilla-worker-client-recovery-probe-v1",
+  "source": {
+    "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+    "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+    "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+    "session_id": "000000000000000018ea5078fdda19df-13e843"
+  },
+  "state": "PASS",
+  "worker_blocks": 15
+}

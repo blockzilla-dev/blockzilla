@@ -1,0 +1,237 @@
+{
+  "status": "REMOTE_VERIFIED",
+  "finishedAt": "2026-11-21T23:57:17.064170+00:00",
+  "sourcePrefix": "compact-v2/native-r2-full-1089-20261122",
+  "generation": "owner-native-full1089-20261122-v1",
+  "resolutionPrefix": "serving/owner-native-full1089-20261122-v1",
+  "bucket": "blockzilla-get-block-native-test",
+  "epoch": 1089,
+  "sourceObjectsComplete": true,
+  "sourceObjects": [
+    {
+      "key": "compact-v2/native-r2-full-1089-20261122/epoch-1089/archive-v2-blocks.zstd",
+      "length": 52177905206,
+      "etag": "\"a27d4990dcb9ff26589f1b4404bf6048-778\"",
+      "uploaded": "2026-11-21T23:56:23.519Z",
+      "sourceEtag": "\"a27d4990dcb9ff26589f1b4404bf6048-778\"",
+      "partCount": 778,
+      "calculatedMultipartEtag": "\"a27d4990dcb9ff26589f1b4404bf6048-778\"",
+      "sourceEtagEqual": true
+    },
+    {
+      "key": "compact-v2/native-r2-full-1089-20261122/epoch-1089/signatures.bin",
+      "length": 10799377984,
+      "etag": "\"83324114ba7b311be228f17f3ba1e909-81\"",
+      "uploaded": "2026-11-21T23:56:23.919Z",
+      "sourceEtag": "\"83324114ba7b311be228f17f3ba1e909-81\"",
+      "partCount": 81,
+      "calculatedMultipartEtag": "\"83324114ba7b311be228f17f3ba1e909-81\"",
+      "sourceEtagEqual": true
+    }
+  ],
+  "admittedSlots": [
+    470555971,
+    470663944,
+    470771932,
+    470879999
+  ],
+  "fullEpochServingIndexBuilt": false,
+  "resolutionObjects": [
+    {
+      "key": "serving/owner-native-full1089-20261122-v1/epoch-1089/slot-470555971.resolution.v1",
+      "slot": 470555971,
+      "localPath": "/Users/augustin/Developement/ferno/blockzilla-v1/.codex-tmp/get-block-owner-full1089-20261122/resolutions/slot-470555971.resolution.v1",
+      "bytes": 75677,
+      "etag": "\"19e32a1e861f0b286a693c5eff65b5e8\"",
+      "sha256": "4630be8d6e600009c27f1a9fc03b2bf8533720fed38929ff702c6e4079ef0c31",
+      "remoteVerified": true
+    },
+    {
+      "key": "serving/owner-native-full1089-20261122-v1/epoch-1089/slot-470663944.resolution.v1",
+      "slot": 470663944,
+      "localPath": "/Users/augustin/Developement/ferno/blockzilla-v1/.codex-tmp/get-block-owner-full1089-20261122/resolutions/slot-470663944.resolution.v1",
+      "bytes": 103689,
+      "etag": "\"4ff20500f9f69b2abb52a36a5d9dd8b3\"",
+      "sha256": "6c4a07ae7c5df4e7fdbd3fc8fb92136df422c852f2780a76d23342254177a51d",
+      "remoteVerified": true
+    },
+    {
+      "key": "serving/owner-native-full1089-20261122-v1/epoch-1089/slot-470771932.resolution.v1",
+      "slot": 470771932,
+      "localPath": "/Users/augustin/Developement/ferno/blockzilla-v1/.codex-tmp/get-block-owner-full1089-20261122/resolutions/slot-470771932.resolution.v1",
+      "bytes": 91326,
+      "etag": "\"76df28408bcf46d0418363ea46742ad1\"",
+      "sha256": "5f7218aa7b67a2a01c173776809bd30f5830cf3c45a3e75a6eca8f6e499a051b",
+      "remoteVerified": true
+    },
+    {
+      "key": "serving/owner-native-full1089-20261122-v1/epoch-1089/slot-470879999.resolution.v1",
+      "slot": 470879999,
+      "localPath": "/Users/augustin/Developement/ferno/blockzilla-v1/.codex-tmp/get-block-owner-full1089-20261122/resolutions/slot-470879999.resolution.v1",
+      "bytes": 44425,
+      "etag": "\"59b2596d6e6c1c3f53ec0f3078ce9642\"",
+      "sha256": "0c0194fe9689ad16c7e7586aca92ab679cb7f00b7e6cb7a97ed65a01de9c692f",
+      "remoteVerified": true
+    }
+  ],
+  "samples": [
+    {
+      "slot": 470555971,
+      "hotRow": {
+        "block_id": 107952,
+        "slot": 470555971,
+        "compressed_offset": 9705818017,
+        "compressed_len": 145910,
+        "uncompressed_len": 475182,
+        "tx_count": 391,
+        "first_tx_ordinal": 27847406,
+        "first_signature_ordinal": 30485150,
+        "signature_count": 420
+      },
+      "blockhash": "4q6jP6q1p6RsFUQJmM6cDoVKdNahEVv5rG7LSxgu4YsB",
+      "previousBlockhash": "TE5kqp76RQtcQxvZA6nosbZxGcgPjt9gVv624AC65Pu",
+      "samples": [
+        {
+          "name": "archive-v2-blocks.zstd",
+          "offset": 9705818017,
+          "length": 145910,
+          "sha256": "de530d27df70b1d36454a63f328d40338a8aa5ffc8e4a57aa5a0388e45af04e6",
+          "remoteNativeR2Verified": true
+        },
+        {
+          "name": "signatures.bin",
+          "offset": 1951049600,
+          "length": 26880,
+          "sha256": "add56e0f964929de4071731d317a9ad0f69e2b73d15d10e3fcb95cc5c63ee7dd",
+          "remoteNativeR2Verified": true
+        }
+      ]
+    },
+    {
+      "slot": 470663944,
+      "hotRow": {
+        "block_id": 215905,
+        "slot": 470663944,
+        "compressed_offset": 26040198904,
+        "compressed_len": 229322,
+        "uncompressed_len": 692104,
+        "tx_count": 467,
+        "first_tx_ordinal": 78037848,
+        "first_signature_ordinal": 84200566,
+        "signature_count": 509
+      },
+      "blockhash": "Hj7sfve162tHL65nrjVhnorqrQzXhuKtbWT5V2X3JxdE",
+      "previousBlockhash": "7kfLxBAGfaDgcNgR8dMoZeT9suhL3fmPe2UURLD6BqVg",
+      "samples": [
+        {
+          "name": "archive-v2-blocks.zstd",
+          "offset": 26040198904,
+          "length": 229322,
+          "sha256": "3511e910903a5d68e53e82821ff75e8a5d42ccf1ed3cb51a2060ff1a937e737d",
+          "remoteNativeR2Verified": true
+        },
+        {
+          "name": "signatures.bin",
+          "offset": 5388836224,
+          "length": 32576,
+          "sha256": "28190e1049e6fb0823df7157fecd8f49ffc9ea88eb2d1af78c7cb494c555ff53",
+          "remoteNativeR2Verified": true
+        }
+      ]
+    },
+    {
+      "slot": 470771932,
+      "hotRow": {
+        "block_id": 323858,
+        "slot": 470771932,
+        "compressed_offset": 40882329164,
+        "compressed_len": 153791,
+        "uncompressed_len": 548629,
+        "tx_count": 447,
+        "first_tx_ordinal": 123893161,
+        "first_signature_ordinal": 133599385,
+        "signature_count": 494
+      },
+      "blockhash": "GZcra8dwxkLzuffg1HYFWwj7fbyMwJTMSypBBLwHGUiC",
+      "previousBlockhash": "eYTx3JFGSzYmx95cX48KWYmd7Fu3WtPfbyGK1y11Pqg",
+      "samples": [
+        {
+          "name": "archive-v2-blocks.zstd",
+          "offset": 40882329164,
+          "length": 153791,
+          "sha256": "88af955d017d9b07a6c650dd1878171f258f79cb10f1a2eb2c0376dafe8ffa88",
+          "remoteNativeR2Verified": true
+        },
+        {
+          "name": "signatures.bin",
+          "offset": 8550360640,
+          "length": 31616,
+          "sha256": "ba36b43e0b21a9ba83e67c15a2fce02cda385efd02d1360878d2cbb836e1ad0c",
+          "remoteNativeR2Verified": true
+        }
+      ]
+    },
+    {
+      "slot": 470879999,
+      "hotRow": {
+        "block_id": 431810,
+        "slot": 470879999,
+        "compressed_offset": 52177839049,
+        "compressed_len": 66157,
+        "uncompressed_len": 186747,
+        "tx_count": 215,
+        "first_tx_ordinal": 156439021,
+        "first_signature_ordinal": 168740046,
+        "signature_count": 235
+      },
+      "blockhash": "CZdRZ59q3cgmPQE8ydHmSmm1Xjhpg2D1y6CJ4dY8DqsB",
+      "previousBlockhash": "A2gzkJY5EZChTGqtXudTY6qHwtQPGtm9fDHGnffGZumh",
+      "samples": [
+        {
+          "name": "archive-v2-blocks.zstd",
+          "offset": 52177839049,
+          "length": 66157,
+          "sha256": "e1e062269998de0f10b841b4856a45305fc3a8440c3fc3b4d907cbea750f4114",
+          "remoteNativeR2Verified": true
+        },
+        {
+          "name": "signatures.bin",
+          "offset": 10799362944,
+          "length": 15040,
+          "sha256": "71ae5b03c0081206e8218dcf8c4fc2f774cd7f6f0d7084263cc9271c06c55acd",
+          "remoteNativeR2Verified": true
+        }
+      ]
+    }
+  ],
+  "reconstructedBundles": [
+    {
+      "slot": 470555971,
+      "sha256": "c0fc8383e217705dde28612195cc165e95b2163c73743e5cb1586aab220c8415",
+      "byteExact": true,
+      "parentSlot": 470555970
+    },
+    {
+      "slot": 470663944,
+      "sha256": "64ac916826fef959e8786beea3723836e22c7bbc40f3431617ff58be175a4775",
+      "byteExact": true,
+      "parentSlot": 470663943
+    },
+    {
+      "slot": 470771932,
+      "sha256": "dab59abd834b055e114e76eb34245f5b1506ec9518c4496f89a29e4b34db764b",
+      "byteExact": true,
+      "parentSlot": 470771931
+    },
+    {
+      "slot": 470879999,
+      "sha256": "977d110e3d2328889faee91eda72703b9dee3ee4e7cb7edc3a12ce58f429296a",
+      "byteExact": true,
+      "parentSlot": 470879998
+    }
+  ],
+  "sourceBytes": 62977283190,
+  "resolutionBytes": 315117,
+  "wholeSourceSha256Readback": false,
+  "originalOffsetsPreserved": true
+}

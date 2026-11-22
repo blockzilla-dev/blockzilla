@@ -1,0 +1,603 @@
+{
+  "schema": "blockzilla.full-epoch-runtime-followup-summary.v1",
+  "status": "validated",
+  "calls": {
+    "total": 16,
+    "worker": 8,
+    "helius": 8,
+    "errors": 0,
+    "fullJsonCanonicalMatchesSavedAndLive": 16
+  },
+  "slots": [
+    470555971,
+    470663944,
+    470771932,
+    470879999
+  ],
+  "windows": {
+    "full": {
+      "startedAt": "2026-11-22T00:01:49.951Z",
+      "completedAt": "2026-11-22T00:01:52.244468Z",
+      "durationMs": 2293.468
+    },
+    "packed": {
+      "startedAt": "2026-11-22T00:01:52.383Z",
+      "completedAt": "2026-11-22T00:01:54.483986Z",
+      "durationMs": 2100.986
+    }
+  },
+  "latency": {
+    "fullNativeColdJson": {
+      "blockzilla": {
+        "requests": 4,
+        "successful": 4,
+        "ttfbMs": {
+          "p50": 198.526,
+          "p95": 396.201,
+          "p99": 396.201
+        },
+        "totalMs": {
+          "p50": 211.472,
+          "p95": 444.706,
+          "p99": 444.706
+        }
+      },
+      "helius": {
+        "requests": 4,
+        "successful": 4,
+        "ttfbMs": {
+          "p50": 52.649,
+          "p95": 82.02,
+          "p99": 82.02
+        },
+        "totalMs": {
+          "p50": 125.023,
+          "p95": 136.351,
+          "p99": 136.351
+        }
+      }
+    },
+    "packedNativeColdJson": {
+      "blockzilla": {
+        "requests": 4,
+        "successful": 4,
+        "ttfbMs": {
+          "p50": 182.162,
+          "p95": 363.039,
+          "p99": 363.039
+        },
+        "totalMs": {
+          "p50": 220.539,
+          "p95": 415.958,
+          "p99": 415.958
+        }
+      },
+      "helius": {
+        "requests": 4,
+        "successful": 4,
+        "ttfbMs": {
+          "p50": 46.621,
+          "p95": 65.487,
+          "p99": 65.487
+        },
+        "totalMs": {
+          "p50": 105.058,
+          "p95": 113.57,
+          "p99": 113.57
+        }
+      }
+    }
+  },
+  "proof": {
+    "full": {
+      "requests": 4,
+      "responseCacheCounts": {
+        "BYPASS": 4
+      },
+      "backendCounts": {
+        "r2": 4
+      },
+      "fullyColdVerified": 4,
+      "sourceIndexCachedVerified": 0,
+      "sourceIndexAndAuthCachedVerified": 0,
+      "authCacheCounts": {
+        "BYPASS": 4
+      },
+      "authKvReads": 4,
+      "r2GetAttempts": 12,
+      "s3GetAttempts": 0,
+      "r2HeadAttempts": 0,
+      "s3HeadAttempts": 0,
+      "readerHttpRequests": 0,
+      "archiveMemoryHits": 0,
+      "archiveEdgeHits": 0,
+      "bufferedOriginBytesAtResponseCreation": 1016409,
+      "streamedOriginExpectedBytes": 0
+    },
+    "packed": {
+      "requests": 4,
+      "responseCacheCounts": {
+        "BYPASS": 4
+      },
+      "backendCounts": {
+        "r2": 4
+      },
+      "fullyColdVerified": 4,
+      "sourceIndexCachedVerified": 0,
+      "sourceIndexAndAuthCachedVerified": 0,
+      "authCacheCounts": {
+        "BYPASS": 4
+      },
+      "authKvReads": 4,
+      "r2GetAttempts": 12,
+      "s3GetAttempts": 0,
+      "r2HeadAttempts": 0,
+      "s3HeadAttempts": 0,
+      "readerHttpRequests": 0,
+      "archiveMemoryHits": 0,
+      "archiveEdgeHits": 0,
+      "bufferedOriginBytesAtResponseCreation": 1016244,
+      "streamedOriginExpectedBytes": 0
+    }
+  },
+  "perSlotOriginalAndFollowup": [
+    {
+      "sourceGeometry": "full",
+      "slot": 470555971,
+      "original": {
+        "slot": 470555971,
+        "startedAt": "2026-11-21T23:58:36.123Z",
+        "totalMs": 521.657,
+        "headersMs": 490.669,
+        "ttfbMs": 498.846,
+        "preHeaderProfileMs": 131,
+        "headersMinusPreHeaderProfileMs": 359.669,
+        "stagesMs": {
+          "authentication": 3,
+          "block_body": 0,
+          "block_headers": 70,
+          "resolution_access_decode": 0,
+          "resolution_body": 1,
+          "resolution_decode": 0,
+          "resolution_fetch_total": 128,
+          "resolution_headers": 57,
+          "resolution_total": 58,
+          "signature_body": 0,
+          "signature_headers": 68,
+          "source_ranges_parallel": 70,
+          "stored_block_decode": 0,
+          "worker_placement": 0
+        }
+      },
+      "followup": {
+        "slot": 470555971,
+        "startedAt": "2026-11-22T00:01:49.952Z",
+        "totalMs": 444.706,
+        "headersMs": 387.486,
+        "ttfbMs": 396.201,
+        "preHeaderProfileMs": 163,
+        "headersMinusPreHeaderProfileMs": 224.486,
+        "stagesMs": {
+          "authentication": 30,
+          "block_body": 0,
+          "block_headers": 76,
+          "resolution_access_decode": 0,
+          "resolution_body": 4,
+          "resolution_decode": 0,
+          "resolution_fetch_total": 133,
+          "resolution_headers": 51,
+          "resolution_total": 55,
+          "signature_body": 0,
+          "signature_headers": 78,
+          "source_ranges_parallel": 78,
+          "stored_block_decode": 0,
+          "worker_placement": 0
+        }
+      },
+      "followupMinusOriginalTotalMs": -76.952
+    },
+    {
+      "sourceGeometry": "full",
+      "slot": 470663944,
+      "original": {
+        "slot": 470663944,
+        "startedAt": "2026-11-21T23:58:37.131Z",
+        "totalMs": 260.309,
+        "headersMs": 208.907,
+        "ttfbMs": 210.923,
+        "preHeaderProfileMs": 106,
+        "headersMinusPreHeaderProfileMs": 102.907,
+        "stagesMs": {
+          "authentication": 3,
+          "block_body": 0,
+          "block_headers": 45,
+          "resolution_access_decode": 0,
+          "resolution_body": 2,
+          "resolution_decode": 0,
+          "resolution_fetch_total": 103,
+          "resolution_headers": 54,
+          "resolution_total": 56,
+          "signature_body": 0,
+          "signature_headers": 47,
+          "source_ranges_parallel": 47,
+          "stored_block_decode": 0,
+          "worker_placement": 0
+        }
+      },
+      "followup": {
+        "slot": 470663944,
+        "startedAt": "2026-11-22T00:01:50.929Z",
+        "totalMs": 282.171,
+        "headersMs": 212.603,
+        "ttfbMs": 215.91,
+        "preHeaderProfileMs": 119,
+        "headersMinusPreHeaderProfileMs": 93.603,
+        "stagesMs": {
+          "authentication": 3,
+          "block_body": 7,
+          "block_headers": 60,
+          "resolution_access_decode": 0,
+          "resolution_body": 1,
+          "resolution_decode": 0,
+          "resolution_fetch_total": 116,
+          "resolution_headers": 48,
+          "resolution_total": 49,
+          "signature_body": 3,
+          "signature_headers": 59,
+          "source_ranges_parallel": 67,
+          "stored_block_decode": 0,
+          "worker_placement": 0
+        }
+      },
+      "followupMinusOriginalTotalMs": 21.862
+    },
+    {
+      "sourceGeometry": "full",
+      "slot": 470771932,
+      "original": {
+        "slot": 470771932,
+        "startedAt": "2026-11-21T23:58:37.520Z",
+        "totalMs": 206.047,
+        "headersMs": 160.908,
+        "ttfbMs": 161.457,
+        "preHeaderProfileMs": 105,
+        "headersMinusPreHeaderProfileMs": 55.908,
+        "stagesMs": {
+          "authentication": 3,
+          "block_body": 1,
+          "block_headers": 54,
+          "resolution_access_decode": 0,
+          "resolution_body": 0,
+          "resolution_decode": 0,
+          "resolution_fetch_total": 102,
+          "resolution_headers": 47,
+          "resolution_total": 47,
+          "signature_body": 1,
+          "signature_headers": 50,
+          "source_ranges_parallel": 55,
+          "stored_block_decode": 0,
+          "worker_placement": 0
+        }
+      },
+      "followup": {
+        "slot": 470771932,
+        "startedAt": "2026-11-22T00:01:51.339Z",
+        "totalMs": 211.472,
+        "headersMs": 169.981,
+        "ttfbMs": 170.732,
+        "preHeaderProfileMs": 108,
+        "headersMinusPreHeaderProfileMs": 61.981,
+        "stagesMs": {
+          "authentication": 3,
+          "block_body": 0,
+          "block_headers": 64,
+          "resolution_access_decode": 0,
+          "resolution_body": 0,
+          "resolution_decode": 0,
+          "resolution_fetch_total": 105,
+          "resolution_headers": 41,
+          "resolution_total": 41,
+          "signature_body": 0,
+          "signature_headers": 58,
+          "source_ranges_parallel": 64,
+          "stored_block_decode": 0,
+          "worker_placement": 0
+        }
+      },
+      "followupMinusOriginalTotalMs": 5.425
+    },
+    {
+      "sourceGeometry": "full",
+      "slot": 470879999,
+      "original": {
+        "slot": 470879999,
+        "startedAt": "2026-11-21T23:58:38.101Z",
+        "totalMs": 210.161,
+        "headersMs": 201.819,
+        "ttfbMs": 202.921,
+        "preHeaderProfileMs": 130,
+        "headersMinusPreHeaderProfileMs": 71.819,
+        "stagesMs": {
+          "authentication": 3,
+          "block_body": 0,
+          "block_headers": 82,
+          "resolution_access_decode": 0,
+          "resolution_body": 0,
+          "resolution_decode": 0,
+          "resolution_fetch_total": 127,
+          "resolution_headers": 45,
+          "resolution_total": 45,
+          "signature_body": 0,
+          "signature_headers": 48,
+          "source_ranges_parallel": 82,
+          "stored_block_decode": 0,
+          "worker_placement": 0
+        }
+      },
+      "followup": {
+        "slot": 470879999,
+        "startedAt": "2026-11-22T00:01:51.994Z",
+        "totalMs": 203.583,
+        "headersMs": 197.388,
+        "ttfbMs": 198.526,
+        "preHeaderProfileMs": 111,
+        "headersMinusPreHeaderProfileMs": 86.388,
+        "stagesMs": {
+          "authentication": 4,
+          "block_body": 0,
+          "block_headers": 63,
+          "resolution_access_decode": 0,
+          "resolution_body": 0,
+          "resolution_decode": 0,
+          "resolution_fetch_total": 107,
+          "resolution_headers": 35,
+          "resolution_total": 35,
+          "signature_body": 2,
+          "signature_headers": 70,
+          "source_ranges_parallel": 72,
+          "stored_block_decode": 0,
+          "worker_placement": 0
+        }
+      },
+      "followupMinusOriginalTotalMs": -6.578
+    },
+    {
+      "sourceGeometry": "packed",
+      "slot": 470555971,
+      "original": {
+        "slot": 470555971,
+        "startedAt": "2026-11-21T23:42:53.729Z",
+        "totalMs": 194.628,
+        "headersMs": 157.661,
+        "ttfbMs": 158.98,
+        "preHeaderProfileMs": 119,
+        "headersMinusPreHeaderProfileMs": 38.661,
+        "stagesMs": {
+          "authentication": 1,
+          "block_body": 5,
+          "block_headers": 64,
+          "resolution_access_decode": 0,
+          "resolution_body": 1,
+          "resolution_decode": 0,
+          "resolution_fetch_total": 118,
+          "resolution_headers": 48,
+          "resolution_total": 49,
+          "signature_body": 0,
+          "signature_headers": 48,
+          "source_ranges_parallel": 69,
+          "stored_block_decode": 0,
+          "worker_placement": 0
+        }
+      },
+      "followup": {
+        "slot": 470555971,
+        "startedAt": "2026-11-22T00:01:52.384Z",
+        "totalMs": 415.958,
+        "headersMs": 357.756,
+        "ttfbMs": 363.039,
+        "preHeaderProfileMs": 97,
+        "headersMinusPreHeaderProfileMs": 260.756,
+        "stagesMs": {
+          "authentication": 3,
+          "block_body": 0,
+          "block_headers": 45,
+          "resolution_access_decode": 0,
+          "resolution_body": 0,
+          "resolution_decode": 0,
+          "resolution_fetch_total": 94,
+          "resolution_headers": 49,
+          "resolution_total": 49,
+          "signature_body": 0,
+          "signature_headers": 44,
+          "source_ranges_parallel": 45,
+          "stored_block_decode": 0,
+          "worker_placement": 0
+        }
+      },
+      "followupMinusOriginalTotalMs": 221.33
+    },
+    {
+      "sourceGeometry": "packed",
+      "slot": 470663944,
+      "original": {
+        "slot": 470663944,
+        "startedAt": "2026-11-21T23:42:54.302Z",
+        "totalMs": 215.878,
+        "headersMs": 159.803,
+        "ttfbMs": 161.044,
+        "preHeaderProfileMs": 99,
+        "headersMinusPreHeaderProfileMs": 60.803,
+        "stagesMs": {
+          "authentication": 2,
+          "block_body": 0,
+          "block_headers": 38,
+          "resolution_access_decode": 0,
+          "resolution_body": 9,
+          "resolution_decode": 0,
+          "resolution_fetch_total": 97,
+          "resolution_headers": 49,
+          "resolution_total": 58,
+          "signature_body": 0,
+          "signature_headers": 39,
+          "source_ranges_parallel": 39,
+          "stored_block_decode": 0,
+          "worker_placement": 0
+        }
+      },
+      "followup": {
+        "slot": 470663944,
+        "startedAt": "2026-11-22T00:01:53.290Z",
+        "totalMs": 239.57,
+        "headersMs": 180.475,
+        "ttfbMs": 182.162,
+        "preHeaderProfileMs": 100,
+        "headersMinusPreHeaderProfileMs": 80.475,
+        "stagesMs": {
+          "authentication": 3,
+          "block_body": 0,
+          "block_headers": 46,
+          "resolution_access_decode": 0,
+          "resolution_body": 0,
+          "resolution_decode": 0,
+          "resolution_fetch_total": 97,
+          "resolution_headers": 51,
+          "resolution_total": 51,
+          "signature_body": 0,
+          "signature_headers": 40,
+          "source_ranges_parallel": 46,
+          "stored_block_decode": 0,
+          "worker_placement": 0
+        }
+      },
+      "followupMinusOriginalTotalMs": 23.692
+    },
+    {
+      "sourceGeometry": "packed",
+      "slot": 470771932,
+      "original": {
+        "slot": 470771932,
+        "startedAt": "2026-11-21T23:42:55.644Z",
+        "totalMs": 144.876,
+        "headersMs": 111.659,
+        "ttfbMs": 112.109,
+        "preHeaderProfileMs": 75,
+        "headersMinusPreHeaderProfileMs": 36.659,
+        "stagesMs": {
+          "authentication": 2,
+          "block_body": 0,
+          "block_headers": 36,
+          "resolution_access_decode": 0,
+          "resolution_body": 1,
+          "resolution_decode": 0,
+          "resolution_fetch_total": 73,
+          "resolution_headers": 36,
+          "resolution_total": 37,
+          "signature_body": 2,
+          "signature_headers": 34,
+          "source_ranges_parallel": 36,
+          "stored_block_decode": 0,
+          "worker_placement": 0
+        }
+      },
+      "followup": {
+        "slot": 470771932,
+        "startedAt": "2026-11-22T00:01:53.662Z",
+        "totalMs": 220.539,
+        "headersMs": 184.642,
+        "ttfbMs": 185.447,
+        "preHeaderProfileMs": 100,
+        "headersMinusPreHeaderProfileMs": 84.642,
+        "stagesMs": {
+          "authentication": 3,
+          "block_body": 14,
+          "block_headers": 43,
+          "resolution_access_decode": 0,
+          "resolution_body": 1,
+          "resolution_decode": 0,
+          "resolution_fetch_total": 97,
+          "resolution_headers": 39,
+          "resolution_total": 40,
+          "signature_body": 5,
+          "signature_headers": 49,
+          "source_ranges_parallel": 57,
+          "stored_block_decode": 0,
+          "worker_placement": 0
+        }
+      },
+      "followupMinusOriginalTotalMs": 75.663
+    },
+    {
+      "sourceGeometry": "packed",
+      "slot": 470879999,
+      "original": {
+        "slot": 470879999,
+        "startedAt": "2026-11-21T23:42:56.099Z",
+        "totalMs": 154.356,
+        "headersMs": 145.703,
+        "ttfbMs": 146.568,
+        "preHeaderProfileMs": 83,
+        "headersMinusPreHeaderProfileMs": 62.703,
+        "stagesMs": {
+          "authentication": 2,
+          "block_body": 0,
+          "block_headers": 35,
+          "resolution_access_decode": 0,
+          "resolution_body": 0,
+          "resolution_decode": 0,
+          "resolution_fetch_total": 81,
+          "resolution_headers": 46,
+          "resolution_total": 46,
+          "signature_body": 0,
+          "signature_headers": 34,
+          "source_ranges_parallel": 35,
+          "stored_block_decode": 0,
+          "worker_placement": 0
+        }
+      },
+      "followup": {
+        "slot": 470879999,
+        "startedAt": "2026-11-22T00:01:54.253Z",
+        "totalMs": 185.093,
+        "headersMs": 178.636,
+        "ttfbMs": 180.09,
+        "preHeaderProfileMs": 95,
+        "headersMinusPreHeaderProfileMs": 83.636,
+        "stagesMs": {
+          "authentication": 3,
+          "block_body": 0,
+          "block_headers": 45,
+          "resolution_access_decode": 0,
+          "resolution_body": 1,
+          "resolution_decode": 0,
+          "resolution_fetch_total": 92,
+          "resolution_headers": 46,
+          "resolution_total": 47,
+          "signature_body": 0,
+          "signature_headers": 39,
+          "source_ranges_parallel": 45,
+          "stored_block_decode": 0,
+          "worker_placement": 0
+        }
+      },
+      "followupMinusOriginalTotalMs": 30.737
+    }
+  ],
+  "findings": [
+    "All eight Worker requests prove 3 native R2 GETs, zero S3 GETs, zero HEADs, full application-cache bypass, and Auth BYPASS/KV1. All 16 JSON responses match saved and live Helius data.",
+    "Both exercised Workers still have a slow first-slot request with substantial elapsed time outside the pre-header profile. Prior new-deployment state alone does not explain this behavior.",
+    "The follow-up does not establish a large-object penalty: full and packed p50 times are close, and both have tails. Full-native cold remains slower than Helius in this sample.",
+    "The two groups ran sequentially in separate benchmark processes. Neither isolate reuse nor client TCP/TLS connection reuse is proven. A warm runtime label means the Worker was exercised before this run.",
+    "This is the one authorized 16-call follow-up. No further comparison requests were made."
+  ],
+  "limits": [
+    "All times are end-to-end HTTP GET times from one client. p95 is the largest sample when n=4. The provider cache state is unknown.",
+    "Fully cold means that all owner application caches, including API-key and resolution caches, were bypassed. It does not prove a cold Cloudflare service or physical-disk cache.",
+    "The profile ends before response headers. Its frozen clock does not measure synchronous CPU. Zero decode durations do not mean zero CPU. headersMinusPreHeaderProfileMs is a residual, not a TLS, CPU or network measurement.",
+    "Streamed binary byte and success headers are taken at response creation. Expected source bytes are separate from buffered actual bytes. Exact full bundle SHA-256 proves completed body parity."
+  ],
+  "artifacts": [
+    "full-epoch-warm-runtime-followup.json",
+    "packed-warm-runtime-followup.json",
+    "full-epoch-summary.json"
+  ]
+}

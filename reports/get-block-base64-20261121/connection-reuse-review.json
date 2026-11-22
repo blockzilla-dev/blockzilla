@@ -1,0 +1,159 @@
+{
+  "schema": "blockzilla-worker-connection-reuse-review-v1",
+  "review_date_utc": "2026-11-21",
+  "scope": "Read-only review of current Cloudflare documentation, official source, and installed SDK code. No deployment or live benchmark call.",
+  "versions": {
+    "worker_rs": "0.8.5",
+    "worker_rs_commit": "cc174db40ba9f648623805e98053a4eba3bb50c0",
+    "wrangler": "4.129.0",
+    "local_workerd": "1.20260903.1",
+    "reviewed_workerd_main_commit": "ea04e61319b3a09e36c2e44fdf936e4d3f5b8ec9"
+  },
+  "findings": [
+    {
+      "id": "managed_connections",
+      "conclusion": "Cloudflare manages hosted Worker connections. There is no documented per-Worker TCP pool size, idle timeout, socket reuse, or outbound HTTP version control in the Fetch API.",
+      "primary_urls": [
+        "https://developers.cloudflare.com/workers/runtime-apis/nodejs/http/#agent",
+        "https://developers.cloudflare.com/workers/runtime-apis/nodejs/http/#other-differences-between-nodejs-and-workers-implementation-of-nodehttp",
+        "https://developers.cloudflare.com/workers/runtime-apis/request/"
+      ],
+      "details": [
+        "The Workers Node http.Agent is a stub; it does not supply its own connection pool or keep-alive control.",
+        "Connection headers are not used by the Workers Node HTTP wrapper. Adding Connection: keep-alive does not add a pool."
+      ]
+    },
+    {
+      "id": "rust_same_runtime_fetch",
+      "conclusion": "The installed worker-rs Fetch API calls the same Worker global fetch as JavaScript. It does not create a separate native Rust HTTP client.",
+      "primary_urls": [
+        "https://github.com/cloudflare/workers-rs/blob/cc174db40ba9f648623805e98053a4eba3bb50c0/worker/src/global.rs#L45"
+      ],
+      "local_proof": [
+        {
+          "file": "/Users/augustin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/worker-0.8.5/src/global.rs",
+          "line": 45,
+          "description": "Fetch request adapter obtains WorkerGlobalScope from js_sys::global and calls fetch_with_request_and_init."
+        },
+        {
+          "file": "/Users/augustin/Developement/ferno/blockzilla-v1/edgezilla/get-block/src/worker/resolution.rs",
+          "line": 407,
+          "description": "Foundation signed range request uses Fetch::Request(request).send()."
+        }
+      ]
+    },
+    {
+      "id": "native_r2_binding_already_used",
+      "conclusion": "worker-rs env.bucket returns the native JS R2Bucket binding. The owner resolution index already uses this API.",
+      "primary_urls": [
+        "https://github.com/cloudflare/workers-rs/blob/cc174db40ba9f648623805e98053a4eba3bb50c0/worker/src/env.rs#L104",
+        "https://github.com/cloudflare/workers-rs/blob/cc174db40ba9f648623805e98053a4eba3bb50c0/worker/src/r2/mod.rs#L150"
+      ],
+      "local_proof": [
+        {
+          "file": "/Users/augustin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/worker-0.8.5/src/env.rs",
+          "line": 104,
+          "description": "Env.bucket delegates to get_binding."
+        },
+        {
+          "file": "/Users/augustin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/worker-0.8.5/src/r2/mod.rs",
+          "line": 150,
+          "description": "Bucket has native binding type R2Bucket."
+        },
+        {
+          "file": "/Users/augustin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/worker-sys-0.8.5/src/types/r2/bucket.rs",
+          "line": 3,
+          "description": "Wasm bindings call JS R2Bucket methods."
+        },
+        {
+          "file": "/Users/augustin/Developement/ferno/blockzilla-v1/edgezilla/get-block/src/worker/resolution.rs",
+          "line": 42,
+          "description": "Owner resolution bucket uses env.bucket with BZ_RESOLUTION as the default binding name."
+        }
+      ]
+    },
+    {
+      "id": "account_boundaries",
+      "conclusion": "Current official guidance uses R2 bindings within the same account and the S3 API for cross-account access. Service bindings also require the target Worker in the caller account.",
+      "primary_urls": [
+        "https://developers.cloudflare.com/r2/examples/aws/s3mini/#cloudflare-workers",
+        "https://developers.cloudflare.com/workers/runtime-apis/bindings/service-bindings/#configuration",
+        "https://developers.cloudflare.com/workers/wrangler/configuration/#r2-buckets"
+      ],
+      "local_proof": [
+        {
+          "file": "/Users/augustin/Developement/ferno/blockzilla-v1/edgezilla/get-block/node_modules/wrangler/config-schema.json",
+          "line": 694,
+          "description": "R2 binding schema has no per-binding account_id and rejects additional properties. Its remote field is for local development."
+        }
+      ],
+      "details": [
+        "Changing the wrapper language does not remove the owner/Foundation account boundary.",
+        "No Foundation Worker was deployed. No archive or index object was copied or moved for this review."
+      ]
+    },
+    {
+      "id": "request_settings",
+      "conclusion": "The current signed S3 path does not force connection close, create a custom client pool, or choose an HTTP version.",
+      "local_proof": [
+        {
+          "file": "/Users/augustin/Developement/ferno/blockzilla-v1/edgezilla/get-block/src/worker.rs",
+          "line": 7059,
+          "description": "signed_get uses the common S3 signed request builder."
+        },
+        {
+          "file": "/Users/augustin/Developement/ferno/blockzilla-v1/edgezilla/get-block/src/worker.rs",
+          "line": 7113,
+          "description": "Request headers contain SigV4 authentication fields and optional Range; no Connection close header."
+        },
+        {
+          "file": "/Users/augustin/Developement/ferno/blockzilla-v1/edgezilla/get-block/src/worker.rs",
+          "line": 7130,
+          "description": "request_with_headers creates a Worker GET Request with supplied headers."
+        }
+      ],
+      "details": [
+        "Creating a new Request object does not prove that a new TCP or TLS connection is opened."
+      ]
+    },
+    {
+      "id": "keepalive_option_and_open_source_pool",
+      "conclusion": "Fetch keepalive is not an available pool control. Reviewed workerd source leaves it unsupported and has a shared pooled HTTP/1.1 client.",
+      "primary_urls": [
+        "https://github.com/cloudflare/workerd/blob/ea04e61319b3a09e36c2e44fdf936e4d3f5b8ec9/src/workerd/api/http.h#L953",
+        "https://github.com/cloudflare/workerd/blob/ea04e61319b3a09e36c2e44fdf936e4d3f5b8ec9/src/rust/cxx/kj-hyper/client.rs#L498",
+        "https://github.com/cloudflare/workerd/blob/v1.20260903.1/src/workerd/server/server.c%2B%2B#L2417"
+      ],
+      "limits": [
+        "Open-source workerd settings are not proof of the hosted Workers egress pool configuration.",
+        "The local workerd version differs from the reviewed main commit.",
+        "A local reuse test does not prove production connection reuse.",
+        "The negotiated protocol on our hosted Worker-to-R2 S3 requests was not measured. HTTP/2 use is not claimed."
+      ]
+    }
+  ],
+  "measurement_limits": [
+    "Client TTFB includes the path to the Worker and the work before the first response byte. It does not isolate a TLS handshake.",
+    "The signed S3 response-header wait does not separate DNS, TCP/TLS setup or reuse, Cloudflare routing, R2 gateway/service work, backend queueing, or storage wait.",
+    "The source S3 collector CF-Ray location does not identify the physical R2 storage location. That location remains unknown.",
+    "Object GET and HEAD counters measure API operations, not physical disk reads.",
+    "No direct production socket-reuse trace or successful stack CPU profile was captured by this review."
+  ],
+  "safe_actions": [
+    "Keep native R2 bindings for owner-account data and ordinary Worker fetch for Foundation cross-account S3 reads.",
+    "Keep a stable S3 endpoint and complete successful response bodies. Explicitly cancel rejected bodies when safe; do not drain an unbounded incorrect response.",
+    "Keep request I/O inside handlers. Do not retain global live fetch promises, response streams, or sockets as a connection pool.",
+    "Do not add per-request warmup HEAD calls or Node Agent wrappers as an unmeasured keep-alive fix.",
+    "Measure response-cache and archive-cache behavior separately from connection reuse before a further change."
+  ],
+  "additional_primary_urls": [
+    "https://developers.cloudflare.com/workers/runtime-apis/fetch/",
+    "https://developers.cloudflare.com/speed/optimization/protocol/http2-to-origin/"
+  ],
+  "changes": {
+    "source_code": false,
+    "cloud_configuration": false,
+    "live_benchmark_calls": 0,
+    "archive_writes": 0
+  }
+}

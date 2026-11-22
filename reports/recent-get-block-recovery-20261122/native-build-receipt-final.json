@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "startedUnix": 1795358661.031643,
+  "sourceRoot": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/recent-get-block-recovery-20261122/source-v1/native-source-v1",
+  "phases": [
+    {
+      "name": "tests",
+      "exitCode": 0,
+      "elapsedSeconds": 2.078
+    },
+    {
+      "name": "release",
+      "exitCode": 0,
+      "elapsedSeconds": 8.171
+    }
+  ],
+  "completedUnix": 1795358671.2839618,
+  "binarySha256": "49c6611aa0bb46607653067736a55945f8ff6f321fe77cff54e752af0ea33974",
+  "binaryBytes": 9179680
+}

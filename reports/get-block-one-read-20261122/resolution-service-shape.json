@@ -1,0 +1,128 @@
+{
+  "schema": "blockzilla-central-resolution-shape-v1",
+  "status": "READ_ONLY_EXISTING_FILE_SIZE_ANALYSIS",
+  "records": [
+    {
+      "slot": 470555971,
+      "fullResolutionBytes": 75677,
+      "dictionarySuffixBytes": 74327,
+      "accessPrefixBytes": 462,
+      "orderedSignatureBytes": 26880,
+      "existingWincodeAccessBlobBytes": 101669,
+      "resolutionPlusSignaturesBytes": 102557
+    },
+    {
+      "slot": 470663944,
+      "fullResolutionBytes": 103689,
+      "dictionarySuffixBytes": 102187,
+      "accessPrefixBytes": 538,
+      "orderedSignatureBytes": 32576,
+      "existingWincodeAccessBlobBytes": 135301,
+      "resolutionPlusSignaturesBytes": 136265
+    },
+    {
+      "slot": 470771932,
+      "fullResolutionBytes": 91326,
+      "dictionarySuffixBytes": 89863,
+      "accessPrefixBytes": 518,
+      "orderedSignatureBytes": 31616,
+      "existingWincodeAccessBlobBytes": 121997,
+      "resolutionPlusSignaturesBytes": 122942
+    },
+    {
+      "slot": 470879999,
+      "fullResolutionBytes": 44425,
+      "dictionarySuffixBytes": 43427,
+      "accessPrefixBytes": 285,
+      "orderedSignatureBytes": 15040,
+      "existingWincodeAccessBlobBytes": 58752,
+      "resolutionPlusSignaturesBytes": 59465
+    }
+  ],
+  "totals": {
+    "fullResolutionBytes": 315117,
+    "dictionarySuffixBytes": 309804,
+    "accessPrefixBytes": 1803,
+    "orderedSignatureBytes": 106112,
+    "existingWincodeAccessBlobBytes": 417719,
+    "resolutionPlusSignaturesBytes": 421229
+  },
+  "existingResolutionContains": [
+    "Block-local sorted id-to-pubkey, id-to-blockhash and block-id-to-vote-hash tables.",
+    "Per-transaction signature counts, current blockhash and actual previous blockhash.",
+    "Parent slot, source schemas, exact hot/signature offsets, source object lengths and strong ETags."
+  ],
+  "existingResolutionOmits": [
+    "Raw ordered signature bytes; these remain in the source signature file."
+  ],
+  "existingAccessBlobContains": [
+    "Current and previous blockhash, per-transaction signature counts, ordered raw signatures, and all three block-local dictionary tables."
+  ],
+  "existingAccessBlobOmits": [
+    "Source locator, explicit slot, parent slot and schemas. A service must add or bind the needed descriptor. The hot header has slot and parent slot, which must match the descriptor."
+  ],
+  "proposedServiceNotImplemented": true,
+  "concurrencyLimits": [
+    "The block and resolution requests can overlap after the caller or endpoints have a trusted slot-to-source locator.",
+    "The current plain access=0 Worker path still loads its R2 resolution before the hot GET; a new disk service alone does not remove that hidden lookup.",
+    "The existing signed client locator authenticates the source descriptor, not an arbitrary submitted dictionary payload. Keep a trusted service response or a signed full content digest."
+  ],
+  "unmeasured": [
+    "Disk service implementation, local directory lookup, local file reads and file-cache effects.",
+    "Service network path, response compression and transfer time, concurrency, cold process starts and availability.",
+    "CPU, throughput, egress and fixed monthly server cost.",
+    "Complete two-source client download and JSON reconstruction parity/time against independent RPC output."
+  ],
+  "costLimit": "Moving the access record to a server replaces object operations with server I/O and transport. It does not prove a lower all-in cost or latency. R2 hot GETs and Worker/auth CPU remain if the public Worker is still used.",
+  "compactIdListAssessment": {
+    "status": "MEASURED_SAVED_FOUR_ACCESS_BLOBS",
+    "records": [
+      {
+        "slot": 470555971,
+        "pubkeyIds": 2058,
+        "blockhashIds": 50,
+        "voteIds": 0,
+        "rawU32IdBytes": 8432,
+        "rawU64IdBytes": 16864,
+        "resolvedDictionaryBytes": 74327
+      },
+      {
+        "slot": 470663944,
+        "pubkeyIds": 2856,
+        "blockhashIds": 42,
+        "voteIds": 0,
+        "rawU32IdBytes": 11592,
+        "rawU64IdBytes": 23184,
+        "resolvedDictionaryBytes": 102187
+      },
+      {
+        "slot": 470771932,
+        "pubkeyIds": 2495,
+        "blockhashIds": 45,
+        "voteIds": 0,
+        "rawU32IdBytes": 10160,
+        "rawU64IdBytes": 20320,
+        "resolvedDictionaryBytes": 89863
+      },
+      {
+        "slot": 470879999,
+        "pubkeyIds": 1200,
+        "blockhashIds": 35,
+        "voteIds": 0,
+        "rawU32IdBytes": 4940,
+        "rawU64IdBytes": 9880,
+        "resolvedDictionaryBytes": 43427
+      }
+    ],
+    "totalTypedIds": 8781,
+    "totalU32IdBytes": 35124,
+    "totalResolvedDictionaryBytes": 309804,
+    "meanU32IdBytes": 8781,
+    "meanSignatureCountBytes": 380,
+    "limits": [
+      "Raw uncompressed ID bytes only; add counts, slot/source identity, parent/hash and range descriptor headers.",
+      "Only four modern blocks measured; all have zero vote IDs.",
+      "No service implementation, full epoch size or latency measured."
+    ]
+  }
+}

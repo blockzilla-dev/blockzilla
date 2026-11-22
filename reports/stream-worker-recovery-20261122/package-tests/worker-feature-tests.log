@@ -1,0 +1,512 @@
+   Compiling unicode-ident v1.0.24
+   Compiling wasm-bindgen-shared v0.2.128
+   Compiling bumpalo v3.20.3
+   Compiling pin-project-lite v0.2.17
+   Compiling wasm-bindgen v0.2.128
+   Compiling futures-core v0.3.34
+   Compiling futures-task v0.3.34
+   Compiling slab v0.4.12
+   Compiling proc-macro2 v1.0.107
+   Compiling memchr v2.8.3
+   Compiling version_check v0.9.5
+   Compiling futures-sink v0.3.34
+   Compiling thiserror v2.0.20
+   Compiling litemap v0.8.3
+   Compiling once_cell v1.21.4
+   Compiling writeable v0.6.4
+   Compiling generic-array v0.14.7
+   Compiling futures-io v0.3.34
+   Compiling bytes v1.12.1
+   Compiling icu_normalizer_data v2.3.0
+   Compiling utf8_iter v1.0.4
+   Compiling icu_properties_data v2.3.0
+   Compiling quote v1.0.47
+   Compiling aho-corasick v1.1.5
+   Compiling nom v7.1.3
+   Compiling syn v2.0.119
+   Compiling syn v3.0.6
+   Compiling wincode v0.6.1
+   Compiling futures-util v0.3.34
+   Compiling smallvec v1.16.0
+   Compiling crypto-common v0.1.7
+   Compiling block-buffer v0.10.4
+   Compiling autocfg v1.5.1
+   Compiling zeroize v1.9.0
+   Compiling digest v0.10.7
+   Compiling curve25519-dalek v4.1.3
+   Compiling percent-encoding v2.3.2
+   Compiling form_urlencoded v1.2.2
+   Compiling cpufeatures v0.2.17
+   Compiling num-traits v0.2.19
+   Compiling signature v2.2.0
+   Compiling ed25519 v2.2.3
+   Compiling sha2 v0.10.9
+   Compiling regex-automata v0.4.18
+   Compiling http v1.5.0
+   Compiling ryu v1.0.23
+   Compiling serde_json v1.0.151
+   Compiling chrono v0.4.45
+   Compiling ed25519-dalek v2.2.0
+   Compiling http-body v1.1.0
+   Compiling curve25519-dalek v5.0.0
+   Compiling futures-channel v0.3.34
+   Compiling tokio v1.53.1
+   Compiling twox-hash v2.1.4
+   Compiling matchit v0.7.3
+   Compiling ruzstd v0.9.0
+   Compiling solana-signature v3.4.1
+   Compiling ed25519-dalek v3.0.0
+   Compiling regex v1.13.1
+   Compiling wasm-bindgen-macro-support v0.2.128
+   Compiling env_logger v0.7.1
+   Compiling synstructure v0.13.2
+   Compiling darling_core v0.23.0
+   Compiling prettyplease v0.2.37
+   Compiling pb-rs v0.10.0
+   Compiling zerovec-derive v0.11.6
+   Compiling displaydoc v0.2.7
+   Compiling zerofrom-derive v0.1.7
+   Compiling yoke-derive v0.8.2
+   Compiling serde_derive v1.0.229
+   Compiling prost-derive v0.14.4
+   Compiling thiserror-impl v2.0.20
+   Compiling zerofrom v0.1.8
+   Compiling yoke v0.8.3
+   Compiling zerovec v0.11.8
+   Compiling futures-macro v0.3.34
+   Compiling prost v0.14.4
+   Compiling zerotrie v0.2.5
+   Compiling tinystr v0.8.4
+   Compiling icu_locale_core v2.3.0
+   Compiling darling_macro v0.23.0
+   Compiling potential_utf v0.1.6
+   Compiling prost-types v0.14.4
+   Compiling icu_collections v2.3.0
+   Compiling darling v0.23.0
+   Compiling wincode-derive v0.5.1
+   Compiling zerocopy-derive v0.8.56
+   Compiling serde v1.0.229
+   Compiling icu_provider v2.3.1
+   Compiling prost-build v0.14.4
+   Compiling icu_properties v2.3.0
+   Compiling icu_normalizer v2.3.0
+   Compiling minicbor-derive v0.19.5
+   Compiling zerocopy v0.8.56
+   Compiling of-car-reader v0.2.1 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/old-faithful/of-car-reader)
+   Compiling strum_macros v0.27.2
+   Compiling wasm-bindgen-macro v0.2.128
+   Compiling pin-project-internal v1.1.13
+   Compiling idna_adapter v1.2.2
+   Compiling async-trait v0.1.92
+   Compiling idna v1.1.0
+   Compiling pin-project v1.1.13
+   Compiling url v2.5.8
+   Compiling blockzilla-primitives v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/blockzilla-primitives)
+   Compiling serde_urlencoded v0.7.1
+   Compiling blockzilla-program-logs v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/parser/blockzilla-program-logs)
+   Compiling blockzilla-registry v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/compact-v2/blockzilla-registry)
+   Compiling strum v0.27.2
+   Compiling js-sys v0.3.105
+   Compiling half v2.7.1
+   Compiling minicbor v2.3.0
+warning: constant `BLS_AFFINE_LEN` is never used
+  --> crates/old-faithful/of-car-reader/src/blockmarker.rs:20:7
+   |
+20 | const BLS_AFFINE_LEN: usize = 192;
+   |       ^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling blockzilla-compact v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/compact-v2/blockzilla-compact)
+   Compiling web-sys v0.3.105
+   Compiling wasm-bindgen-futures v0.4.78
+   Compiling serde-wasm-bindgen v0.6.5
+warning: `of-car-reader` (lib) generated 1 warning
+   Compiling worker-sys v0.8.5
+   Compiling wasm-streams v0.6.0
+   Compiling blockzilla-archive-v2 v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/compact-v2/blockzilla-archive-v2)
+   Compiling worker-macros v0.8.5
+   Compiling worker v0.8.5
+   Compiling blockzilla-get-block v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block)
+warning: unused import: `JsCast`
+  --> edgezilla/get-block/src/worker.rs:59:20
+   |
+59 | use wasm_bindgen::{JsCast, JsValue};
+   |                    ^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `handle_probe_first` is never used
+    --> edgezilla/get-block/src/worker.rs:3767:10
+     |
+3767 | async fn handle_probe_first(req: Request, ctx: RouteContext<()>) -> Result<Response> {
+     |          ^^^^^^^^^^^^^^^^^^
+     |
+     = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `handle_probe_slot` is never used
+    --> edgezilla/get-block/src/worker.rs:3771:10
+     |
+3771 | async fn handle_probe_slot(req: Request, ctx: RouteContext<()>) -> Result<Response> {
+     |          ^^^^^^^^^^^^^^^^^
+
+warning: function `handle_probe` is never used
+    --> edgezilla/get-block/src/worker.rs:3782:10
+     |
+3782 | async fn handle_probe(req: Request, ctx: RouteContext<()>, slot: Option<u64>) -> Result<Response> {
+     |          ^^^^^^^^^^^^
+
+warning: function `query_epoch` is never used
+    --> edgezilla/get-block/src/worker.rs:3839:4
+     |
+3839 | fn query_epoch(req: &Request) -> Option<u64> {
+     |    ^^^^^^^^^^^
+
+warning: field `index_row` is never read
+    --> edgezilla/get-block/src/worker.rs:4054:5
+     |
+4052 | struct FetchedHotBlock {
+     |        --------------- field in this struct
+4053 |     epoch: u64,
+4054 |     index_row: ArchiveV2GetBlockIndexRow,
+     |     ^^^^^^^^^
+
+warning: function `stream_get_block_full_value` is never used
+    --> edgezilla/get-block/src/worker.rs:4997:10
+     |
+4997 | async fn stream_get_block_full_value(
+     |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `full_json_capacity_hint` is never used
+    --> edgezilla/get-block/src/worker.rs:5139:4
+     |
+5139 | fn full_json_capacity_hint(
+     |    ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `stream_account_metadata_lite_value` is never used
+    --> edgezilla/get-block/src/worker.rs:6223:4
+     |
+6223 | fn stream_account_metadata_lite_value(
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `stream_token_balances_lite_value` is never used
+    --> edgezilla/get-block/src/worker.rs:6256:4
+     |
+6256 | fn stream_token_balances_lite_value(w: &mut JsonByteWriter, count: usize) {
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: fields `err`, `fee`, `pre_balances`, `post_balances`, `pre_token_balance_count`, and `post_token_balance_count` are never read
+    --> edgezilla/get-block/src/worker.rs:6376:5
+     |
+6375 | struct AccountMetaLite {
+     |        --------------- fields in this struct
+6376 |     err: Option<StoredTransactionError>,
+     |     ^^^
+6377 |     fee: u64,
+     |     ^^^
+6378 |     pre_balances: Vec<u64>,
+     |     ^^^^^^^^^^^^
+6379 |     post_balances: Vec<u64>,
+     |     ^^^^^^^^^^^^^
+6380 |     pre_token_balance_count: usize,
+     |     ^^^^^^^^^^^^^^^^^^^^^^^
+6381 |     post_token_balance_count: usize,
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `account_transaction_value` is never used
+    --> edgezilla/get-block/src/worker.rs:6446:10
+     |
+6446 | async fn account_transaction_value(
+     |          ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `decode_account_metadata_lite` is never used
+    --> edgezilla/get-block/src/worker.rs:6755:4
+     |
+6755 | fn decode_account_metadata_lite(
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `decode_account_metadata_lite_bytes` is never used
+    --> edgezilla/get-block/src/worker.rs:6777:4
+     |
+6777 | fn decode_account_metadata_lite_bytes(
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `read_wincode_len` is never used
+    --> edgezilla/get-block/src/worker.rs:6814:4
+     |
+6814 | fn read_wincode_len<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<usize, String> {
+     |    ^^^^^^^^^^^^^^^^
+
+warning: function `skip_raw_bytes` is never used
+    --> edgezilla/get-block/src/worker.rs:6819:4
+     |
+6819 | fn skip_raw_bytes<'de>(
+     |    ^^^^^^^^^^^^^^
+
+warning: function `read_option_tag` is never used
+    --> edgezilla/get-block/src/worker.rs:6829:4
+     |
+6829 | fn read_option_tag<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<u8, String> {
+     |    ^^^^^^^^^^^^^^^
+
+warning: function `skip_option_u8` is never used
+    --> edgezilla/get-block/src/worker.rs:6837:4
+     |
+6837 | fn skip_option_u8<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^^^
+
+warning: function `skip_option_u32` is never used
+    --> edgezilla/get-block/src/worker.rs:6844:4
+     |
+6844 | fn skip_option_u32<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^^^^
+
+warning: function `skip_option_u64` is never used
+    --> edgezilla/get-block/src/worker.rs:6851:4
+     |
+6851 | fn skip_option_u64<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^^^^
+
+warning: function `skip_byte_vec` is never used
+    --> edgezilla/get-block/src/worker.rs:6858:4
+     |
+6858 | fn skip_byte_vec<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^^
+
+warning: function `skip_u32_vec` is never used
+    --> edgezilla/get-block/src/worker.rs:6863:4
+     |
+6863 | fn skip_u32_vec<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^
+
+warning: function `skip_option_inner_instructions` is never used
+    --> edgezilla/get-block/src/worker.rs:6871:4
+     |
+6871 | fn skip_option_inner_instructions<'de>(
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `skip_inner_instructions` is never used
+    --> edgezilla/get-block/src/worker.rs:6883:4
+     |
+6883 | fn skip_inner_instructions<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `skip_option_log_stream` is never used
+    --> edgezilla/get-block/src/worker.rs:6895:4
+     |
+6895 | fn skip_option_log_stream<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `skip_log_events` is never used
+    --> edgezilla/get-block/src/worker.rs:6904:4
+     |
+6904 | fn skip_log_events<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^^^^
+
+warning: function `skip_string_table` is never used
+    --> edgezilla/get-block/src/worker.rs:6912:4
+     |
+6912 | fn skip_string_table<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^^^^^^
+
+warning: function `skip_data_table` is never used
+    --> edgezilla/get-block/src/worker.rs:6917:4
+     |
+6917 | fn skip_data_table<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^^^^
+
+warning: function `skip_token_balances` is never used
+    --> edgezilla/get-block/src/worker.rs:6926:4
+     |
+6926 | fn skip_token_balances<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<usize, String> {
+     |    ^^^^^^^^^^^^^^^^^^^
+
+warning: function `skip_rewards` is never used
+    --> edgezilla/get-block/src/worker.rs:6939:4
+     |
+6939 | fn skip_rewards<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^
+
+warning: function `skip_option_return_data` is never used
+    --> edgezilla/get-block/src/worker.rs:6951:4
+     |
+6951 | fn skip_option_return_data<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `skip_option_compact_pubkey` is never used
+    --> edgezilla/get-block/src/worker.rs:6959:4
+     |
+6959 | fn skip_option_compact_pubkey<'de>(
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `skip_compact_pubkey` is never used
+    --> edgezilla/get-block/src/worker.rs:6968:4
+     |
+6968 | fn skip_compact_pubkey<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^^^^^^^^
+
+warning: function `account_metadata_lite_value` is never used
+    --> edgezilla/get-block/src/worker.rs:7589:4
+     |
+7589 | fn account_metadata_lite_value(
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `token_balances_lite_value` is never used
+    --> edgezilla/get-block/src/worker.rs:7617:4
+     |
+7617 | fn token_balances_lite_value(_count: usize) -> Value {
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `short_error_body` is never used
+    --> edgezilla/get-block/src/worker.rs:8731:4
+     |
+8731 | fn short_error_body(body: &str) -> String {
+     |    ^^^^^^^^^^^^^^^^
+
+warning: field `bytes` is never read
+  --> edgezilla/get-block/src/worker/foundation_first.rs:68:9
+   |
+66 |     Resolved {
+   |     -------- field in this variant
+67 |         checked: CheckedResolution,
+68 |         bytes: Vec<u8>,
+   |         ^^^^^
+
+warning: `blockzilla-get-block` (lib test) generated 37 warnings (run `cargo fix --lib -p blockzilla-get-block --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 58s
+     Running unittests src/lib.rs (target/debug/deps/blockzilla_get_block-94cc86ee7987fdb8)
+
+running 130 tests
+test archive_schema::tests::hostile_declared_sequence_lengths_do_not_allocate_unbounded_memory ... ok
+test archive_cache::tests::bounds_entry_count_and_replaces_without_duplicate_cost ... ok
+test archive_cache::tests::bounds_bytes_and_evicts_the_least_recent_entry ... ok
+test archive_schema::tests::current_failed_transaction_error_decodes_without_legacy_retry ... ok
+test rpc_access::tests::canonical_cache_identity_contains_only_content_dimensions ... ok
+test archive_schema::tests::current_unknown_instruction_fallbacks_keep_the_current_enum_order ... ok
+test rpc_access::tests::collapses_all_backend_attempts_to_one_billable_read ... ok
+test rpc_access::tests::hashes_keys_as_lowercase_sha256 ... ok
+test archive_schema::tests::stored_metadata_decodes_known_program_log_tag_seventeen ... ok
+test archive_schema::tests::real_epoch_900_legacy_failed_transaction_uses_the_selected_grammar ... ok
+test archive_schema::tests::current_and_legacy_source_integers_can_have_padding ... ok
+test rpc_access::tests::rejects_missing_or_malformed_bearer_key ... ok
+test rpc_access::tests::parses_well_formed_bearer_key ... ok
+test rpc_access::tests::parses_and_validates_key_record ... ok
+test archive_schema::tests::source_schema_declarations_are_explicit_and_checked ... ok
+test rpc_access::tests::keeps_metric_method_cardinality_bounded ... ok
+test rpc_access::tests::rejects_unsafe_or_ambiguous_key_records ... ok
+test archive_schema::tests::foundation_metadata_with_known_program_log_keeps_complete_wire_grammar ... ok
+test archive_schema::tests::real_may24_message_keeps_exact_bytes_and_selected_variant_order ... ok
+test slot_index::tests::absent_rows_are_unambiguous ... ok
+test slot_index::tests::header_round_trip_and_fixed_geometry ... ok
+test slot_index::tests::rejects_wrong_identity_overflow_and_object_bounds ... ok
+test slot_lookup::tests::full_range_selects_one_ordinal_and_near_full_range_stays_small ... ok
+test slot_lookup::tests::rejects_invalid_counts_slots_and_overflow ... ok
+test slot_index::tests::row_round_trip_keeps_parent_across_epoch_boundary ... ok
+test slot_index::tests::rejects_bad_header_and_truncation ... ok
+test slot_lookup::tests::zero_rows_have_empty_windows_at_every_slot ... ok
+test slot_lookup::tests::every_present_ordinal_is_inside_its_window_for_every_eight_slot_subset ... ok
+test slot_references::tests::collector_rejects_raw_fallback_bad_rows_and_signature_disagreement ... ok
+test slot_references::tests::legacy_first_block_uses_actual_tail_hash_and_checks_its_slot ... ok
+test slot_references::tests::missing_vote_columns_and_short_reads_fail_closed ... ok
+test slot_references::tests::complete_collector_covers_metadata_lookup_log_reward_and_vote_columns ... ok
+test slot_resolution::tests::checks_signature_counts_dictionary_membership_and_bounds ... ok
+test slot_resolution::tests::checked_decode_rejects_digest_identity_and_signature_mismatches ... ok
+test slot_resolution::tests::checked_decode_preserves_binary_segments_and_moves_decoded_tables ... ok
+test slot_references::tests::reference_validation_rejects_missing_header_hash_duplicates_and_empty_votes ... ok
+test slot_resolution::tests::prehashed_decode_keeps_all_framing_and_header_checks ... ok
+test storage_metrics::tests::cloned_sources_share_only_one_request_and_cache_hits_do_not_read_storage ... ok
+test slot_resolution::tests::rejects_corruption_truncation_and_extra_bytes ... ok
+test slot_references::tests::local_resolution_batches_tables_and_never_reads_signature_bytes ... ok
+test storage_metrics::tests::counts_attempts_failures_missing_objects_and_returned_bytes_separately ... ok
+test slot_resolution::tests::rejects_mixed_generation_parent_and_source_ranges ... ok
+test slot_resolution::tests::round_trip_exposes_exact_zero_copy_access_segments ... ok
+test storage_metrics::tests::native_reader_transport_and_confirmed_r2_work_are_separate ... ok
+test transaction_rpc::tests::exact_lookup_rejects_other_signers_and_corrupt_signature_ranges ... ok
+test transaction_rpc::tests::live_archive_prefixes_are_bounded_plain_object_keys ... ok
+test transaction_rpc::tests::live_locator_pins_identity_and_accepts_new_catalog_generations ... ok
+test transaction_rpc::tests::validates_locator_signature_catalog_and_slot ... ok
+test transaction_rpc::tests::live_locator_rejects_bad_candidates_and_excess_work ... ok
+test slot_resolution::tests::valid_digest_cannot_promote_invalid_dictionary_or_envelope ... ok
+test worker::auth_check_cache_tests::completed_slow_reads_do_not_extend_the_check_deadline ... ok
+test transaction_rpc::tests::binary_encoder_preserves_signatures_and_v0_lookup_bytes ... ok
+test worker::auth_check_cache_tests::expires_at_five_seconds_without_sliding_on_hits ... ok
+test worker::auth_check_cache_tests::failures_invalid_records_and_invalid_clocks_never_enter_cache ... ok
+test worker::auth_check_cache_tests::edge_promotion_preserves_deadline_after_delay_in_a_fresh_runtime ... ok
+test worker::auth_check_cache_tests::edge_encoding_is_bounded_positive_only_and_origin_scoped ... ok
+test transaction_rpc::tests::validates_signature_config_commitment_and_version_before_io ... ok
+test transaction_rpc::tests::validates_canonical_generation_binding_and_rejects_changed_objects ... ok
+test worker::auth_check_cache_tests::edge_envelope_rejects_stale_future_disabled_and_wrong_identity ... ok
+test worker::auth_check_cache_tests::separates_namespace_scopes_without_retaining_the_api_key ... ok
+test worker::bundle_object::tests::borrowed_outer_frame_has_no_payload_copy_and_checks_exact_framing ... ok
+test worker::bundle_object::tests::rejects_noncanonical_and_overflowing_frame_lengths ... ok
+test worker::foundation_first::recent::tests::cursors_and_numbers_reject_aliases_controls_and_extra_fields ... ok
+test worker::foundation_first::recent::tests::error_headers_allow_only_small_tagged_errors_and_explicit_misses ... ok
+test worker::block_base64::tests::streams_continuous_base64_across_signature_boundaries_and_rejects_invalid_windows ... ok
+test worker::block_base64::tests::preserves_legacy_v0_and_v1_wire_versions_and_standard_failure_metadata ... ok
+test worker::foundation_first::recent::tests::recent_headers_require_protocol_digest_length_and_metadata ... ok
+test worker::foundation_first::recent::tests::recent_source_requires_exact_complete_canonical_identity ... ok
+test worker::foundation_first::tests::cache_miss_is_typed_and_never_proves_archive_absence ... ok
+test worker::foundation_first::recent::tests::recent_only_configuration_skips_the_legacy_lookup_without_disabling_recovery ... ok
+test worker::foundation_first::tests::endpoint_and_credentials_are_bounded_and_do_not_accept_remote_cleartext_or_redirect_paths ... ok
+test worker::foundation_first::tests::complete_headers_require_finalized_pinned_preverified_identity ... ok
+test worker::foundation_first::tests::only_body_transport_errors_allow_fallback_and_identity_errors_do_not ... ok
+test worker::foundation_first::tests::optional_service_diagnostics_are_bounded_and_do_not_affect_data_admission ... ok
+test worker::foundation_first::tests::raw_block_plan_preserves_origin_source_and_exact_hot_digest ... ok
+test worker::foundation_first::recent::tests::metadata_binds_hash_parent_source_and_exact_processed_cursor_bank ... ok
+test worker::foundation_first::tests::resolution_requires_bounded_raw_signature_free_body_and_full_locator_equality_later ... ok
+test worker::foundation_first::tests::resolve_request_uses_same_origin_token_and_binds_exact_request_digest ... ok
+test worker::json_writer_tests::channel_preserves_record_bytes_and_flush_boundaries ... ok
+test worker::json_writer_tests::closed_channel_aborts_without_claiming_delivery ... ok
+test worker::foundation_first::tests::resolve_reply_matches_source_counts_membership_and_actual_previous_hash ... ok
+test worker::json_writer_tests::quoted_signatures_match_reference_without_allocating_key_memo ... ok
+test worker::native_reader::tests::request_matches_independent_node_and_webcrypto_hmac_vector ... ok
+test worker::native_reader::tests::endpoint_and_source_identity_fail_closed_before_http ... ok
+test worker::native_reader::tests::proof_and_range_headers_distinguish_attempts_from_complete_bodies ... ok
+test worker::resolution::hinted_fetch_tests::accepts_only_the_complete_stored_locator_for_a_json_hint ... ok
+test worker::response_fill::tests::bounded_fills_followers_and_keys ... ok
+test worker::response_fill::tests::cancelled_leader_wakes_followers_without_claiming_cache_success ... ok
+test worker::response_fill::tests::completion_is_shared_and_releases_the_key ... ok
+test worker::response_fill::tests::stale_leader_does_not_remove_a_replacement ... ok
+test worker::stored::tests::adaptive_registry_pages_admit_wide_ids_without_losing_references ... ok
+test worker::auth_check_cache_tests::bounds_entry_count_bytes_and_owned_record_clones ... ok
+test worker::stored::tests::block_validation_checks_index_signature_count_and_transaction_regions ... ok
+test worker::stored::tests::historical_full_bundle_normalizes_exact_records_and_repairs_region_offsets ... ok
+test worker::stored::tests::index_header_checks_exact_object_length_and_frame_mode ... ok
+test worker::stored::tests::registry_concurrency_limit_is_shared_and_releases_cancelled_reads ... ok
+test worker::stored::tests::registry_pages_have_stable_keys_and_only_missing_neighbors_are_coalesced ... ok
+test worker::stored::tests::request_budget_is_shared_across_registry_kinds ... ok
+test worker::stored::tests::sparse_genesis_has_an_explicit_zero_parent_without_a_previous_epoch ... ok
+test worker::stored::tests::sparse_hash_ordinal_binds_legacy_and_boundary_prefixed_registries ... ok
+test worker::stored::tests::sparse_page_accepts_skipped_slots_and_checks_offsets_and_ordinals ... ok
+test worker::stored::tests::tail_accepts_exact_schemas_and_rejects_ambiguous_or_wrong_epoch_rows ... ok
+test worker::stream_parts::tests::counts_all_framing_and_native_body_lengths_without_buffering ... ok
+test worker::stream_parts::tests::rejects_body_and_framing_limits_and_integer_overflow ... ok
+test worker::tests::applies_rpc_log_messages_byte_limit ... ok
+test worker::tests::decodes_v1_account_message_after_transaction_config ... ok
+test worker::tests::parses_all_direct_block_route_variants ... ok
+test worker::tests::renders_all_message_versions_for_buffered_and_streaming_paths ... ok
+test worker::tests::renders_authoritative_cache_receipts ... ok
+test worker::tests::renders_optional_v1_transaction_config ... ok
+test worker::tests::transaction_error_render_borsh_io_error_as_string ... ok
+test worker::tests::transaction_error_render_instruction_custom ... ok
+test worker::tests::validates_exact_partial_response_bounds ... ok
+test worker::transaction::tests::live_lookup_keeps_candidate_order_and_generation_prefixes ... ok
+test worker::transaction::tests::static_lookup_keeps_exact_digest_pin_and_fixed_source_prefix ... ok
+test worker::vote_proof::signed_message::tests::candidate_selection_uses_one_exact_whole_message ... ok
+test worker::stored::tests::adaptive_registry_pages_respect_vote_record_width_and_coalesced_bounds ... ok
+test worker::vote_proof::signed_message::tests::ed25519_candidate_selection_uses_first_then_checks_all ... ok
+test worker::vote_proof::signed_message::tests::ed25519_verifier_rejects_empty_and_unpaired_proofs ... ok
+test worker::vote_proof::signed_message::tests::short_vector_lengths_match_canonical_boundaries ... ok
+test worker::vote_proof::signed_message::tests::typed_instruction_candidates_use_exact_wire_bytes ... ok
+test worker::vote_proof::signed_message::tests::ed25519_verifier_checks_every_signer ... ok
+test worker::vote_proof::tests::rejects_partial_extra_and_missing_signature_bytes ... ok
+test worker::vote_proof::tests::proves_and_renders_both_real_tower_wire_forms ... ok
+test worker::json_writer_tests::decimal_strings_match_existing_rpc_formatter_for_all_u8_scales ... ok
+test worker::json_writer_tests::key_memo_is_lazy_bounded_and_collision_safe ... ok
+test worker::stored::tests::adaptive_registry_pages_keep_the_largest_geometry_when_dense ... ok
+test worker::stored::tests::adaptive_registry_pages_reject_required_records_above_family_quota ... ok
+test worker::base58::tests::matches_reference_for_group_boundaries_and_zero_prefixes ... ok
+test worker::base58::tests::matches_reference_for_deterministic_random_words_and_leading_digits has been running for over 60 seconds
+test worker::base58::tests::matches_reference_for_deterministic_random_words_and_leading_digits ... ok
+
+test result: ok. 130 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 156.41s

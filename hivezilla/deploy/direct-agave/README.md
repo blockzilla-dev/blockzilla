@@ -1,5 +1,22 @@
 # Direct Agave production deployment
 
+## Automatic Worker recovery, 22 November 2026
+
+The Hetzner raw Rust consumer now recovers missing retained frames through
+`https://getblock.blockzilla.dev`. It checks exact hashes and identities and
+uses the same compact-only database and atomic cursor commit. The enabled
+release is `00631e8678ad3f86afadc698d316e19404222efccb2ef1a477f735704b2b67eb`.
+The update recovered eight blocks and sixteen controls before exact stream
+resume. An isolated reader disconnect recovered fifteen blocks with zero
+gaps or duplicates. All 105 Linux tests passed.
+
+Only the consumer had one controlled stop/start. Validator, native worker,
+reader and Tunnel process identities stayed fixed. The new read-only SSH
+metadata adapter reads existing feed identities and sends original small
+controls; it adds no block store or per-block index. Old restricted helper
+access remains admitted. Expired native history returns an explicit gap.
+See the [acceptance record](../../../reports/stream-worker-recovery-20261122/README.md).
+
 Host: `ubuntu@213.239.141.61`.
 
 Root: `/home/ubuntu/live/hivezilla-validator-20260930`.

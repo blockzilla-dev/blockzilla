@@ -1,0 +1,4178 @@
+{
+  "schema": "blockzilla.recent-compact-recovery.v1",
+  "status": "PASS",
+  "startedAt": "2026-11-22T14:56:23.123Z",
+  "deployment": {
+    "account_id": "8df0426c80fcd1a04ed439f441db9ff8",
+    "worker": "blockzilla-get-block",
+    "version": "50aaba11-468b-4c57-b1ad-ddc999ea9152",
+    "wasmSha256": "abdf6f5a4a57e44fb0c9b343ced6c980f4a61e92eb20d597ef8453a4e6fc323b"
+  },
+  "plan": {
+    "heliusRequests": 0,
+    "archiveControlBlocks": 4,
+    "blockPayloadFilesWritten": 0,
+    "nativeServiceRestarts": 0,
+    "clientConnectionOnlyFault": true,
+    "captureMemoryLimit": 16777216,
+    "maxWorkerRequests": 40,
+    "observabilityHeadSamplingRate": 0.01
+  },
+  "samples": [
+    {
+      "phase": "UnrootedFinalized",
+      "slot": 472582130,
+      "requestedCommitment": "finalized",
+      "status": 200,
+      "startedAt": "2026-11-22T14:56:27.658Z",
+      "completedAt": "2026-11-22T14:56:27.963Z",
+      "headersMs": 297.419,
+      "totalMs": 305.597,
+      "bytes": 148708,
+      "bodySha256": "92dc6a54853e946b92ba7096dd38230f9590ce63d5bf21947be8541e8954a94a",
+      "contentType": "application/vnd.blockzilla.stream.v2",
+      "source": "FOUNDATION_RECENT",
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 0,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 0,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 0,
+        "kvReads": 1,
+        "authCache": "BYPASS",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": 1243,
+      "frame": {
+        "slot": 472582130,
+        "bank_id": 340548,
+        "blockhash": "7PDPNQkYhnvXYgxzxCVJUDS31SyxN2xENiKVTfPgwYkm",
+        "parent_slot": 472582129,
+        "parent_blockhash": "DDC4RMSfoGH31f2kCszZ18BzHJdJf3knx4KRTXSTiKPr",
+        "kind": "block",
+        "sequence": 327770,
+        "source_sequence": 56343384,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327770:92dc6a54853e946b92ba7096dd38230f9590ce63d5bf21947be8541e8954a94a",
+        "frame_sha256": "92dc6a54853e946b92ba7096dd38230f9590ce63d5bf21947be8541e8954a94a",
+        "bytes": 148708,
+        "payload_sha256": "82bcabb12700ea11f3fd8e7529777d8e2cff30da20cf28c886319c3fd10798dc",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1548,
+            "sha256": "3331882a12e07f2ecf4776a0ca6681e7123c5e83ddba80380a5de22a86227e1a"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "9ac72e054472eeee0c68e2971c32fe12bf069319b2470e258f27e86e14812818"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 65937,
+            "sha256": "4950db481dbe4732569365e6572a7c61270f37c77724c1a36188ad97404e1550"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "e63865097dd9fc486a1a42018730bc4cef9698706604901fa13dc23e4be7a1f8"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 5855,
+            "sha256": "021bf10ca2cdb86fb196a476cfc10c7289834dcad5e3501716fd47a21dad59ae"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "3d49bfeb42db8b2e507899b96686b628a772829c1d5687cbbcb06ea970cdc97a"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "858267a26a0acb57bb61de94032ba7e4d8b5a83abb70e0495087047ce93dc64b"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 40064,
+            "sha256": "266587be75eb3d906cf1526cbebfabc1bb430752cb05c9f8e83f26a977023b52"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 15396,
+            "sha256": "8c9edc17c218bf281d3d683116c7a24f0faff2bab250acac966fb7e631c2fe2c"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1257,
+            "sha256": "c958d93fc776a142acae191368ab5278ae7ea61cca5518d7f7b7ec73bf5f03ca"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 12672,
+            "sha256": "8123f0db9e194e7d2f46e6d79f14fd77500d5242d22b55e2067ef29d963de4bc"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      }
+    },
+    {
+      "phase": "RuntimeWarm",
+      "slot": 472582127,
+      "requestedCommitment": "processed",
+      "status": 200,
+      "startedAt": "2026-11-22T14:56:30.164Z",
+      "completedAt": "2026-11-22T14:56:30.331Z",
+      "headersMs": 77.318,
+      "totalMs": 167.17,
+      "bytes": 147208,
+      "bodySha256": "fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+      "contentType": "application/vnd.blockzilla.stream.v2",
+      "source": "FOUNDATION_RECENT",
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 0,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 0,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 0,
+        "kvReads": 1,
+        "authCache": "BYPASS",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": 1032,
+      "frame": {
+        "slot": 472582127,
+        "bank_id": 340545,
+        "blockhash": "4NRtG9fmcrPiyCFqKSmZYeSsYnpWi3XbV9LogjP8Yqbb",
+        "parent_slot": 472582126,
+        "parent_blockhash": "ARtHhSyRB4CvBA9ai9F1ruc399KGkrKnubuLB2vCryKo",
+        "kind": "block",
+        "sequence": 327762,
+        "source_sequence": 56341891,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327762:fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+        "frame_sha256": "fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+        "bytes": 147208,
+        "payload_sha256": "8ac507fec0e72d6be531b5e767edd7d871eed37a5b647b9cb1dec6f2f385997a",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1548,
+            "sha256": "d7bfee047046b59df583544814c1d8344df0e5e719ace38616bbbaa45af8b5bf"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "c5910e79b8b2624444683d6a81350ac8db55f900d5407178a16282a74bb66177"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 68101,
+            "sha256": "cf031691fc2efae322c5faa249521bb495c8f14de553b2a1ae460f96ced308af"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "93cdb0ca0d9d157bf53f7755e2f69738746f28ef2b10c149603cbcb83519c817"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 6520,
+            "sha256": "0d27d8ae6d68d614fea0e27f61c62fd5caedbfa2e7238c78120620adeb461e6f"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "d389f6735037d0165f9104e6c65a57f8378ee8828645b98fd44c6c97736811a8"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "e934ff10d6966b85ec837be704e18beddcb07158ad70665af2359fb1bd315a2a"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 36416,
+            "sha256": "b934822326d30f090c415ee1a13361e4a7c6763fbd49a0f945ec1e3a38e747b5"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 13996,
+            "sha256": "5204f2a5cfa98ecd4ce4d52a0a48f7a00a3606f99c588c81bd2619ce37af0140"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1144,
+            "sha256": "43ef52104c2458a7b92a0b0f7af12df14f8f53fd37381acc5cf656da018cf4c6"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 13504,
+            "sha256": "6cd69b2b3c538a89d4eafc77e7a937205ceab2d6797109560a678807bb2d47bb"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      }
+    },
+    {
+      "phase": "RecentCold",
+      "slot": 472582127,
+      "requestedCommitment": "processed",
+      "status": 200,
+      "startedAt": "2026-11-22T14:56:32.532Z",
+      "completedAt": "2026-11-22T14:56:32.613Z",
+      "headersMs": 75.986,
+      "totalMs": 81.16,
+      "bytes": 147208,
+      "bodySha256": "fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+      "contentType": "application/vnd.blockzilla.stream.v2",
+      "source": "FOUNDATION_RECENT",
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 0,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 0,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 0,
+        "kvReads": 1,
+        "authCache": "BYPASS",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": 1069,
+      "frame": {
+        "slot": 472582127,
+        "bank_id": 340545,
+        "blockhash": "4NRtG9fmcrPiyCFqKSmZYeSsYnpWi3XbV9LogjP8Yqbb",
+        "parent_slot": 472582126,
+        "parent_blockhash": "ARtHhSyRB4CvBA9ai9F1ruc399KGkrKnubuLB2vCryKo",
+        "kind": "block",
+        "sequence": 327762,
+        "source_sequence": 56341891,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327762:fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+        "frame_sha256": "fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+        "bytes": 147208,
+        "payload_sha256": "8ac507fec0e72d6be531b5e767edd7d871eed37a5b647b9cb1dec6f2f385997a",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1548,
+            "sha256": "d7bfee047046b59df583544814c1d8344df0e5e719ace38616bbbaa45af8b5bf"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "c5910e79b8b2624444683d6a81350ac8db55f900d5407178a16282a74bb66177"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 68101,
+            "sha256": "cf031691fc2efae322c5faa249521bb495c8f14de553b2a1ae460f96ced308af"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "93cdb0ca0d9d157bf53f7755e2f69738746f28ef2b10c149603cbcb83519c817"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 6520,
+            "sha256": "0d27d8ae6d68d614fea0e27f61c62fd5caedbfa2e7238c78120620adeb461e6f"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "d389f6735037d0165f9104e6c65a57f8378ee8828645b98fd44c6c97736811a8"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "e934ff10d6966b85ec837be704e18beddcb07158ad70665af2359fb1bd315a2a"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 36416,
+            "sha256": "b934822326d30f090c415ee1a13361e4a7c6763fbd49a0f945ec1e3a38e747b5"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 13996,
+            "sha256": "5204f2a5cfa98ecd4ce4d52a0a48f7a00a3606f99c588c81bd2619ce37af0140"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1144,
+            "sha256": "43ef52104c2458a7b92a0b0f7af12df14f8f53fd37381acc5cf656da018cf4c6"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 13504,
+            "sha256": "6cd69b2b3c538a89d4eafc77e7a937205ceab2d6797109560a678807bb2d47bb"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      }
+    },
+    {
+      "phase": "RecentCold",
+      "slot": 472582128,
+      "requestedCommitment": "processed",
+      "status": 200,
+      "startedAt": "2026-11-22T14:56:32.614Z",
+      "completedAt": "2026-11-22T14:56:32.713Z",
+      "headersMs": 74.517,
+      "totalMs": 99.522,
+      "bytes": 237317,
+      "bodySha256": "a7a915d5546a8ebddcb330018c057c3af6910e777fd4f6f385c174dc90669965",
+      "contentType": "application/vnd.blockzilla.stream.v2",
+      "source": "FOUNDATION_RECENT",
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 0,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 0,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 0,
+        "kvReads": 1,
+        "authCache": "BYPASS",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": 997,
+      "frame": {
+        "slot": 472582128,
+        "bank_id": 340546,
+        "blockhash": "57Jma7EwwtjSpYs3KcJEkiUiGkksow7P7q5WCbD2oMi5",
+        "parent_slot": 472582127,
+        "parent_blockhash": "4NRtG9fmcrPiyCFqKSmZYeSsYnpWi3XbV9LogjP8Yqbb",
+        "kind": "block",
+        "sequence": 327765,
+        "source_sequence": 56342631,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327765:a7a915d5546a8ebddcb330018c057c3af6910e777fd4f6f385c174dc90669965",
+        "frame_sha256": "a7a915d5546a8ebddcb330018c057c3af6910e777fd4f6f385c174dc90669965",
+        "bytes": 237317,
+        "payload_sha256": "9f82f5cfb1bcb9b8e346344d07937f254b469cc4bdca6ef08f3361e75dce5df7",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1549,
+            "sha256": "889cec324e2266c5b1902e10bba73bcead19d8befbfda6b3ef6f73ea3b8ddb2f"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "2d1b775bdb07f66c0585beea6f0572627ea7e31a8ba3eca84b40ebccad8116fd"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 113251,
+            "sha256": "511550bef1161d3df140456d6c6c7d245eb5559a76f1460a07b5e99b91883fab"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "1f0ebb383dfbe5a4c9fa22d669e151b52b8ca41ea454df5cad06c315a090b4a5"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 12505,
+            "sha256": "e806a1018c83e2384260a74384b8f948fba1150848a9c08cb81cb372c839ef95"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "4ae225f525536e8b573c91a5ac505f76ff1bffba88f9b2dc43e2411279985750"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "d34dd276dde4265de1a5442408a36f188aa7c52a80ebd938b1c7c728ac63c4d7"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 55808,
+            "sha256": "8789a13fea33bd8238192be4197144d905ea070c1ed5cd0b2810bc8a59985e75"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 21437,
+            "sha256": "815f94d72d2cd1ab7be70415f5433fb053e2c1f10999a5ff5e54d530f017ca03"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1757,
+            "sha256": "16f5bf405e83674ae9b177590af7a40933cd914408233098d155b0eaa66fb96b"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 25024,
+            "sha256": "ca59990486d671de21cc02bd6122e822a5d6b44ef898933c8ff1bee6d3123f7d"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      }
+    },
+    {
+      "phase": "RecentCold",
+      "slot": 472582129,
+      "requestedCommitment": "processed",
+      "status": 200,
+      "startedAt": "2026-11-22T14:56:32.714Z",
+      "completedAt": "2026-11-22T14:56:32.790Z",
+      "headersMs": 73.166,
+      "totalMs": 76.089,
+      "bytes": 146829,
+      "bodySha256": "ac670e0b67df6935279359c4d73ef40d4022950a395ae797dd3fcb52e5e1477a",
+      "contentType": "application/vnd.blockzilla.stream.v2",
+      "source": "FOUNDATION_RECENT",
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 0,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 0,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 0,
+        "kvReads": 1,
+        "authCache": "BYPASS",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": 945,
+      "frame": {
+        "slot": 472582129,
+        "bank_id": 340547,
+        "blockhash": "DDC4RMSfoGH31f2kCszZ18BzHJdJf3knx4KRTXSTiKPr",
+        "parent_slot": 472582128,
+        "parent_blockhash": "57Jma7EwwtjSpYs3KcJEkiUiGkksow7P7q5WCbD2oMi5",
+        "kind": "block",
+        "sequence": 327768,
+        "source_sequence": 56343035,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327768:ac670e0b67df6935279359c4d73ef40d4022950a395ae797dd3fcb52e5e1477a",
+        "frame_sha256": "ac670e0b67df6935279359c4d73ef40d4022950a395ae797dd3fcb52e5e1477a",
+        "bytes": 146829,
+        "payload_sha256": "a7f3f3eff892c70ca316ea7c88f0c8d8f49752c7880ea669af735e7879e2aa27",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1550,
+            "sha256": "958e676027913f7888487d3da9eab544ca8a5444b8197ec89e3af11009ee7358"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "ab2fd57be62a5f18fa4845ffe052bd6f752c383bad5657f061b9d015c3b3edc6"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 63932,
+            "sha256": "dca24f4d3002352ddf3b387d3aa1b4c47bcb6f60f5a57f48e557526708c8b1c0"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "dffd04a8841d2cb5ab3cc6790b9bbeb78c7493c6556630fc128f5a19c855d4ae"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 6835,
+            "sha256": "b3d352f2f9e953a2a53365913fcf44ef370d132c70994081cd0c92af066f2001"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "65505e9f4d4730541e4c71954fee3f6d9e94ebc10e9546eda584ccb32fa73a2e"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "d722020ce700d526176680447987a6febbbacbb9cf1f776904ce02bd973d9987"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 38816,
+            "sha256": "39f6289c86608a1a82ab9b5080c5bc5dfe18089ac18171513c0f848a133dc78a"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 14928,
+            "sha256": "cb906fe048beab3869ab64ce41dda429fedc5a1bf394d60edabc6f845812951a"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1217,
+            "sha256": "36a8347aceb8141c9061103da4db808dd23a8de87585dbf904ff6ae22240d6c0"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 13568,
+            "sha256": "c69834b9f8d3fae83f91c115a5ee463f3730b8f2e14e32aa156eac972f15005d"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      }
+    },
+    {
+      "phase": "RecentCold",
+      "slot": 472582130,
+      "requestedCommitment": "processed",
+      "status": 200,
+      "startedAt": "2026-11-22T14:56:32.790Z",
+      "completedAt": "2026-11-22T14:56:32.860Z",
+      "headersMs": 68.225,
+      "totalMs": 69.402,
+      "bytes": 148708,
+      "bodySha256": "92dc6a54853e946b92ba7096dd38230f9590ce63d5bf21947be8541e8954a94a",
+      "contentType": "application/vnd.blockzilla.stream.v2",
+      "source": "FOUNDATION_RECENT",
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 0,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 0,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 0,
+        "kvReads": 1,
+        "authCache": "BYPASS",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": 880,
+      "frame": {
+        "slot": 472582130,
+        "bank_id": 340548,
+        "blockhash": "7PDPNQkYhnvXYgxzxCVJUDS31SyxN2xENiKVTfPgwYkm",
+        "parent_slot": 472582129,
+        "parent_blockhash": "DDC4RMSfoGH31f2kCszZ18BzHJdJf3knx4KRTXSTiKPr",
+        "kind": "block",
+        "sequence": 327770,
+        "source_sequence": 56343384,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327770:92dc6a54853e946b92ba7096dd38230f9590ce63d5bf21947be8541e8954a94a",
+        "frame_sha256": "92dc6a54853e946b92ba7096dd38230f9590ce63d5bf21947be8541e8954a94a",
+        "bytes": 148708,
+        "payload_sha256": "82bcabb12700ea11f3fd8e7529777d8e2cff30da20cf28c886319c3fd10798dc",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1548,
+            "sha256": "3331882a12e07f2ecf4776a0ca6681e7123c5e83ddba80380a5de22a86227e1a"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "9ac72e054472eeee0c68e2971c32fe12bf069319b2470e258f27e86e14812818"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 65937,
+            "sha256": "4950db481dbe4732569365e6572a7c61270f37c77724c1a36188ad97404e1550"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "e63865097dd9fc486a1a42018730bc4cef9698706604901fa13dc23e4be7a1f8"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 5855,
+            "sha256": "021bf10ca2cdb86fb196a476cfc10c7289834dcad5e3501716fd47a21dad59ae"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "3d49bfeb42db8b2e507899b96686b628a772829c1d5687cbbcb06ea970cdc97a"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "858267a26a0acb57bb61de94032ba7e4d8b5a83abb70e0495087047ce93dc64b"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 40064,
+            "sha256": "266587be75eb3d906cf1526cbebfabc1bb430752cb05c9f8e83f26a977023b52"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 15396,
+            "sha256": "8c9edc17c218bf281d3d683116c7a24f0faff2bab250acac966fb7e631c2fe2c"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1257,
+            "sha256": "c958d93fc776a142acae191368ab5278ae7ea61cca5518d7f7b7ec73bf5f03ca"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 12672,
+            "sha256": "8123f0db9e194e7d2f46e6d79f14fd77500d5242d22b55e2067ef29d963de4bc"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      }
+    },
+    {
+      "phase": "AuthPrime",
+      "slot": 472582127,
+      "requestedCommitment": "processed",
+      "status": 200,
+      "startedAt": "2026-11-22T14:56:35.060Z",
+      "completedAt": "2026-11-22T14:56:35.122Z",
+      "headersMs": 59.064,
+      "totalMs": 61.321,
+      "bytes": 147208,
+      "bodySha256": "fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+      "contentType": "application/vnd.blockzilla.stream.v2",
+      "source": "FOUNDATION_RECENT",
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 0,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 0,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 0,
+        "kvReads": 1,
+        "authCache": "MISS",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": 1050,
+      "frame": {
+        "slot": 472582127,
+        "bank_id": 340545,
+        "blockhash": "4NRtG9fmcrPiyCFqKSmZYeSsYnpWi3XbV9LogjP8Yqbb",
+        "parent_slot": 472582126,
+        "parent_blockhash": "ARtHhSyRB4CvBA9ai9F1ruc399KGkrKnubuLB2vCryKo",
+        "kind": "block",
+        "sequence": 327762,
+        "source_sequence": 56341891,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327762:fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+        "frame_sha256": "fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+        "bytes": 147208,
+        "payload_sha256": "8ac507fec0e72d6be531b5e767edd7d871eed37a5b647b9cb1dec6f2f385997a",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1548,
+            "sha256": "d7bfee047046b59df583544814c1d8344df0e5e719ace38616bbbaa45af8b5bf"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "c5910e79b8b2624444683d6a81350ac8db55f900d5407178a16282a74bb66177"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 68101,
+            "sha256": "cf031691fc2efae322c5faa249521bb495c8f14de553b2a1ae460f96ced308af"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "93cdb0ca0d9d157bf53f7755e2f69738746f28ef2b10c149603cbcb83519c817"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 6520,
+            "sha256": "0d27d8ae6d68d614fea0e27f61c62fd5caedbfa2e7238c78120620adeb461e6f"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "d389f6735037d0165f9104e6c65a57f8378ee8828645b98fd44c6c97736811a8"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "e934ff10d6966b85ec837be704e18beddcb07158ad70665af2359fb1bd315a2a"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 36416,
+            "sha256": "b934822326d30f090c415ee1a13361e4a7c6763fbd49a0f945ec1e3a38e747b5"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 13996,
+            "sha256": "5204f2a5cfa98ecd4ce4d52a0a48f7a00a3606f99c588c81bd2619ce37af0140"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1144,
+            "sha256": "43ef52104c2458a7b92a0b0f7af12df14f8f53fd37381acc5cf656da018cf4c6"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 13504,
+            "sha256": "6cd69b2b3c538a89d4eafc77e7a937205ceab2d6797109560a678807bb2d47bb"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      }
+    },
+    {
+      "phase": "RecentAuthWarm",
+      "slot": 472582127,
+      "requestedCommitment": "processed",
+      "status": 200,
+      "startedAt": "2026-11-22T14:56:37.322Z",
+      "completedAt": "2026-11-22T14:56:37.360Z",
+      "headersMs": 33.969,
+      "totalMs": 37.68,
+      "bytes": 147208,
+      "bodySha256": "fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+      "contentType": "application/vnd.blockzilla.stream.v2",
+      "source": "FOUNDATION_RECENT",
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 0,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 0,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 0,
+        "kvReads": 0,
+        "authCache": "HIT",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": 1031,
+      "frame": {
+        "slot": 472582127,
+        "bank_id": 340545,
+        "blockhash": "4NRtG9fmcrPiyCFqKSmZYeSsYnpWi3XbV9LogjP8Yqbb",
+        "parent_slot": 472582126,
+        "parent_blockhash": "ARtHhSyRB4CvBA9ai9F1ruc399KGkrKnubuLB2vCryKo",
+        "kind": "block",
+        "sequence": 327762,
+        "source_sequence": 56341891,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327762:fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+        "frame_sha256": "fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+        "bytes": 147208,
+        "payload_sha256": "8ac507fec0e72d6be531b5e767edd7d871eed37a5b647b9cb1dec6f2f385997a",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1548,
+            "sha256": "d7bfee047046b59df583544814c1d8344df0e5e719ace38616bbbaa45af8b5bf"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "c5910e79b8b2624444683d6a81350ac8db55f900d5407178a16282a74bb66177"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 68101,
+            "sha256": "cf031691fc2efae322c5faa249521bb495c8f14de553b2a1ae460f96ced308af"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "93cdb0ca0d9d157bf53f7755e2f69738746f28ef2b10c149603cbcb83519c817"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 6520,
+            "sha256": "0d27d8ae6d68d614fea0e27f61c62fd5caedbfa2e7238c78120620adeb461e6f"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "d389f6735037d0165f9104e6c65a57f8378ee8828645b98fd44c6c97736811a8"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "e934ff10d6966b85ec837be704e18beddcb07158ad70665af2359fb1bd315a2a"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 36416,
+            "sha256": "b934822326d30f090c415ee1a13361e4a7c6763fbd49a0f945ec1e3a38e747b5"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 13996,
+            "sha256": "5204f2a5cfa98ecd4ce4d52a0a48f7a00a3606f99c588c81bd2619ce37af0140"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1144,
+            "sha256": "43ef52104c2458a7b92a0b0f7af12df14f8f53fd37381acc5cf656da018cf4c6"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 13504,
+            "sha256": "6cd69b2b3c538a89d4eafc77e7a937205ceab2d6797109560a678807bb2d47bb"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      }
+    },
+    {
+      "phase": "RecentAuthWarm",
+      "slot": 472582128,
+      "requestedCommitment": "processed",
+      "status": 200,
+      "startedAt": "2026-11-22T14:56:37.361Z",
+      "completedAt": "2026-11-22T14:56:37.400Z",
+      "headersMs": 37.668,
+      "totalMs": 39.606,
+      "bytes": 237317,
+      "bodySha256": "a7a915d5546a8ebddcb330018c057c3af6910e777fd4f6f385c174dc90669965",
+      "contentType": "application/vnd.blockzilla.stream.v2",
+      "source": "FOUNDATION_RECENT",
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 0,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 0,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 0,
+        "kvReads": 0,
+        "authCache": "HIT",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": 994,
+      "frame": {
+        "slot": 472582128,
+        "bank_id": 340546,
+        "blockhash": "57Jma7EwwtjSpYs3KcJEkiUiGkksow7P7q5WCbD2oMi5",
+        "parent_slot": 472582127,
+        "parent_blockhash": "4NRtG9fmcrPiyCFqKSmZYeSsYnpWi3XbV9LogjP8Yqbb",
+        "kind": "block",
+        "sequence": 327765,
+        "source_sequence": 56342631,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327765:a7a915d5546a8ebddcb330018c057c3af6910e777fd4f6f385c174dc90669965",
+        "frame_sha256": "a7a915d5546a8ebddcb330018c057c3af6910e777fd4f6f385c174dc90669965",
+        "bytes": 237317,
+        "payload_sha256": "9f82f5cfb1bcb9b8e346344d07937f254b469cc4bdca6ef08f3361e75dce5df7",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1549,
+            "sha256": "889cec324e2266c5b1902e10bba73bcead19d8befbfda6b3ef6f73ea3b8ddb2f"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "2d1b775bdb07f66c0585beea6f0572627ea7e31a8ba3eca84b40ebccad8116fd"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 113251,
+            "sha256": "511550bef1161d3df140456d6c6c7d245eb5559a76f1460a07b5e99b91883fab"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "1f0ebb383dfbe5a4c9fa22d669e151b52b8ca41ea454df5cad06c315a090b4a5"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 12505,
+            "sha256": "e806a1018c83e2384260a74384b8f948fba1150848a9c08cb81cb372c839ef95"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "4ae225f525536e8b573c91a5ac505f76ff1bffba88f9b2dc43e2411279985750"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "d34dd276dde4265de1a5442408a36f188aa7c52a80ebd938b1c7c728ac63c4d7"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 55808,
+            "sha256": "8789a13fea33bd8238192be4197144d905ea070c1ed5cd0b2810bc8a59985e75"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 21437,
+            "sha256": "815f94d72d2cd1ab7be70415f5433fb053e2c1f10999a5ff5e54d530f017ca03"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1757,
+            "sha256": "16f5bf405e83674ae9b177590af7a40933cd914408233098d155b0eaa66fb96b"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 25024,
+            "sha256": "ca59990486d671de21cc02bd6122e822a5d6b44ef898933c8ff1bee6d3123f7d"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      }
+    },
+    {
+      "phase": "RecentAuthWarm",
+      "slot": 472582129,
+      "requestedCommitment": "processed",
+      "status": 200,
+      "startedAt": "2026-11-22T14:56:37.401Z",
+      "completedAt": "2026-11-22T14:56:37.434Z",
+      "headersMs": 30.778,
+      "totalMs": 33.542,
+      "bytes": 146829,
+      "bodySha256": "ac670e0b67df6935279359c4d73ef40d4022950a395ae797dd3fcb52e5e1477a",
+      "contentType": "application/vnd.blockzilla.stream.v2",
+      "source": "FOUNDATION_RECENT",
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 0,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 0,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 0,
+        "kvReads": 0,
+        "authCache": "HIT",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": 774,
+      "frame": {
+        "slot": 472582129,
+        "bank_id": 340547,
+        "blockhash": "DDC4RMSfoGH31f2kCszZ18BzHJdJf3knx4KRTXSTiKPr",
+        "parent_slot": 472582128,
+        "parent_blockhash": "57Jma7EwwtjSpYs3KcJEkiUiGkksow7P7q5WCbD2oMi5",
+        "kind": "block",
+        "sequence": 327768,
+        "source_sequence": 56343035,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327768:ac670e0b67df6935279359c4d73ef40d4022950a395ae797dd3fcb52e5e1477a",
+        "frame_sha256": "ac670e0b67df6935279359c4d73ef40d4022950a395ae797dd3fcb52e5e1477a",
+        "bytes": 146829,
+        "payload_sha256": "a7f3f3eff892c70ca316ea7c88f0c8d8f49752c7880ea669af735e7879e2aa27",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1550,
+            "sha256": "958e676027913f7888487d3da9eab544ca8a5444b8197ec89e3af11009ee7358"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "ab2fd57be62a5f18fa4845ffe052bd6f752c383bad5657f061b9d015c3b3edc6"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 63932,
+            "sha256": "dca24f4d3002352ddf3b387d3aa1b4c47bcb6f60f5a57f48e557526708c8b1c0"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "dffd04a8841d2cb5ab3cc6790b9bbeb78c7493c6556630fc128f5a19c855d4ae"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 6835,
+            "sha256": "b3d352f2f9e953a2a53365913fcf44ef370d132c70994081cd0c92af066f2001"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "65505e9f4d4730541e4c71954fee3f6d9e94ebc10e9546eda584ccb32fa73a2e"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "d722020ce700d526176680447987a6febbbacbb9cf1f776904ce02bd973d9987"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 38816,
+            "sha256": "39f6289c86608a1a82ab9b5080c5bc5dfe18089ac18171513c0f848a133dc78a"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 14928,
+            "sha256": "cb906fe048beab3869ab64ce41dda429fedc5a1bf394d60edabc6f845812951a"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1217,
+            "sha256": "36a8347aceb8141c9061103da4db808dd23a8de87585dbf904ff6ae22240d6c0"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 13568,
+            "sha256": "c69834b9f8d3fae83f91c115a5ee463f3730b8f2e14e32aa156eac972f15005d"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      }
+    },
+    {
+      "phase": "RecentAuthWarm",
+      "slot": 472582130,
+      "requestedCommitment": "processed",
+      "status": 200,
+      "startedAt": "2026-11-22T14:56:37.435Z",
+      "completedAt": "2026-11-22T14:56:37.501Z",
+      "headersMs": 64.411,
+      "totalMs": 66.0,
+      "bytes": 148708,
+      "bodySha256": "92dc6a54853e946b92ba7096dd38230f9590ce63d5bf21947be8541e8954a94a",
+      "contentType": "application/vnd.blockzilla.stream.v2",
+      "source": "FOUNDATION_RECENT",
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 0,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 0,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 0,
+        "kvReads": 0,
+        "authCache": "HIT",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": 954,
+      "frame": {
+        "slot": 472582130,
+        "bank_id": 340548,
+        "blockhash": "7PDPNQkYhnvXYgxzxCVJUDS31SyxN2xENiKVTfPgwYkm",
+        "parent_slot": 472582129,
+        "parent_blockhash": "DDC4RMSfoGH31f2kCszZ18BzHJdJf3knx4KRTXSTiKPr",
+        "kind": "block",
+        "sequence": 327770,
+        "source_sequence": 56343384,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327770:92dc6a54853e946b92ba7096dd38230f9590ce63d5bf21947be8541e8954a94a",
+        "frame_sha256": "92dc6a54853e946b92ba7096dd38230f9590ce63d5bf21947be8541e8954a94a",
+        "bytes": 148708,
+        "payload_sha256": "82bcabb12700ea11f3fd8e7529777d8e2cff30da20cf28c886319c3fd10798dc",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1548,
+            "sha256": "3331882a12e07f2ecf4776a0ca6681e7123c5e83ddba80380a5de22a86227e1a"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "9ac72e054472eeee0c68e2971c32fe12bf069319b2470e258f27e86e14812818"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 65937,
+            "sha256": "4950db481dbe4732569365e6572a7c61270f37c77724c1a36188ad97404e1550"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "e63865097dd9fc486a1a42018730bc4cef9698706604901fa13dc23e4be7a1f8"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 5855,
+            "sha256": "021bf10ca2cdb86fb196a476cfc10c7289834dcad5e3501716fd47a21dad59ae"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "3d49bfeb42db8b2e507899b96686b628a772829c1d5687cbbcb06ea970cdc97a"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "858267a26a0acb57bb61de94032ba7e4d8b5a83abb70e0495087047ce93dc64b"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 40064,
+            "sha256": "266587be75eb3d906cf1526cbebfabc1bb430752cb05c9f8e83f26a977023b52"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 15396,
+            "sha256": "8c9edc17c218bf281d3d683116c7a24f0faff2bab250acac966fb7e631c2fe2c"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1257,
+            "sha256": "c958d93fc776a142acae191368ab5278ae7ea61cca5518d7f7b7ec73bf5f03ca"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 12672,
+            "sha256": "8123f0db9e194e7d2f46e6d79f14fd77500d5242d22b55e2067ef29d963de4bc"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      }
+    },
+    {
+      "phase": "RecentAuthWarm",
+      "slot": 472582127,
+      "requestedCommitment": "processed",
+      "status": 200,
+      "startedAt": "2026-11-22T14:56:37.501Z",
+      "completedAt": "2026-11-22T14:56:37.537Z",
+      "headersMs": 28.757,
+      "totalMs": 36.211,
+      "bytes": 147208,
+      "bodySha256": "fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+      "contentType": "application/vnd.blockzilla.stream.v2",
+      "source": "FOUNDATION_RECENT",
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 0,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 0,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 0,
+        "kvReads": 0,
+        "authCache": "HIT",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": 811,
+      "frame": {
+        "slot": 472582127,
+        "bank_id": 340545,
+        "blockhash": "4NRtG9fmcrPiyCFqKSmZYeSsYnpWi3XbV9LogjP8Yqbb",
+        "parent_slot": 472582126,
+        "parent_blockhash": "ARtHhSyRB4CvBA9ai9F1ruc399KGkrKnubuLB2vCryKo",
+        "kind": "block",
+        "sequence": 327762,
+        "source_sequence": 56341891,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327762:fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+        "frame_sha256": "fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+        "bytes": 147208,
+        "payload_sha256": "8ac507fec0e72d6be531b5e767edd7d871eed37a5b647b9cb1dec6f2f385997a",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1548,
+            "sha256": "d7bfee047046b59df583544814c1d8344df0e5e719ace38616bbbaa45af8b5bf"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "c5910e79b8b2624444683d6a81350ac8db55f900d5407178a16282a74bb66177"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 68101,
+            "sha256": "cf031691fc2efae322c5faa249521bb495c8f14de553b2a1ae460f96ced308af"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "93cdb0ca0d9d157bf53f7755e2f69738746f28ef2b10c149603cbcb83519c817"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 6520,
+            "sha256": "0d27d8ae6d68d614fea0e27f61c62fd5caedbfa2e7238c78120620adeb461e6f"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "d389f6735037d0165f9104e6c65a57f8378ee8828645b98fd44c6c97736811a8"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "e934ff10d6966b85ec837be704e18beddcb07158ad70665af2359fb1bd315a2a"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 36416,
+            "sha256": "b934822326d30f090c415ee1a13361e4a7c6763fbd49a0f945ec1e3a38e747b5"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 13996,
+            "sha256": "5204f2a5cfa98ecd4ce4d52a0a48f7a00a3606f99c588c81bd2619ce37af0140"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1144,
+            "sha256": "43ef52104c2458a7b92a0b0f7af12df14f8f53fd37381acc5cf656da018cf4c6"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 13504,
+            "sha256": "6cd69b2b3c538a89d4eafc77e7a937205ceab2d6797109560a678807bb2d47bb"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      }
+    },
+    {
+      "phase": "RecentAuthWarm",
+      "slot": 472582128,
+      "requestedCommitment": "processed",
+      "status": 200,
+      "startedAt": "2026-11-22T14:56:37.538Z",
+      "completedAt": "2026-11-22T14:56:37.588Z",
+      "headersMs": 47.787,
+      "totalMs": 50.507,
+      "bytes": 237317,
+      "bodySha256": "a7a915d5546a8ebddcb330018c057c3af6910e777fd4f6f385c174dc90669965",
+      "contentType": "application/vnd.blockzilla.stream.v2",
+      "source": "FOUNDATION_RECENT",
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 0,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 0,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 0,
+        "kvReads": 0,
+        "authCache": "HIT",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": 1038,
+      "frame": {
+        "slot": 472582128,
+        "bank_id": 340546,
+        "blockhash": "57Jma7EwwtjSpYs3KcJEkiUiGkksow7P7q5WCbD2oMi5",
+        "parent_slot": 472582127,
+        "parent_blockhash": "4NRtG9fmcrPiyCFqKSmZYeSsYnpWi3XbV9LogjP8Yqbb",
+        "kind": "block",
+        "sequence": 327765,
+        "source_sequence": 56342631,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327765:a7a915d5546a8ebddcb330018c057c3af6910e777fd4f6f385c174dc90669965",
+        "frame_sha256": "a7a915d5546a8ebddcb330018c057c3af6910e777fd4f6f385c174dc90669965",
+        "bytes": 237317,
+        "payload_sha256": "9f82f5cfb1bcb9b8e346344d07937f254b469cc4bdca6ef08f3361e75dce5df7",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1549,
+            "sha256": "889cec324e2266c5b1902e10bba73bcead19d8befbfda6b3ef6f73ea3b8ddb2f"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "2d1b775bdb07f66c0585beea6f0572627ea7e31a8ba3eca84b40ebccad8116fd"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 113251,
+            "sha256": "511550bef1161d3df140456d6c6c7d245eb5559a76f1460a07b5e99b91883fab"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "1f0ebb383dfbe5a4c9fa22d669e151b52b8ca41ea454df5cad06c315a090b4a5"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 12505,
+            "sha256": "e806a1018c83e2384260a74384b8f948fba1150848a9c08cb81cb372c839ef95"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "4ae225f525536e8b573c91a5ac505f76ff1bffba88f9b2dc43e2411279985750"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "d34dd276dde4265de1a5442408a36f188aa7c52a80ebd938b1c7c728ac63c4d7"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 55808,
+            "sha256": "8789a13fea33bd8238192be4197144d905ea070c1ed5cd0b2810bc8a59985e75"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 21437,
+            "sha256": "815f94d72d2cd1ab7be70415f5433fb053e2c1f10999a5ff5e54d530f017ca03"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1757,
+            "sha256": "16f5bf405e83674ae9b177590af7a40933cd914408233098d155b0eaa66fb96b"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 25024,
+            "sha256": "ca59990486d671de21cc02bd6122e822a5d6b44ef898933c8ff1bee6d3123f7d"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      }
+    },
+    {
+      "phase": "RecentAuthWarm",
+      "slot": 472582129,
+      "requestedCommitment": "processed",
+      "status": 200,
+      "startedAt": "2026-11-22T14:56:37.589Z",
+      "completedAt": "2026-11-22T14:56:37.621Z",
+      "headersMs": 30.308,
+      "totalMs": 32.102,
+      "bytes": 146829,
+      "bodySha256": "ac670e0b67df6935279359c4d73ef40d4022950a395ae797dd3fcb52e5e1477a",
+      "contentType": "application/vnd.blockzilla.stream.v2",
+      "source": "FOUNDATION_RECENT",
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 0,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 0,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 0,
+        "kvReads": 0,
+        "authCache": "HIT",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": 997,
+      "frame": {
+        "slot": 472582129,
+        "bank_id": 340547,
+        "blockhash": "DDC4RMSfoGH31f2kCszZ18BzHJdJf3knx4KRTXSTiKPr",
+        "parent_slot": 472582128,
+        "parent_blockhash": "57Jma7EwwtjSpYs3KcJEkiUiGkksow7P7q5WCbD2oMi5",
+        "kind": "block",
+        "sequence": 327768,
+        "source_sequence": 56343035,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327768:ac670e0b67df6935279359c4d73ef40d4022950a395ae797dd3fcb52e5e1477a",
+        "frame_sha256": "ac670e0b67df6935279359c4d73ef40d4022950a395ae797dd3fcb52e5e1477a",
+        "bytes": 146829,
+        "payload_sha256": "a7f3f3eff892c70ca316ea7c88f0c8d8f49752c7880ea669af735e7879e2aa27",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1550,
+            "sha256": "958e676027913f7888487d3da9eab544ca8a5444b8197ec89e3af11009ee7358"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "ab2fd57be62a5f18fa4845ffe052bd6f752c383bad5657f061b9d015c3b3edc6"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 63932,
+            "sha256": "dca24f4d3002352ddf3b387d3aa1b4c47bcb6f60f5a57f48e557526708c8b1c0"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "dffd04a8841d2cb5ab3cc6790b9bbeb78c7493c6556630fc128f5a19c855d4ae"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 6835,
+            "sha256": "b3d352f2f9e953a2a53365913fcf44ef370d132c70994081cd0c92af066f2001"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "65505e9f4d4730541e4c71954fee3f6d9e94ebc10e9546eda584ccb32fa73a2e"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "d722020ce700d526176680447987a6febbbacbb9cf1f776904ce02bd973d9987"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 38816,
+            "sha256": "39f6289c86608a1a82ab9b5080c5bc5dfe18089ac18171513c0f848a133dc78a"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 14928,
+            "sha256": "cb906fe048beab3869ab64ce41dda429fedc5a1bf394d60edabc6f845812951a"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1217,
+            "sha256": "36a8347aceb8141c9061103da4db808dd23a8de87585dbf904ff6ae22240d6c0"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 13568,
+            "sha256": "c69834b9f8d3fae83f91c115a5ee463f3730b8f2e14e32aa156eac972f15005d"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      }
+    },
+    {
+      "phase": "RecentAuthWarm",
+      "slot": 472582130,
+      "requestedCommitment": "processed",
+      "status": 200,
+      "startedAt": "2026-11-22T14:56:37.621Z",
+      "completedAt": "2026-11-22T14:56:37.691Z",
+      "headersMs": 67.407,
+      "totalMs": 69.845,
+      "bytes": 148708,
+      "bodySha256": "92dc6a54853e946b92ba7096dd38230f9590ce63d5bf21947be8541e8954a94a",
+      "contentType": "application/vnd.blockzilla.stream.v2",
+      "source": "FOUNDATION_RECENT",
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 0,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 0,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 0,
+        "kvReads": 0,
+        "authCache": "HIT",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": 927,
+      "frame": {
+        "slot": 472582130,
+        "bank_id": 340548,
+        "blockhash": "7PDPNQkYhnvXYgxzxCVJUDS31SyxN2xENiKVTfPgwYkm",
+        "parent_slot": 472582129,
+        "parent_blockhash": "DDC4RMSfoGH31f2kCszZ18BzHJdJf3knx4KRTXSTiKPr",
+        "kind": "block",
+        "sequence": 327770,
+        "source_sequence": 56343384,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327770:92dc6a54853e946b92ba7096dd38230f9590ce63d5bf21947be8541e8954a94a",
+        "frame_sha256": "92dc6a54853e946b92ba7096dd38230f9590ce63d5bf21947be8541e8954a94a",
+        "bytes": 148708,
+        "payload_sha256": "82bcabb12700ea11f3fd8e7529777d8e2cff30da20cf28c886319c3fd10798dc",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1548,
+            "sha256": "3331882a12e07f2ecf4776a0ca6681e7123c5e83ddba80380a5de22a86227e1a"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "9ac72e054472eeee0c68e2971c32fe12bf069319b2470e258f27e86e14812818"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 65937,
+            "sha256": "4950db481dbe4732569365e6572a7c61270f37c77724c1a36188ad97404e1550"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "e63865097dd9fc486a1a42018730bc4cef9698706604901fa13dc23e4be7a1f8"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 5855,
+            "sha256": "021bf10ca2cdb86fb196a476cfc10c7289834dcad5e3501716fd47a21dad59ae"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "3d49bfeb42db8b2e507899b96686b628a772829c1d5687cbbcb06ea970cdc97a"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "858267a26a0acb57bb61de94032ba7e4d8b5a83abb70e0495087047ce93dc64b"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 40064,
+            "sha256": "266587be75eb3d906cf1526cbebfabc1bb430752cb05c9f8e83f26a977023b52"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 15396,
+            "sha256": "8c9edc17c218bf281d3d683116c7a24f0faff2bab250acac966fb7e631c2fe2c"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1257,
+            "sha256": "c958d93fc776a142acae191368ab5278ae7ea61cca5518d7f7b7ec73bf5f03ca"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 12672,
+            "sha256": "8123f0db9e194e7d2f46e6d79f14fd77500d5242d22b55e2067ef29d963de4bc"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      }
+    },
+    {
+      "phase": "RecentFinalized",
+      "slot": 472582127,
+      "requestedCommitment": "finalized",
+      "status": 200,
+      "startedAt": "2026-11-22T14:56:39.902Z",
+      "completedAt": "2026-11-22T14:56:39.940Z",
+      "headersMs": 36.809,
+      "totalMs": 38.921,
+      "bytes": 147208,
+      "bodySha256": "fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+      "contentType": "application/vnd.blockzilla.stream.v2",
+      "source": "FOUNDATION_RECENT",
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 0,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 0,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 0,
+        "kvReads": 1,
+        "authCache": "BYPASS",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": 1252,
+      "frame": {
+        "slot": 472582127,
+        "bank_id": 340545,
+        "blockhash": "4NRtG9fmcrPiyCFqKSmZYeSsYnpWi3XbV9LogjP8Yqbb",
+        "parent_slot": 472582126,
+        "parent_blockhash": "ARtHhSyRB4CvBA9ai9F1ruc399KGkrKnubuLB2vCryKo",
+        "kind": "block",
+        "sequence": 327762,
+        "source_sequence": 56341891,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327762:fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+        "frame_sha256": "fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+        "bytes": 147208,
+        "payload_sha256": "8ac507fec0e72d6be531b5e767edd7d871eed37a5b647b9cb1dec6f2f385997a",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1548,
+            "sha256": "d7bfee047046b59df583544814c1d8344df0e5e719ace38616bbbaa45af8b5bf"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "c5910e79b8b2624444683d6a81350ac8db55f900d5407178a16282a74bb66177"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 68101,
+            "sha256": "cf031691fc2efae322c5faa249521bb495c8f14de553b2a1ae460f96ced308af"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "93cdb0ca0d9d157bf53f7755e2f69738746f28ef2b10c149603cbcb83519c817"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 6520,
+            "sha256": "0d27d8ae6d68d614fea0e27f61c62fd5caedbfa2e7238c78120620adeb461e6f"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "d389f6735037d0165f9104e6c65a57f8378ee8828645b98fd44c6c97736811a8"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "e934ff10d6966b85ec837be704e18beddcb07158ad70665af2359fb1bd315a2a"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 36416,
+            "sha256": "b934822326d30f090c415ee1a13361e4a7c6763fbd49a0f945ec1e3a38e747b5"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 13996,
+            "sha256": "5204f2a5cfa98ecd4ce4d52a0a48f7a00a3606f99c588c81bd2619ce37af0140"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1144,
+            "sha256": "43ef52104c2458a7b92a0b0f7af12df14f8f53fd37381acc5cf656da018cf4c6"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 13504,
+            "sha256": "6cd69b2b3c538a89d4eafc77e7a937205ceab2d6797109560a678807bb2d47bb"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      }
+    },
+    {
+      "phase": "RecentFinalized",
+      "slot": 472582128,
+      "requestedCommitment": "finalized",
+      "status": 200,
+      "startedAt": "2026-11-22T14:56:39.941Z",
+      "completedAt": "2026-11-22T14:56:39.990Z",
+      "headersMs": 47.405,
+      "totalMs": 49.366,
+      "bytes": 237317,
+      "bodySha256": "a7a915d5546a8ebddcb330018c057c3af6910e777fd4f6f385c174dc90669965",
+      "contentType": "application/vnd.blockzilla.stream.v2",
+      "source": "FOUNDATION_RECENT",
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 0,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 0,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 0,
+        "kvReads": 1,
+        "authCache": "BYPASS",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": 1174,
+      "frame": {
+        "slot": 472582128,
+        "bank_id": 340546,
+        "blockhash": "57Jma7EwwtjSpYs3KcJEkiUiGkksow7P7q5WCbD2oMi5",
+        "parent_slot": 472582127,
+        "parent_blockhash": "4NRtG9fmcrPiyCFqKSmZYeSsYnpWi3XbV9LogjP8Yqbb",
+        "kind": "block",
+        "sequence": 327765,
+        "source_sequence": 56342631,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327765:a7a915d5546a8ebddcb330018c057c3af6910e777fd4f6f385c174dc90669965",
+        "frame_sha256": "a7a915d5546a8ebddcb330018c057c3af6910e777fd4f6f385c174dc90669965",
+        "bytes": 237317,
+        "payload_sha256": "9f82f5cfb1bcb9b8e346344d07937f254b469cc4bdca6ef08f3361e75dce5df7",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1549,
+            "sha256": "889cec324e2266c5b1902e10bba73bcead19d8befbfda6b3ef6f73ea3b8ddb2f"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "2d1b775bdb07f66c0585beea6f0572627ea7e31a8ba3eca84b40ebccad8116fd"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 113251,
+            "sha256": "511550bef1161d3df140456d6c6c7d245eb5559a76f1460a07b5e99b91883fab"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "1f0ebb383dfbe5a4c9fa22d669e151b52b8ca41ea454df5cad06c315a090b4a5"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 12505,
+            "sha256": "e806a1018c83e2384260a74384b8f948fba1150848a9c08cb81cb372c839ef95"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "4ae225f525536e8b573c91a5ac505f76ff1bffba88f9b2dc43e2411279985750"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "d34dd276dde4265de1a5442408a36f188aa7c52a80ebd938b1c7c728ac63c4d7"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 55808,
+            "sha256": "8789a13fea33bd8238192be4197144d905ea070c1ed5cd0b2810bc8a59985e75"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 21437,
+            "sha256": "815f94d72d2cd1ab7be70415f5433fb053e2c1f10999a5ff5e54d530f017ca03"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1757,
+            "sha256": "16f5bf405e83674ae9b177590af7a40933cd914408233098d155b0eaa66fb96b"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 25024,
+            "sha256": "ca59990486d671de21cc02bd6122e822a5d6b44ef898933c8ff1bee6d3123f7d"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      }
+    },
+    {
+      "phase": "RecentFinalized",
+      "slot": 472582129,
+      "requestedCommitment": "finalized",
+      "status": 200,
+      "startedAt": "2026-11-22T14:56:39.991Z",
+      "completedAt": "2026-11-22T14:56:40.060Z",
+      "headersMs": 67.652,
+      "totalMs": 68.882,
+      "bytes": 146829,
+      "bodySha256": "ac670e0b67df6935279359c4d73ef40d4022950a395ae797dd3fcb52e5e1477a",
+      "contentType": "application/vnd.blockzilla.stream.v2",
+      "source": "FOUNDATION_RECENT",
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 0,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 0,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 0,
+        "kvReads": 1,
+        "authCache": "BYPASS",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": 988,
+      "frame": {
+        "slot": 472582129,
+        "bank_id": 340547,
+        "blockhash": "DDC4RMSfoGH31f2kCszZ18BzHJdJf3knx4KRTXSTiKPr",
+        "parent_slot": 472582128,
+        "parent_blockhash": "57Jma7EwwtjSpYs3KcJEkiUiGkksow7P7q5WCbD2oMi5",
+        "kind": "block",
+        "sequence": 327768,
+        "source_sequence": 56343035,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327768:ac670e0b67df6935279359c4d73ef40d4022950a395ae797dd3fcb52e5e1477a",
+        "frame_sha256": "ac670e0b67df6935279359c4d73ef40d4022950a395ae797dd3fcb52e5e1477a",
+        "bytes": 146829,
+        "payload_sha256": "a7f3f3eff892c70ca316ea7c88f0c8d8f49752c7880ea669af735e7879e2aa27",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1550,
+            "sha256": "958e676027913f7888487d3da9eab544ca8a5444b8197ec89e3af11009ee7358"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "ab2fd57be62a5f18fa4845ffe052bd6f752c383bad5657f061b9d015c3b3edc6"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 63932,
+            "sha256": "dca24f4d3002352ddf3b387d3aa1b4c47bcb6f60f5a57f48e557526708c8b1c0"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "dffd04a8841d2cb5ab3cc6790b9bbeb78c7493c6556630fc128f5a19c855d4ae"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 6835,
+            "sha256": "b3d352f2f9e953a2a53365913fcf44ef370d132c70994081cd0c92af066f2001"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "65505e9f4d4730541e4c71954fee3f6d9e94ebc10e9546eda584ccb32fa73a2e"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "d722020ce700d526176680447987a6febbbacbb9cf1f776904ce02bd973d9987"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 38816,
+            "sha256": "39f6289c86608a1a82ab9b5080c5bc5dfe18089ac18171513c0f848a133dc78a"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 14928,
+            "sha256": "cb906fe048beab3869ab64ce41dda429fedc5a1bf394d60edabc6f845812951a"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1217,
+            "sha256": "36a8347aceb8141c9061103da4db808dd23a8de87585dbf904ff6ae22240d6c0"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 13568,
+            "sha256": "c69834b9f8d3fae83f91c115a5ee463f3730b8f2e14e32aa156eac972f15005d"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      }
+    },
+    {
+      "phase": "RecentFinalized",
+      "slot": 472582130,
+      "requestedCommitment": "finalized",
+      "status": 200,
+      "startedAt": "2026-11-22T14:56:40.060Z",
+      "completedAt": "2026-11-22T14:56:40.128Z",
+      "headersMs": 66.793,
+      "totalMs": 67.667,
+      "bytes": 148708,
+      "bodySha256": "92dc6a54853e946b92ba7096dd38230f9590ce63d5bf21947be8541e8954a94a",
+      "contentType": "application/vnd.blockzilla.stream.v2",
+      "source": "FOUNDATION_RECENT",
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 0,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 0,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 0,
+        "kvReads": 1,
+        "authCache": "BYPASS",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": 977,
+      "frame": {
+        "slot": 472582130,
+        "bank_id": 340548,
+        "blockhash": "7PDPNQkYhnvXYgxzxCVJUDS31SyxN2xENiKVTfPgwYkm",
+        "parent_slot": 472582129,
+        "parent_blockhash": "DDC4RMSfoGH31f2kCszZ18BzHJdJf3knx4KRTXSTiKPr",
+        "kind": "block",
+        "sequence": 327770,
+        "source_sequence": 56343384,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327770:92dc6a54853e946b92ba7096dd38230f9590ce63d5bf21947be8541e8954a94a",
+        "frame_sha256": "92dc6a54853e946b92ba7096dd38230f9590ce63d5bf21947be8541e8954a94a",
+        "bytes": 148708,
+        "payload_sha256": "82bcabb12700ea11f3fd8e7529777d8e2cff30da20cf28c886319c3fd10798dc",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1548,
+            "sha256": "3331882a12e07f2ecf4776a0ca6681e7123c5e83ddba80380a5de22a86227e1a"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "9ac72e054472eeee0c68e2971c32fe12bf069319b2470e258f27e86e14812818"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 65937,
+            "sha256": "4950db481dbe4732569365e6572a7c61270f37c77724c1a36188ad97404e1550"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "e63865097dd9fc486a1a42018730bc4cef9698706604901fa13dc23e4be7a1f8"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 5855,
+            "sha256": "021bf10ca2cdb86fb196a476cfc10c7289834dcad5e3501716fd47a21dad59ae"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "3d49bfeb42db8b2e507899b96686b628a772829c1d5687cbbcb06ea970cdc97a"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "858267a26a0acb57bb61de94032ba7e4d8b5a83abb70e0495087047ce93dc64b"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 40064,
+            "sha256": "266587be75eb3d906cf1526cbebfabc1bb430752cb05c9f8e83f26a977023b52"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 15396,
+            "sha256": "8c9edc17c218bf281d3d683116c7a24f0faff2bab250acac966fb7e631c2fe2c"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1257,
+            "sha256": "c958d93fc776a142acae191368ab5278ae7ea61cca5518d7f7b7ec73bf5f03ca"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 12672,
+            "sha256": "8123f0db9e194e7d2f46e6d79f14fd77500d5242d22b55e2067ef29d963de4bc"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      }
+    },
+    {
+      "phase": "ArchiveFallback",
+      "slot": 470555971,
+      "requestedCommitment": "finalized",
+      "status": 200,
+      "startedAt": "2026-11-22T14:56:42.329Z",
+      "completedAt": "2026-11-22T14:56:42.901Z",
+      "headersMs": 564.001,
+      "totalMs": 572.276,
+      "bytes": 247594,
+      "bodySha256": "c0fc8383e217705dde28612195cc165e95b2163c73743e5cb1586aab220c8415",
+      "contentType": "application/vnd.blockzilla.get-block-bundle.wincode",
+      "source": "R2_ARCHIVE",
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 2,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 2,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 1,
+        "kvReads": 1,
+        "authCache": "BYPASS",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": null
+    },
+    {
+      "phase": "ArchiveFallback",
+      "slot": 470663944,
+      "requestedCommitment": "finalized",
+      "status": 200,
+      "startedAt": "2026-11-22T14:56:42.901Z",
+      "completedAt": "2026-11-22T14:56:43.431Z",
+      "headersMs": 526.993,
+      "totalMs": 529.895,
+      "bytes": 364638,
+      "bodySha256": "64ac916826fef959e8786beea3723836e22c7bbc40f3431617ff58be175a4775",
+      "contentType": "application/vnd.blockzilla.get-block-bundle.wincode",
+      "source": "R2_ARCHIVE",
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 2,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 2,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 1,
+        "kvReads": 1,
+        "authCache": "BYPASS",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": null
+    },
+    {
+      "phase": "ArchiveFallback",
+      "slot": 470771932,
+      "requestedCommitment": "finalized",
+      "status": 200,
+      "startedAt": "2026-11-22T14:56:43.432Z",
+      "completedAt": "2026-11-22T14:56:44.066Z",
+      "headersMs": 631.716,
+      "totalMs": 634.662,
+      "bytes": 275803,
+      "bodySha256": "dab59abd834b055e114e76eb34245f5b1506ec9518c4496f89a29e4b34db764b",
+      "contentType": "application/vnd.blockzilla.get-block-bundle.wincode",
+      "source": "R2_ARCHIVE",
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 2,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 2,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 1,
+        "kvReads": 1,
+        "authCache": "BYPASS",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": null
+    },
+    {
+      "phase": "ArchiveFallback",
+      "slot": 470879999,
+      "requestedCommitment": "finalized",
+      "status": 200,
+      "startedAt": "2026-11-22T14:56:44.067Z",
+      "completedAt": "2026-11-22T14:56:44.553Z",
+      "headersMs": 482.349,
+      "totalMs": 485.903,
+      "bytes": 124924,
+      "bodySha256": "977d110e3d2328889faee91eda72703b9dee3ee4e7cb7edc3a12ce58f429296a",
+      "contentType": "application/vnd.blockzilla.get-block-bundle.wincode",
+      "source": "R2_ARCHIVE",
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 2,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 2,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 1,
+        "kvReads": 1,
+        "authCache": "BYPASS",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": null
+    },
+    {
+      "phase": "IdentityReject",
+      "slot": 472582127,
+      "requestedCommitment": "processed",
+      "status": 503,
+      "startedAt": "2026-11-22T14:56:46.753Z",
+      "completedAt": "2026-11-22T14:56:46.815Z",
+      "headersMs": 61.704,
+      "totalMs": 61.738,
+      "bytes": 81,
+      "bodySha256": "5e9759ad3fd7b04843af2f8025e1c16ea0d8ae003db2af7185e9e086a4fcea6d",
+      "contentType": "application/json",
+      "source": null,
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 0,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 0,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 0,
+        "kvReads": 1,
+        "authCache": "BYPASS",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": null,
+      "responseErrorCode": "recent_unavailable"
+    },
+    {
+      "phase": "IdentityReject",
+      "slot": 472582127,
+      "requestedCommitment": "processed",
+      "status": 410,
+      "startedAt": "2026-11-22T14:56:46.815Z",
+      "completedAt": "2026-11-22T14:56:46.846Z",
+      "headersMs": 30.808,
+      "totalMs": 30.826,
+      "bytes": 81,
+      "bodySha256": "2be72c6c02285d569e140b94844b1978bb96d578dd24ec18bf29d3408384bf4a",
+      "contentType": "application/json",
+      "source": null,
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 0,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 0,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 0,
+        "kvReads": 1,
+        "authCache": "BYPASS",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": null,
+      "responseErrorCode": "replay_unavailable"
+    },
+    {
+      "phase": "IdentityReject",
+      "slot": 472582127,
+      "requestedCommitment": "processed",
+      "status": 400,
+      "startedAt": "2026-11-22T14:56:46.846Z",
+      "completedAt": "2026-11-22T14:56:46.863Z",
+      "headersMs": 17.28,
+      "totalMs": 17.298,
+      "bytes": 118,
+      "bodySha256": "7afe9d5f3397bc9084ba0ba12b415f8272a4e64c0dd129d16d3034c1c0a3c611",
+      "contentType": "application/json",
+      "source": null,
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 0,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 0,
+        "archiveHeads": 0,
+        "recentHttp": 0,
+        "lookupHttp": 0,
+        "resolveHttp": 0,
+        "kvReads": 1,
+        "authCache": "BYPASS",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": null,
+      "responseErrorCode": "invalid_recovery_request"
+    },
+    {
+      "phase": "IdentityReject",
+      "slot": 470555971,
+      "requestedCommitment": "finalized",
+      "status": 409,
+      "startedAt": "2026-11-22T14:56:46.863Z",
+      "completedAt": "2026-11-22T14:56:46.896Z",
+      "headersMs": 32.737,
+      "totalMs": 32.765,
+      "bytes": 81,
+      "bodySha256": "7b85adb54b564c20007a648d684a1920a13f7b6c422e8c7ef10f88855e1a6063",
+      "contentType": "application/json",
+      "source": null,
+      "operations": {
+        "r2": {
+          "gets": 0,
+          "heads": 0
+        },
+        "s3": {
+          "gets": 0,
+          "heads": 0
+        },
+        "reader": {
+          "gets": 0,
+          "heads": 0
+        },
+        "archiveGets": 0,
+        "archiveHeads": 0,
+        "recentHttp": 1,
+        "lookupHttp": 0,
+        "resolveHttp": 0,
+        "kvReads": 1,
+        "authCache": "BYPASS",
+        "responseCache": "BYPASS"
+      },
+      "ok": true,
+      "nativeCpuMicros": null,
+      "responseErrorCode": "blockhash_mismatch"
+    }
+  ],
+  "windows": {
+    "UnrootedFinalized": {
+      "start": "2026-11-22T14:56:27.653Z",
+      "end": "2026-11-22T14:56:27.964Z",
+      "expectedWorkerRequests": 1,
+      "traffic": {
+        "condition": "UnrootedFinalized",
+        "representation": "compact",
+        "measured": true,
+        "workerRequests": 1,
+        "heliusRequests": 0
+      }
+    },
+    "RuntimeWarm": {
+      "start": "2026-11-22T14:56:30.164Z",
+      "end": "2026-11-22T14:56:30.332Z",
+      "expectedWorkerRequests": 1,
+      "traffic": {
+        "condition": "RuntimeWarm",
+        "representation": "compact",
+        "measured": false,
+        "workerRequests": 1,
+        "heliusRequests": 0
+      }
+    },
+    "RecentCold": {
+      "start": "2026-11-22T14:56:32.532Z",
+      "end": "2026-11-22T14:56:32.860Z",
+      "expectedWorkerRequests": 4,
+      "traffic": {
+        "condition": "RecentCold",
+        "representation": "compact",
+        "measured": true,
+        "workerRequests": 4,
+        "heliusRequests": 0
+      }
+    },
+    "AuthPrime": {
+      "start": "2026-11-22T14:56:35.060Z",
+      "end": "2026-11-22T14:56:35.122Z",
+      "expectedWorkerRequests": 1,
+      "traffic": {
+        "condition": "AuthPrime",
+        "representation": "compact",
+        "measured": false,
+        "workerRequests": 1,
+        "heliusRequests": 0
+      }
+    },
+    "RecentAuthWarm": {
+      "start": "2026-11-22T14:56:37.322Z",
+      "end": "2026-11-22T14:56:37.692Z",
+      "expectedWorkerRequests": 8,
+      "traffic": {
+        "condition": "RecentAuthWarm",
+        "representation": "compact",
+        "measured": true,
+        "workerRequests": 8,
+        "heliusRequests": 0
+      }
+    },
+    "RecentFinalized": {
+      "start": "2026-11-22T14:56:39.901Z",
+      "end": "2026-11-22T14:56:40.129Z",
+      "expectedWorkerRequests": 4,
+      "traffic": {
+        "condition": "RecentFinalized",
+        "representation": "compact",
+        "measured": true,
+        "workerRequests": 4,
+        "heliusRequests": 0
+      }
+    },
+    "ArchiveFallback": {
+      "start": "2026-11-22T14:56:42.329Z",
+      "end": "2026-11-22T14:56:44.553Z",
+      "expectedWorkerRequests": 4,
+      "traffic": {
+        "condition": "ArchiveFallback",
+        "representation": "compact",
+        "measured": true,
+        "workerRequests": 4,
+        "heliusRequests": 0
+      }
+    },
+    "IdentityReject": {
+      "start": "2026-11-22T14:56:46.753Z",
+      "end": "2026-11-22T14:56:46.896Z",
+      "expectedWorkerRequests": 4,
+      "traffic": {
+        "condition": "IdentityReject",
+        "representation": "compact",
+        "measured": true,
+        "workerRequests": 4,
+        "heliusRequests": 0
+      }
+    }
+  },
+  "native": {
+    "source": {
+      "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+      "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+      "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+      "session_id": "000000000000000018ea5078fdda19df-13e843"
+    },
+    "baseline": [
+      {
+        "slot": 472582125,
+        "bank_id": 340543,
+        "blockhash": "GpzZmtf4WJNZpckwXSswKuQU2RPd2nPMv3FaPx8hXghJ",
+        "parent_slot": 472582124,
+        "parent_blockhash": "7WrxwjF4LX8pfhDRuSua2pLhqHun2WacZoUxHFqznLYd",
+        "kind": "block",
+        "sequence": 327756,
+        "source_sequence": 56340931,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327756:d073577b1d7691cd53b599bcf0611352fc772f1b88df95792114048ed8976357",
+        "frame_sha256": "d073577b1d7691cd53b599bcf0611352fc772f1b88df95792114048ed8976357",
+        "bytes": 173889,
+        "payload_sha256": "1abf884cb368e8e05c7093bc53ade33d696a4a843cb48a87eb53f43f0c32a0ef",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1557,
+            "sha256": "6317996dfbb192a3cf41bab0ec13d9d88e98d167d7b80b5093128392684f5ed7"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "163149e190b2ef9526e69494dacb460d507c432b480fed5ee28133b3d29a4732"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 80920,
+            "sha256": "eff667272ca88d70cfea63a3bfc0986c0e18e0e49bc45a9992cac1ca61b1e557"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "45c2cdedfe0abfaaf76688b58ac81c7fff4f7feab06a60d55e22a67d8928ee7e"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 7465,
+            "sha256": "5e6a1ae7075e85adadcd7f056178cf1197b9c1f057fb7d032bbdfb96505dd6a9"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "24ac90d0598b89afc93243f4524ff4cb165f2b75178bc59e401c93a6ac49c404"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "9f9785fcbdae47475c64a2df4c33175547b5c8f1446694bd9256cab3c7971497"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 43936,
+            "sha256": "54321bfc29487599e1ffc9f60ed29b1ff359e18b6e79845b4abff9e125d2d8c1"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 16888,
+            "sha256": "bcd2daa90447c83f5137735d08735b211456846fdb30d4ccb5a22ba1c7398cfb"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1382,
+            "sha256": "915fdd524af5e85cc606c9c7f3ad67fcc4b1d586f94d6f6bd334feb2e31cb030"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 15744,
+            "sha256": "109d680f1cc3410631490a0373a3d5a11eec4b3c5cde24c9e0a4d59aa55626c5"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      },
+      {
+        "slot": 472582124,
+        "bank_id": 340542,
+        "blockhash": "7WrxwjF4LX8pfhDRuSua2pLhqHun2WacZoUxHFqznLYd",
+        "parent_slot": 472582123,
+        "parent_blockhash": "FiW76dRA1BJnYStkdypig8QydV6NVD8Ao25k7E2cQihY",
+        "kind": "confirmed",
+        "sequence": 327757,
+        "source_sequence": 56341456,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327757:93b8c96f0f2e7c3075c04eb80681fa0f2659a64ee811b8c53be75c04c9f505a4",
+        "frame_sha256": "93b8c96f0f2e7c3075c04eb80681fa0f2659a64ee811b8c53be75c04c9f505a4",
+        "bytes": 1584,
+        "payload_sha256": "f1d801917be9fb88e1ef8657f9d8a46f8f95f1392be5266386bef70b852b69a6",
+        "payload_frame_sha256": "40ed7a5b464ffade46297c386e583c4be4a488171c054232bb4c5b74e2f5d890",
+        "objects": []
+      },
+      {
+        "slot": 472582126,
+        "bank_id": 340544,
+        "blockhash": "ARtHhSyRB4CvBA9ai9F1ruc399KGkrKnubuLB2vCryKo",
+        "parent_slot": 472582125,
+        "parent_blockhash": "GpzZmtf4WJNZpckwXSswKuQU2RPd2nPMv3FaPx8hXghJ",
+        "kind": "block",
+        "sequence": 327758,
+        "source_sequence": 56341501,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327758:c9e9b5cea2a14c296b384266891bd85de424411bdeb11b23459b153c426f2f93",
+        "frame_sha256": "c9e9b5cea2a14c296b384266891bd85de424411bdeb11b23459b153c426f2f93",
+        "bytes": 218413,
+        "payload_sha256": "94a7642a30115a3291f6d9d336cc8b7009193d5a003c9eba5f69b302ed86d898",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1551,
+            "sha256": "0f5735f6ad8869a25fedf6aca12bda79681addf8ff380dc7d11f13f19a85bec6"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "8b25496ab06d5c4a9a8346c167229f2844799d93bcadb462bd77b1d164c652ca"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 108016,
+            "sha256": "d40e1b4cc06f1ec7159a0c9c67cbd180b4d1534379625766d82cb141dc3c6405"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "801ea49ac2dfc53bbd79ddc3c76bf82a04d266ce217e1239eaf76f2cdb2e82ab"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 9740,
+            "sha256": "a5ec409ee6803138c6b52f45c0581ac7775210c1f2aed528f2a02375859aa783"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "19bae07092d79354f582a2b6d9736ef7000321aff9330992ffefc8d3d1f17e13"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "44006771eec2530827d77a89b973217f8579c8c71656849b2722f4d2e9e1f3ba"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 52160,
+            "sha256": "1ea7b0d2e8cd5de35d3391e1ecd5f6b52ab75f6c1c26417dc0c3e43682de46ae"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 20053,
+            "sha256": "95f88b3be0c0d830165cbbb7150905c73df2a5cd64bfc3bc83739c1e016ad5ab"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1639,
+            "sha256": "c4dfc5f18760a47faa495e9d5c24fc63e592d7c5a5799ae7496bcd72bcb48e2f"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 19264,
+            "sha256": "2cf330ee8d7a2a2b6e3c87a1254bc99467c8382d6dd141b1ebf44b74f506212f"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      }
+    ],
+    "savedCompleteCursor": "000000000000000018ea5078fdda19df-13e843:p327758:c9e9b5cea2a14c296b384266891bd85de424411bdeb11b23459b153c426f2f93",
+    "clientDisconnectedAt": "2026-11-22T14:56:23.447Z",
+    "gapReference": [
+      {
+        "slot": 472582124,
+        "bank_id": 340542,
+        "blockhash": "7WrxwjF4LX8pfhDRuSua2pLhqHun2WacZoUxHFqznLYd",
+        "parent_slot": 472582123,
+        "parent_blockhash": "FiW76dRA1BJnYStkdypig8QydV6NVD8Ao25k7E2cQihY",
+        "kind": "root",
+        "sequence": 327759,
+        "source_sequence": 56341503,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327759:e7a26e5366002c32b19d02cfb5f38b85c4d5c7c25885b94a870e405a8ddf4474",
+        "frame_sha256": "e7a26e5366002c32b19d02cfb5f38b85c4d5c7c25885b94a870e405a8ddf4474",
+        "bytes": 1572,
+        "payload_sha256": "f1d801917be9fb88e1ef8657f9d8a46f8f95f1392be5266386bef70b852b69a6",
+        "payload_frame_sha256": "40ed7a5b464ffade46297c386e583c4be4a488171c054232bb4c5b74e2f5d890",
+        "objects": []
+      },
+      {
+        "slot": 472582125,
+        "bank_id": 340543,
+        "blockhash": "GpzZmtf4WJNZpckwXSswKuQU2RPd2nPMv3FaPx8hXghJ",
+        "parent_slot": 472582124,
+        "parent_blockhash": "7WrxwjF4LX8pfhDRuSua2pLhqHun2WacZoUxHFqznLYd",
+        "kind": "confirmed",
+        "sequence": 327760,
+        "source_sequence": 56341887,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327760:9911f6c4f65b218e6ee2e4d4843672b2b04315b37e34dd457968cf3409663687",
+        "frame_sha256": "9911f6c4f65b218e6ee2e4d4843672b2b04315b37e34dd457968cf3409663687",
+        "bytes": 1584,
+        "payload_sha256": "1abf884cb368e8e05c7093bc53ade33d696a4a843cb48a87eb53f43f0c32a0ef",
+        "payload_frame_sha256": "d073577b1d7691cd53b599bcf0611352fc772f1b88df95792114048ed8976357",
+        "objects": []
+      },
+      {
+        "slot": 472582125,
+        "bank_id": 340543,
+        "blockhash": "GpzZmtf4WJNZpckwXSswKuQU2RPd2nPMv3FaPx8hXghJ",
+        "parent_slot": 472582124,
+        "parent_blockhash": "7WrxwjF4LX8pfhDRuSua2pLhqHun2WacZoUxHFqznLYd",
+        "kind": "root",
+        "sequence": 327761,
+        "source_sequence": 56341889,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327761:8ee2698208b390a159ecdb9c93a3b28ff1d8ee56a854392f2566b9d16ee6b6a8",
+        "frame_sha256": "8ee2698208b390a159ecdb9c93a3b28ff1d8ee56a854392f2566b9d16ee6b6a8",
+        "bytes": 1572,
+        "payload_sha256": "1abf884cb368e8e05c7093bc53ade33d696a4a843cb48a87eb53f43f0c32a0ef",
+        "payload_frame_sha256": "d073577b1d7691cd53b599bcf0611352fc772f1b88df95792114048ed8976357",
+        "objects": []
+      },
+      {
+        "slot": 472582127,
+        "bank_id": 340545,
+        "blockhash": "4NRtG9fmcrPiyCFqKSmZYeSsYnpWi3XbV9LogjP8Yqbb",
+        "parent_slot": 472582126,
+        "parent_blockhash": "ARtHhSyRB4CvBA9ai9F1ruc399KGkrKnubuLB2vCryKo",
+        "kind": "block",
+        "sequence": 327762,
+        "source_sequence": 56341891,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327762:fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+        "frame_sha256": "fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+        "bytes": 147208,
+        "payload_sha256": "8ac507fec0e72d6be531b5e767edd7d871eed37a5b647b9cb1dec6f2f385997a",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1548,
+            "sha256": "d7bfee047046b59df583544814c1d8344df0e5e719ace38616bbbaa45af8b5bf"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "c5910e79b8b2624444683d6a81350ac8db55f900d5407178a16282a74bb66177"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 68101,
+            "sha256": "cf031691fc2efae322c5faa249521bb495c8f14de553b2a1ae460f96ced308af"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "93cdb0ca0d9d157bf53f7755e2f69738746f28ef2b10c149603cbcb83519c817"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 6520,
+            "sha256": "0d27d8ae6d68d614fea0e27f61c62fd5caedbfa2e7238c78120620adeb461e6f"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "d389f6735037d0165f9104e6c65a57f8378ee8828645b98fd44c6c97736811a8"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "e934ff10d6966b85ec837be704e18beddcb07158ad70665af2359fb1bd315a2a"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 36416,
+            "sha256": "b934822326d30f090c415ee1a13361e4a7c6763fbd49a0f945ec1e3a38e747b5"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 13996,
+            "sha256": "5204f2a5cfa98ecd4ce4d52a0a48f7a00a3606f99c588c81bd2619ce37af0140"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1144,
+            "sha256": "43ef52104c2458a7b92a0b0f7af12df14f8f53fd37381acc5cf656da018cf4c6"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 13504,
+            "sha256": "6cd69b2b3c538a89d4eafc77e7a937205ceab2d6797109560a678807bb2d47bb"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      },
+      {
+        "slot": 472582126,
+        "bank_id": 340544,
+        "blockhash": "ARtHhSyRB4CvBA9ai9F1ruc399KGkrKnubuLB2vCryKo",
+        "parent_slot": 472582125,
+        "parent_blockhash": "GpzZmtf4WJNZpckwXSswKuQU2RPd2nPMv3FaPx8hXghJ",
+        "kind": "confirmed",
+        "sequence": 327763,
+        "source_sequence": 56342624,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327763:4bf1b77a890aa11b53ed557fcf556183fc6f60cdc8058d6dcf845c73dcc42751",
+        "frame_sha256": "4bf1b77a890aa11b53ed557fcf556183fc6f60cdc8058d6dcf845c73dcc42751",
+        "bytes": 1577,
+        "payload_sha256": "94a7642a30115a3291f6d9d336cc8b7009193d5a003c9eba5f69b302ed86d898",
+        "payload_frame_sha256": "c9e9b5cea2a14c296b384266891bd85de424411bdeb11b23459b153c426f2f93",
+        "objects": []
+      },
+      {
+        "slot": 472582127,
+        "bank_id": 340545,
+        "blockhash": "4NRtG9fmcrPiyCFqKSmZYeSsYnpWi3XbV9LogjP8Yqbb",
+        "parent_slot": 472582126,
+        "parent_blockhash": "ARtHhSyRB4CvBA9ai9F1ruc399KGkrKnubuLB2vCryKo",
+        "kind": "confirmed",
+        "sequence": 327764,
+        "source_sequence": 56342626,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327764:9ce0406f50c6d5ea5b3c5e41a1f17f9bdde50adf74cfe9c00a0e0c289683f11c",
+        "frame_sha256": "9ce0406f50c6d5ea5b3c5e41a1f17f9bdde50adf74cfe9c00a0e0c289683f11c",
+        "bytes": 1575,
+        "payload_sha256": "8ac507fec0e72d6be531b5e767edd7d871eed37a5b647b9cb1dec6f2f385997a",
+        "payload_frame_sha256": "fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+        "objects": []
+      },
+      {
+        "slot": 472582128,
+        "bank_id": 340546,
+        "blockhash": "57Jma7EwwtjSpYs3KcJEkiUiGkksow7P7q5WCbD2oMi5",
+        "parent_slot": 472582127,
+        "parent_blockhash": "4NRtG9fmcrPiyCFqKSmZYeSsYnpWi3XbV9LogjP8Yqbb",
+        "kind": "block",
+        "sequence": 327765,
+        "source_sequence": 56342631,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327765:a7a915d5546a8ebddcb330018c057c3af6910e777fd4f6f385c174dc90669965",
+        "frame_sha256": "a7a915d5546a8ebddcb330018c057c3af6910e777fd4f6f385c174dc90669965",
+        "bytes": 237317,
+        "payload_sha256": "9f82f5cfb1bcb9b8e346344d07937f254b469cc4bdca6ef08f3361e75dce5df7",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1549,
+            "sha256": "889cec324e2266c5b1902e10bba73bcead19d8befbfda6b3ef6f73ea3b8ddb2f"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "2d1b775bdb07f66c0585beea6f0572627ea7e31a8ba3eca84b40ebccad8116fd"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 113251,
+            "sha256": "511550bef1161d3df140456d6c6c7d245eb5559a76f1460a07b5e99b91883fab"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "1f0ebb383dfbe5a4c9fa22d669e151b52b8ca41ea454df5cad06c315a090b4a5"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 12505,
+            "sha256": "e806a1018c83e2384260a74384b8f948fba1150848a9c08cb81cb372c839ef95"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "4ae225f525536e8b573c91a5ac505f76ff1bffba88f9b2dc43e2411279985750"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "d34dd276dde4265de1a5442408a36f188aa7c52a80ebd938b1c7c728ac63c4d7"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 55808,
+            "sha256": "8789a13fea33bd8238192be4197144d905ea070c1ed5cd0b2810bc8a59985e75"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 21437,
+            "sha256": "815f94d72d2cd1ab7be70415f5433fb053e2c1f10999a5ff5e54d530f017ca03"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1757,
+            "sha256": "16f5bf405e83674ae9b177590af7a40933cd914408233098d155b0eaa66fb96b"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 25024,
+            "sha256": "ca59990486d671de21cc02bd6122e822a5d6b44ef898933c8ff1bee6d3123f7d"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      },
+      {
+        "slot": 472582126,
+        "bank_id": 340544,
+        "blockhash": "ARtHhSyRB4CvBA9ai9F1ruc399KGkrKnubuLB2vCryKo",
+        "parent_slot": 472582125,
+        "parent_blockhash": "GpzZmtf4WJNZpckwXSswKuQU2RPd2nPMv3FaPx8hXghJ",
+        "kind": "root",
+        "sequence": 327766,
+        "source_sequence": 56342633,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327766:c5506fb340f135b77338f20c6a36c576883480453b18f3cc6d5dbfe09049cce5",
+        "frame_sha256": "c5506fb340f135b77338f20c6a36c576883480453b18f3cc6d5dbfe09049cce5",
+        "bytes": 1565,
+        "payload_sha256": "94a7642a30115a3291f6d9d336cc8b7009193d5a003c9eba5f69b302ed86d898",
+        "payload_frame_sha256": "c9e9b5cea2a14c296b384266891bd85de424411bdeb11b23459b153c426f2f93",
+        "objects": []
+      },
+      {
+        "slot": 472582127,
+        "bank_id": 340545,
+        "blockhash": "4NRtG9fmcrPiyCFqKSmZYeSsYnpWi3XbV9LogjP8Yqbb",
+        "parent_slot": 472582126,
+        "parent_blockhash": "ARtHhSyRB4CvBA9ai9F1ruc399KGkrKnubuLB2vCryKo",
+        "kind": "root",
+        "sequence": 327767,
+        "source_sequence": 56342634,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327767:c4b6216e28b27d73bc2bca6a99c3c02bf23452c1abfb40fcd9d91abe37199e17",
+        "frame_sha256": "c4b6216e28b27d73bc2bca6a99c3c02bf23452c1abfb40fcd9d91abe37199e17",
+        "bytes": 1563,
+        "payload_sha256": "8ac507fec0e72d6be531b5e767edd7d871eed37a5b647b9cb1dec6f2f385997a",
+        "payload_frame_sha256": "fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+        "objects": []
+      },
+      {
+        "slot": 472582129,
+        "bank_id": 340547,
+        "blockhash": "DDC4RMSfoGH31f2kCszZ18BzHJdJf3knx4KRTXSTiKPr",
+        "parent_slot": 472582128,
+        "parent_blockhash": "57Jma7EwwtjSpYs3KcJEkiUiGkksow7P7q5WCbD2oMi5",
+        "kind": "block",
+        "sequence": 327768,
+        "source_sequence": 56343035,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327768:ac670e0b67df6935279359c4d73ef40d4022950a395ae797dd3fcb52e5e1477a",
+        "frame_sha256": "ac670e0b67df6935279359c4d73ef40d4022950a395ae797dd3fcb52e5e1477a",
+        "bytes": 146829,
+        "payload_sha256": "a7f3f3eff892c70ca316ea7c88f0c8d8f49752c7880ea669af735e7879e2aa27",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1550,
+            "sha256": "958e676027913f7888487d3da9eab544ca8a5444b8197ec89e3af11009ee7358"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "ab2fd57be62a5f18fa4845ffe052bd6f752c383bad5657f061b9d015c3b3edc6"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 63932,
+            "sha256": "dca24f4d3002352ddf3b387d3aa1b4c47bcb6f60f5a57f48e557526708c8b1c0"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "dffd04a8841d2cb5ab3cc6790b9bbeb78c7493c6556630fc128f5a19c855d4ae"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 6835,
+            "sha256": "b3d352f2f9e953a2a53365913fcf44ef370d132c70994081cd0c92af066f2001"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "65505e9f4d4730541e4c71954fee3f6d9e94ebc10e9546eda584ccb32fa73a2e"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "d722020ce700d526176680447987a6febbbacbb9cf1f776904ce02bd973d9987"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 38816,
+            "sha256": "39f6289c86608a1a82ab9b5080c5bc5dfe18089ac18171513c0f848a133dc78a"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 14928,
+            "sha256": "cb906fe048beab3869ab64ce41dda429fedc5a1bf394d60edabc6f845812951a"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1217,
+            "sha256": "36a8347aceb8141c9061103da4db808dd23a8de87585dbf904ff6ae22240d6c0"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 13568,
+            "sha256": "c69834b9f8d3fae83f91c115a5ee463f3730b8f2e14e32aa156eac972f15005d"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      },
+      {
+        "slot": 472582128,
+        "bank_id": 340546,
+        "blockhash": "57Jma7EwwtjSpYs3KcJEkiUiGkksow7P7q5WCbD2oMi5",
+        "parent_slot": 472582127,
+        "parent_blockhash": "4NRtG9fmcrPiyCFqKSmZYeSsYnpWi3XbV9LogjP8Yqbb",
+        "kind": "confirmed",
+        "sequence": 327769,
+        "source_sequence": 56343353,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327769:b7ba595bccc26fd256fa01a0a3ffd4e1cefe767d3731af8a96a957a4ba16ec66",
+        "frame_sha256": "b7ba595bccc26fd256fa01a0a3ffd4e1cefe767d3731af8a96a957a4ba16ec66",
+        "bytes": 1574,
+        "payload_sha256": "9f82f5cfb1bcb9b8e346344d07937f254b469cc4bdca6ef08f3361e75dce5df7",
+        "payload_frame_sha256": "a7a915d5546a8ebddcb330018c057c3af6910e777fd4f6f385c174dc90669965",
+        "objects": []
+      },
+      {
+        "slot": 472582130,
+        "bank_id": 340548,
+        "blockhash": "7PDPNQkYhnvXYgxzxCVJUDS31SyxN2xENiKVTfPgwYkm",
+        "parent_slot": 472582129,
+        "parent_blockhash": "DDC4RMSfoGH31f2kCszZ18BzHJdJf3knx4KRTXSTiKPr",
+        "kind": "block",
+        "sequence": 327770,
+        "source_sequence": 56343384,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327770:92dc6a54853e946b92ba7096dd38230f9590ce63d5bf21947be8541e8954a94a",
+        "frame_sha256": "92dc6a54853e946b92ba7096dd38230f9590ce63d5bf21947be8541e8954a94a",
+        "bytes": 148708,
+        "payload_sha256": "82bcabb12700ea11f3fd8e7529777d8e2cff30da20cf28c886319c3fd10798dc",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1548,
+            "sha256": "3331882a12e07f2ecf4776a0ca6681e7123c5e83ddba80380a5de22a86227e1a"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "9ac72e054472eeee0c68e2971c32fe12bf069319b2470e258f27e86e14812818"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 65937,
+            "sha256": "4950db481dbe4732569365e6572a7c61270f37c77724c1a36188ad97404e1550"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "e63865097dd9fc486a1a42018730bc4cef9698706604901fa13dc23e4be7a1f8"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 5855,
+            "sha256": "021bf10ca2cdb86fb196a476cfc10c7289834dcad5e3501716fd47a21dad59ae"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "3d49bfeb42db8b2e507899b96686b628a772829c1d5687cbbcb06ea970cdc97a"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "858267a26a0acb57bb61de94032ba7e4d8b5a83abb70e0495087047ce93dc64b"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 40064,
+            "sha256": "266587be75eb3d906cf1526cbebfabc1bb430752cb05c9f8e83f26a977023b52"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 15396,
+            "sha256": "8c9edc17c218bf281d3d683116c7a24f0faff2bab250acac966fb7e631c2fe2c"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1257,
+            "sha256": "c958d93fc776a142acae191368ab5278ae7ea61cca5518d7f7b7ec73bf5f03ca"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 12672,
+            "sha256": "8123f0db9e194e7d2f46e6d79f14fd77500d5242d22b55e2067ef29d963de4bc"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      }
+    ],
+    "partialFrameCounted": false,
+    "failureType": "isolated-client-connection-closed",
+    "unrootedRejectionProven": false,
+    "unrootedCandidateAlreadyFinalized": true,
+    "resumedCompleteCursor": "000000000000000018ea5078fdda19df-13e843:p327770:92dc6a54853e946b92ba7096dd38230f9590ce63d5bf21947be8541e8954a94a",
+    "resumed": [
+      {
+        "slot": 472582124,
+        "bank_id": 340542,
+        "blockhash": "7WrxwjF4LX8pfhDRuSua2pLhqHun2WacZoUxHFqznLYd",
+        "parent_slot": 472582123,
+        "parent_blockhash": "FiW76dRA1BJnYStkdypig8QydV6NVD8Ao25k7E2cQihY",
+        "kind": "root",
+        "sequence": 327759,
+        "source_sequence": 56341503,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327759:e7a26e5366002c32b19d02cfb5f38b85c4d5c7c25885b94a870e405a8ddf4474",
+        "frame_sha256": "e7a26e5366002c32b19d02cfb5f38b85c4d5c7c25885b94a870e405a8ddf4474",
+        "bytes": 1572,
+        "payload_sha256": "f1d801917be9fb88e1ef8657f9d8a46f8f95f1392be5266386bef70b852b69a6",
+        "payload_frame_sha256": "40ed7a5b464ffade46297c386e583c4be4a488171c054232bb4c5b74e2f5d890",
+        "objects": []
+      },
+      {
+        "slot": 472582125,
+        "bank_id": 340543,
+        "blockhash": "GpzZmtf4WJNZpckwXSswKuQU2RPd2nPMv3FaPx8hXghJ",
+        "parent_slot": 472582124,
+        "parent_blockhash": "7WrxwjF4LX8pfhDRuSua2pLhqHun2WacZoUxHFqznLYd",
+        "kind": "confirmed",
+        "sequence": 327760,
+        "source_sequence": 56341887,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327760:9911f6c4f65b218e6ee2e4d4843672b2b04315b37e34dd457968cf3409663687",
+        "frame_sha256": "9911f6c4f65b218e6ee2e4d4843672b2b04315b37e34dd457968cf3409663687",
+        "bytes": 1584,
+        "payload_sha256": "1abf884cb368e8e05c7093bc53ade33d696a4a843cb48a87eb53f43f0c32a0ef",
+        "payload_frame_sha256": "d073577b1d7691cd53b599bcf0611352fc772f1b88df95792114048ed8976357",
+        "objects": []
+      },
+      {
+        "slot": 472582125,
+        "bank_id": 340543,
+        "blockhash": "GpzZmtf4WJNZpckwXSswKuQU2RPd2nPMv3FaPx8hXghJ",
+        "parent_slot": 472582124,
+        "parent_blockhash": "7WrxwjF4LX8pfhDRuSua2pLhqHun2WacZoUxHFqznLYd",
+        "kind": "root",
+        "sequence": 327761,
+        "source_sequence": 56341889,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327761:8ee2698208b390a159ecdb9c93a3b28ff1d8ee56a854392f2566b9d16ee6b6a8",
+        "frame_sha256": "8ee2698208b390a159ecdb9c93a3b28ff1d8ee56a854392f2566b9d16ee6b6a8",
+        "bytes": 1572,
+        "payload_sha256": "1abf884cb368e8e05c7093bc53ade33d696a4a843cb48a87eb53f43f0c32a0ef",
+        "payload_frame_sha256": "d073577b1d7691cd53b599bcf0611352fc772f1b88df95792114048ed8976357",
+        "objects": []
+      },
+      {
+        "slot": 472582127,
+        "bank_id": 340545,
+        "blockhash": "4NRtG9fmcrPiyCFqKSmZYeSsYnpWi3XbV9LogjP8Yqbb",
+        "parent_slot": 472582126,
+        "parent_blockhash": "ARtHhSyRB4CvBA9ai9F1ruc399KGkrKnubuLB2vCryKo",
+        "kind": "block",
+        "sequence": 327762,
+        "source_sequence": 56341891,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327762:fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+        "frame_sha256": "fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+        "bytes": 147208,
+        "payload_sha256": "8ac507fec0e72d6be531b5e767edd7d871eed37a5b647b9cb1dec6f2f385997a",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1548,
+            "sha256": "d7bfee047046b59df583544814c1d8344df0e5e719ace38616bbbaa45af8b5bf"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "c5910e79b8b2624444683d6a81350ac8db55f900d5407178a16282a74bb66177"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 68101,
+            "sha256": "cf031691fc2efae322c5faa249521bb495c8f14de553b2a1ae460f96ced308af"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "93cdb0ca0d9d157bf53f7755e2f69738746f28ef2b10c149603cbcb83519c817"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 6520,
+            "sha256": "0d27d8ae6d68d614fea0e27f61c62fd5caedbfa2e7238c78120620adeb461e6f"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "d389f6735037d0165f9104e6c65a57f8378ee8828645b98fd44c6c97736811a8"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "e934ff10d6966b85ec837be704e18beddcb07158ad70665af2359fb1bd315a2a"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 36416,
+            "sha256": "b934822326d30f090c415ee1a13361e4a7c6763fbd49a0f945ec1e3a38e747b5"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 13996,
+            "sha256": "5204f2a5cfa98ecd4ce4d52a0a48f7a00a3606f99c588c81bd2619ce37af0140"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1144,
+            "sha256": "43ef52104c2458a7b92a0b0f7af12df14f8f53fd37381acc5cf656da018cf4c6"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 13504,
+            "sha256": "6cd69b2b3c538a89d4eafc77e7a937205ceab2d6797109560a678807bb2d47bb"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      },
+      {
+        "slot": 472582126,
+        "bank_id": 340544,
+        "blockhash": "ARtHhSyRB4CvBA9ai9F1ruc399KGkrKnubuLB2vCryKo",
+        "parent_slot": 472582125,
+        "parent_blockhash": "GpzZmtf4WJNZpckwXSswKuQU2RPd2nPMv3FaPx8hXghJ",
+        "kind": "confirmed",
+        "sequence": 327763,
+        "source_sequence": 56342624,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327763:4bf1b77a890aa11b53ed557fcf556183fc6f60cdc8058d6dcf845c73dcc42751",
+        "frame_sha256": "4bf1b77a890aa11b53ed557fcf556183fc6f60cdc8058d6dcf845c73dcc42751",
+        "bytes": 1577,
+        "payload_sha256": "94a7642a30115a3291f6d9d336cc8b7009193d5a003c9eba5f69b302ed86d898",
+        "payload_frame_sha256": "c9e9b5cea2a14c296b384266891bd85de424411bdeb11b23459b153c426f2f93",
+        "objects": []
+      },
+      {
+        "slot": 472582127,
+        "bank_id": 340545,
+        "blockhash": "4NRtG9fmcrPiyCFqKSmZYeSsYnpWi3XbV9LogjP8Yqbb",
+        "parent_slot": 472582126,
+        "parent_blockhash": "ARtHhSyRB4CvBA9ai9F1ruc399KGkrKnubuLB2vCryKo",
+        "kind": "confirmed",
+        "sequence": 327764,
+        "source_sequence": 56342626,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327764:9ce0406f50c6d5ea5b3c5e41a1f17f9bdde50adf74cfe9c00a0e0c289683f11c",
+        "frame_sha256": "9ce0406f50c6d5ea5b3c5e41a1f17f9bdde50adf74cfe9c00a0e0c289683f11c",
+        "bytes": 1575,
+        "payload_sha256": "8ac507fec0e72d6be531b5e767edd7d871eed37a5b647b9cb1dec6f2f385997a",
+        "payload_frame_sha256": "fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+        "objects": []
+      },
+      {
+        "slot": 472582128,
+        "bank_id": 340546,
+        "blockhash": "57Jma7EwwtjSpYs3KcJEkiUiGkksow7P7q5WCbD2oMi5",
+        "parent_slot": 472582127,
+        "parent_blockhash": "4NRtG9fmcrPiyCFqKSmZYeSsYnpWi3XbV9LogjP8Yqbb",
+        "kind": "block",
+        "sequence": 327765,
+        "source_sequence": 56342631,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327765:a7a915d5546a8ebddcb330018c057c3af6910e777fd4f6f385c174dc90669965",
+        "frame_sha256": "a7a915d5546a8ebddcb330018c057c3af6910e777fd4f6f385c174dc90669965",
+        "bytes": 237317,
+        "payload_sha256": "9f82f5cfb1bcb9b8e346344d07937f254b469cc4bdca6ef08f3361e75dce5df7",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1549,
+            "sha256": "889cec324e2266c5b1902e10bba73bcead19d8befbfda6b3ef6f73ea3b8ddb2f"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "2d1b775bdb07f66c0585beea6f0572627ea7e31a8ba3eca84b40ebccad8116fd"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 113251,
+            "sha256": "511550bef1161d3df140456d6c6c7d245eb5559a76f1460a07b5e99b91883fab"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "1f0ebb383dfbe5a4c9fa22d669e151b52b8ca41ea454df5cad06c315a090b4a5"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 12505,
+            "sha256": "e806a1018c83e2384260a74384b8f948fba1150848a9c08cb81cb372c839ef95"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "4ae225f525536e8b573c91a5ac505f76ff1bffba88f9b2dc43e2411279985750"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "d34dd276dde4265de1a5442408a36f188aa7c52a80ebd938b1c7c728ac63c4d7"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 55808,
+            "sha256": "8789a13fea33bd8238192be4197144d905ea070c1ed5cd0b2810bc8a59985e75"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 21437,
+            "sha256": "815f94d72d2cd1ab7be70415f5433fb053e2c1f10999a5ff5e54d530f017ca03"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1757,
+            "sha256": "16f5bf405e83674ae9b177590af7a40933cd914408233098d155b0eaa66fb96b"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 25024,
+            "sha256": "ca59990486d671de21cc02bd6122e822a5d6b44ef898933c8ff1bee6d3123f7d"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      },
+      {
+        "slot": 472582126,
+        "bank_id": 340544,
+        "blockhash": "ARtHhSyRB4CvBA9ai9F1ruc399KGkrKnubuLB2vCryKo",
+        "parent_slot": 472582125,
+        "parent_blockhash": "GpzZmtf4WJNZpckwXSswKuQU2RPd2nPMv3FaPx8hXghJ",
+        "kind": "root",
+        "sequence": 327766,
+        "source_sequence": 56342633,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327766:c5506fb340f135b77338f20c6a36c576883480453b18f3cc6d5dbfe09049cce5",
+        "frame_sha256": "c5506fb340f135b77338f20c6a36c576883480453b18f3cc6d5dbfe09049cce5",
+        "bytes": 1565,
+        "payload_sha256": "94a7642a30115a3291f6d9d336cc8b7009193d5a003c9eba5f69b302ed86d898",
+        "payload_frame_sha256": "c9e9b5cea2a14c296b384266891bd85de424411bdeb11b23459b153c426f2f93",
+        "objects": []
+      },
+      {
+        "slot": 472582127,
+        "bank_id": 340545,
+        "blockhash": "4NRtG9fmcrPiyCFqKSmZYeSsYnpWi3XbV9LogjP8Yqbb",
+        "parent_slot": 472582126,
+        "parent_blockhash": "ARtHhSyRB4CvBA9ai9F1ruc399KGkrKnubuLB2vCryKo",
+        "kind": "root",
+        "sequence": 327767,
+        "source_sequence": 56342634,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327767:c4b6216e28b27d73bc2bca6a99c3c02bf23452c1abfb40fcd9d91abe37199e17",
+        "frame_sha256": "c4b6216e28b27d73bc2bca6a99c3c02bf23452c1abfb40fcd9d91abe37199e17",
+        "bytes": 1563,
+        "payload_sha256": "8ac507fec0e72d6be531b5e767edd7d871eed37a5b647b9cb1dec6f2f385997a",
+        "payload_frame_sha256": "fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+        "objects": []
+      },
+      {
+        "slot": 472582129,
+        "bank_id": 340547,
+        "blockhash": "DDC4RMSfoGH31f2kCszZ18BzHJdJf3knx4KRTXSTiKPr",
+        "parent_slot": 472582128,
+        "parent_blockhash": "57Jma7EwwtjSpYs3KcJEkiUiGkksow7P7q5WCbD2oMi5",
+        "kind": "block",
+        "sequence": 327768,
+        "source_sequence": 56343035,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327768:ac670e0b67df6935279359c4d73ef40d4022950a395ae797dd3fcb52e5e1477a",
+        "frame_sha256": "ac670e0b67df6935279359c4d73ef40d4022950a395ae797dd3fcb52e5e1477a",
+        "bytes": 146829,
+        "payload_sha256": "a7f3f3eff892c70ca316ea7c88f0c8d8f49752c7880ea669af735e7879e2aa27",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1550,
+            "sha256": "958e676027913f7888487d3da9eab544ca8a5444b8197ec89e3af11009ee7358"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "ab2fd57be62a5f18fa4845ffe052bd6f752c383bad5657f061b9d015c3b3edc6"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 63932,
+            "sha256": "dca24f4d3002352ddf3b387d3aa1b4c47bcb6f60f5a57f48e557526708c8b1c0"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "dffd04a8841d2cb5ab3cc6790b9bbeb78c7493c6556630fc128f5a19c855d4ae"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 6835,
+            "sha256": "b3d352f2f9e953a2a53365913fcf44ef370d132c70994081cd0c92af066f2001"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "65505e9f4d4730541e4c71954fee3f6d9e94ebc10e9546eda584ccb32fa73a2e"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "d722020ce700d526176680447987a6febbbacbb9cf1f776904ce02bd973d9987"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 38816,
+            "sha256": "39f6289c86608a1a82ab9b5080c5bc5dfe18089ac18171513c0f848a133dc78a"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 14928,
+            "sha256": "cb906fe048beab3869ab64ce41dda429fedc5a1bf394d60edabc6f845812951a"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1217,
+            "sha256": "36a8347aceb8141c9061103da4db808dd23a8de87585dbf904ff6ae22240d6c0"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 13568,
+            "sha256": "c69834b9f8d3fae83f91c115a5ee463f3730b8f2e14e32aa156eac972f15005d"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      },
+      {
+        "slot": 472582128,
+        "bank_id": 340546,
+        "blockhash": "57Jma7EwwtjSpYs3KcJEkiUiGkksow7P7q5WCbD2oMi5",
+        "parent_slot": 472582127,
+        "parent_blockhash": "4NRtG9fmcrPiyCFqKSmZYeSsYnpWi3XbV9LogjP8Yqbb",
+        "kind": "confirmed",
+        "sequence": 327769,
+        "source_sequence": 56343353,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327769:b7ba595bccc26fd256fa01a0a3ffd4e1cefe767d3731af8a96a957a4ba16ec66",
+        "frame_sha256": "b7ba595bccc26fd256fa01a0a3ffd4e1cefe767d3731af8a96a957a4ba16ec66",
+        "bytes": 1574,
+        "payload_sha256": "9f82f5cfb1bcb9b8e346344d07937f254b469cc4bdca6ef08f3361e75dce5df7",
+        "payload_frame_sha256": "a7a915d5546a8ebddcb330018c057c3af6910e777fd4f6f385c174dc90669965",
+        "objects": []
+      },
+      {
+        "slot": 472582130,
+        "bank_id": 340548,
+        "blockhash": "7PDPNQkYhnvXYgxzxCVJUDS31SyxN2xENiKVTfPgwYkm",
+        "parent_slot": 472582129,
+        "parent_blockhash": "DDC4RMSfoGH31f2kCszZ18BzHJdJf3knx4KRTXSTiKPr",
+        "kind": "block",
+        "sequence": 327770,
+        "source_sequence": 56343384,
+        "source": {
+          "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+          "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+          "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+          "session_id": "000000000000000018ea5078fdda19df-13e843"
+        },
+        "cursor": "000000000000000018ea5078fdda19df-13e843:p327770:92dc6a54853e946b92ba7096dd38230f9590ce63d5bf21947be8541e8954a94a",
+        "frame_sha256": "92dc6a54853e946b92ba7096dd38230f9590ce63d5bf21947be8541e8954a94a",
+        "bytes": 148708,
+        "payload_sha256": "82bcabb12700ea11f3fd8e7529777d8e2cff30da20cf28c886319c3fd10798dc",
+        "payload_frame_sha256": null,
+        "objects": [
+          {
+            "path": "DIRECT-AGAVE-NORMALIZED.v1.json",
+            "bytes": 1548,
+            "sha256": "3331882a12e07f2ecf4776a0ca6681e7123c5e83ddba80380a5de22a86227e1a"
+          },
+          {
+            "path": "archive-v2-blocks.index",
+            "bytes": 88,
+            "sha256": "9ac72e054472eeee0c68e2971c32fe12bf069319b2470e258f27e86e14812818"
+          },
+          {
+            "path": "archive-v2-blocks.zstd",
+            "bytes": 65937,
+            "sha256": "4950db481dbe4732569365e6572a7c61270f37c77724c1a36188ad97404e1550"
+          },
+          {
+            "path": "archive-v2-meta.wincode",
+            "bytes": 26,
+            "sha256": "e63865097dd9fc486a1a42018730bc4cef9698706604901fa13dc23e4be7a1f8"
+          },
+          {
+            "path": "available-poh.wincode",
+            "bytes": 5855,
+            "sha256": "021bf10ca2cdb86fb196a476cfc10c7289834dcad5e3501716fd47a21dad59ae"
+          },
+          {
+            "path": "blockhash_registry.bin",
+            "bytes": 32,
+            "sha256": "3d49bfeb42db8b2e507899b96686b628a772829c1d5687cbbcb06ea970cdc97a"
+          },
+          {
+            "path": "prev_blockhash_tail.bin",
+            "bytes": 40,
+            "sha256": "858267a26a0acb57bb61de94032ba7e4d8b5a83abb70e0495087047ce93dc64b"
+          },
+          {
+            "path": "registry.bin",
+            "bytes": 40064,
+            "sha256": "266587be75eb3d906cf1526cbebfabc1bb430752cb05c9f8e83f26a977023b52"
+          },
+          {
+            "path": "registry.mphf",
+            "bytes": 15396,
+            "sha256": "8c9edc17c218bf281d3d683116c7a24f0faff2bab250acac966fb7e631c2fe2c"
+          },
+          {
+            "path": "registry_counts.bin",
+            "bytes": 1257,
+            "sha256": "c958d93fc776a142acae191368ab5278ae7ea61cca5518d7f7b7ec73bf5f03ca"
+          },
+          {
+            "path": "signatures.bin",
+            "bytes": 12672,
+            "sha256": "8123f0db9e194e7d2f46e6d79f14fd77500d5242d22b55e2067ef29d963de4bc"
+          },
+          {
+            "path": "vote_hash_registry.bin",
+            "bytes": 65,
+            "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+          }
+        ]
+      }
+    ],
+    "recoveredBlocks": 4,
+    "replayedControlFrames": 8,
+    "resumedAfterSavedCompleteCursor": true,
+    "rootProof": {
+      "checkedFrames": 7,
+      "rootProofsAlreadyInGap": 1,
+      "waitSeconds": 0.004,
+      "roots": [
+        {
+          "slot": 472582127,
+          "bank_id": 340545,
+          "blockhash": "4NRtG9fmcrPiyCFqKSmZYeSsYnpWi3XbV9LogjP8Yqbb",
+          "parent_slot": 472582126,
+          "parent_blockhash": "ARtHhSyRB4CvBA9ai9F1ruc399KGkrKnubuLB2vCryKo",
+          "kind": "root",
+          "sequence": 327767,
+          "source_sequence": 56342634,
+          "source": {
+            "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+            "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+            "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+            "session_id": "000000000000000018ea5078fdda19df-13e843"
+          },
+          "cursor": "000000000000000018ea5078fdda19df-13e843:p327767:c4b6216e28b27d73bc2bca6a99c3c02bf23452c1abfb40fcd9d91abe37199e17",
+          "frame_sha256": "c4b6216e28b27d73bc2bca6a99c3c02bf23452c1abfb40fcd9d91abe37199e17",
+          "bytes": 1563,
+          "payload_sha256": "8ac507fec0e72d6be531b5e767edd7d871eed37a5b647b9cb1dec6f2f385997a",
+          "payload_frame_sha256": "fd5215ad4812c6ef40a3f6e18ccee418265f2088dc989398098aad5b8230670c",
+          "objects": []
+        },
+        {
+          "slot": 472582128,
+          "bank_id": 340546,
+          "blockhash": "57Jma7EwwtjSpYs3KcJEkiUiGkksow7P7q5WCbD2oMi5",
+          "parent_slot": 472582127,
+          "parent_blockhash": "4NRtG9fmcrPiyCFqKSmZYeSsYnpWi3XbV9LogjP8Yqbb",
+          "kind": "root",
+          "sequence": 327771,
+          "source_sequence": 56343387,
+          "source": {
+            "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+            "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+            "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+            "session_id": "000000000000000018ea5078fdda19df-13e843"
+          },
+          "cursor": "000000000000000018ea5078fdda19df-13e843:p327771:de0e84c55c49f62ee47956572da2aee4fb02965ca785c32e14276b2773179002",
+          "frame_sha256": "de0e84c55c49f62ee47956572da2aee4fb02965ca785c32e14276b2773179002",
+          "bytes": 1562,
+          "payload_sha256": "9f82f5cfb1bcb9b8e346344d07937f254b469cc4bdca6ef08f3361e75dce5df7",
+          "payload_frame_sha256": "a7a915d5546a8ebddcb330018c057c3af6910e777fd4f6f385c174dc90669965",
+          "objects": []
+        },
+        {
+          "slot": 472582129,
+          "bank_id": 340547,
+          "blockhash": "DDC4RMSfoGH31f2kCszZ18BzHJdJf3knx4KRTXSTiKPr",
+          "parent_slot": 472582128,
+          "parent_blockhash": "57Jma7EwwtjSpYs3KcJEkiUiGkksow7P7q5WCbD2oMi5",
+          "kind": "root",
+          "sequence": 327774,
+          "source_sequence": 56343745,
+          "source": {
+            "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+            "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+            "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+            "session_id": "000000000000000018ea5078fdda19df-13e843"
+          },
+          "cursor": "000000000000000018ea5078fdda19df-13e843:p327774:bafbcd652d062714efe838c8bcb70105f234a715bbf2035b11cabd053551c883",
+          "frame_sha256": "bafbcd652d062714efe838c8bcb70105f234a715bbf2035b11cabd053551c883",
+          "bytes": 1565,
+          "payload_sha256": "a7f3f3eff892c70ca316ea7c88f0c8d8f49752c7880ea669af735e7879e2aa27",
+          "payload_frame_sha256": "ac670e0b67df6935279359c4d73ef40d4022950a395ae797dd3fcb52e5e1477a",
+          "objects": []
+        },
+        {
+          "slot": 472582130,
+          "bank_id": 340548,
+          "blockhash": "7PDPNQkYhnvXYgxzxCVJUDS31SyxN2xENiKVTfPgwYkm",
+          "parent_slot": 472582129,
+          "parent_blockhash": "DDC4RMSfoGH31f2kCszZ18BzHJdJf3knx4KRTXSTiKPr",
+          "kind": "root",
+          "sequence": 327777,
+          "source_sequence": 56344488,
+          "source": {
+            "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+            "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+            "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+            "session_id": "000000000000000018ea5078fdda19df-13e843"
+          },
+          "cursor": "000000000000000018ea5078fdda19df-13e843:p327777:be2cea0807cd474d543d223a1d782b7436066d1f5657fb5c17967b10d42fa54a",
+          "frame_sha256": "be2cea0807cd474d543d223a1d782b7436066d1f5657fb5c17967b10d42fa54a",
+          "bytes": 1563,
+          "payload_sha256": "82bcabb12700ea11f3fd8e7529777d8e2cff30da20cf28c886319c3fd10798dc",
+          "payload_frame_sha256": "92dc6a54853e946b92ba7096dd38230f9590ce63d5bf21947be8541e8954a94a",
+          "objects": []
+        }
+      ]
+    },
+    "headAfter": {
+      "schema": "blockzilla-confirmed-head-v1",
+      "profile": "native-bank-compact-v2",
+      "source": {
+        "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+        "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+        "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+        "session_id": "000000000000000018ea5078fdda19df-13e843"
+      },
+      "cursor": "000000000000000018ea5078fdda19df-13e843:p328097:aa04a6b2a1acd29f830f0a0b404ba0c219c229caa1a8d30d7c0e8b98a59b6481",
+      "earliest_after": "000000000000000018ea5078fdda19df-13e843:p325021:7fb280687de44ad60a98b7d731abe9e73eb992ad5609dbddb9ceeb068b2690c5",
+      "status": "live",
+      "sampled_at_unix_ms": 1795359406898,
+      "source_observed_at_unix_ms": 1795359406763,
+      "source_lag_ms": 135,
+      "latest_confirmed": {
+        "bank": {
+          "slot": 472582237,
+          "bank_id": 340655,
+          "blockhash": [
+            99,
+            234,
+            151,
+            67,
+            117,
+            118,
+            193,
+            51,
+            27,
+            237,
+            149,
+            198,
+            241,
+            79,
+            72,
+            18,
+            194,
+            178,
+            38,
+            7,
+            106,
+            233,
+            85,
+            141,
+            22,
+            135,
+            127,
+            29,
+            42,
+            108,
+            150,
+            87
+          ],
+          "parent_slot": 472582236,
+          "parent_blockhash": [
+            219,
+            110,
+            64,
+            188,
+            48,
+            210,
+            173,
+            193,
+            125,
+            81,
+            145,
+            147,
+            29,
+            56,
+            171,
+            12,
+            131,
+            132,
+            181,
+            62,
+            85,
+            197,
+            91,
+            193,
+            53,
+            133,
+            209,
+            199,
+            255,
+            74,
+            47,
+            74
+          ]
+        },
+        "block_height": 450596112,
+        "payload_sha256": "6529f9ca517aea8a145faecf6f66a490da6d67c8c7483f0f3be3f1d8cbdd2769",
+        "payload_frame_sha256": "e2dc2d370f7a3d0eee44e78584f22d831bd1974509ae076232d85f038bfdf3d5",
+        "recent_blockhash": {
+          "blockhash": "7j2qTQYNvkB6fAkUvs2eFdFUYW5ib7uM9eSSg5Bm2nwY",
+          "context_slot": 472582237,
+          "last_valid_block_height": 450596262
+        },
+        "observed_at_unix_ms": 1795359406763,
+        "commitment": "confirmed",
+        "event_sequence": 328095,
+        "event_cursor": "000000000000000018ea5078fdda19df-13e843:p328095:d14bc5f44b9bb0b2c8c1777213a30a5b90dcade60ed724c52503606810968794"
+      }
+    },
+    "originHttpRequests": 6
+  },
+  "activePhase": "IdentityReject",
+  "completedAt": "2026-11-22T14:56:46.899Z",
+  "proof": {
+    "workerRequestsAttempted": 27,
+    "workerRequests": 27,
+    "passed": 27,
+    "recentPayloads": 19,
+    "archivePayloads": 4,
+    "rejectedWithoutArchive": 4,
+    "archiveGETs": 8,
+    "archiveHEADs": 0,
+    "blockPayloadFilesWritten": 0,
+    "servingCopiesAdded": 0
+  },
+  "notes": [
+    "Only an isolated test reader was disconnected. No validator, origin, production pipe or Worker was stopped.",
+    "Reference frames and Worker bodies stayed in bounded process memory. Only identities, hashes and metrics are written.",
+    "The four missing payload identities came from an independent reference reader. This test does not implement client discovery of unknown cursors.",
+    "A repaired processed block cannot advance the canonical stream cursor past missing control events. Exact cursor replay verifies all intervening original frames.",
+    "Archive fallback has a distinct Wincode content type. It does not create a native cursor or native control history.",
+    "Wrong identities and expired processed requests must not read R2. Transport and malformed-body failure injection belongs to separate local tests.",
+    "Clock times are client elapsed values. Platform CPU and cost require the separate version-filtered collector."
+  ]
+}

@@ -1,0 +1,434 @@
+{
+  "schema": "blockzilla-resolution-native-client-render-v1",
+  "timeUtc": "2026-11-21T20:04:06.564Z",
+  "workerGeneration": "foundation-query-20261121-slot-resolution-v7",
+  "noNetwork": true,
+  "rewards": false,
+  "nativeCli": "target/release/render-resolution-client",
+  "matchedSlots": [
+    470987967,
+    471096104,
+    471204030,
+    471311999,
+    470555971,
+    470663944,
+    470771932,
+    470879999
+  ],
+  "records": [
+    {
+      "slot": 470987967,
+      "ok": true,
+      "processWallMs": 92.04908400000001,
+      "canonicalSha256": "ae353069b041fb96720cde82fce53a88d3a2701c7a5b88f0a82e1c965efad84f",
+      "heliusCanonicalSha256": "ae353069b041fb96720cde82fce53a88d3a2701c7a5b88f0a82e1c965efad84f",
+      "receipt": {
+        "cpu_scope": "process-all-threads",
+        "file_read_elapsed_ms": 1.607875,
+        "file_write_elapsed_ms": 1.219875,
+        "include_rewards": false,
+        "json_sha256": "97d1293c4c9ce03365e7826b2bd67964d142adb50332136783cee715db8ac31c",
+        "mode": "local-files-no-network",
+        "ok": true,
+        "render": {
+          "access_decode": {
+            "elapsed_ms": 0.01970800000000006,
+            "process_cpu_ms": 0.020000000000000462
+          },
+          "block_decode": {
+            "elapsed_ms": 1.8649580000000001,
+            "process_cpu_ms": 1.6739999999999995
+          },
+          "compressed_block_bytes": 117962,
+          "decoded_block_bytes": 384623,
+          "json_bytes": 2676738,
+          "json_render": {
+            "elapsed_ms": 73.481708,
+            "process_cpu_ms": 72.556
+          },
+          "parts_bytes": 144458,
+          "parts_validate": {
+            "elapsed_ms": 0.048,
+            "process_cpu_ms": 0.030999999999999694
+          },
+          "resolution_bytes": 74364,
+          "resolution_decode": {
+            "elapsed_ms": 0.103416,
+            "process_cpu_ms": 0.10299999999999976
+          },
+          "signature_bytes": 26432,
+          "slot": 470987967,
+          "total": {
+            "elapsed_ms": 75.5335,
+            "process_cpu_ms": 74.399
+          },
+          "transactions": 370
+        },
+        "total_elapsed_ms": 79.767416
+      }
+    },
+    {
+      "slot": 471096104,
+      "ok": true,
+      "processWallMs": 167.672209,
+      "canonicalSha256": "990523de60755f69b6eeb18d484296ec7044c327b44b7f455b4e733f70ebd20c",
+      "heliusCanonicalSha256": "990523de60755f69b6eeb18d484296ec7044c327b44b7f455b4e733f70ebd20c",
+      "receipt": {
+        "cpu_scope": "process-all-threads",
+        "file_read_elapsed_ms": 3.0311660000000002,
+        "file_write_elapsed_ms": 1.0937080000000001,
+        "include_rewards": false,
+        "json_sha256": "268ecf0810671a953d9d79e2f1ce85e142bcf41ab49a33348e04849d42d1152e",
+        "mode": "local-files-no-network",
+        "ok": true,
+        "render": {
+          "access_decode": {
+            "elapsed_ms": 0.02412499999999973,
+            "process_cpu_ms": 0.02400000000000002
+          },
+          "block_decode": {
+            "elapsed_ms": 2.657583,
+            "process_cpu_ms": 2.6369999999999996
+          },
+          "compressed_block_bytes": 240636,
+          "decoded_block_bytes": 824794,
+          "json_bytes": 5350590,
+          "json_render": {
+            "elapsed_ms": 140.53337499999998,
+            "process_cpu_ms": 138.66
+          },
+          "parts_bytes": 275132,
+          "parts_validate": {
+            "elapsed_ms": 0.004166000000000003,
+            "process_cpu_ms": 0.004999999999999893
+          },
+          "resolution_bytes": 106968,
+          "resolution_decode": {
+            "elapsed_ms": 0.108791,
+            "process_cpu_ms": 0.10899999999999999
+          },
+          "signature_bytes": 34432,
+          "slot": 471096104,
+          "total": {
+            "elapsed_ms": 143.343708,
+            "process_cpu_ms": 141.449
+          },
+          "transactions": 490
+        },
+        "total_elapsed_ms": 150.13299999999998
+      }
+    },
+    {
+      "slot": 471204030,
+      "ok": true,
+      "processWallMs": 48.81787499999996,
+      "canonicalSha256": "8d2068c899f05716fdaa06737e0a4ff2d40773d77aed88c4465104325a772a86",
+      "heliusCanonicalSha256": "8d2068c899f05716fdaa06737e0a4ff2d40773d77aed88c4465104325a772a86",
+      "receipt": {
+        "cpu_scope": "process-all-threads",
+        "file_read_elapsed_ms": 1.788583,
+        "file_write_elapsed_ms": 0.718,
+        "include_rewards": false,
+        "json_sha256": "f33e58e52ecb430069a5e94baa0eb31b55e0ff023daf89e5490d2b3f06ae84ce",
+        "mode": "local-files-no-network",
+        "ok": true,
+        "render": {
+          "access_decode": {
+            "elapsed_ms": 0.01608300000000007,
+            "process_cpu_ms": 0.016000000000000014
+          },
+          "block_decode": {
+            "elapsed_ms": 1.149417,
+            "process_cpu_ms": 1.1500000000000004
+          },
+          "compressed_block_bytes": 108839,
+          "decoded_block_bytes": 358698,
+          "json_bytes": 2826986,
+          "json_render": {
+            "elapsed_ms": 35.419709,
+            "process_cpu_ms": 34.688
+          },
+          "parts_bytes": 129191,
+          "parts_validate": {
+            "elapsed_ms": 0.003167000000000003,
+            "process_cpu_ms": 0.0030000000000001137
+          },
+          "resolution_bytes": 65006,
+          "resolution_decode": {
+            "elapsed_ms": 0.063125,
+            "process_cpu_ms": 0.06300000000000017
+          },
+          "signature_bytes": 20288,
+          "slot": 471204030,
+          "total": {
+            "elapsed_ms": 36.663167,
+            "process_cpu_ms": 35.931
+          },
+          "transactions": 286
+        },
+        "total_elapsed_ms": 40.524708
+      }
+    },
+    {
+      "slot": 471311999,
+      "ok": true,
+      "processWallMs": 113.46641699999998,
+      "canonicalSha256": "e19985bfe0cde5686557f272fd448d137174778a3c11d05c44da81be99eefd15",
+      "heliusCanonicalSha256": "e19985bfe0cde5686557f272fd448d137174778a3c11d05c44da81be99eefd15",
+      "receipt": {
+        "cpu_scope": "process-all-threads",
+        "file_read_elapsed_ms": 2.2105829999999997,
+        "file_write_elapsed_ms": 1.1255,
+        "include_rewards": false,
+        "json_sha256": "fe0a09701a3ebc459a5f2616bcc494f04940182f18137460d88f87e40787bb0c",
+        "mode": "local-files-no-network",
+        "ok": true,
+        "render": {
+          "access_decode": {
+            "elapsed_ms": 0.019874999999999865,
+            "process_cpu_ms": 0.01899999999999924
+          },
+          "block_decode": {
+            "elapsed_ms": 1.237917,
+            "process_cpu_ms": 1.2380000000000004
+          },
+          "compressed_block_bytes": 118420,
+          "decoded_block_bytes": 329425,
+          "json_bytes": 2045781,
+          "json_render": {
+            "elapsed_ms": 100.52025,
+            "process_cpu_ms": 97.313
+          },
+          "parts_bytes": 137428,
+          "parts_validate": {
+            "elapsed_ms": 0.003250000000000003,
+            "process_cpu_ms": 0.0030000000000001137
+          },
+          "resolution_bytes": 63959,
+          "resolution_decode": {
+            "elapsed_ms": 0.071209,
+            "process_cpu_ms": 0.07200000000000006
+          },
+          "signature_bytes": 18944,
+          "slot": 471311999,
+          "total": {
+            "elapsed_ms": 101.86575,
+            "process_cpu_ms": 98.657
+          },
+          "transactions": 266
+        },
+        "total_elapsed_ms": 106.346625
+      }
+    },
+    {
+      "slot": 470555971,
+      "ok": true,
+      "processWallMs": 116.60066700000016,
+      "canonicalSha256": "f78cea57e191fccd9e12ef636b1bb17d19c7b41b70bbda2f39bfb8426a0b4d96",
+      "heliusCanonicalSha256": "f78cea57e191fccd9e12ef636b1bb17d19c7b41b70bbda2f39bfb8426a0b4d96",
+      "receipt": {
+        "cpu_scope": "process-all-threads",
+        "file_read_elapsed_ms": 1.9749580000000002,
+        "file_write_elapsed_ms": 0.8843329999999999,
+        "include_rewards": false,
+        "json_sha256": "5f9c708d12ebf0acdb8a3669145e31e92404c390ccae9951bac5b2fee44fda3c",
+        "mode": "local-files-no-network",
+        "ok": true,
+        "render": {
+          "access_decode": {
+            "elapsed_ms": 0.01770800000000028,
+            "process_cpu_ms": 0.019000000000000128
+          },
+          "block_decode": {
+            "elapsed_ms": 1.576125,
+            "process_cpu_ms": 1.5759999999999996
+          },
+          "compressed_block_bytes": 145910,
+          "decoded_block_bytes": 475182,
+          "json_bytes": 2756237,
+          "json_render": {
+            "elapsed_ms": 101.545458,
+            "process_cpu_ms": 100.05
+          },
+          "parts_bytes": 172854,
+          "parts_validate": {
+            "elapsed_ms": 0.0033330000000000026,
+            "process_cpu_ms": 0.0019999999999997797
+          },
+          "resolution_bytes": 75724,
+          "resolution_decode": {
+            "elapsed_ms": 0.173959,
+            "process_cpu_ms": 0.17400000000000038
+          },
+          "signature_bytes": 26880,
+          "slot": 470555971,
+          "total": {
+            "elapsed_ms": 103.328625,
+            "process_cpu_ms": 101.831
+          },
+          "transactions": 391
+        },
+        "total_elapsed_ms": 107.704708
+      }
+    },
+    {
+      "slot": 470663944,
+      "ok": true,
+      "processWallMs": 122.56116599999996,
+      "canonicalSha256": "e3b4ce7431ebb8a58f6c6d62f3bcfe3d83c6d601c7f7d7bf8d5f254b42c43b47",
+      "heliusCanonicalSha256": "e3b4ce7431ebb8a58f6c6d62f3bcfe3d83c6d601c7f7d7bf8d5f254b42c43b47",
+      "receipt": {
+        "cpu_scope": "process-all-threads",
+        "file_read_elapsed_ms": 1.8650419999999999,
+        "file_write_elapsed_ms": 1.3038329999999998,
+        "include_rewards": false,
+        "json_sha256": "75833d96fa3241101be838a19e9565a5d49a064313e3e60adff3f61909c4dcca",
+        "mode": "local-files-no-network",
+        "ok": true,
+        "render": {
+          "access_decode": {
+            "elapsed_ms": 0.02070799999999995,
+            "process_cpu_ms": 0.020999999999999908
+          },
+          "block_decode": {
+            "elapsed_ms": 2.5648340000000003,
+            "process_cpu_ms": 2.548
+          },
+          "compressed_block_bytes": 229322,
+          "decoded_block_bytes": 692104,
+          "json_bytes": 4291296,
+          "json_render": {
+            "elapsed_ms": 105.318542,
+            "process_cpu_ms": 103.45400000000001
+          },
+          "parts_bytes": 261962,
+          "parts_validate": {
+            "elapsed_ms": 0.0032080000000000025,
+            "process_cpu_ms": 0.0030000000000001137
+          },
+          "resolution_bytes": 103736,
+          "resolution_decode": {
+            "elapsed_ms": 0.103709,
+            "process_cpu_ms": 0.10299999999999976
+          },
+          "signature_bytes": 32576,
+          "slot": 470663944,
+          "total": {
+            "elapsed_ms": 108.02525,
+            "process_cpu_ms": 106.14200000000001
+          },
+          "transactions": 467
+        },
+        "total_elapsed_ms": 113.359583
+      }
+    },
+    {
+      "slot": 470771932,
+      "ok": true,
+      "processWallMs": 118.39933300000007,
+      "canonicalSha256": "6694d19df13295a9406388e89bc27cdd7ca4e275cf05c3705a3766cedd1c7910",
+      "heliusCanonicalSha256": "6694d19df13295a9406388e89bc27cdd7ca4e275cf05c3705a3766cedd1c7910",
+      "receipt": {
+        "cpu_scope": "process-all-threads",
+        "file_read_elapsed_ms": 1.448166,
+        "file_write_elapsed_ms": 1.047459,
+        "include_rewards": false,
+        "json_sha256": "c93d1323dfb1ea03e89cbb3c25eefd38d99cedf5d731d86e045c4361d437e2e0",
+        "mode": "local-files-no-network",
+        "ok": true,
+        "render": {
+          "access_decode": {
+            "elapsed_ms": 0.01737499999999992,
+            "process_cpu_ms": 0.017000000000000348
+          },
+          "block_decode": {
+            "elapsed_ms": 1.803625,
+            "process_cpu_ms": 1.759
+          },
+          "compressed_block_bytes": 153791,
+          "decoded_block_bytes": 548629,
+          "json_bytes": 3671386,
+          "json_render": {
+            "elapsed_ms": 105.573041,
+            "process_cpu_ms": 97.24
+          },
+          "parts_bytes": 185471,
+          "parts_validate": {
+            "elapsed_ms": 0.003375000000000003,
+            "process_cpu_ms": 0.0030000000000001137
+          },
+          "resolution_bytes": 91373,
+          "resolution_decode": {
+            "elapsed_ms": 0.0875,
+            "process_cpu_ms": 0.08700000000000019
+          },
+          "signature_bytes": 31616,
+          "slot": 470771932,
+          "total": {
+            "elapsed_ms": 107.499666,
+            "process_cpu_ms": 99.122
+          },
+          "transactions": 447
+        },
+        "total_elapsed_ms": 112.520375
+      }
+    },
+    {
+      "slot": 470879999,
+      "ok": true,
+      "processWallMs": 78.20674999999983,
+      "canonicalSha256": "8fbfd859642fabecc45a7384a91242fc0a3bc873ec09bdbf17dcb4df03c4b6f2",
+      "heliusCanonicalSha256": "8fbfd859642fabecc45a7384a91242fc0a3bc873ec09bdbf17dcb4df03c4b6f2",
+      "receipt": {
+        "cpu_scope": "process-all-threads",
+        "file_read_elapsed_ms": 1.931334,
+        "file_write_elapsed_ms": 0.8416250000000001,
+        "include_rewards": false,
+        "json_sha256": "612507508333a4d3d6a32323843a08f11d0bdf3299df9dc1416930313cd4ad31",
+        "mode": "local-files-no-network",
+        "ok": true,
+        "render": {
+          "access_decode": {
+            "elapsed_ms": 0.011916999999999955,
+            "process_cpu_ms": 0.011999999999999567
+          },
+          "block_decode": {
+            "elapsed_ms": 0.817542,
+            "process_cpu_ms": 0.7650000000000006
+          },
+          "compressed_block_bytes": 66157,
+          "decoded_block_bytes": 186747,
+          "json_bytes": 1102030,
+          "json_render": {
+            "elapsed_ms": 67.6045,
+            "process_cpu_ms": 64.42699999999999
+          },
+          "parts_bytes": 81261,
+          "parts_validate": {
+            "elapsed_ms": 0.003417000000000031,
+            "process_cpu_ms": 0.0030000000000001137
+          },
+          "resolution_bytes": 44472,
+          "resolution_decode": {
+            "elapsed_ms": 0.12295900000000001,
+            "process_cpu_ms": 0.12299999999999978
+          },
+          "signature_bytes": 15040,
+          "slot": 470879999,
+          "total": {
+            "elapsed_ms": 68.57525,
+            "process_cpu_ms": 65.343
+          },
+          "transactions": 215
+        },
+        "total_elapsed_ms": 71.96295900000001
+      }
+    }
+  ],
+  "notes": [
+    "Native process wall time includes one-shot process start and file I/O.",
+    "Native stage wall/CPU measurements are in each CLI receipt.",
+    "Exact JSON comparison uses the live Helius full-result digest from main-v7.json.",
+    "Matched temporary JSON outputs were deleted; downloaded v7 resolution and parts files remain."
+  ]
+}

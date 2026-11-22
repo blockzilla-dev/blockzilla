@@ -1,0 +1,32 @@
+{
+  "status": "PREPARED_AND_READBACK_VERIFIED",
+  "snapshot": "/Users/augustin/Developement/ferno/blockzilla-v1/.codex-tmp/recent-get-block-recovery-20261122/native-source-v3",
+  "archive": "/Users/augustin/Developement/ferno/blockzilla-v1/.codex-tmp/recent-get-block-recovery-20261122/native-source-v3.tar.gz",
+  "archiveBytes": 1003130,
+  "archiveSha256": "8073e0fd393b6273f2ac8f872f6bf27900a78837d388804bdab8b4016dc09fd1",
+  "sourceFiles": 222,
+  "sourceBytes": 4920422,
+  "baseArchiveSha256": "0fbe73d5588429c89e061ae9c1f22d0a15c6d2e41cd1c0cb80f60438ef616bba",
+  "changedFiles": [
+    {
+      "path": "indexer/blockzilla-resolution-service/src/http.rs",
+      "sha256": "e46f0b02df4c7de6777dabdb38331ecb2ad24755dc83ad2da14b2678f2423992",
+      "bytes": 28402
+    },
+    {
+      "path": "indexer/blockzilla-resolution-service/src/http_tests.rs",
+      "sha256": "585426bd91a1d67df6a5ce5bbd59611cac657caa61cbe3ab0067b83709a415a5",
+      "bytes": 28783
+    }
+  ],
+  "tests": {
+    "exitCode": 0,
+    "elapsedSeconds": 6.577,
+    "summary": [
+      "test result: ok. 26 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s"
+    ],
+    "log": "/Users/augustin/Developement/ferno/blockzilla-v1/reports/recent-get-block-recovery-20261122/native-tests-v3.log"
+  },
+  "change": "Move owned recent permit inside blocking closure; cancellation regression holds capacity until work ends",
+  "archiveReadbackPass": true
+}

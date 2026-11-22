@@ -1,0 +1,654 @@
+{
+  "Cargo.toml": {
+    "bytes": 678,
+    "sha256": "a326293f7418308c32d34ee5cb362c6642dcbc396ef1349f99de97f5a0ee235f"
+  },
+  "crates/blockzilla-bank-client/Cargo.lock": {
+    "bytes": 47716,
+    "sha256": "bf0e2fd24faa508826a545e8e684b60f8147d9d252336eec2e6381492bb0b852"
+  },
+  "crates/blockzilla-bank-client/Cargo.toml": {
+    "bytes": 909,
+    "sha256": "20049f6a53e32d44735450cd5fe07fdaa7fa7ca07f8d4456cc8eec1a9058e845"
+  },
+  "crates/blockzilla-bank-client/README.md": {
+    "bytes": 15744,
+    "sha256": "2a6cdc0b6e5b5e7e1b70deb29a623d7f442e6d100f86b715cbd812292d40b6ea"
+  },
+  "crates/blockzilla-bank-client/examples/direct_beam_probe.rs": {
+    "bytes": 15169,
+    "sha256": "9a374442008015e6700330564cb68c576eb0c7d5f77e61a7e035b7fd003779d3"
+  },
+  "crates/blockzilla-bank-client/examples/worker_recovery_probe.rs": {
+    "bytes": 7809,
+    "sha256": "11c66d646dcf2f39f705a66fe036ca6041027100c69e16fdd6e7a2d572cc5b93"
+  },
+  "crates/blockzilla-bank-client/src/beam.rs": {
+    "bytes": 3636,
+    "sha256": "8526775138ae64263bb5033eb2670c014ec20ab9dcfd9b8f0d8512045677b3e6"
+  },
+  "crates/blockzilla-bank-client/src/bin/blockzilla-beam.rs": {
+    "bytes": 33798,
+    "sha256": "ccbee4a10046203dbe4eaba654b096b6216f9fd59f272d2644bcc2582e6b1f07"
+  },
+  "crates/blockzilla-bank-client/src/lib.rs": {
+    "bytes": 43738,
+    "sha256": "5e24d18442d07b0f38e0f6a78a33b89436b34a64b1699fab815d433231ff0d46"
+  },
+  "crates/blockzilla-bank-client/src/recovery.rs": {
+    "bytes": 12340,
+    "sha256": "90c15c9146043d5e73e15e0f628ed2566878baff8c107dc7c5d7dcc7566cf76a"
+  },
+  "crates/blockzilla-bank-client/src/recovery/tests.rs": {
+    "bytes": 8818,
+    "sha256": "18243478ab86c31c8498774bf715be8a2a96baa5d859b1921f5b3b8bd335f37f"
+  },
+  "crates/blockzilla-bank-client/src/ssh_beam.rs": {
+    "bytes": 45621,
+    "sha256": "414f786e09162386c9373eb810b084df30a6c212ddff03ac725a767aded77b88"
+  },
+  "crates/blockzilla-bank-client/src/ssh_finalized_tests.rs": {
+    "bytes": 15005,
+    "sha256": "f79b63c9eee89e4d40da724a0247721ec3c75634cde2b107988fa70ae447ad98"
+  },
+  "crates/blockzilla-bank-client/src/ssh_recovery_tests.rs": {
+    "bytes": 5202,
+    "sha256": "45f2f362ff69a2a2c10aa7f969249ee12a8eddf23b38c51ac08f805e44fb2fee"
+  },
+  "crates/blockzilla-bank-client/src/tests.rs": {
+    "bytes": 41163,
+    "sha256": "4214314e1cd97610c499481e4ca80893be3a601aac6c790cb5ea93479c8ded75"
+  },
+  "crates/blockzilla-bank-stream-v2/Cargo.lock": {
+    "bytes": 5702,
+    "sha256": "7747821dddc7599649acff72410df5650c1028bf87685d7ac95fe56582b6d342"
+  },
+  "crates/blockzilla-bank-stream-v2/Cargo.toml": {
+    "bytes": 323,
+    "sha256": "cb3e2025de0fe43260ecaed12f1e159e2e4bee60418f1e4bd646ed48c699f15a"
+  },
+  "crates/blockzilla-bank-stream-v2/src/artifact.rs": {
+    "bytes": 3577,
+    "sha256": "8b3d20e61c0bea356c7443c0cc5b2c73e9b704af97ec67b6d4a413e3b6a2aaf0"
+  },
+  "crates/blockzilla-bank-stream-v2/src/chain.rs": {
+    "bytes": 18621,
+    "sha256": "30835f14a0e4b52f0cd7c066e537d79e9e34ae4b6885fb4586c2326296539589"
+  },
+  "crates/blockzilla-bank-stream-v2/src/client.rs": {
+    "bytes": 11653,
+    "sha256": "a3429d782267d3c9c3073e77f4c2e1553a02d2d5b97d304ecd17ace04b05f41a"
+  },
+  "crates/blockzilla-bank-stream-v2/src/finalized.rs": {
+    "bytes": 2107,
+    "sha256": "f1aa074d50d2624e9acfbfa5ae7822b2456d6690af5fe2a27f99f6afdcbebf0d"
+  },
+  "crates/blockzilla-bank-stream-v2/src/fixtures.rs": {
+    "bytes": 3961,
+    "sha256": "243c2dd32f57d45613e0c81d6346e3a79176ed95a71dad5d40be01977cf16ccc"
+  },
+  "crates/blockzilla-bank-stream-v2/src/lib.rs": {
+    "bytes": 23611,
+    "sha256": "c7043c23499df897067a1fcf4ea9d5c459ebe59595676072dbd3b256d327732b"
+  },
+  "crates/blockzilla-bank-stream-v2/src/tests.rs": {
+    "bytes": 26864,
+    "sha256": "05810746d6a22e248ab9b861b579a9082cc96b640e098e639dea1ac44dcd8a40"
+  },
+  "crates/blockzilla-model/Cargo.toml": {
+    "bytes": 450,
+    "sha256": "cd24e39715c209bcc0a158f297ee95d1aea8805f484c8790c1e1022e3fcf7c49"
+  },
+  "crates/blockzilla-model/README.md": {
+    "bytes": 2346,
+    "sha256": "97caf55a22a7c84fb20fc699ceaa2c587ee561ae138d8b35399d1914d66611de"
+  },
+  "crates/blockzilla-model/src/error.rs": {
+    "bytes": 1263,
+    "sha256": "02385f6c39679c89950c2f35164f5f6cfe648146186ded5b347ce3f05ce4c4aa"
+  },
+  "crates/blockzilla-model/src/fingerprint.rs": {
+    "bytes": 4561,
+    "sha256": "3937b875281095649ef66b4e776824624dabce047029b9950069887011b33f8c"
+  },
+  "crates/blockzilla-model/src/indexed_tokens.rs": {
+    "bytes": 1840,
+    "sha256": "8c2eff89c59eb20a3fab89d62836e449ccd3fc04ed74240738248c5972551265"
+  },
+  "crates/blockzilla-model/src/lib.rs": {
+    "bytes": 1401,
+    "sha256": "9d9d45961579f6b84751ae3366571c080e6f4c6b4415a21cc06d2e28c60334b9"
+  },
+  "crates/blockzilla-model/src/model.rs": {
+    "bytes": 20716,
+    "sha256": "3698f4e0b2b98900c37ca0bc3b3d840eb02428bb6208e51511103f06f09a1f3c"
+  },
+  "crates/blockzilla-model/src/projection_pool.rs": {
+    "bytes": 5801,
+    "sha256": "edf3e56e972700b38771f6194a0a95f04e2a0484a0cf494565e28cafd9cc7897"
+  },
+  "crates/blockzilla-model/src/source.rs": {
+    "bytes": 59396,
+    "sha256": "9f4d26bb96db8fa44ddd22d8135f0e98d05931bbc5a807197dfcc822c4f73a06"
+  },
+  "crates/blockzilla-model/src/token/batch.rs": {
+    "bytes": 7852,
+    "sha256": "4da0497192868f6c90a8a982e5257cfb3b831e727fdd0e8705099d8b4e442f17"
+  },
+  "crates/blockzilla-model/src/token/decode.rs": {
+    "bytes": 13548,
+    "sha256": "035e93c6da832f1eb320b5d7e1b01418706b639a2bde854821bfd1d55415bbf3"
+  },
+  "crates/blockzilla-model/src/token/mod.rs": {
+    "bytes": 27439,
+    "sha256": "fa712b9636fb62a2618b4ffe467fe289b85f2b7807bc8e3baca859b51405437a"
+  },
+  "crates/blockzilla-model/src/token/tests.rs": {
+    "bytes": 67399,
+    "sha256": "d0293522b852abc24de804ce29a6a599a0d6ee0b8c331181550412755263a03d"
+  },
+  "crates/blockzilla-model/src/token/tracker.rs": {
+    "bytes": 60881,
+    "sha256": "e352b142d1b2c8fad364cb132f805d5180515854a7bc7c982149baff923adb4b"
+  },
+  "crates/blockzilla-model/tests/public_api.rs": {
+    "bytes": 3501,
+    "sha256": "22cb6667f8f5724b0de4cf2112aebbe28a90ae70757a8b6a390a70f642ef5deb"
+  },
+  "crates/blockzilla-primitives/Cargo.toml": {
+    "bytes": 482,
+    "sha256": "07b5ba2f2a94e80d9bdf11b789ac400dbafe9d99e05391383bd3e216e94bbd8d"
+  },
+  "crates/blockzilla-primitives/src/framed.rs": {
+    "bytes": 22694,
+    "sha256": "f0cf5679e3a6366bfb20cea633e852344fa33065a70b7e4ed7009bc39b82a85a"
+  },
+  "crates/blockzilla-primitives/src/lib.rs": {
+    "bytes": 79,
+    "sha256": "5c0887e1b57722a6ff9eeac787a472f84eb27dcc7b3ce749bba5c144a9f39623"
+  },
+  "crates/blockzilla-primitives/src/primitives/mod.rs": {
+    "bytes": 339,
+    "sha256": "762915a66d6c7f9a458addabbee5281e960a264590edc17da322ea7c269ba2fb"
+  },
+  "crates/blockzilla-primitives/src/primitives/pubkey.rs": {
+    "bytes": 4947,
+    "sha256": "cbcddcd40c0baf63eec4ef8746434104d17c3510ccae2669e249c2376d49a299"
+  },
+  "crates/blockzilla-primitives/src/primitives/string_table.rs": {
+    "bytes": 1942,
+    "sha256": "0cbe09ee6455f58f05fa44af907c5f7900416f0d678fae313b5752cab53c64fc"
+  },
+  "crates/compact-v2/blockzilla-archive-v2/Cargo.toml": {
+    "bytes": 1212,
+    "sha256": "d46d438b649c3316bbb68265ce56bdbb919e6659cd5c5c016571f55c06d2891a"
+  },
+  "crates/compact-v2/blockzilla-archive-v2/src/car_slot_meta.rs": {
+    "bytes": 9349,
+    "sha256": "5d8333210801a7f1b971bf75cbba1ceb278fcdcd7297ed4d8cdedca4aacca182"
+  },
+  "crates/compact-v2/blockzilla-archive-v2/src/lib.rs": {
+    "bytes": 568,
+    "sha256": "1b5582037cfda04bae3e2dc1d9bc7fc4e0ce80bcb5bade4db6d440f0d0cf4f8f"
+  },
+  "crates/compact-v2/blockzilla-archive-v2/src/skipped_slots.rs": {
+    "bytes": 9090,
+    "sha256": "e9ac696f62f0b5b8b6173aad79c2f0ef03b46982e5b37af0661a478804479cdd"
+  },
+  "crates/compact-v2/blockzilla-archive-v2/src/v2/archive.rs": {
+    "bytes": 29815,
+    "sha256": "6f5262f69080ebb1f4d4b6ee56c9110f220f5e6130ec62f84ac5e688eef3a109"
+  },
+  "crates/compact-v2/blockzilla-archive-v2/src/v2/block_time_gaps.rs": {
+    "bytes": 30307,
+    "sha256": "266c5d99c744dd3bb32a46329f21d5679730431b2657dd3c37d20e492dc0ccab"
+  },
+  "crates/compact-v2/blockzilla-archive-v2/src/v2/generation_manifest.rs": {
+    "bytes": 13708,
+    "sha256": "89fc2e64354960a6bb80f3b10fed77cab53707f381fc6d65fe12d47ade9c7ef9"
+  },
+  "crates/compact-v2/blockzilla-archive-v2/src/v2/layout.rs": {
+    "bytes": 10517,
+    "sha256": "2e9195b584678bf04767efc9b8ffdb43e4a87d829f203569604465ea4499c450"
+  },
+  "crates/compact-v2/blockzilla-archive-v2/src/v2/mod.rs": {
+    "bytes": 74830,
+    "sha256": "1137160781681329cd0aadb87585c76437dc3918d9600307ff9bae67235478dd"
+  },
+  "crates/compact-v2/blockzilla-archive-v2/src/v2/wire_rewrite.rs": {
+    "bytes": 177455,
+    "sha256": "135aea11f34018a2d0865b4ebdf066171e9992aced987f59ac7710b6a6f00881"
+  },
+  "crates/compact-v2/blockzilla-compact/Cargo.toml": {
+    "bytes": 1176,
+    "sha256": "857b07c63b84f7e45ae6afbb9f29e29345341577212bb19bce1ad37644120462"
+  },
+  "crates/compact-v2/blockzilla-compact/src/compact/block.rs": {
+    "bytes": 2904,
+    "sha256": "b747aca160c888764ffe1686436d88d4e986e700bbf09bd814a96de5f0da683b"
+  },
+  "crates/compact-v2/blockzilla-compact/src/compact/log.rs": {
+    "bytes": 83822,
+    "sha256": "29781a8545fa31347962551a32f7efa5e2dbe2dee4a0a19c7214c43536f2d741"
+  },
+  "crates/compact-v2/blockzilla-compact/src/compact/meta.rs": {
+    "bytes": 56980,
+    "sha256": "c09b9848387d05e321570d67e2b5abed00cb1763f888030b34f95e80d93117df"
+  },
+  "crates/compact-v2/blockzilla-compact/src/compact/mod.rs": {
+    "bytes": 195,
+    "sha256": "198ea8896afb3873d22937dc384146fad9c6cdbd4bcce21518b88ea4ce971e38"
+  },
+  "crates/compact-v2/blockzilla-compact/src/compact/nonce.rs": {
+    "bytes": 1383,
+    "sha256": "69ffd04b495021f14bf454e04b42533a52dfbca4b7431b276732861f6b706dfa"
+  },
+  "crates/compact-v2/blockzilla-compact/src/compact/signature.rs": {
+    "bytes": 1403,
+    "sha256": "cda280a9d1db3d4961ef6944391f3bec50197782b3bbb1b2a01400ccafb1fd12"
+  },
+  "crates/compact-v2/blockzilla-compact/src/compact/tx.rs": {
+    "bytes": 3701,
+    "sha256": "41acddd8694e3c4eed7ba7d7481f5f693eb10d28226c1429f6e7b625554993bb"
+  },
+  "crates/compact-v2/blockzilla-compact/src/lib.rs": {
+    "bytes": 529,
+    "sha256": "d959903c566731ed37e1597bb84582dfd14f08bb14bceba789f2c9b98cb91c1e"
+  },
+  "crates/compact-v2/blockzilla-compact/src/split_compact/mod.rs": {
+    "bytes": 5965,
+    "sha256": "dbfc00beb39d1ab4c50631dce0d2ff8155796285ca1b839b42b1038c6afd79d7"
+  },
+  "crates/compact-v2/blockzilla-registry/Cargo.toml": {
+    "bytes": 618,
+    "sha256": "c60db3f098953c32ea2438842d3364f8097301756bd70d0c35506dd4392c2069"
+  },
+  "crates/compact-v2/blockzilla-registry/src/blockhash_registry.rs": {
+    "bytes": 2330,
+    "sha256": "5afa52b3a4038486315268010ab6e30040be5918bf346b9ba7b61106c72fde0b"
+  },
+  "crates/compact-v2/blockzilla-registry/src/lib.rs": {
+    "bytes": 99,
+    "sha256": "01797d57b9b8252f1651303300c798c8c95d3cd0f83d0ebba9ab33a6bc932f3a"
+  },
+  "crates/compact-v2/blockzilla-registry/src/registry.rs": {
+    "bytes": 52913,
+    "sha256": "533463a3aa4432488c6867c07e1fe0c4ffd36ae7e1e8dd5adad72dfa5ba58102"
+  },
+  "crates/old-faithful/of-car-reader/CHANGELOG.md": {
+    "bytes": 977,
+    "sha256": "99129a823ea9f99284a9f8fde711f9d19e76343c903f66c566c3e6b7e656b324"
+  },
+  "crates/old-faithful/of-car-reader/Cargo.toml": {
+    "bytes": 2725,
+    "sha256": "c78b9986101db00e36031f226218141ab269151f26bc5b2fbb5865cda6fcecd4"
+  },
+  "crates/old-faithful/of-car-reader/Readme.md": {
+    "bytes": 5344,
+    "sha256": "91d9114294c64f7b65d667f15a1c7b533092c6322f095d8947f62e721e3f075a"
+  },
+  "crates/old-faithful/of-car-reader/benches/big_block.rs": {
+    "bytes": 11224,
+    "sha256": "3cf83c752694132d5ca11a8772f8755b86fd800b08bcbde8373a071372ee5daf"
+  },
+  "crates/old-faithful/of-car-reader/build.rs": {
+    "bytes": 1167,
+    "sha256": "89a6c7572be96f1f0003dba909f96418618fe38df7b23d2aa60e3b3a15ebf6cc"
+  },
+  "crates/old-faithful/of-car-reader/src/archive.rs": {
+    "bytes": 53872,
+    "sha256": "86be1a905ae365ada3c5773b171448665fb5d3943df14ece951cadf89af33fb9"
+  },
+  "crates/old-faithful/of-car-reader/src/bin/car_continuations.rs": {
+    "bytes": 8603,
+    "sha256": "d14dcac7fd9e0e4d735aa0b72e0ff9460b3bae0af84cdcd4bf71840106ca980e"
+  },
+  "crates/old-faithful/of-car-reader/src/bin/car_df_graph.rs": {
+    "bytes": 18672,
+    "sha256": "297c921b2ff12abdfa2fb223131598a2d2cb77523c8fcec6a431478193027c8b"
+  },
+  "crates/old-faithful/of-car-reader/src/bin/car_skipped_slots.rs": {
+    "bytes": 13690,
+    "sha256": "37c29385fe403f59846183696b8ffc87ccaf99a1686de8f898e92c8da39c2ce7"
+  },
+  "crates/old-faithful/of-car-reader/src/bin/car_validate_lossless.rs": {
+    "bytes": 1887,
+    "sha256": "272c40db10f1e0b037a8fa2eea36af63bb19a131ef9825f8f23343fa40051f28"
+  },
+  "crates/old-faithful/of-car-reader/src/bin/profile_big_block.rs": {
+    "bytes": 14838,
+    "sha256": "13798b64e0df7b5aa7e7b2d00c05fac2c2360c1467d29b68f20431f4fe6db9e4"
+  },
+  "crates/old-faithful/of-car-reader/src/bin/reader.rs": {
+    "bytes": 16034,
+    "sha256": "26420f491dcd5e1c07486c1ed6fce90a542e54f943d13ca1c73b578d5dc65d3d"
+  },
+  "crates/old-faithful/of-car-reader/src/car_block_group.rs": {
+    "bytes": 70319,
+    "sha256": "024da2d3f023ca1feebc2f2720da7a40a7287ac960a23af75791e51230679ba4"
+  },
+  "crates/old-faithful/of-car-reader/src/car_stream.rs": {
+    "bytes": 3193,
+    "sha256": "404a862bb6ac8d1ee1cc06af530103f4466382a7349bb7f065f95e4f32c5f622"
+  },
+  "crates/old-faithful/of-car-reader/src/compact_index.rs": {
+    "bytes": 14887,
+    "sha256": "1ef1eac93a3beff38ba7fe737d342ebbde46d03bb3f84169d831def770f78ce0"
+  },
+  "crates/old-faithful/of-car-reader/src/confirmed_block.proto": {
+    "bytes": 3573,
+    "sha256": "5f38a4f4d0d1e55bc621e037f61f6361ed8f1794ad042675d1bde8df60f4113c"
+  },
+  "crates/old-faithful/of-car-reader/src/convert_metadata.rs": {
+    "bytes": 8760,
+    "sha256": "de087a4d45c646ed794cf253def61df252f65cd681105fc2a4c50777e6b8627b"
+  },
+  "crates/old-faithful/of-car-reader/src/data_buffer_pool.rs": {
+    "bytes": 7432,
+    "sha256": "8acec8678037b26bb065a2ac27c68ee63e60a0fda81d8756ba8fd4eb6cc97caf"
+  },
+  "crates/old-faithful/of-car-reader/src/error.rs": {
+    "bytes": 2656,
+    "sha256": "5492bddadfc93b1216faad4c1ed69ba93e4bf32901faa71523d2ccfd32ed9450"
+  },
+  "crates/old-faithful/of-car-reader/src/genesis.rs": {
+    "bytes": 18255,
+    "sha256": "c7afac30e0713da8b30cf630cb1e463beac63d6b9e4cd201408af84d7095a12f"
+  },
+  "crates/old-faithful/of-car-reader/src/lib.rs": {
+    "bytes": 7683,
+    "sha256": "ed1a3ff04d9489a1c938bbebb836501bf24dc0a4cef713f661db6ef5843a99e4"
+  },
+  "crates/old-faithful/of-car-reader/src/metadata_decoder.rs": {
+    "bytes": 71461,
+    "sha256": "9c1a56e287d7a4b2e15d8d26453960082a0b0803872fe2391f69e5ff3b9e9252"
+  },
+  "crates/old-faithful/of-car-reader/src/metadata_decoder/owned_reuse.rs": {
+    "bytes": 21207,
+    "sha256": "8242ea2aa1ba477109f84b9d7ca4284ca85819cdbcf0b60c17acbcfcad30b551"
+  },
+  "crates/old-faithful/of-car-reader/src/node.rs": {
+    "bytes": 18232,
+    "sha256": "ceda2b6ab41a4a60626f4bf52584a879807715cf286be9cff0883384c305d1f0"
+  },
+  "crates/old-faithful/of-car-reader/src/ordered_lossless.rs": {
+    "bytes": 46188,
+    "sha256": "5de0336c65d1a7ac7d6e323a28e8c17a563114194e0fa462c34d152b477d55b7"
+  },
+  "crates/old-faithful/of-car-reader/src/query_sdk.rs": {
+    "bytes": 138933,
+    "sha256": "dcce1f69b4775672c85414205b4039d190061a775778dd24c638452cf3300076"
+  },
+  "crates/old-faithful/of-car-reader/src/query_sdk_http.rs": {
+    "bytes": 84795,
+    "sha256": "62ea0e986ee983e601cedfd3a061d449fa6a975e99f8b2bf8e6e994a14c7c528"
+  },
+  "crates/old-faithful/of-car-reader/src/reader.rs": {
+    "bytes": 61661,
+    "sha256": "8e38753727e6723a88a44d201b9bc25e9bfff45e12a5d7abd57d9579cc60d1f8"
+  },
+  "crates/old-faithful/of-car-reader/src/reconstruct.rs": {
+    "bytes": 98478,
+    "sha256": "1e0dd9d9544f6753430002441bdcdfaf9cf0e1284b00476a20df49dbec927db1"
+  },
+  "crates/old-faithful/of-car-reader/src/short_vec.rs": {
+    "bytes": 6106,
+    "sha256": "ce7efa19694a88d62cabc8b18fb6296bafb64d54fed5d6186fd5c7eb2f37eb0e"
+  },
+  "crates/old-faithful/of-car-reader/src/slot_meta.rs": {
+    "bytes": 11462,
+    "sha256": "9409efae1533087fd1440c1f3f57bea9a833d95f9a7d6d68780edf6937be056d"
+  },
+  "crates/old-faithful/of-car-reader/src/slot_ranges.rs": {
+    "bytes": 5782,
+    "sha256": "b88c3940f9687beb79c5ce60406cd7f6a75bc6c49bc07635b9ddb9b2624c2fc0"
+  },
+  "crates/old-faithful/of-car-reader/src/stored_transaction/mod.rs": {
+    "bytes": 142,
+    "sha256": "e598eed2f6f4104ccdff74c53c0f027976435508011d44e03a86ae91876b2569"
+  },
+  "crates/old-faithful/of-car-reader/src/stored_transaction/status_meta.rs": {
+    "bytes": 10356,
+    "sha256": "8f455d5a76c329b4e8e936dc8534f48dd2611c84f797e7e8e46d8dcafeb5e1b9"
+  },
+  "crates/old-faithful/of-car-reader/src/stored_transaction/status_meta_v2.rs": {
+    "bytes": 3233,
+    "sha256": "d152cb7be4e38cd206551947a7cfe4c19f8a685a32f4d2f95c81fd1ea92b83af"
+  },
+  "crates/old-faithful/of-car-reader/src/stored_transaction/transaction_error.rs": {
+    "bytes": 10031,
+    "sha256": "65847c18586035938a7290a85292a260c90fe498685683dd77be118c16ede464"
+  },
+  "crates/old-faithful/of-car-reader/src/versioned_transaction.rs": {
+    "bytes": 68071,
+    "sha256": "0682df1983f29f2dea41c41d14155b1294d00327dfc08e590e439e6c01dba76d"
+  },
+  "crates/parser/blockzilla-log-parser/Cargo.toml": {
+    "bytes": 436,
+    "sha256": "bb54721d4804f664f253141e8f62f160ce6984773d3cc62c2214fa0fe78d1ff7"
+  },
+  "crates/parser/blockzilla-log-parser/README.md": {
+    "bytes": 409,
+    "sha256": "faa762365b1e1dc6fb74820728e846fcdac61b44748d99184be904c517b45583"
+  },
+  "crates/parser/blockzilla-log-parser/benches/parse_line.rs": {
+    "bytes": 8019,
+    "sha256": "fc3f18f55ff137154448b99c1fd2d563fabe2b4a1f75f13aeec8959a39b0a5d7"
+  },
+  "crates/parser/blockzilla-log-parser/src/lib.rs": {
+    "bytes": 25917,
+    "sha256": "5c210ab61762d5852522cab3b315eba8df5e1b0f6f605009eb1d447943068135"
+  },
+  "crates/parser/blockzilla-program-logs/Cargo.toml": {
+    "bytes": 926,
+    "sha256": "48d897ea36dd525aa68119c981b29ebedf1a50da2bbb82c6617d1cfbd45840f4"
+  },
+  "crates/parser/blockzilla-program-logs/src/lib.rs": {
+    "bytes": 48,
+    "sha256": "b33e409ce3b68bedc84b7576fe2d6bc7960a2974d62f060cef340ab6b132b3b5"
+  },
+  "crates/parser/blockzilla-program-logs/src/program_logs/account_compression.rs": {
+    "bytes": 2557,
+    "sha256": "bf63a9afba26c3d3db2910eab780d7d01214b739ae96eeb8a899f2dd2f94b3c2"
+  },
+  "crates/parser/blockzilla-program-logs/src/program_logs/address_lookup_table.rs": {
+    "bytes": 7952,
+    "sha256": "14e7b983b1b72bd909cbbe15eba8760c986272a4135fd259765ef241d4c1bf8a"
+  },
+  "crates/parser/blockzilla-program-logs/src/program_logs/associated_token_account.rs": {
+    "bytes": 6620,
+    "sha256": "fe66637e7ec6b57b08d49d28b90a878ec74b0d4dd01ea3a3559cfcb8322670bd"
+  },
+  "crates/parser/blockzilla-program-logs/src/program_logs/known_programs/drift.rs": {
+    "bytes": 9819,
+    "sha256": "b142cf466ed3a921e5982c0d1bfc4c3417f2b305b5e94c3f8ed94d47c32b1864"
+  },
+  "crates/parser/blockzilla-program-logs/src/program_logs/known_programs/generic_base64.rs": {
+    "bytes": 578,
+    "sha256": "9692d2940db55821b997f7aebff0e8afa51945a78a8084761f1c28acf5d63c79"
+  },
+  "crates/parser/blockzilla-program-logs/src/program_logs/known_programs/mod.rs": {
+    "bytes": 3364,
+    "sha256": "275abd1d4c1dec15b04305d3b531456e7a223265bfcb230a853954aa3dbd0962"
+  },
+  "crates/parser/blockzilla-program-logs/src/program_logs/known_programs/okx_router.rs": {
+    "bytes": 10756,
+    "sha256": "b9efc0abc8e140a82fb9c7043ca1e20a85cb6fbfafdd7821be14a72c8455ba01"
+  },
+  "crates/parser/blockzilla-program-logs/src/program_logs/known_programs/phoenix_perps.rs": {
+    "bytes": 10468,
+    "sha256": "819ff80e310385945c24956f1c8dbe8c037fc4a15bd7f63da10c5d3942226585"
+  },
+  "crates/parser/blockzilla-program-logs/src/program_logs/known_programs/phoenix_v1.rs": {
+    "bytes": 15188,
+    "sha256": "cf8dd486fb918a71303859712cb90c05e5ffd9cdd687df6680f64986b433ede9"
+  },
+  "crates/parser/blockzilla-program-logs/src/program_logs/known_programs/raydium_amm.rs": {
+    "bytes": 9044,
+    "sha256": "d57313989c09ce3e6cdf88a5511c690c764c5ec9a16a34d49bfd32e831faea66"
+  },
+  "crates/parser/blockzilla-program-logs/src/program_logs/known_programs/static_programs.rs": {
+    "bytes": 2877,
+    "sha256": "47038dbbbad4fa4d2b9bdd0e67d24c582b03de1aaf5166498d24863f4d497edc"
+  },
+  "crates/parser/blockzilla-program-logs/src/program_logs/loader_v3.rs": {
+    "bytes": 12233,
+    "sha256": "499266e72433e4076f985f9d1011abc5bbbb2b27534f2a426f9edf7b67c308d3"
+  },
+  "crates/parser/blockzilla-program-logs/src/program_logs/loader_v4.rs": {
+    "bytes": 3746,
+    "sha256": "e18ee7d190334b7dee530725cea43c0671775cbea0ad537a31e65222669f6dbc"
+  },
+  "crates/parser/blockzilla-program-logs/src/program_logs/memo.rs": {
+    "bytes": 4807,
+    "sha256": "ef2e04e1f9d44a2e73255384d42b3ac8d51848afe9ec6eb88630be50b00100d8"
+  },
+  "crates/parser/blockzilla-program-logs/src/program_logs/mod.rs": {
+    "bytes": 16883,
+    "sha256": "5c71ccfd1c15486c1f147164cd724121bde1b26f18a7d78969bff038b9b87f18"
+  },
+  "crates/parser/blockzilla-program-logs/src/program_logs/record.rs": {
+    "bytes": 1173,
+    "sha256": "e813665ce7ed44db983de03e4a6d16a88946de796f46ac428ffdb26418f25f96"
+  },
+  "crates/parser/blockzilla-program-logs/src/program_logs/stake.rs": {
+    "bytes": 3371,
+    "sha256": "801a7aa0bc708c22e3599bca7a26eb1abf44e580c74dccc78551ba138580ecaf"
+  },
+  "crates/parser/blockzilla-program-logs/src/program_logs/system_program.rs": {
+    "bytes": 23781,
+    "sha256": "469932c0a1a028aa4211e229d2a6202bce3e3abced63ddd9ce146ada6fc563a9"
+  },
+  "crates/parser/blockzilla-program-logs/src/program_logs/token.rs": {
+    "bytes": 10447,
+    "sha256": "a2269df9edaa207f7a330f5dabcf68392581cc9b768176e4aedc4389bbc438c7"
+  },
+  "crates/parser/blockzilla-program-logs/src/program_logs/token_2022.rs": {
+    "bytes": 34116,
+    "sha256": "2b90c29ce3a8b08609a661db14665fd1912092afa114a2e37aa1158e0fcb7753"
+  },
+  "crates/parser/blockzilla-program-logs/src/program_logs/transfer_hook.rs": {
+    "bytes": 1938,
+    "sha256": "87da02dc1ed2e22b19d4e99f7af345cb22a4dc09101838fe4cd636dbc60d619a"
+  },
+  "crates/parser/blockzilla-program-logs/src/program_logs/zk_elgamal_proof.rs": {
+    "bytes": 2978,
+    "sha256": "a9f33f6edb6a0c017d590eb59cc63950dc1c74c92ff6b79d849b0e9585c9efaf"
+  },
+  "hivezilla/stream-relay/decoder/Cargo.lock": {
+    "bytes": 35382,
+    "sha256": "ea9723f12e15ba46d0d2a2866ef9955a927ba70dc9897e2d5b94b665e29f71cf"
+  },
+  "hivezilla/stream-relay/decoder/Cargo.toml": {
+    "bytes": 899,
+    "sha256": "9688e3931905b6784d9262ca595057df109a4142c0a1650c2b3027d32c24dd0c"
+  },
+  "hivezilla/stream-relay/decoder/README.md": {
+    "bytes": 1750,
+    "sha256": "9f829267289b3a5d338532884469961d93a0f82a69fe61819afae2f2190106c6"
+  },
+  "hivezilla/stream-relay/decoder/src/lib.rs": {
+    "bytes": 36291,
+    "sha256": "d78cbafda311712c354327693ac0983f43b8c2554c46a7481486d41f25569e51"
+  },
+  "hivezilla/stream-relay/decoder/src/tests.rs": {
+    "bytes": 28735,
+    "sha256": "4e023ce36b0d1dc803148881e7c978f6dcba7914136bc5cb8a65e3ff6508f188"
+  },
+  "hivezilla/stream-sidecar/Cargo.lock": {
+    "bytes": 79300,
+    "sha256": "091fbe89e9010b379773914ffa65a94fdb2e4562178cb174ff1d8d7bc339ba37"
+  },
+  "hivezilla/stream-sidecar/Cargo.toml": {
+    "bytes": 1199,
+    "sha256": "e5d5b31c9cb8dfa132b30a861ee9bf314cda35d94f6a43637b81c6b3443716cc"
+  },
+  "hivezilla/stream-sidecar/FIRESTRATEGY-HANDOVER.md": {
+    "bytes": 15236,
+    "sha256": "b48412ce6c34137bb018f152a2e4dcf291ff3d3340c897839ba34b541300d527"
+  },
+  "hivezilla/stream-sidecar/HETZNER-PIPE.md": {
+    "bytes": 8818,
+    "sha256": "a3bce3969449611925322f155f51a28a870fe82d6244ee66e190e6eec933e989"
+  },
+  "hivezilla/stream-sidecar/README.md": {
+    "bytes": 13543,
+    "sha256": "f62501b1e76bf1543b10ac21bd13a83335f048844e11e42036b4c4bb55a75e68"
+  },
+  "hivezilla/stream-sidecar/deploy/activate_compact_only.py": {
+    "bytes": 10994,
+    "sha256": "409adb61483f89a3a3cf46016a9df1fb94da7a26440f39d5eccccf544a53ecb1"
+  },
+  "hivezilla/stream-sidecar/deploy/sample_provider.py": {
+    "bytes": 5851,
+    "sha256": "bcf1543d72b74f0cc47bdcc8d1349d1a565119b57f3a136825b44987b52cbe80"
+  },
+  "hivezilla/stream-sidecar/deploy/test_activate_compact_only.py": {
+    "bytes": 2097,
+    "sha256": "ef33261b909aeeafcb25f281327f817798ce7d34fbd182e1d3da1a38ad630d2b"
+  },
+  "hivezilla/stream-sidecar/src/beam_store_tests.rs": {
+    "bytes": 15711,
+    "sha256": "8a06f6f613c134c5063afad98a03ed0d83d370617c8d7268b355322ea16b34d1"
+  },
+  "hivezilla/stream-sidecar/src/compact_store_tests.rs": {
+    "bytes": 13713,
+    "sha256": "8a1907af83324431946e9e9f9d128504660e2af1be540c19904896d4ec092d5e"
+  },
+  "hivezilla/stream-sidecar/src/config.rs": {
+    "bytes": 10948,
+    "sha256": "6ee40485cc3df9e1cc0743a646b8ecafa9c0828ecd187fc3f2ee0604c24180fe"
+  },
+  "hivezilla/stream-sidecar/src/consume.rs": {
+    "bytes": 19911,
+    "sha256": "e3ca0051b3ee4371815db9c270387303dab6d0ff718a5e438c1c42139fdade20"
+  },
+  "hivezilla/stream-sidecar/src/cursor.rs": {
+    "bytes": 961,
+    "sha256": "3e2d7e2adf458b816c62be9bf3088e4bf37a0914c08fb2da241de7c4bfc0c437"
+  },
+  "hivezilla/stream-sidecar/src/input.rs": {
+    "bytes": 20125,
+    "sha256": "91026461300181047ca72648fbf6bca7399d3945a166b7cb1bc4e3469091938e"
+  },
+  "hivezilla/stream-sidecar/src/input_recovery_tests.rs": {
+    "bytes": 9299,
+    "sha256": "aa7bc1ed054d6f71fb92a02a3ccf6b78e491ef9109c5eb45a8a174f4bd89c735"
+  },
+  "hivezilla/stream-sidecar/src/lib.rs": {
+    "bytes": 249,
+    "sha256": "18607ac182fe85af309db20b2c09be9b12303a3776414d336357020e46183358"
+  },
+  "hivezilla/stream-sidecar/src/main.rs": {
+    "bytes": 15195,
+    "sha256": "64b1a5225f127e22cff2094ef0d2aa8b0049aaa68e1ae71fad6f5ba4cef50960"
+  },
+  "hivezilla/stream-sidecar/src/payload_cache.rs": {
+    "bytes": 26391,
+    "sha256": "bcf419b49fa48d3fe43c2c91018ffe5e054b952743ae25b19c19ac3b46c9d80e"
+  },
+  "hivezilla/stream-sidecar/src/projection.rs": {
+    "bytes": 10384,
+    "sha256": "2abf75ac33cb527a313987223a0cc5e395b5ef876eb7356c48a51268bfa38db9"
+  },
+  "hivezilla/stream-sidecar/src/server.rs": {
+    "bytes": 43317,
+    "sha256": "c94ebd4101d400f7a30c8e1dcf52b15daa2a7cef06b8590bd18b5ff61ad4c46a"
+  },
+  "hivezilla/stream-sidecar/src/store.rs": {
+    "bytes": 72185,
+    "sha256": "868547bd93a0f829dac9090a759f7d84a2cea7df40864ec2bb8ce2bff7468506"
+  },
+  "hivezilla/stream-sidecar/src/uds.rs": {
+    "bytes": 4876,
+    "sha256": "186e984be84c048ea64d4bd575a16888df17893a94dd518fd6a799baa2d4e206"
+  },
+  "hivezilla/stream-sidecar/src/webhook.rs": {
+    "bytes": 13032,
+    "sha256": "1a8c8a713baf15edc5494374ed5d3b1cc78fb56fedd63aab72d2f8a0444746ba"
+  },
+  "hivezilla/stream-sidecar/tests/process.rs": {
+    "bytes": 7712,
+    "sha256": "cf3add7f9e2620342166278e8b4a4399ab350fd9c66fa09c394ba9cc9ce37011"
+  }
+}

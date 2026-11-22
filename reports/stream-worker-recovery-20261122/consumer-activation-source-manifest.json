@@ -1,0 +1,23 @@
+{
+  "database_backup": false,
+  "database_restore": false,
+  "extra_block_copy": false,
+  "files": {
+    "activate-consumer.py": {
+      "bytes": 21766,
+      "sha256": "d9c738a88da36ee2cad4307be14bca910b0428a24a2d8909842b6dcfae11e27b"
+    },
+    "consumer-activation-plan.md": {
+      "bytes": 3178,
+      "sha256": "b5aa82d25a483c3a645d26dd9080d1c813645d76844764207d805693937197ba"
+    },
+    "test_activate_consumer.py": {
+      "bytes": 12877,
+      "sha256": "45a902ebc3c9bcef848fb875cccc5f39705fae8f72d2838cef5cfd5c6cdb2e8d"
+    }
+  },
+  "local_tests_passed": 7,
+  "old_binary_sha256": "fd246ddb77e3fa478de8809c374499ddde11811da64996eb8167028767c1fc14",
+  "schema": "blockzilla-worker-recovery-activation-preparation-v1",
+  "status": "LOCAL_TESTS_PASSED_NOT_RUN_ON_CONSUMER"
+}

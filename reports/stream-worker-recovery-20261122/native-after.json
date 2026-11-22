@@ -1,0 +1,43 @@
+{
+  "time": "2026-11-22T15:38:32.618344+00:00",
+  "native": {
+    "state": "RUNNING",
+    "capacity_admitted": true,
+    "generation": "c1739ce6fcee61291f41548b1960aa27",
+    "source": {
+      "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+      "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+      "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+      "session_id": "000000000000000018ea5078fdda19df-13e843"
+    },
+    "validator": {
+      "ActiveState": "active",
+      "InvocationID": "a1edd40e43404e8cb9c81a7caacfa1ee",
+      "MainPID": "1304643",
+      "NRestarts": "0"
+    },
+    "units": {
+      "banks": {
+        "ActiveState": "active",
+        "InvocationID": "5ca0025e445f4cb4ba3f6f6cceb4e5a8",
+        "MainPID": "3381564",
+        "NRestarts": "0"
+      },
+      "origin": {
+        "ActiveState": "active",
+        "InvocationID": "9d9c4e37deec4f45a542e076cb690c2b",
+        "MainPID": "3381565",
+        "NRestarts": "0"
+      },
+      "processed": {
+        "ActiveState": "active",
+        "InvocationID": "c65096c657134740bb8cb00dcd45d180",
+        "MainPID": "3381566",
+        "NRestarts": "0"
+      }
+    },
+    "updated_unix_ms": 1795361911598
+  },
+  "reader": "Id=blockzilla-recent-get-block.service\nActiveState=active\nInvocationID=74cd410cbbde44b488e4a7e0e20101b6\nMainPID=321829\nNRestarts=0\n\nId=hivezilla-tunnel.service\nActiveState=active\nInvocationID=9d1592d736864f2da945d0353189cbad\nMainPID=480183\nNRestarts=0\n",
+  "native_processes_unchanged": true
+}

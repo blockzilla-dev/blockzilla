@@ -1,0 +1,22 @@
+{
+  "time": "2026-11-22T15:38:32.274937+00:00",
+  "domains": [
+    {
+      "id": "3e5664f63a8c29e94ab042d4c03a62552f034e00",
+      "zone_id": "fe1afd69f777e57eca0a230722f77da2",
+      "zone_name": "blockzilla.dev",
+      "hostname": "getblock.blockzilla.dev",
+      "service": "blockzilla-get-block",
+      "environment": "production",
+      "cert_id": "3fd75145-cae3-44c0-8f74-0471a4e4d008",
+      "previews_enabled": false,
+      "enabled": true
+    }
+  ],
+  "active_versions": [
+    {
+      "version_id": "50aaba11-468b-4c57-b1ad-ddc999ea9152",
+      "percentage": 100
+    }
+  ]
+}

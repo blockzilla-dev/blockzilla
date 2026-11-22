@@ -1,0 +1,25 @@
+Passed independent Node and WebCrypto fixed HMAC vector.
+Passed exact deployment entry point starts and serves a signed native R2 range.
+Passed MAC missing incorrect expired future and tampered requests reject before R2.
+Passed strict prefix filename integer bounds ETag and exact query grammar.
+Passed GET-only routing with no public bucket or secret information.
+Passed one exact native conditional R2 range and authoritative 206 framing.
+{"event":"reader_failure","sourceAttempted":true}
+Passed signature object missing object conditional failure and identity failures keep exact operation receipts.
+Passed native response streams before EOF with backpressure.
+{"event":"reader_stream_failed_or_cancelled"}
+Passed client cancellation reaches the native source stream.
+Passed short source bodies abort instead of completing a valid range.
+{"event":"reader_stream_failed_or_cancelled"}
+Passed long source bodies abort instead of completing a valid range.
+Passed reader holds no cached failed body and recovers on the next exact range.
+All 12 Foundation reader checks passed. No cloud calls were made.
+✔ edgezilla/foundation-reader/test/native-reader.test.mjs (2526.641916ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2538.870959

@@ -1,0 +1,1457 @@
+{
+  "schema": "blockzilla.native-auth-edge-verification-summary.v1",
+  "status": "validated",
+  "startedAt": "2026-11-22T08:34:57.012Z",
+  "completedAt": "2026-11-22T08:35:24.131Z",
+  "deployment": {
+    "version": "bf0bedfc-7216-4550-8e79-b671a93318f8",
+    "wasmSha256": "f5b9675e07138c899fcde1752ab7ceafc67ca4b7bc66a8e7da044f7a91f0b973",
+    "archiveCacheGeneration": "owner-native-fast-20261122-final-v2",
+    "headSampling": 0.01
+  },
+  "plan": {
+    "requests": 49,
+    "slots": [
+      470555971,
+      470663944,
+      470771932,
+      470879999
+    ],
+    "runtimeWarmJson": 1,
+    "measuredColdJson": 4,
+    "indexAuthWarmResolution": 4,
+    "burstJson": 16,
+    "otherNormalWarmJson": 3,
+    "sourceAuthWarmResolution": 1,
+    "sourceJson": 4,
+    "responseHitJson": 16,
+    "retries": 0,
+    "quietGapMs": 2200,
+    "sourceWarmupQuietGapMs": 5200,
+    "maximumClientConnections": 16
+  },
+  "proof": {
+    "requests": 49,
+    "successful": 49,
+    "jsonResponses": 44,
+    "jsonMatchesSaved": 44,
+    "fullColdThreeGetKvBypass": 4,
+    "sourceIndexCached": 4,
+    "sourceIndexAndAuthCached": 4,
+    "responseHitsZeroOrigin": 16,
+    "authTierCounts": {
+      "BYPASS": 5,
+      "KV": 4,
+      "EDGE": 8,
+      "MEMORY": 32
+    },
+    "authTierReported": 49,
+    "burst": {
+      "requests": 16,
+      "kvReads": 0,
+      "authTierCounts": {
+        "MEMORY": 9,
+        "EDGE": 7
+      },
+      "authCacheCounts": {
+        "HIT": 16
+      },
+      "fillCounts": {
+        "LEADER": 5,
+        "HIT": 3,
+        "COALESCED": 8
+      },
+      "gets": 4,
+      "freshMissObserved": true,
+      "leaderOriginReadObserved": true
+    }
+  },
+  "allCounters": {
+    "requests": 49,
+    "r2GetAttempts": 37,
+    "r2HeadAttempts": 0,
+    "s3GetAttempts": 0,
+    "readerHttpRequests": 0,
+    "actualBufferedOriginBytes": 3155367,
+    "authKvReads": 9,
+    "authTierCounts": {
+      "BYPASS": 5,
+      "KV": 4,
+      "EDGE": 8,
+      "MEMORY": 32
+    },
+    "authCacheCounts": {
+      "BYPASS": 5,
+      "MISS": 4,
+      "HIT": 40
+    },
+    "responseCacheCounts": {
+      "BYPASS": 9,
+      "MISS": 12,
+      "HIT": 28
+    },
+    "fillCounts": {
+      "BYPASS": 9,
+      "UNREPORTED": 5,
+      "LEADER": 8,
+      "HIT": 19,
+      "COALESCED": 8
+    },
+    "archiveMemoryHits": 5,
+    "archiveEdgeHits": 13
+  },
+  "windows": [
+    {
+      "phase": "runtime_warm",
+      "startedAt": "2026-11-22T08:34:57.013Z",
+      "networkCompletedAt": "2026-11-22T08:34:57.560Z",
+      "validationCompletedAt": "2026-11-22T08:34:57.560Z",
+      "requests": 1,
+      "quietBeforeMs": 0,
+      "firstRequestAt": "2026-11-22T08:34:57.014Z",
+      "lastRequestCompletedAt": "2026-11-22T08:34:57.560Z",
+      "concurrent": false
+    },
+    {
+      "phase": "full_cold",
+      "startedAt": "2026-11-22T08:34:59.762Z",
+      "networkCompletedAt": "2026-11-22T08:35:01.788Z",
+      "validationCompletedAt": "2026-11-22T08:35:01.788Z",
+      "requests": 4,
+      "quietBeforeMs": 2200,
+      "firstRequestAt": "2026-11-22T08:34:59.763Z",
+      "lastRequestCompletedAt": "2026-11-22T08:35:01.788Z",
+      "concurrent": false
+    },
+    {
+      "phase": "index_auth_warmup",
+      "startedAt": "2026-11-22T08:35:03.989Z",
+      "networkCompletedAt": "2026-11-22T08:35:04.522Z",
+      "validationCompletedAt": "2026-11-22T08:35:04.522Z",
+      "requests": 4,
+      "quietBeforeMs": 2200,
+      "firstRequestAt": "2026-11-22T08:35:03.989Z",
+      "lastRequestCompletedAt": "2026-11-22T08:35:04.522Z",
+      "concurrent": false
+    },
+    {
+      "phase": "ordinary_burst",
+      "startedAt": "2026-11-22T08:35:06.724Z",
+      "networkCompletedAt": "2026-11-22T08:35:07.081Z",
+      "validationCompletedAt": "2026-11-22T08:35:07.902Z",
+      "requests": 16,
+      "quietBeforeMs": 2200,
+      "firstRequestAt": "2026-11-22T08:35:06.724Z",
+      "lastRequestCompletedAt": "2026-11-22T08:35:07.081Z",
+      "concurrent": true
+    },
+    {
+      "phase": "ordinary_other_warmup",
+      "startedAt": "2026-11-22T08:35:10.105Z",
+      "networkCompletedAt": "2026-11-22T08:35:10.811Z",
+      "validationCompletedAt": "2026-11-22T08:35:10.811Z",
+      "requests": 3,
+      "quietBeforeMs": 2200,
+      "firstRequestAt": "2026-11-22T08:35:10.106Z",
+      "lastRequestCompletedAt": "2026-11-22T08:35:10.811Z",
+      "concurrent": false
+    },
+    {
+      "phase": "source_auth_warmup",
+      "startedAt": "2026-11-22T08:35:16.013Z",
+      "networkCompletedAt": "2026-11-22T08:35:16.107Z",
+      "validationCompletedAt": "2026-11-22T08:35:16.107Z",
+      "requests": 1,
+      "quietBeforeMs": 5200,
+      "firstRequestAt": "2026-11-22T08:35:16.013Z",
+      "lastRequestCompletedAt": "2026-11-22T08:35:16.106Z",
+      "concurrent": false
+    },
+    {
+      "phase": "source_only",
+      "startedAt": "2026-11-22T08:35:18.309Z",
+      "networkCompletedAt": "2026-11-22T08:35:19.418Z",
+      "validationCompletedAt": "2026-11-22T08:35:19.418Z",
+      "requests": 4,
+      "quietBeforeMs": 2200,
+      "firstRequestAt": "2026-11-22T08:35:18.310Z",
+      "lastRequestCompletedAt": "2026-11-22T08:35:19.418Z",
+      "concurrent": false
+    },
+    {
+      "phase": "response_hits",
+      "startedAt": "2026-11-22T08:35:21.620Z",
+      "networkCompletedAt": "2026-11-22T08:35:24.126Z",
+      "validationCompletedAt": "2026-11-22T08:35:24.126Z",
+      "requests": 16,
+      "quietBeforeMs": 2200,
+      "firstRequestAt": "2026-11-22T08:35:21.621Z",
+      "lastRequestCompletedAt": "2026-11-22T08:35:24.126Z",
+      "concurrent": false
+    }
+  ],
+  "phases": [
+    {
+      "phase": "runtime_warm",
+      "counters": {
+        "requests": 1,
+        "r2GetAttempts": 3,
+        "r2HeadAttempts": 0,
+        "s3GetAttempts": 0,
+        "readerHttpRequests": 0,
+        "actualBufferedOriginBytes": 248467,
+        "authKvReads": 1,
+        "authTierCounts": {
+          "BYPASS": 1
+        },
+        "authCacheCounts": {
+          "BYPASS": 1
+        },
+        "responseCacheCounts": {
+          "BYPASS": 1
+        },
+        "fillCounts": {
+          "BYPASS": 1
+        },
+        "archiveMemoryHits": 0,
+        "archiveEdgeHits": 0
+      },
+      "observedTimingOnly": {
+        "totalMs": {
+          "p50": 480.975,
+          "p95": 480.975,
+          "p99": 480.975
+        },
+        "ttfbMs": {
+          "p50": 456.07,
+          "p95": 456.07,
+          "p99": 456.07
+        }
+      },
+      "requests": [
+        {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:34:57.014Z",
+          "completedAt": "2026-11-22T08:34:57.560Z",
+          "responseCache": "BYPASS",
+          "fill": "BYPASS",
+          "auth": {
+            "cache": "BYPASS",
+            "kvReads": 1,
+            "tier": "BYPASS"
+          },
+          "r2Gets": 3,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        }
+      ]
+    },
+    {
+      "phase": "full_cold",
+      "counters": {
+        "requests": 4,
+        "r2GetAttempts": 12,
+        "r2HeadAttempts": 0,
+        "s3GetAttempts": 0,
+        "readerHttpRequests": 0,
+        "actualBufferedOriginBytes": 1016409,
+        "authKvReads": 4,
+        "authTierCounts": {
+          "BYPASS": 4
+        },
+        "authCacheCounts": {
+          "BYPASS": 4
+        },
+        "responseCacheCounts": {
+          "BYPASS": 4
+        },
+        "fillCounts": {
+          "BYPASS": 4
+        },
+        "archiveMemoryHits": 0,
+        "archiveEdgeHits": 0
+      },
+      "observedTimingOnly": {
+        "totalMs": {
+          "p50": 196.88,
+          "p95": 872.293,
+          "p99": 872.293
+        },
+        "ttfbMs": {
+          "p50": 180.142,
+          "p95": 837.829,
+          "p99": 837.829
+        }
+      },
+      "requests": [
+        {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:34:59.763Z",
+          "completedAt": "2026-11-22T08:35:00.040Z",
+          "responseCache": "BYPASS",
+          "fill": "BYPASS",
+          "auth": {
+            "cache": "BYPASS",
+            "kvReads": 1,
+            "tier": "BYPASS"
+          },
+          "r2Gets": 3,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470663944,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:00.040Z",
+          "completedAt": "2026-11-22T08:35:01.049Z",
+          "responseCache": "BYPASS",
+          "fill": "BYPASS",
+          "auth": {
+            "cache": "BYPASS",
+            "kvReads": 1,
+            "tier": "BYPASS"
+          },
+          "r2Gets": 3,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470771932,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:01.049Z",
+          "completedAt": "2026-11-22T08:35:01.578Z",
+          "responseCache": "BYPASS",
+          "fill": "BYPASS",
+          "auth": {
+            "cache": "BYPASS",
+            "kvReads": 1,
+            "tier": "BYPASS"
+          },
+          "r2Gets": 3,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470879999,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:01.578Z",
+          "completedAt": "2026-11-22T08:35:01.788Z",
+          "responseCache": "BYPASS",
+          "fill": "BYPASS",
+          "auth": {
+            "cache": "BYPASS",
+            "kvReads": 1,
+            "tier": "BYPASS"
+          },
+          "r2Gets": 3,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        }
+      ]
+    },
+    {
+      "phase": "index_auth_warmup",
+      "counters": {
+        "requests": 4,
+        "r2GetAttempts": 4,
+        "r2HeadAttempts": 0,
+        "s3GetAttempts": 0,
+        "readerHttpRequests": 0,
+        "actualBufferedOriginBytes": 315117,
+        "authKvReads": 1,
+        "authTierCounts": {
+          "KV": 1,
+          "EDGE": 1,
+          "MEMORY": 2
+        },
+        "authCacheCounts": {
+          "MISS": 1,
+          "HIT": 3
+        },
+        "responseCacheCounts": {
+          "MISS": 4
+        },
+        "fillCounts": {
+          "UNREPORTED": 4
+        },
+        "archiveMemoryHits": 0,
+        "archiveEdgeHits": 0
+      },
+      "observedTimingOnly": {
+        "totalMs": {
+          "p50": 102.772,
+          "p95": 211.309,
+          "p99": 211.309
+        },
+        "ttfbMs": {
+          "p50": 100.592,
+          "p95": 206.795,
+          "p99": 206.795
+        }
+      },
+      "requests": [
+        {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:03.989Z",
+          "completedAt": "2026-11-22T08:35:04.098Z",
+          "responseCache": "MISS",
+          "fill": null,
+          "auth": {
+            "cache": "MISS",
+            "kvReads": 1,
+            "tier": "KV"
+          },
+          "r2Gets": 1,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": null
+        },
+        {
+          "slot": 470663944,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:04.098Z",
+          "completedAt": "2026-11-22T08:35:04.310Z",
+          "responseCache": "MISS",
+          "fill": null,
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "EDGE"
+          },
+          "r2Gets": 1,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": null
+        },
+        {
+          "slot": 470771932,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:04.310Z",
+          "completedAt": "2026-11-22T08:35:04.407Z",
+          "responseCache": "MISS",
+          "fill": null,
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 1,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": null
+        },
+        {
+          "slot": 470879999,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:04.407Z",
+          "completedAt": "2026-11-22T08:35:04.522Z",
+          "responseCache": "MISS",
+          "fill": null,
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 1,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": null
+        }
+      ]
+    },
+    {
+      "phase": "ordinary_burst",
+      "counters": {
+        "requests": 16,
+        "r2GetAttempts": 4,
+        "r2HeadAttempts": 0,
+        "s3GetAttempts": 0,
+        "readerHttpRequests": 0,
+        "actualBufferedOriginBytes": 345580,
+        "authKvReads": 0,
+        "authTierCounts": {
+          "MEMORY": 9,
+          "EDGE": 7
+        },
+        "authCacheCounts": {
+          "HIT": 16
+        },
+        "responseCacheCounts": {
+          "MISS": 5,
+          "HIT": 11
+        },
+        "fillCounts": {
+          "LEADER": 5,
+          "HIT": 3,
+          "COALESCED": 8
+        },
+        "archiveMemoryHits": 1,
+        "archiveEdgeHits": 10
+      },
+      "observedTimingOnly": {
+        "totalMs": {
+          "p50": 284.773,
+          "p95": 348.135,
+          "p99": 348.135
+        },
+        "ttfbMs": {
+          "p50": 221.898,
+          "p95": 315.776,
+          "p99": 315.776
+        }
+      },
+      "requests": [
+        {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:06.724Z",
+          "completedAt": "2026-11-22T08:35:06.903Z",
+          "responseCache": "MISS",
+          "fill": "LEADER",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 2,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:06.735Z",
+          "completedAt": "2026-11-22T08:35:06.952Z",
+          "responseCache": "HIT",
+          "fill": "HIT",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "EDGE"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:06.725Z",
+          "completedAt": "2026-11-22T08:35:06.955Z",
+          "responseCache": "MISS",
+          "fill": "LEADER",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 2,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:06.732Z",
+          "completedAt": "2026-11-22T08:35:06.955Z",
+          "responseCache": "HIT",
+          "fill": "HIT",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "EDGE"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:06.733Z",
+          "completedAt": "2026-11-22T08:35:06.957Z",
+          "responseCache": "HIT",
+          "fill": "HIT",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "EDGE"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:06.727Z",
+          "completedAt": "2026-11-22T08:35:06.977Z",
+          "responseCache": "HIT",
+          "fill": "COALESCED",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:06.736Z",
+          "completedAt": "2026-11-22T08:35:06.991Z",
+          "responseCache": "MISS",
+          "fill": "LEADER",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "EDGE"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:06.737Z",
+          "completedAt": "2026-11-22T08:35:07.022Z",
+          "responseCache": "MISS",
+          "fill": "LEADER",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "EDGE"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:06.736Z",
+          "completedAt": "2026-11-22T08:35:07.029Z",
+          "responseCache": "MISS",
+          "fill": "LEADER",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "EDGE"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:06.728Z",
+          "completedAt": "2026-11-22T08:35:07.032Z",
+          "responseCache": "HIT",
+          "fill": "COALESCED",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:06.726Z",
+          "completedAt": "2026-11-22T08:35:07.033Z",
+          "responseCache": "HIT",
+          "fill": "COALESCED",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:06.734Z",
+          "completedAt": "2026-11-22T08:35:07.033Z",
+          "responseCache": "HIT",
+          "fill": "COALESCED",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:06.730Z",
+          "completedAt": "2026-11-22T08:35:07.069Z",
+          "responseCache": "HIT",
+          "fill": "COALESCED",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "EDGE"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:06.731Z",
+          "completedAt": "2026-11-22T08:35:07.074Z",
+          "responseCache": "HIT",
+          "fill": "COALESCED",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:06.729Z",
+          "completedAt": "2026-11-22T08:35:07.074Z",
+          "responseCache": "HIT",
+          "fill": "COALESCED",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:06.732Z",
+          "completedAt": "2026-11-22T08:35:07.081Z",
+          "responseCache": "HIT",
+          "fill": "COALESCED",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        }
+      ]
+    },
+    {
+      "phase": "ordinary_other_warmup",
+      "counters": {
+        "requests": 3,
+        "r2GetAttempts": 6,
+        "r2HeadAttempts": 0,
+        "s3GetAttempts": 0,
+        "readerHttpRequests": 0,
+        "actualBufferedOriginBytes": 528502,
+        "authKvReads": 1,
+        "authTierCounts": {
+          "KV": 1,
+          "MEMORY": 2
+        },
+        "authCacheCounts": {
+          "MISS": 1,
+          "HIT": 2
+        },
+        "responseCacheCounts": {
+          "MISS": 3
+        },
+        "fillCounts": {
+          "LEADER": 3
+        },
+        "archiveMemoryHits": 1,
+        "archiveEdgeHits": 2
+      },
+      "observedTimingOnly": {
+        "totalMs": {
+          "p50": 179.016,
+          "p95": 179.381,
+          "p99": 179.381
+        },
+        "ttfbMs": {
+          "p50": 147.992,
+          "p95": 156.346,
+          "p99": 156.346
+        }
+      },
+      "requests": [
+        {
+          "slot": 470663944,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:10.106Z",
+          "completedAt": "2026-11-22T08:35:10.404Z",
+          "responseCache": "MISS",
+          "fill": "LEADER",
+          "auth": {
+            "cache": "MISS",
+            "kvReads": 1,
+            "tier": "KV"
+          },
+          "r2Gets": 2,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470771932,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:10.404Z",
+          "completedAt": "2026-11-22T08:35:10.673Z",
+          "responseCache": "MISS",
+          "fill": "LEADER",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 2,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470879999,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:10.673Z",
+          "completedAt": "2026-11-22T08:35:10.811Z",
+          "responseCache": "MISS",
+          "fill": "LEADER",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 2,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        }
+      ]
+    },
+    {
+      "phase": "source_auth_warmup",
+      "counters": {
+        "requests": 1,
+        "r2GetAttempts": 0,
+        "r2HeadAttempts": 0,
+        "s3GetAttempts": 0,
+        "readerHttpRequests": 0,
+        "actualBufferedOriginBytes": 0,
+        "authKvReads": 1,
+        "authTierCounts": {
+          "KV": 1
+        },
+        "authCacheCounts": {
+          "MISS": 1
+        },
+        "responseCacheCounts": {
+          "HIT": 1
+        },
+        "fillCounts": {
+          "UNREPORTED": 1
+        },
+        "archiveMemoryHits": 0,
+        "archiveEdgeHits": 0
+      },
+      "observedTimingOnly": {
+        "totalMs": {
+          "p50": 90.955,
+          "p95": 90.955,
+          "p99": 90.955
+        },
+        "ttfbMs": {
+          "p50": 82.515,
+          "p95": 82.515,
+          "p99": 82.515
+        }
+      },
+      "requests": [
+        {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:16.013Z",
+          "completedAt": "2026-11-22T08:35:16.106Z",
+          "responseCache": "HIT",
+          "fill": null,
+          "auth": {
+            "cache": "MISS",
+            "kvReads": 1,
+            "tier": "KV"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": null
+        }
+      ]
+    },
+    {
+      "phase": "source_only",
+      "counters": {
+        "requests": 4,
+        "r2GetAttempts": 8,
+        "r2HeadAttempts": 0,
+        "s3GetAttempts": 0,
+        "readerHttpRequests": 0,
+        "actualBufferedOriginBytes": 701292,
+        "authKvReads": 0,
+        "authTierCounts": {
+          "MEMORY": 4
+        },
+        "authCacheCounts": {
+          "HIT": 4
+        },
+        "responseCacheCounts": {
+          "BYPASS": 4
+        },
+        "fillCounts": {
+          "BYPASS": 4
+        },
+        "archiveMemoryHits": 3,
+        "archiveEdgeHits": 1
+      },
+      "observedTimingOnly": {
+        "totalMs": {
+          "p50": 172.563,
+          "p95": 240.374,
+          "p99": 240.374
+        },
+        "ttfbMs": {
+          "p50": 137.403,
+          "p95": 214.939,
+          "p99": 214.939
+        }
+      },
+      "requests": [
+        {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:18.310Z",
+          "completedAt": "2026-11-22T08:35:18.632Z",
+          "responseCache": "BYPASS",
+          "fill": "BYPASS",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 2,
+          "indexAndAuthCached": true,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470663944,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:18.633Z",
+          "completedAt": "2026-11-22T08:35:18.931Z",
+          "responseCache": "BYPASS",
+          "fill": "BYPASS",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 2,
+          "indexAndAuthCached": true,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470771932,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:18.931Z",
+          "completedAt": "2026-11-22T08:35:19.201Z",
+          "responseCache": "BYPASS",
+          "fill": "BYPASS",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 2,
+          "indexAndAuthCached": true,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470879999,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:19.201Z",
+          "completedAt": "2026-11-22T08:35:19.418Z",
+          "responseCache": "BYPASS",
+          "fill": "BYPASS",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 2,
+          "indexAndAuthCached": true,
+          "bodyCanonicalMatchesSaved": true
+        }
+      ]
+    },
+    {
+      "phase": "response_hits",
+      "counters": {
+        "requests": 16,
+        "r2GetAttempts": 0,
+        "r2HeadAttempts": 0,
+        "s3GetAttempts": 0,
+        "readerHttpRequests": 0,
+        "actualBufferedOriginBytes": 0,
+        "authKvReads": 1,
+        "authTierCounts": {
+          "KV": 1,
+          "MEMORY": 15
+        },
+        "authCacheCounts": {
+          "MISS": 1,
+          "HIT": 15
+        },
+        "responseCacheCounts": {
+          "HIT": 16
+        },
+        "fillCounts": {
+          "HIT": 16
+        },
+        "archiveMemoryHits": 0,
+        "archiveEdgeHits": 0
+      },
+      "observedTimingOnly": {
+        "totalMs": {
+          "p50": 56.068,
+          "p95": 281.16,
+          "p99": 281.16
+        },
+        "ttfbMs": {
+          "p50": 24.159,
+          "p95": 120.524,
+          "p99": 120.524
+        }
+      },
+      "requests": [
+        {
+          "slot": 470555971,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:21.621Z",
+          "completedAt": "2026-11-22T08:35:21.979Z",
+          "responseCache": "HIT",
+          "fill": "HIT",
+          "auth": {
+            "cache": "MISS",
+            "kvReads": 1,
+            "tier": "KV"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470663944,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:21.979Z",
+          "completedAt": "2026-11-22T08:35:22.388Z",
+          "responseCache": "HIT",
+          "fill": "HIT",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470771932,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:22.388Z",
+          "completedAt": "2026-11-22T08:35:22.536Z",
+          "responseCache": "HIT",
+          "fill": "HIT",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470879999,
+          "round": 0,
+          "startedAt": "2026-11-22T08:35:22.536Z",
+          "completedAt": "2026-11-22T08:35:22.614Z",
+          "responseCache": "HIT",
+          "fill": "HIT",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470555971,
+          "round": 1,
+          "startedAt": "2026-11-22T08:35:22.614Z",
+          "completedAt": "2026-11-22T08:35:22.712Z",
+          "responseCache": "HIT",
+          "fill": "HIT",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470663944,
+          "round": 1,
+          "startedAt": "2026-11-22T08:35:22.712Z",
+          "completedAt": "2026-11-22T08:35:22.877Z",
+          "responseCache": "HIT",
+          "fill": "HIT",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470771932,
+          "round": 1,
+          "startedAt": "2026-11-22T08:35:22.877Z",
+          "completedAt": "2026-11-22T08:35:23.119Z",
+          "responseCache": "HIT",
+          "fill": "HIT",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470879999,
+          "round": 1,
+          "startedAt": "2026-11-22T08:35:23.119Z",
+          "completedAt": "2026-11-22T08:35:23.199Z",
+          "responseCache": "HIT",
+          "fill": "HIT",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470555971,
+          "round": 2,
+          "startedAt": "2026-11-22T08:35:23.199Z",
+          "completedAt": "2026-11-22T08:35:23.323Z",
+          "responseCache": "HIT",
+          "fill": "HIT",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470663944,
+          "round": 2,
+          "startedAt": "2026-11-22T08:35:23.323Z",
+          "completedAt": "2026-11-22T08:35:23.485Z",
+          "responseCache": "HIT",
+          "fill": "HIT",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470771932,
+          "round": 2,
+          "startedAt": "2026-11-22T08:35:23.485Z",
+          "completedAt": "2026-11-22T08:35:23.612Z",
+          "responseCache": "HIT",
+          "fill": "HIT",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470879999,
+          "round": 2,
+          "startedAt": "2026-11-22T08:35:23.612Z",
+          "completedAt": "2026-11-22T08:35:23.666Z",
+          "responseCache": "HIT",
+          "fill": "HIT",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470555971,
+          "round": 3,
+          "startedAt": "2026-11-22T08:35:23.666Z",
+          "completedAt": "2026-11-22T08:35:23.765Z",
+          "responseCache": "HIT",
+          "fill": "HIT",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470663944,
+          "round": 3,
+          "startedAt": "2026-11-22T08:35:23.765Z",
+          "completedAt": "2026-11-22T08:35:23.920Z",
+          "responseCache": "HIT",
+          "fill": "HIT",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470771932,
+          "round": 3,
+          "startedAt": "2026-11-22T08:35:23.920Z",
+          "completedAt": "2026-11-22T08:35:24.070Z",
+          "responseCache": "HIT",
+          "fill": "HIT",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        },
+        {
+          "slot": 470879999,
+          "round": 3,
+          "startedAt": "2026-11-22T08:35:24.070Z",
+          "completedAt": "2026-11-22T08:35:24.126Z",
+          "responseCache": "HIT",
+          "fill": "HIT",
+          "auth": {
+            "cache": "HIT",
+            "kvReads": 0,
+            "tier": "MEMORY"
+          },
+          "r2Gets": 0,
+          "indexAndAuthCached": false,
+          "bodyCanonicalMatchesSaved": true
+        }
+      ]
+    }
+  ],
+  "burstHistory": {
+    "before": {
+      "version": "ddc5f9ff-8704-4c99-ba20-e712047ba360",
+      "window": {
+        "phase": "ordinary_burst",
+        "startedAt": "2026-11-22T08:17:43.900Z",
+        "networkCompletedAt": "2026-11-22T08:17:44.261Z",
+        "validationCompletedAt": "2026-11-22T08:17:45.252Z",
+        "requests": 16,
+        "fastRequests": 16,
+        "baselineRequests": 0,
+        "heliusRequests": 0,
+        "fastFirstRequestAt": "2026-11-22T08:17:43.903Z",
+        "fastLastRequestCompletedAt": "2026-11-22T08:17:44.261Z",
+        "concurrent": true
+      },
+      "counters": {
+        "requests": 16,
+        "r2GetAttempts": 4,
+        "r2HeadAttempts": 0,
+        "s3GetAttempts": 0,
+        "readerHttpRequests": 0,
+        "actualBufferedOriginBytes": 345580,
+        "authKvReads": 13,
+        "authTierCounts": {
+          "UNREPORTED": 16
+        },
+        "authCacheCounts": {
+          "HIT": 3,
+          "MISS": 13
+        },
+        "responseCacheCounts": {
+          "MISS": 4,
+          "HIT": 12
+        },
+        "fillCounts": {
+          "LEADER": 4,
+          "HIT": 8,
+          "COALESCED": 4
+        },
+        "archiveMemoryHits": 1,
+        "archiveEdgeHits": 7
+      }
+    },
+    "after": {
+      "version": "bf0bedfc-7216-4550-8e79-b671a93318f8",
+      "window": {
+        "phase": "ordinary_burst",
+        "startedAt": "2026-11-22T08:35:06.724Z",
+        "networkCompletedAt": "2026-11-22T08:35:07.081Z",
+        "validationCompletedAt": "2026-11-22T08:35:07.902Z",
+        "requests": 16,
+        "quietBeforeMs": 2200,
+        "firstRequestAt": "2026-11-22T08:35:06.724Z",
+        "lastRequestCompletedAt": "2026-11-22T08:35:07.081Z",
+        "concurrent": true
+      },
+      "counters": {
+        "requests": 16,
+        "r2GetAttempts": 4,
+        "r2HeadAttempts": 0,
+        "s3GetAttempts": 0,
+        "readerHttpRequests": 0,
+        "actualBufferedOriginBytes": 345580,
+        "authKvReads": 0,
+        "authTierCounts": {
+          "MEMORY": 9,
+          "EDGE": 7
+        },
+        "authCacheCounts": {
+          "HIT": 16
+        },
+        "responseCacheCounts": {
+          "MISS": 5,
+          "HIT": 11
+        },
+        "fillCounts": {
+          "LEADER": 5,
+          "HIT": 3,
+          "COALESCED": 8
+        },
+        "archiveMemoryHits": 1,
+        "archiveEdgeHits": 10
+      }
+    },
+    "limit": "These are separate runs with different warmup order and runtime history. The observed KV counts are 13 before and 0 after; this is not a controlled provider-latency A/B test. Seven live EDGE hits and the independent fresh-app WASM test directly prove shared-cache use."
+  },
+  "authPolicy": {
+    "positiveOnly": true,
+    "originalKvObservationTtlMs": 5000,
+    "hitDoesNotRefreshExpiry": true,
+    "sharedEnvelopeMaximumBytes": 1024,
+    "tiers": [
+      "MEMORY",
+      "EDGE",
+      "KV",
+      "BYPASS"
+    ],
+    "fullProfileBypassesBothTiers": true
+  },
+  "validation": {
+    "jsonBodiesMatchedSavedIndependentReference": 44,
+    "resolutionBodiesValidated": 5,
+    "sourceOnlyAllFourCachedIndexAndAuth": true,
+    "sourceOnlyR2GetsPerCall": 2,
+    "sourceOnlyTotalKvReads": 0,
+    "responseHitObjectReads": 0,
+    "responseHitTotalKvReads": 1,
+    "localAuthWasmChecksPassed": 20
+  },
+  "findings": [
+    "All forty-nine requests succeeded, including forty-four full Base64 JSON bodies that match the saved independent reference and five validated resolution bodies.",
+    "The concurrent burst used zero KV reads. Nine requests used MEMORY and seven used EDGE. All sixteen auth receipts were HIT/KV0.",
+    "The burst used four total R2 GETs, with five LEADER receipts, eight COALESCED receipts and three ordinary cache HIT receipts. Sharing and response/range cache reuse both contribute; this is not one global fill.",
+    "All four source-only requests used MEMORY/HIT/KV0 and exactly two native R2 GETs. Their index and auth cache conditions are proved separately from full cold.",
+    "All sixteen final JSON response hits used zero object GETs. The first auth observation after expiry made one KV read; the other fifteen used MEMORY.",
+    "The four fully cold measured requests still bypassed both auth tiers, made one KV read each, and used three R2 GETs each. The separate runtime warm request has the same bypass/read condition but is excluded from the measured cold group.",
+    "Warmup costs remain visible: four index/auth resolution reads, three ordinary JSON warmups and one later source-auth resolution warm request. Shared-cache expiry remains anchored to the original KV-read time for five seconds."
+  ],
+  "limits": [
+    "This is the final auth/cache/cost verification. It does not replace the earlier 109-call provider-latency comparison or the separate 26-call placement test.",
+    "Every phase has at least a 2.2-second quiet gap. A 5.2-second gap before source-auth warmup deliberately lets the earlier auth observation expire; it does not extend any authorization TTL.",
+    "The fresh deployment has a new response/archive cache generation. No root data smoke preceded this run. The first ordinary JSON burst follows only full-bypass requests and resolution-only warmups.",
+    "Burst JSON parsing and canonical validation ran after all network bodies completed. Per-request client CPU is not attributed during that concurrent phase.",
+    "Platform CPU and cost are collected separately for this exact version and these windows. Adaptive sampling and whole-second timestamp limits must remain visible.",
+    "Owner application-cache bypass does not prove a cold physical storage-service cache. No Helius, placement, retry, stack-profile or extra data request was sent.",
+    "No data/index object was copied or changed. No credential, API URL, signed locator token or block body is saved in these reports."
+  ],
+  "artifacts": {
+    "raw": "reports/get-block-native-fast-20261122/auth-edge-main.json",
+    "rawSha256": "9d0086f2e5e35ff2ca684a16048e432f3dda220e0143bacf9c1096330aec1f63",
+    "runner": "edgezilla/get-block/scripts/bench-native-auth-cache.mjs",
+    "localAuthTests": "reports/get-block-native-cpu-20261122/auth-edge-v7-wasm-tests.json",
+    "previousLatency": "reports/get-block-native-fast-20261122/summary.json",
+    "platformCpu": "reports/get-block-native-fast-20261122/platform-cpu-auth-edge.json",
+    "cost": "reports/get-block-native-fast-20261122/auth-edge-cost-estimate.json",
+    "costNotes": "reports/get-block-native-fast-20261122/auth-edge-cost-notes.md"
+  },
+  "finalCostEvidence": {
+    "state": "collected",
+    "coldSourceBurst": "unsampled and count matched",
+    "responseHits": "weighted: sampleInterval1.142857,14 samples for16requests",
+    "coreBurstUsdPerMillion": 1.0185925,
+    "startupIncludedBurstUsdPerMillion": 1.16478875,
+    "weightedResponseHitUsdPerMillion": 0.35451375,
+    "source": "read_metrics final receipt; no extra data calls"
+  }
+}

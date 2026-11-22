@@ -1,0 +1,129 @@
+ Downloading crates ...
+  Downloaded colorchoice v1.0.5
+  Downloaded is_terminal_polyfill v1.70.2
+  Downloaded anstyle-query v1.1.5
+  Downloaded anstream v1.0.0
+  Downloaded anstyle v1.0.14
+  Downloaded clap_derive v4.6.9
+  Downloaded hashlink v0.12.2
+  Downloaded hmac v0.13.0
+  Downloaded clap_lex v1.1.2
+  Downloaded anstyle-parse v1.0.0
+  Downloaded clap v4.6.9
+  Downloaded ctutils v0.4.3
+  Downloaded utf8parse v0.2.2
+  Downloaded clap_builder v4.6.7
+   Compiling of-car-reader v0.2.1 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/old-faithful/of-car-reader)
+   Compiling blockzilla-primitives v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/blockzilla-primitives)
+   Compiling blockzilla-log-parser v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/parser/blockzilla-log-parser)
+   Compiling blockzilla-bank-stream-v2 v0.1.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/blockzilla-bank-stream-v2)
+   Compiling blockzilla-registry v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/compact-v2/blockzilla-registry)
+   Compiling blockzilla-program-logs v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/parser/blockzilla-program-logs)
+   Compiling blockzilla-bank-client v0.1.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/blockzilla-bank-client)
+warning: constant `BLS_AFFINE_LEN` is never used
+  --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/old-faithful/of-car-reader/src/blockmarker.rs:20:7
+   |
+20 | const BLS_AFFINE_LEN: usize = 192;
+   |       ^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling blockzilla-compact v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/compact-v2/blockzilla-compact)
+warning: `of-car-reader` (lib) generated 1 warning
+   Compiling blockzilla-archive-v2 v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/compact-v2/blockzilla-archive-v2)
+   Compiling blockzilla-stream-decoder v0.1.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/hivezilla/stream-relay/decoder)
+   Compiling blockzilla-stream-sidecar v0.1.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/hivezilla/stream-sidecar)
+warning: value assigned to `needs_recovery` is never read
+   --> src/input.rs:317:21
+    |
+317 |                     needs_recovery = false;
+    |                     ^^^^^^^^^^^^^^^^^^^^^^ this value is reassigned later and never used
+...
+376 |                     needs_recovery = input.recovery.is_some();
+    |                     ----------------------------------------- `needs_recovery` is overwritten here before the previous value is read
+    |
+    = note: `#[warn(unused_assignments)]` (part of `#[warn(unused)]`) on by default
+
+warning: `blockzilla-stream-sidecar` (lib) generated 1 warning
+warning: `blockzilla-stream-sidecar` (lib test) generated 1 warning (1 duplicate)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 25.33s
+     Running unittests src/lib.rs (/Users/augustin/Developement/ferno/blockzilla-v1/hivezilla/stream-sidecar/target/debug/deps/blockzilla_stream_sidecar-973fded869029648)
+
+running 52 tests
+test input::recovery_tests::automatic_worker_recovery_commits_once_after_disconnect_and_restart ... ignored, requires BLOCKZILLA_SIDECAR_FRAME from a retained real native Bank
+test config::webhook_tests::signing_key_requires_a_private_regular_file ... ok
+test config::webhook_tests::optional_signing_path_keeps_legacy_target_json_readable ... ok
+test input::tests::recovery_keeps_a_fixed_exact_target_and_rejects_missing_history ... ok
+test input::tests::wrong_or_missing_bootstrap_dependencies_never_become_ready ... ok
+test input::tests::exact_bootstrap_proves_control_and_payload_without_applying_future_cursor ... ok
+test config::recovery_key_tests::recovery_key_accepts_only_a_private_bounded_regular_file ... ok
+test payload_cache::tests::global_charge_survives_eviction_until_the_last_arc_drops ... ok
+test payload_cache::tests::cancelled_waiting_acquire_leaves_no_phantom_permit ... ok
+test projection::tests::actual_retained_frame_full_view_is_complete_and_byte_exact ... ignored, requires a retained public Foundation Compact V2 frame
+test payload_cache::tests::front_completion_between_state_check_and_wait_cannot_lose_its_wake ... ok
+test projection::observation_tests::blockhash_webhook_is_native_history_not_current_readiness ... ok
+test payload_cache::tests::cancelled_preview_keeps_the_running_decoder_charge ... ok
+test consume::beam_tests::raw_readiness_requires_native_proof_fresh_receipt_and_expiry ... ok
+test payload_cache::tests::late_duplicate_decoder_cannot_repin_a_committed_or_evicted_frame ... ok
+test payload_cache::tests::earlier_wanted_frame_can_reclaim_and_reload_a_completed_channel_result ... ok
+test server::tests::block_projection_query_rejects_unknown_values_filters_and_other_routes ... ok
+test server::tests::compact_only_mode_has_explicit_routes_and_wire_only_storage_status ... ok
+test server::tests::bearer_scope_and_query_credentials_are_checked_over_http ... ok
+test server::tests::expired_changed_and_conflicting_cursors_fail_explicitly ... ok
+test server::tests::busy_renderer_cannot_hold_the_input_commit_or_database_lock ... ok
+test server::tests::full_blocks_replay_exact_frames_and_resume_with_control_identity ... ok
+test server::tests::historical_blockhashes_are_separate_from_current_signing_readiness ... ok
+test server::tests::compact_projection_keeps_frame_controls_and_resume_without_expanded_blocks ... ok
+test server::tests::signature_filters_keep_failure_fields_and_unfiltered_invalidations ... ok
+test store::beam_store_tests::ahead_heads_cannot_clear_invalidation_or_apply_uncommitted_selection ... ok
+test payload_cache::tests::reversed_completion_has_bounded_preview_and_reconnect_reuses_it ... ok
+test server::tests::idle_sse_is_bounded_and_does_not_hold_ingestion_commit ... ok
+test store::beam_store_tests::initial_join_requires_one_exact_head_snapshot_and_has_no_ack_state ... ok
+test store::beam_store_tests::beam_restart_requires_exact_source_runtime_producer_and_input_policy ... ok
+test store::compact_store_tests::retained_native_compact_storage_migration_is_exact_and_bounded ... ignored, requires BLOCKZILLA_SIDECAR_FRAME from a retained real native Bank
+test store::beam_store_tests::cursor_admission_does_not_decode_or_hash_stored_payload ... ok
+test store::bootstrap_tests::earlier_explicit_join_keeps_head_dependencies_as_proofs_only ... ok
+test store::beam_store_tests::raw_cursor_projection_and_outbox_roll_back_together_then_retry_exactly_once ... ok
+test store::tests::configured_webhook_control_still_materializes_projection_and_queues_full_results ... ok
+test store::tests::cursor_outbox_and_projection_roll_back_together ... ok
+test store::compact_store_tests::compact_mode_is_explicit_and_controls_remain_atomic_without_json ... ok
+test store::tests::projections_keep_failed_outcomes_and_exact_canonical_frame ... ok
+test store::tests::evicted_payload_for_a_late_control_is_reloaded_from_verified_durable_bytes ... ok
+test store::tests::independent_ack_frontiers_and_sparse_coverage_share_output_order ... ok
+test uds::tests::cleanup_preserves_a_replaced_inode ... ok
+test uds::tests::stale_socket_is_recovered_but_active_listener_and_symlink_are_not ... ok
+test store::tests::retry_exhaustion_and_source_generation_changes_are_explicit ... ok
+test webhook::tests::signature_binds_timestamp_id_and_exact_body ... ok
+test store::compact_store_tests::compact_recovery_restarts_at_commit_and_keeps_each_native_event_once ... ok
+test store::tests::subscription_quota_pauses_only_that_destination_and_persists_gap ... ok
+test store::tests::invalidation_preserves_descendant_undo_and_root_rejection ... ok
+test store::tests::payload_accounting_uses_covering_index_after_existing_database_reopen ... ok
+test webhook::tests::unsigned_target_is_rejected_before_any_delivery ... ok
+test store::beam_store_tests::native_signing_uses_native_height_age_clock_and_finality ... ok
+test webhook::tests::local_receiver_retry_keeps_id_and_does_not_hold_input_commit ... ok
+test store::beam_store_tests::local_root_rollovers_bound_chain_and_replay_without_ack_pressure ... ok
+
+test result: ok. 49 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out; finished in 11.21s
+
+     Running unittests src/main.rs (/Users/augustin/Developement/ferno/blockzilla-v1/hivezilla/stream-sidecar/target/debug/deps/blockzilla_stream_sidecar-0ec03c5803a955a5)
+
+running 3 tests
+test input_args_tests::exact_bootstrap_file_cannot_be_combined_with_head_join ... ok
+test input_args_tests::raw_ssh_needs_no_origin_token_and_rejects_mixed_transport ... ok
+test input_args_tests::recovery_requires_raw_input_and_a_key_file ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/process.rs (/Users/augustin/Developement/ferno/blockzilla-v1/hivezilla/stream-sidecar/target/debug/deps/process-9df19b0755df3415)
+
+running 2 tests
+test sigterm_and_crash_restart_reuse_exact_database_and_owned_socket ... ok
+test fatal_intake_or_coverage_failure_exits_nonzero ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.00s
+
+   Doc-tests blockzilla_stream_sidecar
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

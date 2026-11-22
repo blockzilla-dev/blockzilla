@@ -1,0 +1,77 @@
+{
+  "status": "PASS",
+  "startedAt": "2026-11-22T08:32:38.981Z",
+  "wasmSha256": "f5b9675e07138c899fcde1752ab7ceafc67ca4b7bc66a8e7da044f7a91f0b973",
+  "checks": [
+    "signed JSON locator preserves exact Base64 JSON and three-read cold accounting",
+    "bad MAC fails before all storage",
+    "wrong slot fails before all storage",
+    "valid altered stored locator cannot match the signed hint or emit a successful block",
+    "hinted source reads have the required index-completion order",
+    "plain source reads have the required index-completion order",
+    "concurrent identical misses share one three-read fill; invalid auth does not join",
+    "failed body fill releases waiters without a false HIT and permits a new leader",
+    "failed cache fill releases waiters without a false HIT and permits a new leader",
+    "different formats and slots use separate response fills"
+  ],
+  "cases": [
+    {
+      "name": "signed JSON locator preserves exact Base64 JSON and three-read cold accounting"
+    },
+    {
+      "name": "bad MAC fails before all storage"
+    },
+    {
+      "name": "wrong slot fails before all storage"
+    },
+    {
+      "name": "valid altered stored locator cannot match the signed hint or emit a successful block"
+    },
+    {
+      "name": "hinted source reads have the required index-completion order",
+      "resolutionCompleteSequence": 6,
+      "sourceStartSequences": [
+        2,
+        3
+      ]
+    },
+    {
+      "name": "plain source reads have the required index-completion order",
+      "resolutionCompleteSequence": 2,
+      "sourceStartSequences": [
+        3,
+        4
+      ]
+    },
+    {
+      "name": "concurrent identical misses share one three-read fill; invalid auth does not join",
+      "fillStatuses": [
+        "LEADER",
+        "COALESCED",
+        "COALESCED",
+        "COALESCED"
+      ]
+    },
+    {
+      "name": "failed body fill releases waiters without a false HIT and permits a new leader"
+    },
+    {
+      "name": "failed cache fill releases waiters without a false HIT and permits a new leader"
+    },
+    {
+      "name": "different formats and slots use separate response fills"
+    }
+  ],
+  "scope": "Actual release WASM in local Miniflare; exact saved source windows and original full-object range/ETag geometry; no external calls.",
+  "completedAt": "2026-11-22T08:32:43.962Z",
+  "fixture": {
+    "slots": [
+      470555971,
+      470663944,
+      470771932,
+      470879999
+    ],
+    "sourceBytes": 62977283190,
+    "localWindowBytes": 701292
+  }
+}

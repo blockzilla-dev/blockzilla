@@ -1,0 +1,80 @@
+    Blocking waiting for file lock on package cache
+ Downloading crates ...
+  Downloaded unicode-ident v1.0.26
+  Downloaded libc v0.2.190
+    Blocking waiting for file lock on package cache
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.26
+   Compiling serde_core v1.0.229
+   Compiling libc v0.2.190
+   Compiling const-oid v0.10.2
+   Compiling serde_json v1.0.151
+   Compiling memchr v2.8.3
+   Compiling itoa v1.0.18
+   Compiling bytes v1.12.1
+   Compiling digest v0.11.3
+   Compiling syn v3.0.6
+   Compiling cpufeatures v0.3.1
+   Compiling sha2 v0.11.0
+   Compiling serde_derive v1.0.229
+   Compiling serde v1.0.229
+   Compiling blockzilla-bank-stream-v2 v0.1.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/blockzilla-bank-stream-v2)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 17.94s
+     Running unittests src/lib.rs (/Users/augustin/Developement/ferno/blockzilla-v1/crates/blockzilla-bank-client/target/debug/deps/blockzilla_bank_stream_v2-06e928a32dd4e974)
+
+running 28 tests
+test finalized::tests::only_canonical_bounded_block_ids_parse ... ok
+test client::delayed_health_tests::delayed_live_health_does_not_abort_replay_or_restore_readiness ... ok
+test client::tests::processed_never_confirms_and_duplicate_is_idempotent ... ok
+test tests::detached_confirmation_preserves_seeded_head_and_rejects_post_capture_gaps ... ok
+test client::tests::exact_dependency_and_old_health_do_not_renew_monotonic_age ... ok
+test tests::frame_digest_is_not_a_reserialized_marker_digest ... ok
+test tests::controls_require_the_exact_bank_payload_and_native_expiry ... ok
+test tests::invalidation_removes_descendants_and_rooted_invalidation_fails ... ok
+test tests::head_source_age_and_cursor_are_strict ... ok
+test tests::detached_confirmed_rejects_invalid_ambiguous_wrong_source_and_boundary_proofs ... ok
+test tests::payload_cursor_bootstrap_is_unready_until_announced_head_is_replayed ... ok
+test tests::old_root_still_rejects_invalidated_ambiguous_and_wrong_source_dependencies ... ok
+test tests::boundary_root_requires_the_selected_parent_hash_and_height ... ok
+test tests::processed_capture_old_root_requires_valid_consistent_boundary_children ... ok
+test tests::processed_capture_detached_confirmation_is_not_an_ancestry_anchor ... ok
+test tests::processed_is_not_confirmation_and_late_root_cannot_renew_head ... ok
+test tests::processed_capture_parent_root_requires_exact_hash_and_native_height ... ok
+test tests::root_path_from_boundary_uses_the_exact_excluded_parent_without_prefix_claim ... ok
+test tests::processed_capture_replays_old_confirmed_after_old_root_without_head_or_coverage ... ok
+test tests::processed_capture_replays_children_and_old_roots_before_confirmation ... ok
+test tests::root_path_from_boundary_rejects_missing_ambiguous_invalidated_or_bad_height_interior ... ok
+test tests::rooted_path_does_not_stop_at_an_intermediate_root_or_capture_boundary ... ok
+test tests::rooted_path_rejects_missing_invalidated_or_wrong_height_ancestry ... ok
+test tests::strict_version_fields_and_counter_limits ... ok
+test tests::seeded_head_admits_detached_old_root_without_renewal_or_prefix_claim ... ok
+test tests::rooted_path_preserves_same_slot_banks_and_rejects_ambiguous_parents ... ok
+test tests::rooted_path_is_complete_and_height_ordered_across_skipped_slots ... ok
+test tests::detached_old_root_does_not_move_boundary_at_prune_threshold ... ok
+
+test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.08s
+
+     Running tests/consensus.rs (/Users/augustin/Developement/ferno/blockzilla-v1/crates/blockzilla-bank-client/target/debug/deps/consensus-173314cd40665a9e)
+
+running 12 tests
+test actual_captured_native_footer_matches_pinned_public_provenance ... ok
+test exact_footer_and_portable_fact_round_trip_without_duplicate_storage ... ok
+test fixed_schema_fixture_has_stable_digest ... ok
+test maximum_user_agent_is_bytes_not_utf8 ... ok
+test independently_wincode_encoded_native_schema_fixture ... ok
+test json_preserves_nanos_and_unknown_is_never_tower_or_empty ... ok
+test every_native_truncation_and_trailing_byte_is_rejected ... ok
+test option_tags_and_fixed_vs_short_bitmap_lengths_are_not_interchangeable ... ok
+test verified_official_footer_grammar_revision_is_also_explicitly_admitted ... ok
+test source_bank_parent_payload_and_captured_event_cannot_be_rebound ... ok
+test all_optional_native_certificate_positions_and_fast_finalization ... ok
+test portable_header_lengths_versions_and_json_are_strict ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+   Doc-tests blockzilla_bank_stream_v2
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

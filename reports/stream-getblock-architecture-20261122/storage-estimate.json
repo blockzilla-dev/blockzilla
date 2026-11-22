@@ -1,0 +1,692 @@
+{
+  "schema": "blockzilla-stream-getblock-index-storage-v1",
+  "createdAtUtc": "2026-11-22T11:41:52.784594+00:00",
+  "status": "MEASURED_EXISTING_OBJECT_SIZES_WITH_SEPARATE_DERIVED_PROJECTIONS",
+  "sources": {
+    "currentMetadata": "reports/stream-getblock-architecture-20261122/storage-current-object-metadata.json",
+    "historicalInventory": "hivezilla/deploy/foundation-upload/evidence/scope-20261005.json",
+    "fourBlockAccessSample": "reports/get-block-one-read-20261122/resolution-service-shape.json",
+    "savedLastRows": "reports/stream-getblock-architecture-20261122/storage-current-object-metadata.json#savedLastRowEvidence",
+    "formatEvidence": [
+      "hivezilla/deploy/foundation-upload/archive_upload.py:184",
+      "crates/compact-v2/blockzilla-archive-v2/src/v2/archive.rs:49",
+      "edgezilla/get-block/src/slot_index.rs:11",
+      "docs/design/get-transaction-signature-index.md:95"
+    ]
+  },
+  "epochs": [
+    {
+      "epoch": 1089,
+      "observedBlockCount": 431811,
+      "observedTransactionCount": 156439236,
+      "observedSignatureCount": 168740281,
+      "measuredSourceFiles": {
+        "archive-v2-blocks.index": {
+          "bytes": 22454208,
+          "decimalGB": 0.022454208,
+          "GiB": 0.020912110805511475,
+          "decimalTB": 2.2454208e-05
+        },
+        "archive-v2-blocks.zstd": {
+          "bytes": 52177905206,
+          "decimalGB": 52.177905206,
+          "GiB": 48.5944610144943,
+          "decimalTB": 0.052177905206
+        },
+        "archive-v2-meta.wincode": {
+          "bytes": 64,
+          "decimalGB": 6.4e-08,
+          "GiB": 5.960464477539063e-08,
+          "decimalTB": 6.4e-11
+        },
+        "block-time-gaps.bin": {
+          "bytes": 2160,
+          "decimalGB": 2.16e-06,
+          "GiB": 2.0116567611694336e-06,
+          "decimalTB": 2.16e-09
+        },
+        "blockhash_index_v3.bin": {
+          "bytes": 20726948,
+          "decimalGB": 0.020726948,
+          "GiB": 0.019303474575281143,
+          "decimalTB": 2.0726948e-05
+        },
+        "blockhash_registry.bin": {
+          "bytes": 13817952,
+          "decimalGB": 0.013817952,
+          "GiB": 0.0128689706325531,
+          "decimalTB": 1.3817952e-05
+        },
+        "blockzilla-car-import-receipt.json": {
+          "bytes": 1819,
+          "decimalGB": 1.819e-06,
+          "GiB": 1.6940757632255554e-06,
+          "decimalTB": 1.819e-09
+        },
+        "car-slot-meta.v1.bin": {
+          "bytes": 294804724,
+          "decimalGB": 0.294804724,
+          "GiB": 0.27455829456448555,
+          "decimalTB": 0.000294804724
+        },
+        "prev_blockhash_tail.bin": {
+          "bytes": 12000,
+          "decimalGB": 1.2e-05,
+          "GiB": 1.1175870895385742e-05,
+          "decimalTB": 1.2e-08
+        },
+        "registry-first-seen.manifest": {
+          "bytes": 756,
+          "decimalGB": 7.56e-07,
+          "GiB": 7.040798664093018e-07,
+          "decimalTB": 7.56e-10
+        },
+        "registry-hot-seed.bin": {
+          "bytes": 2097152,
+          "decimalGB": 0.002097152,
+          "GiB": 0.001953125,
+          "decimalTB": 2.097152e-06
+        },
+        "registry.bin": {
+          "bytes": 993910560,
+          "decimalGB": 0.99391056,
+          "GiB": 0.925651341676712,
+          "decimalTB": 0.00099391056
+        },
+        "registry.mphf": {
+          "bytes": 381097118,
+          "decimalGB": 0.381097118,
+          "GiB": 0.3549243491142988,
+          "decimalTB": 0.000381097118
+        },
+        "registry_counts.bin": {
+          "bytes": 32195486,
+          "decimalGB": 0.032195486,
+          "GiB": 0.029984382912516594,
+          "decimalTB": 3.2195486e-05
+        },
+        "signatures.bin": {
+          "bytes": 10799377984,
+          "decimalGB": 10.799377984,
+          "GiB": 10.057704508304596,
+          "decimalTB": 0.010799377984
+        },
+        "vote_hash_registry.bin": {
+          "bytes": 28067715,
+          "decimalGB": 0.028067715,
+          "GiB": 0.026140096597373486,
+          "decimalTB": 2.8067715e-05
+        }
+      },
+      "minimalExistingResolutionCoreFiles": [
+        "registry.bin",
+        "archive-v2-blocks.index",
+        "blockhash_registry.bin",
+        "vote_hash_registry.bin",
+        "prev_blockhash_tail.bin",
+        "archive-v2-meta.wincode",
+        "registry-first-seen.manifest"
+      ],
+      "minimalExistingResolutionCore": {
+        "bytes": 1058263255,
+        "decimalGB": 1.058263255,
+        "GiB": 0.9855844592675567,
+        "decimalTB": 0.001058263255
+      },
+      "allExistingLookupAndControlSidecars": {
+        "bytes": 1494383938,
+        "decimalGB": 1.494383938,
+        "GiB": 1.3917534966021776,
+        "decimalTB": 0.001494383938
+      },
+      "carSlotMetaPreservationPayload": {
+        "bytes": 294804724,
+        "decimalGB": 0.294804724,
+        "GiB": 0.27455829456448555,
+        "decimalTB": 0.000294804724
+      },
+      "localSignaturePayload": {
+        "bytes": 10799377984,
+        "decimalGB": 10.799377984,
+        "GiB": 10.057704508304596,
+        "decimalTB": 0.010799377984
+      },
+      "minimalCorePlusLocalSignatures": {
+        "bytes": 11857641239,
+        "decimalGB": 11.857641239,
+        "GiB": 11.043288967572153,
+        "decimalTB": 0.011857641239
+      },
+      "allLookupControlPlusSignatures": {
+        "bytes": 12293761922,
+        "decimalGB": 12.293761922,
+        "GiB": 11.449458004906774,
+        "decimalTB": 0.012293761922
+      },
+      "proposedCompactSlotResolution": {
+        "status": "FOUR_BLOCK_PROJECTION_NOT_BUILT",
+        "basisBlocks": 431811,
+        "assumedMeanRawIdBytesPerBlock": 8781,
+        "assumedMeanSignatureCountBytesPerBlock": 380,
+        "assumedFamilyCountBytesPerBlock": 12,
+        "assumedOffsetBytesPerBlock": 8,
+        "parts": {
+          "rawUsedIds": {
+            "bytes": 3791732391,
+            "decimalGB": 3.791732391,
+            "GiB": 3.5313259726390243,
+            "decimalTB": 0.003791732391
+          },
+          "signatureCounts": {
+            "bytes": 164088180,
+            "decimalGB": 0.16408818,
+            "GiB": 0.15281902626156807,
+            "decimalTB": 0.00016408818
+          },
+          "threeFamilyCounts": {
+            "bytes": 5181732,
+            "decimalGB": 0.005181732,
+            "GiB": 0.004825863987207413,
+            "decimalTB": 5.181732e-06
+          },
+          "recordOffsets": {
+            "bytes": 3454496,
+            "decimalGB": 0.003454496,
+            "GiB": 0.003217250108718872,
+            "decimalTB": 3.454496e-06
+          },
+          "usedIdBlobHeader": {
+            "bytes": 64,
+            "decimalGB": 6.4e-08,
+            "GiB": 5.960464477539063e-08,
+            "decimalTB": 6.4e-11
+          },
+          "denseSlotTable": {
+            "bytes": 55296128,
+            "decimalGB": 0.055296128,
+            "GiB": 0.05149853229522705,
+            "decimalTB": 5.5296128e-05
+          }
+        },
+        "total": {
+          "bytes": 4019752991,
+          "decimalGB": 4.019752991,
+          "GiB": 3.7436867048963904,
+          "decimalTB": 0.004019752991
+        },
+        "limits": [
+          "Raw uncompressed ID lists from four modern blocks only.",
+          "All four samples have no vote IDs; older epochs can differ.",
+          "The offset/family/header format is a size scenario, not implemented format.",
+          "Dense table size uses the existing implemented 128-byte row format.",
+          "Small generation/ETag descriptors and filesystem allocation overhead are extra."
+        ]
+      },
+      "minimalCorePlusProposedCompactResolution": {
+        "bytes": 5078016246,
+        "decimalGB": 5.078016246,
+        "GiB": 4.729271164163947,
+        "decimalTB": 0.005078016246
+      },
+      "minimalOneBucketGetHostWithLocalSignatures": {
+        "bytes": 15877394230,
+        "decimalGB": 15.87739423,
+        "GiB": 14.786975672468543,
+        "decimalTB": 0.01587739423
+      },
+      "allLookupControlPlusCompactResolutionAndSignatures": {
+        "bytes": 16313514913,
+        "decimalGB": 16.313514913,
+        "GiB": 15.193144709803164,
+        "decimalTB": 0.016313514913
+      },
+      "preResolvedPerBlockAlternative": {
+        "status": "FOUR_BLOCK_PROJECTION_NOT_BUILT",
+        "meanFullResolutionBytesPerBlock": 78779.25,
+        "resolutionBytes": {
+          "bytes": 34017746721.75,
+          "decimalGB": 34.01774672175,
+          "GiB": 31.681495459517464,
+          "decimalTB": 0.03401774672175
+        },
+        "resolutionPlusLocalSignatureBytes": {
+          "bytes": 44817124705.75,
+          "decimalGB": 44.81712470575,
+          "GiB": 41.73919996782206,
+          "decimalTB": 0.04481712470575
+        },
+        "note": "Full per-block resolution already carries locator/parent/hash/signature counts; do not add compact-ID/dense tables to this alternative."
+      },
+      "optionalGetTransactionIndex": {
+        "status": "COUNT_AND_SAMPLE_BASED_PROJECTION_NOT_BUILT_FOR_EPOCH",
+        "assumedDistinctFirstSignatures": 156439236,
+        "fiveByteSlotTagRows": {
+          "bytes": 782196180,
+          "decimalGB": 0.78219618,
+          "GiB": 0.7284769602119923,
+          "decimalTB": 0.00078219618
+        },
+        "serializedMphfAtOneMillionKeySample": {
+          "bytes": 53174947.830288,
+          "decimalGB": 0.053174947830288,
+          "GiB": 0.049523029318347574,
+          "decimalTB": 5.3174947830288e-05
+        },
+        "residentMphfAtOneMillionKeySample": {
+          "bytes": 54872626.419360004,
+          "decimalGB": 0.054872626419360006,
+          "GiB": 0.051104115712791685,
+          "decimalTB": 5.4872626419360007e-05
+        },
+        "totalSerializedAtOneMillionKeySample": {
+          "bytes": 835371127.830288,
+          "decimalGB": 0.8353711278302881,
+          "GiB": 0.7779999895303399,
+          "decimalTB": 0.000835371127830288
+        },
+        "totalSerializedAtSmallSampleFivePointFiveThreeBytes": {
+          "bytes": 865108975.08,
+          "decimalGB": 0.8651089750800001,
+          "GiB": 0.8056955179944635,
+          "decimalTB": 0.00086510897508
+        },
+        "rawBuildSpool36BytesPerTransaction": {
+          "bytes": 5631812496,
+          "decimalGB": 5.631812496,
+          "GiB": 5.245034113526344,
+          "decimalTB": 0.005631812496
+        },
+        "note": "Source transaction counts do not prove distinct first-signature cardinality. Separate from registry.mphf, which maps account pubkeys to registry IDs. Build memory and temporary overlap are extra."
+      },
+      "sourceCoverageLimits": {
+        "canonical_publication": false,
+        "archive_coverage_verified_by_backup": false,
+        "full_remote_readback": false,
+        "semantic_schema": "blockzilla-car-slot-meta-v1"
+      }
+    },
+    {
+      "epoch": 1090,
+      "observedBlockCount": 431639,
+      "observedTransactionCount": 178122453,
+      "observedSignatureCount": 191268904,
+      "measuredSourceFiles": {
+        "archive-v2-blocks.index": {
+          "bytes": 22445264,
+          "decimalGB": 0.022445264,
+          "GiB": 0.020903781056404114,
+          "decimalTB": 2.2445264e-05
+        },
+        "archive-v2-blocks.zstd": {
+          "bytes": 63486272838,
+          "decimalGB": 63.486272838,
+          "GiB": 59.12619907222688,
+          "decimalTB": 0.063486272838
+        },
+        "archive-v2-meta.wincode": {
+          "bytes": 64,
+          "decimalGB": 6.4e-08,
+          "GiB": 5.960464477539063e-08,
+          "decimalTB": 6.4e-11
+        },
+        "block-time-gaps.bin": {
+          "bytes": 3840,
+          "decimalGB": 3.84e-06,
+          "GiB": 3.5762786865234375e-06,
+          "decimalTB": 3.84e-09
+        },
+        "blockhash_index_v3.bin": {
+          "bytes": 20718692,
+          "decimalGB": 0.020718692,
+          "GiB": 0.019295785576105118,
+          "decimalTB": 2.0718692e-05
+        },
+        "blockhash_registry.bin": {
+          "bytes": 13812448,
+          "decimalGB": 0.013812448,
+          "GiB": 0.012863844633102417,
+          "decimalTB": 1.3812448e-05
+        },
+        "blockzilla-car-import-receipt.json": {
+          "bytes": 1819,
+          "decimalGB": 1.819e-06,
+          "GiB": 1.6940757632255554e-06,
+          "decimalTB": 1.819e-09
+        },
+        "car-slot-meta.v1.bin": {
+          "bytes": 303022848,
+          "decimalGB": 0.303022848,
+          "GiB": 0.2822120189666748,
+          "decimalTB": 0.000303022848
+        },
+        "prev_blockhash_tail.bin": {
+          "bytes": 12000,
+          "decimalGB": 1.2e-05,
+          "GiB": 1.1175870895385742e-05,
+          "decimalTB": 1.2e-08
+        },
+        "registry-first-seen.manifest": {
+          "bytes": 756,
+          "decimalGB": 7.56e-07,
+          "GiB": 7.040798664093018e-07,
+          "decimalTB": 7.56e-10
+        },
+        "registry-hot-seed.bin": {
+          "bytes": 2097152,
+          "decimalGB": 0.002097152,
+          "GiB": 0.001953125,
+          "decimalTB": 2.097152e-06
+        },
+        "registry.bin": {
+          "bytes": 1046858176,
+          "decimalGB": 1.046858176,
+          "GiB": 0.9749626517295837,
+          "decimalTB": 0.001046858176
+        },
+        "registry.mphf": {
+          "bytes": 401398386,
+          "decimalGB": 0.401398386,
+          "GiB": 0.37383137829601765,
+          "decimalTB": 0.000401398386
+        },
+        "registry_counts.bin": {
+          "bytes": 33990054,
+          "decimalGB": 0.033990054,
+          "GiB": 0.031655704602599144,
+          "decimalTB": 3.3990054e-05
+        },
+        "signatures.bin": {
+          "bytes": 12241209856,
+          "decimalGB": 12.241209856,
+          "GiB": 11.400515079498291,
+          "decimalTB": 0.012241209856
+        },
+        "vote_hash_registry.bin": {
+          "bytes": 28056535,
+          "decimalGB": 0.028056535,
+          "GiB": 0.026129684410989285,
+          "decimalTB": 2.8056535e-05
+        }
+      },
+      "minimalExistingResolutionCoreFiles": [
+        "registry.bin",
+        "archive-v2-blocks.index",
+        "blockhash_registry.bin",
+        "vote_hash_registry.bin",
+        "prev_blockhash_tail.bin",
+        "archive-v2-meta.wincode",
+        "registry-first-seen.manifest"
+      ],
+      "minimalExistingResolutionCore": {
+        "bytes": 1111185243,
+        "decimalGB": 1.111185243,
+        "GiB": 1.0348719013854861,
+        "decimalTB": 0.001111185243
+      },
+      "allExistingLookupAndControlSidecars": {
+        "bytes": 1569395186,
+        "decimalGB": 1.569395186,
+        "GiB": 1.4616131652146578,
+        "decimalTB": 0.001569395186
+      },
+      "carSlotMetaPreservationPayload": {
+        "bytes": 303022848,
+        "decimalGB": 0.303022848,
+        "GiB": 0.2822120189666748,
+        "decimalTB": 0.000303022848
+      },
+      "localSignaturePayload": {
+        "bytes": 12241209856,
+        "decimalGB": 12.241209856,
+        "GiB": 11.400515079498291,
+        "decimalTB": 0.012241209856
+      },
+      "minimalCorePlusLocalSignatures": {
+        "bytes": 13352395099,
+        "decimalGB": 13.352395099,
+        "GiB": 12.435386980883777,
+        "decimalTB": 0.013352395099
+      },
+      "allLookupControlPlusSignatures": {
+        "bytes": 13810605042,
+        "decimalGB": 13.810605042,
+        "GiB": 12.862128244712949,
+        "decimalTB": 0.013810605042
+      },
+      "proposedCompactSlotResolution": {
+        "status": "FOUR_BLOCK_PROJECTION_NOT_BUILT",
+        "basisBlocks": 431639,
+        "assumedMeanRawIdBytesPerBlock": 8781,
+        "assumedMeanSignatureCountBytesPerBlock": 380,
+        "assumedFamilyCountBytesPerBlock": 12,
+        "assumedOffsetBytesPerBlock": 8,
+        "parts": {
+          "rawUsedIds": {
+            "bytes": 3790222059,
+            "decimalGB": 3.790222059,
+            "GiB": 3.52991936635226,
+            "decimalTB": 0.003790222059
+          },
+          "signatureCounts": {
+            "bytes": 164022820,
+            "decimalGB": 0.16402282,
+            "GiB": 0.1527581550180912,
+            "decimalTB": 0.00016402282
+          },
+          "threeFamilyCounts": {
+            "bytes": 5179668,
+            "decimalGB": 0.005179668,
+            "GiB": 0.004823941737413406,
+            "decimalTB": 5.179668e-06
+          },
+          "recordOffsets": {
+            "bytes": 3453120,
+            "decimalGB": 0.00345312,
+            "GiB": 0.003215968608856201,
+            "decimalTB": 3.45312e-06
+          },
+          "usedIdBlobHeader": {
+            "bytes": 64,
+            "decimalGB": 6.4e-08,
+            "GiB": 5.960464477539063e-08,
+            "decimalTB": 6.4e-11
+          },
+          "denseSlotTable": {
+            "bytes": 55296128,
+            "decimalGB": 0.055296128,
+            "GiB": 0.05149853229522705,
+            "decimalTB": 5.5296128e-05
+          }
+        },
+        "total": {
+          "bytes": 4018173859,
+          "decimalGB": 4.018173859,
+          "GiB": 3.7422160236164927,
+          "decimalTB": 0.004018173859
+        },
+        "limits": [
+          "Raw uncompressed ID lists from four modern blocks only.",
+          "All four samples have no vote IDs; older epochs can differ.",
+          "The offset/family/header format is a size scenario, not implemented format.",
+          "Dense table size uses the existing implemented 128-byte row format.",
+          "Small generation/ETag descriptors and filesystem allocation overhead are extra."
+        ]
+      },
+      "minimalCorePlusProposedCompactResolution": {
+        "bytes": 5129359102,
+        "decimalGB": 5.129359102,
+        "GiB": 4.777087925001979,
+        "decimalTB": 0.005129359102
+      },
+      "minimalOneBucketGetHostWithLocalSignatures": {
+        "bytes": 17370568958,
+        "decimalGB": 17.370568958,
+        "GiB": 16.17760300450027,
+        "decimalTB": 0.017370568958
+      },
+      "allLookupControlPlusCompactResolutionAndSignatures": {
+        "bytes": 17828778901,
+        "decimalGB": 17.828778901,
+        "GiB": 16.60434426832944,
+        "decimalTB": 0.017828778901
+      },
+      "preResolvedPerBlockAlternative": {
+        "status": "FOUR_BLOCK_PROJECTION_NOT_BUILT",
+        "meanFullResolutionBytesPerBlock": 78779.25,
+        "resolutionBytes": {
+          "bytes": 34004196690.75,
+          "decimalGB": 34.00419669075,
+          "GiB": 31.668876009760424,
+          "decimalTB": 0.03400419669075
+        },
+        "resolutionPlusLocalSignatureBytes": {
+          "bytes": 46245406546.75,
+          "decimalGB": 46.24540654675,
+          "GiB": 43.069391089258716,
+          "decimalTB": 0.04624540654675
+        },
+        "note": "Full per-block resolution already carries locator/parent/hash/signature counts; do not add compact-ID/dense tables to this alternative."
+      },
+      "optionalGetTransactionIndex": {
+        "status": "COUNT_AND_SAMPLE_BASED_PROJECTION_NOT_BUILT_FOR_EPOCH",
+        "assumedDistinctFirstSignatures": 178122453,
+        "fiveByteSlotTagRows": {
+          "bytes": 890612265,
+          "decimalGB": 0.890612265,
+          "GiB": 0.8294473076239228,
+          "decimalTB": 0.000890612265
+        },
+        "serializedMphfAtOneMillionKeySample": {
+          "bytes": 60545246.754324,
+          "decimalGB": 0.060545246754323996,
+          "GiB": 0.05638715508796647,
+          "decimalTB": 6.0545246754323995e-05
+        },
+        "residentMphfAtOneMillionKeySample": {
+          "bytes": 62478231.61428,
+          "decimalGB": 0.06247823161428,
+          "GiB": 0.058187387524433434,
+          "decimalTB": 6.247823161428e-05
+        },
+        "totalSerializedAtOneMillionKeySample": {
+          "bytes": 951157511.7543241,
+          "decimalGB": 0.9511575117543241,
+          "GiB": 0.8858344627118894,
+          "decimalTB": 0.000951157511754324
+        },
+        "totalSerializedAtSmallSampleFivePointFiveThreeBytes": {
+          "bytes": 985017165.09,
+          "decimalGB": 0.98501716509,
+          "GiB": 0.9173687222320587,
+          "decimalTB": 0.00098501716509
+        },
+        "rawBuildSpool36BytesPerTransaction": {
+          "bytes": 6412408308,
+          "decimalGB": 6.412408308,
+          "GiB": 5.972020614892244,
+          "decimalTB": 0.006412408308
+        },
+        "note": "Source transaction counts do not prove distinct first-signature cardinality. Separate from registry.mphf, which maps account pubkeys to registry IDs. Build memory and temporary overlap are extra."
+      },
+      "sourceCoverageLimits": {
+        "canonical_publication": false,
+        "archive_coverage_verified_by_backup": false,
+        "full_remote_readback": false,
+        "semantic_schema": "blockzilla-car-slot-meta-v1"
+      }
+    }
+  ],
+  "historical0Through1047": {
+    "status": "DATED_VALIDATED_SOURCE_INVENTORY_NOT_A_NEW_FULL_READBACK",
+    "inventoryRecordedAt": "2026-10-05 04:55:12 UTC",
+    "epochs": 1048,
+    "existingMinimalResolutionCore": {
+      "bytes": 786946837384,
+      "decimalGB": 786.946837384,
+      "GiB": 732.9013546779752,
+      "decimalTB": 0.786946837384
+    },
+    "existingMinimalResolutionCoreMeanPerEpoch": {
+      "bytes": 750903470.7862595,
+      "decimalGB": 0.7509034707862595,
+      "GiB": 0.699333353700358,
+      "decimalTB": 0.0007509034707862595
+    },
+    "allExistingLookupAndControlSidecars": {
+      "bytes": 1098022655545,
+      "decimalGB": 1098.022655545,
+      "GiB": 1022.6132865482941,
+      "decimalTB": 1.098022655545
+    },
+    "allExistingLookupAndControlMeanPerEpoch": {
+      "bytes": 1047731541.5505725,
+      "decimalGB": 1.0477315415505726,
+      "GiB": 0.9757760367827234,
+      "decimalTB": 0.0010477315415505725
+    },
+    "rawSignatures": {
+      "bytes": 38035456748864,
+      "decimalGB": 38035.456748864,
+      "GiB": 35423.2795060277,
+      "decimalTB": 38.035456748864
+    },
+    "rawSignaturesMeanPerEpoch": {
+      "bytes": 36293374760.36641,
+      "decimalGB": 36.29337476036641,
+      "GiB": 33.80083922330887,
+      "decimalTB": 0.03629337476036641
+    },
+    "minimalCorePlusAllSignatures": {
+      "bytes": 38822403586248,
+      "decimalGB": 38822.403586248,
+      "GiB": 36156.180860705674,
+      "decimalTB": 38.822403586248
+    },
+    "allLookupControlPlusAllSignatures": {
+      "bytes": 39133479404409,
+      "decimalGB": 39133.479404409,
+      "GiB": 36445.89279257599,
+      "decimalTB": 39.133479404409
+    },
+    "fullQueryWithSignatures": {
+      "bytes": 92898238532602,
+      "decimalGB": 92898.238532602,
+      "GiB": 86518.22668742575,
+      "decimalTB": 92.898238532602
+    },
+    "storedBlockRowsDerivedFromValidated52ByteFormat": 430774632,
+    "fourModernBlockRawIdScenario": {
+      "status": "ILLUSTRATIVE_ONLY_NOT_CAPACITY_FORECAST",
+      "bytes": {
+        "bytes": 4012892313992,
+        "decimalGB": 4012.892313992,
+        "GiB": 3737.2972015216947,
+        "decimalTB": 4.012892313992
+      },
+      "formula": "9181 * produced_rows + epochs * (72 + 128 + 432000 * 128)",
+      "note": "Assumes four modern blocks represent all history and a full-size dense slot table even for short early epochs. This is not measured full-history index size."
+    }
+  },
+  "requiredResolutionData": [
+    "Exact slot/source identity, compressed range and strong object validators.",
+    "Actual parent slot, blockhash and previous blockhash; never use slot-1 as parent.",
+    "Typed used IDs from messages, metadata, loaded addresses, logs, rewards, return data and vote references.",
+    "Per-transaction signature counts and contiguous raw signature range.",
+    "ID-to-key/hash/vote registries bound to the same epoch/source generation."
+  ],
+  "capacityModes": [
+    "Indexes plus new slot-to-used-ID records avoid downloading an epoch index to the browser.",
+    "Only one total R2 GET on a block-cache miss requires Foundation to supply raw signatures from local storage/cache.",
+    "If Foundation fetches missing signatures from R2, that is a second global R2 GET even when the Worker itself issues only one.",
+    "A bounded local signature cache saves disk, but fully cold misses then require a second source range or a different source.",
+    "CAR SlotMeta is source-preservation data, not a lookup index. Keep it separate; this model authorizes no deletion.",
+    "Reverse-key MPHF/counts and account/program/signature search indexes are separate optional query capabilities."
+  ],
+  "limits": [
+    "No full epoch or full-history proposed ID index was built.",
+    "The four modern blocks have no vote-hash entries and do not represent all historical distributions.",
+    "Existing sizes are logical bytes; filesystem allocation, replicas, cache, journal, live append and compaction overlap are extra.",
+    "All selected current HEAD sizes match query manifests. Metadata checks do not establish canonical publication or full payload integrity.",
+    "All sizes exclude a block payload cache unless stated. No data was copied, deleted or migrated."
+  ]
+}

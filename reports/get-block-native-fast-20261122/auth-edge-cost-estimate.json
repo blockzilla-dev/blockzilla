@@ -1,0 +1,679 @@
+{
+  "schema": "blockzilla-native-fast-auth-edge-marginal-cost-v1",
+  "createdAt": "2026-11-22T08:39:45.210761+00:00",
+  "worker": "blockzilla-get-block-native-fast",
+  "version": "bf0bedfc-7216-4550-8e79-b671a93318f8",
+  "wasmSha256": "f5b9675e07138c899fcde1752ab7ceafc67ca4b7bc66a8e7da044f7a91f0b973",
+  "receipts": {
+    "requests": "auth-edge-main.json",
+    "summary": "auth-edge-summary.json",
+    "platformCpu": "platform-cpu-auth-edge.json",
+    "preL2Cost": "cost-estimate.json"
+  },
+  "window": {
+    "start": "2026-11-22T08:34:57.012Z",
+    "end": "2026-11-22T08:35:24.131Z",
+    "requests": 49
+  },
+  "rates": {
+    "workerRequestsUsdPerMillion": 0.3,
+    "cpuUsdPerMillionMs": 0.02,
+    "r2StandardReadsUsdPerMillion": 0.36,
+    "authKvReadsUsdPerMillion": 0.5,
+    "workersLogsUsdPerMillionEvents": 0.6,
+    "analyticsEngineCurrentlyBilled": false
+  },
+  "ratesVerifiedAt": "2026-11-22",
+  "sources": {
+    "workers": "https://developers.cloudflare.com/workers/platform/pricing/",
+    "r2": "https://developers.cloudflare.com/r2/pricing/",
+    "kv": "https://developers.cloudflare.com/kv/platform/pricing/",
+    "analyticsEngine": "https://developers.cloudflare.com/analytics/analytics-engine/pricing/"
+  },
+  "phases": {
+    "runtime_warm": {
+      "requests": 1,
+      "sampleIndices": [
+        0
+      ],
+      "allResponsesOk": true,
+      "warmup": true,
+      "responseCacheCounts": {
+        "BYPASS": 1
+      },
+      "cacheFillCounts": {
+        "BYPASS": 1
+      },
+      "authCacheCounts": {
+        "BYPASS": 1
+      },
+      "authTierCounts": {
+        "BYPASS": 1
+      },
+      "operations": {
+        "ownerR2Gets": 3,
+        "ownerR2Heads": 0,
+        "completedOwnerR2Gets": 3,
+        "originBytes": 248467,
+        "authKvReads": 1,
+        "directS3Gets": 0,
+        "foundationR2Gets": 0,
+        "readerHttpRequests": 0
+      },
+      "cpu": {
+        "receipt": "platform-cpu-auth-edge.json",
+        "selectedQuery": "RuntimeWarm",
+        "observedRequests": 1,
+        "countMatchesClientRequests": true,
+        "adaptiveSampleInterval": 1,
+        "sampleSize": 1,
+        "unsampled": true,
+        "usableForMatchedUnsampledEstimate": true,
+        "cpuTimeUs": 78685,
+        "attributedStartupCpuTimeUs": 17363,
+        "meanInvocationCpuMs": 78.685,
+        "meanIncludingAttributedStartupMs": 96.048,
+        "confidenceClaim": false
+      },
+      "marginalCost": {
+        "unit": "USD per one million HTTP requests in this cohort, before account allowances, fixed fees, storage and billing rounding",
+        "kind": "Matched unsampled observed component estimate",
+        "components": {
+          "workerRequests": 0.3,
+          "ownerR2Reads": 1.08,
+          "authKvReads": 0.5,
+          "invocationCpu": 1.5737,
+          "analyticsEngineCurrent": 0
+        },
+        "totalExcludingLogs": 3.4537,
+        "conservativeIncludingAttributedStartupExcludingLogs": 3.80096,
+        "withExpectedOnePercentInvocationLogEvents": 3.4597,
+        "withAttributedStartupAndExpectedLogs": 3.80696,
+        "observedBatchExcludingLogsUsd": 3.4537e-06
+      }
+    },
+    "full_cold": {
+      "requests": 4,
+      "sampleIndices": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "allResponsesOk": true,
+      "warmup": false,
+      "responseCacheCounts": {
+        "BYPASS": 4
+      },
+      "cacheFillCounts": {
+        "BYPASS": 4
+      },
+      "authCacheCounts": {
+        "BYPASS": 4
+      },
+      "authTierCounts": {
+        "BYPASS": 4
+      },
+      "operations": {
+        "ownerR2Gets": 12,
+        "ownerR2Heads": 0,
+        "completedOwnerR2Gets": 12,
+        "originBytes": 1016409,
+        "authKvReads": 4,
+        "directS3Gets": 0,
+        "foundationR2Gets": 0,
+        "readerHttpRequests": 0
+      },
+      "cpu": {
+        "receipt": "platform-cpu-auth-edge.json",
+        "selectedQuery": "FullCold",
+        "observedRequests": 4,
+        "countMatchesClientRequests": true,
+        "adaptiveSampleInterval": 1,
+        "sampleSize": 4,
+        "unsampled": true,
+        "usableForMatchedUnsampledEstimate": true,
+        "cpuTimeUs": 120075,
+        "attributedStartupCpuTimeUs": 0,
+        "meanInvocationCpuMs": 30.01875,
+        "meanIncludingAttributedStartupMs": 30.01875,
+        "confidenceClaim": false
+      },
+      "marginalCost": {
+        "unit": "USD per one million HTTP requests in this cohort, before account allowances, fixed fees, storage and billing rounding",
+        "kind": "Matched unsampled observed component estimate",
+        "components": {
+          "workerRequests": 0.3,
+          "ownerR2Reads": 1.08,
+          "authKvReads": 0.5,
+          "invocationCpu": 0.600375,
+          "analyticsEngineCurrent": 0
+        },
+        "totalExcludingLogs": 2.480375,
+        "conservativeIncludingAttributedStartupExcludingLogs": 2.480375,
+        "withExpectedOnePercentInvocationLogEvents": 2.486375,
+        "withAttributedStartupAndExpectedLogs": 2.486375,
+        "observedBatchExcludingLogsUsd": 9.9215e-06
+      }
+    },
+    "index_auth_warmup": {
+      "requests": 4,
+      "sampleIndices": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "allResponsesOk": true,
+      "warmup": true,
+      "responseCacheCounts": {
+        "MISS": 4
+      },
+      "cacheFillCounts": {
+        "UNREPORTED": 4
+      },
+      "authCacheCounts": {
+        "MISS": 1,
+        "HIT": 3
+      },
+      "authTierCounts": {
+        "KV": 1,
+        "EDGE": 1,
+        "MEMORY": 2
+      },
+      "operations": {
+        "ownerR2Gets": 4,
+        "ownerR2Heads": 0,
+        "completedOwnerR2Gets": 4,
+        "originBytes": 315117,
+        "authKvReads": 1,
+        "directS3Gets": 0,
+        "foundationR2Gets": 0,
+        "readerHttpRequests": 0
+      },
+      "cpu": {
+        "receipt": "platform-cpu-auth-edge.json",
+        "selectedQuery": "IndexAuthWarmup",
+        "observedRequests": 4,
+        "countMatchesClientRequests": true,
+        "adaptiveSampleInterval": 1,
+        "sampleSize": 4,
+        "unsampled": true,
+        "usableForMatchedUnsampledEstimate": true,
+        "cpuTimeUs": 40646,
+        "attributedStartupCpuTimeUs": 19132,
+        "meanInvocationCpuMs": 10.1615,
+        "meanIncludingAttributedStartupMs": 14.944500000000001,
+        "confidenceClaim": false
+      },
+      "marginalCost": {
+        "unit": "USD per one million HTTP requests in this cohort, before account allowances, fixed fees, storage and billing rounding",
+        "kind": "Matched unsampled observed component estimate",
+        "components": {
+          "workerRequests": 0.3,
+          "ownerR2Reads": 0.36,
+          "authKvReads": 0.125,
+          "invocationCpu": 0.20323,
+          "analyticsEngineCurrent": 0
+        },
+        "totalExcludingLogs": 0.98823,
+        "conservativeIncludingAttributedStartupExcludingLogs": 1.08389,
+        "withExpectedOnePercentInvocationLogEvents": 0.99423,
+        "withAttributedStartupAndExpectedLogs": 1.08989,
+        "observedBatchExcludingLogsUsd": 3.95292e-06
+      }
+    },
+    "ordinary_burst": {
+      "requests": 16,
+      "sampleIndices": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ],
+      "allResponsesOk": true,
+      "warmup": false,
+      "responseCacheCounts": {
+        "MISS": 5,
+        "HIT": 11
+      },
+      "cacheFillCounts": {
+        "LEADER": 5,
+        "HIT": 3,
+        "COALESCED": 8
+      },
+      "authCacheCounts": {
+        "HIT": 16
+      },
+      "authTierCounts": {
+        "MEMORY": 9,
+        "EDGE": 7
+      },
+      "operations": {
+        "ownerR2Gets": 4,
+        "ownerR2Heads": 0,
+        "completedOwnerR2Gets": 4,
+        "originBytes": 345580,
+        "authKvReads": 0,
+        "directS3Gets": 0,
+        "foundationR2Gets": 0,
+        "readerHttpRequests": 0
+      },
+      "cpu": {
+        "receipt": "platform-cpu-auth-edge.json",
+        "selectedQuery": "OrdinaryBurst",
+        "observedRequests": 16,
+        "countMatchesClientRequests": true,
+        "adaptiveSampleInterval": 1,
+        "sampleSize": 16,
+        "unsampled": true,
+        "usableForMatchedUnsampledEstimate": true,
+        "cpuTimeUs": 502874,
+        "attributedStartupCpuTimeUs": 116957,
+        "meanInvocationCpuMs": 31.429625,
+        "meanIncludingAttributedStartupMs": 38.7394375,
+        "confidenceClaim": false
+      },
+      "marginalCost": {
+        "unit": "USD per one million HTTP requests in this cohort, before account allowances, fixed fees, storage and billing rounding",
+        "kind": "Matched unsampled observed component estimate",
+        "components": {
+          "workerRequests": 0.3,
+          "ownerR2Reads": 0.09,
+          "authKvReads": 0.0,
+          "invocationCpu": 0.6285925,
+          "analyticsEngineCurrent": 0
+        },
+        "totalExcludingLogs": 1.0185925,
+        "conservativeIncludingAttributedStartupExcludingLogs": 1.16478875,
+        "withExpectedOnePercentInvocationLogEvents": 1.0245925,
+        "withAttributedStartupAndExpectedLogs": 1.17078875,
+        "observedBatchExcludingLogsUsd": 1.629748e-05
+      }
+    },
+    "ordinary_other_warmup": {
+      "requests": 3,
+      "sampleIndices": [
+        25,
+        26,
+        27
+      ],
+      "allResponsesOk": true,
+      "warmup": true,
+      "responseCacheCounts": {
+        "MISS": 3
+      },
+      "cacheFillCounts": {
+        "LEADER": 3
+      },
+      "authCacheCounts": {
+        "MISS": 1,
+        "HIT": 2
+      },
+      "authTierCounts": {
+        "KV": 1,
+        "MEMORY": 2
+      },
+      "operations": {
+        "ownerR2Gets": 6,
+        "ownerR2Heads": 0,
+        "completedOwnerR2Gets": 6,
+        "originBytes": 528502,
+        "authKvReads": 1,
+        "directS3Gets": 0,
+        "foundationR2Gets": 0,
+        "readerHttpRequests": 0
+      },
+      "cpu": {
+        "receipt": "platform-cpu-auth-edge.json",
+        "selectedQuery": "OrdinaryOtherWarmup",
+        "observedRequests": 3,
+        "countMatchesClientRequests": true,
+        "adaptiveSampleInterval": 1,
+        "sampleSize": 3,
+        "unsampled": true,
+        "usableForMatchedUnsampledEstimate": true,
+        "cpuTimeUs": 98030,
+        "attributedStartupCpuTimeUs": 0,
+        "meanInvocationCpuMs": 32.67666666666667,
+        "meanIncludingAttributedStartupMs": 32.67666666666667,
+        "confidenceClaim": false
+      },
+      "marginalCost": {
+        "unit": "USD per one million HTTP requests in this cohort, before account allowances, fixed fees, storage and billing rounding",
+        "kind": "Matched unsampled observed component estimate",
+        "components": {
+          "workerRequests": 0.3,
+          "ownerR2Reads": 0.72,
+          "authKvReads": 0.166666666667,
+          "invocationCpu": 0.653533333333,
+          "analyticsEngineCurrent": 0
+        },
+        "totalExcludingLogs": 1.8402,
+        "conservativeIncludingAttributedStartupExcludingLogs": 1.8402,
+        "withExpectedOnePercentInvocationLogEvents": 1.8462,
+        "withAttributedStartupAndExpectedLogs": 1.8462,
+        "observedBatchExcludingLogsUsd": 5.5206e-06
+      }
+    },
+    "source_auth_warmup": {
+      "requests": 1,
+      "sampleIndices": [
+        28
+      ],
+      "allResponsesOk": true,
+      "warmup": true,
+      "responseCacheCounts": {
+        "HIT": 1
+      },
+      "cacheFillCounts": {
+        "UNREPORTED": 1
+      },
+      "authCacheCounts": {
+        "MISS": 1
+      },
+      "authTierCounts": {
+        "KV": 1
+      },
+      "operations": {
+        "ownerR2Gets": 0,
+        "ownerR2Heads": 0,
+        "completedOwnerR2Gets": 0,
+        "originBytes": 0,
+        "authKvReads": 1,
+        "directS3Gets": 0,
+        "foundationR2Gets": 0,
+        "readerHttpRequests": 0
+      },
+      "cpu": {
+        "receipt": "platform-cpu-auth-edge.json",
+        "selectedQuery": "SourceAuthWarmup",
+        "observedRequests": 1,
+        "countMatchesClientRequests": true,
+        "adaptiveSampleInterval": 1,
+        "sampleSize": 1,
+        "unsampled": true,
+        "usableForMatchedUnsampledEstimate": true,
+        "cpuTimeUs": 3464,
+        "attributedStartupCpuTimeUs": 0,
+        "meanInvocationCpuMs": 3.464,
+        "meanIncludingAttributedStartupMs": 3.464,
+        "confidenceClaim": false
+      },
+      "marginalCost": {
+        "unit": "USD per one million HTTP requests in this cohort, before account allowances, fixed fees, storage and billing rounding",
+        "kind": "Matched unsampled observed component estimate",
+        "components": {
+          "workerRequests": 0.3,
+          "ownerR2Reads": 0.0,
+          "authKvReads": 0.5,
+          "invocationCpu": 0.06928,
+          "analyticsEngineCurrent": 0
+        },
+        "totalExcludingLogs": 0.86928,
+        "conservativeIncludingAttributedStartupExcludingLogs": 0.86928,
+        "withExpectedOnePercentInvocationLogEvents": 0.87528,
+        "withAttributedStartupAndExpectedLogs": 0.87528,
+        "observedBatchExcludingLogsUsd": 8.6928e-07
+      }
+    },
+    "source_only": {
+      "requests": 4,
+      "sampleIndices": [
+        29,
+        30,
+        31,
+        32
+      ],
+      "allResponsesOk": true,
+      "warmup": false,
+      "responseCacheCounts": {
+        "BYPASS": 4
+      },
+      "cacheFillCounts": {
+        "BYPASS": 4
+      },
+      "authCacheCounts": {
+        "HIT": 4
+      },
+      "authTierCounts": {
+        "MEMORY": 4
+      },
+      "operations": {
+        "ownerR2Gets": 8,
+        "ownerR2Heads": 0,
+        "completedOwnerR2Gets": 8,
+        "originBytes": 701292,
+        "authKvReads": 0,
+        "directS3Gets": 0,
+        "foundationR2Gets": 0,
+        "readerHttpRequests": 0
+      },
+      "cpu": {
+        "receipt": "platform-cpu-auth-edge.json",
+        "selectedQuery": "SourceOnly",
+        "observedRequests": 4,
+        "countMatchesClientRequests": true,
+        "adaptiveSampleInterval": 1,
+        "sampleSize": 4,
+        "unsampled": true,
+        "usableForMatchedUnsampledEstimate": true,
+        "cpuTimeUs": 137003,
+        "attributedStartupCpuTimeUs": 0,
+        "meanInvocationCpuMs": 34.25075,
+        "meanIncludingAttributedStartupMs": 34.25075,
+        "confidenceClaim": false
+      },
+      "marginalCost": {
+        "unit": "USD per one million HTTP requests in this cohort, before account allowances, fixed fees, storage and billing rounding",
+        "kind": "Matched unsampled observed component estimate",
+        "components": {
+          "workerRequests": 0.3,
+          "ownerR2Reads": 0.72,
+          "authKvReads": 0.0,
+          "invocationCpu": 0.685015,
+          "analyticsEngineCurrent": 0
+        },
+        "totalExcludingLogs": 1.705015,
+        "conservativeIncludingAttributedStartupExcludingLogs": 1.705015,
+        "withExpectedOnePercentInvocationLogEvents": 1.711015,
+        "withAttributedStartupAndExpectedLogs": 1.711015,
+        "observedBatchExcludingLogsUsd": 6.82006e-06
+      }
+    },
+    "response_hits": {
+      "requests": 16,
+      "sampleIndices": [
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48
+      ],
+      "allResponsesOk": true,
+      "warmup": false,
+      "responseCacheCounts": {
+        "HIT": 16
+      },
+      "cacheFillCounts": {
+        "HIT": 16
+      },
+      "authCacheCounts": {
+        "MISS": 1,
+        "HIT": 15
+      },
+      "authTierCounts": {
+        "KV": 1,
+        "MEMORY": 15
+      },
+      "operations": {
+        "ownerR2Gets": 0,
+        "ownerR2Heads": 0,
+        "completedOwnerR2Gets": 0,
+        "originBytes": 0,
+        "authKvReads": 1,
+        "directS3Gets": 0,
+        "foundationR2Gets": 0,
+        "readerHttpRequests": 0
+      },
+      "cpu": {
+        "receipt": "platform-cpu-auth-edge.json",
+        "selectedQuery": "ResponseHits",
+        "observedRequests": 16,
+        "countMatchesClientRequests": true,
+        "adaptiveSampleInterval": 1.1428571428571428,
+        "sampleSize": 14,
+        "unsampled": false,
+        "usableForMatchedUnsampledEstimate": false,
+        "cpuTimeUs": 18611,
+        "attributedStartupCpuTimeUs": 0,
+        "meanInvocationCpuMs": 1.1631875,
+        "meanIncludingAttributedStartupMs": 1.1631875,
+        "confidenceClaim": false
+      },
+      "marginalCost": {
+        "unit": "USD per one million HTTP requests in this cohort, before account allowances, fixed fees, storage and billing rounding",
+        "kind": "Weighted platform CPU estimate plus exact client operation counts",
+        "components": {
+          "workerRequests": 0.3,
+          "ownerR2Reads": 0.0,
+          "authKvReads": 0.03125,
+          "invocationCpu": 0.02326375,
+          "analyticsEngineCurrent": 0
+        },
+        "totalExcludingLogs": 0.35451375,
+        "conservativeIncludingAttributedStartupExcludingLogs": 0.35451375,
+        "withExpectedOnePercentInvocationLogEvents": 0.36051375,
+        "withAttributedStartupAndExpectedLogs": 0.36051375,
+        "observedBatchExcludingLogsUsd": 5.67222e-06
+      }
+    }
+  },
+  "totals": {
+    "httpRequests": 49,
+    "r2Gets": 37,
+    "r2Heads": 0,
+    "authKvReads": 9
+  },
+  "authCacheProof": {
+    "ttlMs": 5000,
+    "deadline": "Original KV read-start UTC time; not extended by L1/L2 hits or L2-to-L1 promotion.",
+    "fullColdBypassesBothLevels": true,
+    "burst": {
+      "requests": 16,
+      "actualKvReads": 0,
+      "actualTiers": {
+        "MEMORY": 9,
+        "EDGE": 7
+      },
+      "actualR2Gets": 4,
+      "actualCacheFillStates": {
+        "LEADER": 5,
+        "HIT": 3,
+        "COALESCED": 8
+      }
+    },
+    "source": {
+      "requests": 4,
+      "actualKvReads": 0,
+      "actualTiers": {
+        "MEMORY": 4
+      },
+      "actualR2Gets": 8
+    }
+  },
+  "preL2BurstComparison": {
+    "previousVersion": "ddc5f9ff-8704-4c99-ba20-e712047ba360",
+    "previousReceipt": "main.json",
+    "previousRequests": 16,
+    "previousR2Gets": 4,
+    "previousKvReads": 13,
+    "currentR2Gets": 4,
+    "currentKvReads": 0,
+    "observedKvComponentReductionUsdPerMillionBurstHttp": 0.40625,
+    "previousCoreUsdPerMillion": 1.3471,
+    "currentCoreUsdPerMillion": 1.0185925,
+    "previousWithStartup": 1.5480575,
+    "currentWithStartup": 1.16478875,
+    "limit": "Runs have different runtime states and warmup schedules. The KV/read receipts are observed; a CPU or latency difference cannot be assigned solely to this auth change."
+  },
+  "readFloor": {
+    "fullColdR2GetsPerRequest": 3,
+    "freshAuthKvReadsPerFullColdRequest": 1,
+    "beforeCpuUsdPerMillion": 1.88,
+    "twoSourceGetsWithAuthHitBeforeCpuUsdPerMillion": 1.02,
+    "strictColdBelowOneAchieved": false,
+    "reason": "The current three-object layout and Standard rates exceed the target before CPU. Shared auth changes cached-request costs, not this cold-read floor."
+  },
+  "blendedScenarios": {
+    "status": "ILLUSTRATIVE_WEIGHTED_HIT_CPU_ESTIMATE",
+    "unit": "USD per million total HTTP requests, not per million chargeable archive-backed requests",
+    "hitCost": 0.35451375,
+    "hitCpuSampling": "The HIT phase has 16 actual requests and 14 platform samples, with a sample interval of 1.142857. Its CPU value is weighted. There is no exact blended-cost claim.",
+    "plainColdAndHit": {
+      "coldCost": 2.480375,
+      "minimumHitFractionForEstimatedCoreBelowOne": 0.6963648262557117,
+      "minimumHitFractionIncludingExpectedLogs": 0.6991872117712291,
+      "atNinetyPercentHitsCoreCost": 0.567099875
+    },
+    "observedBurstAndAdditionalHits": {
+      "burstCost": 1.0185925,
+      "minimumAdditionalHitFractionForEstimatedCoreBelowOne": 0.02799743253341567,
+      "minimumWithAttributedStartup": 0.20337385455555215,
+      "limit": "The burst already includes five leader, eight coalesced and three ordinary-hit responses. This is a mixture of cohorts, not a single cold-miss model."
+    }
+  },
+  "targetResult": {
+    "coldCoreUsdPerMillion": 2.480375,
+    "sourceCoreUsdPerMillion": 1.705015,
+    "burstCoreUsdPerMillion": 1.0185925,
+    "burstIncludingStartup": 1.16478875,
+    "burstBelowOneBeforeLogs": false,
+    "hitWeightedCoreUsdPerMillion": 0.35451375,
+    "note": "The burst uses no KV reads, but its measured cost remains just above $1 per million requests before logs, and higher with attributed startup."
+  },
+  "logs": {
+    "actualLogEventCountCollected": false,
+    "rateUsdPerMillionEvents": 0.6,
+    "headSamplingRate": 0.01,
+    "expectedExtraUsdPerMillionHttpIfOneInvocationEvent": 0.006,
+    "note": "Expected log cost is separate from the core totals. Actual sampling outcomes and any extra error events were not counted. Rates are current on22November; account inclusions are unknown."
+  },
+  "limits": [
+    "The 49-call auth check is separate from the 109-call latency comparison. The CPU collector added no provider or Worker request.",
+    "Cold, burst and source groups have matching request counts and no sampling. The response-hit group and combined 49-request CPU are weighted estimates despite matching counts.",
+    "Runtime warmup is separate. The four measured cold requests have a warm runtime, but bypass both auth cache levels and all archive/application caches. First-runtime CPU and startup are in their own row.",
+    "All warmup/index requests and their actual KV/R2 costs remain separate.",
+    "The final HIT phase has one KV miss in 16 calls. The burst has 9 MEMORY hits, 7 EDGE hits and no KV reads. Source has 4 MEMORY hits and no KV reads.",
+    "Stored block, signature and index objects are unchanged. New auth records use only the temporary Cache API, with a 1,024-byte bound and origin/namespace/key digests.",
+    "Operation counts are object API calls, not physical disk reads. Internal R2/provider cache states are unknown.",
+    "These are marginal component estimates, not invoices. Fixed fees, existing data storage, account-wide allowances and rounding are separate.",
+    "Expected 1% invocation logging adds $0.006 per million requests if each sampled request has one log event. Actual log-event counts were not collected.",
+    "The API marks its confidence fields invalid for these small groups. There is no statistical confidence claim.",
+    "Free customer cache hits do not repair a loss on each charged archive request. A cost below $1 across all requests is a different claim.",
+    "The shared Cache API is per datacenter and can evict records. This four-slot, one-client check does not establish global hit rates or complete epoch coverage. KV propagation is separate from the five-second positive-cache window."
+  ]
+}

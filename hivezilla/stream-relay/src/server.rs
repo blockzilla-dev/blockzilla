@@ -813,10 +813,12 @@ mod tests {
     #[cfg(unix)]
     #[tokio::test]
     async fn private_socket_keeps_authentication_and_cleans_only_its_own_inode() {
-        use std::os::unix::fs::MetadataExt;
+        use std::os::unix::fs::{MetadataExt, PermissionsExt};
         let directory = tempfile::Builder::new()
             .prefix("bz-uds-")
-            .tempdir_in("/tmp")
+            .tempdir_in(std::fs::canonicalize("/tmp").unwrap())
+            .unwrap();
+        std::fs::set_permissions(directory.path(), std::fs::Permissions::from_mode(0o700))
             .unwrap();
         let socket = directory.path().join("origin.sock");
         let path = socket.clone();
@@ -879,7 +881,9 @@ mod tests {
         use std::os::unix::fs::PermissionsExt;
         let directory = tempfile::Builder::new()
             .prefix("bz-uds-")
-            .tempdir_in("/tmp")
+            .tempdir_in(std::fs::canonicalize("/tmp").unwrap())
+            .unwrap();
+        std::fs::set_permissions(directory.path(), std::fs::Permissions::from_mode(0o700))
             .unwrap();
         let path = directory.path().join("origin.sock");
         std::fs::write(&path, b"owned data").unwrap();
@@ -906,7 +910,9 @@ mod tests {
         use std::os::unix::fs::{MetadataExt, PermissionsExt};
         let directory = tempfile::Builder::new()
             .prefix("bz-uds-")
-            .tempdir_in("/tmp")
+            .tempdir_in(std::fs::canonicalize("/tmp").unwrap())
+            .unwrap();
+        std::fs::set_permissions(directory.path(), std::fs::Permissions::from_mode(0o700))
             .unwrap();
         let path = directory.path().join("origin.sock");
         let (old, owner) = private_listener(&path).await.unwrap();

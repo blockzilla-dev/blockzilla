@@ -1,0 +1,126 @@
+ Downloading crates ...
+  Downloaded quinn-udp v0.5.16
+  Downloaded lru-slab v0.1.3
+  Downloaded ipnet v2.12.2
+  Downloaded want v0.3.2
+  Downloaded hyper-rustls v0.27.10
+  Downloaded zerofrom-derive v0.1.8
+  Downloaded yoke-derive v0.8.4
+  Downloaded tinystr v0.8.5
+  Downloaded rustls-webpki v0.103.16
+  Downloaded tokio-rustls v0.26.6
+  Downloaded utf8_iter v1.1.0
+  Downloaded synstructure v0.14.0
+  Downloaded utf_types v1.0.0
+  Downloaded rustls-platform-verifier v0.7.1
+  Downloaded icu_normalizer_data v2.4.0
+  Downloaded zerovec-derive v0.11.7
+  Downloaded icu_locale_core v2.4.0
+  Downloaded yoke v0.8.4
+  Downloaded icu_provider v2.4.0
+  Downloaded quinn v0.11.12
+  Downloaded icu_collections v2.4.0
+  Downloaded icu_properties v2.4.0
+  Downloaded zerovec v0.11.9
+  Downloaded tokio-util v0.7.20
+  Downloaded reqwest v0.13.5
+  Downloaded h2 v0.4.19
+  Downloaded icu_properties_data v2.4.0
+  Downloaded quinn-proto v0.11.19
+  Downloaded aws-lc-rs v1.18.1
+  Downloaded rustls v0.23.46
+  Downloaded icu_normalizer v2.4.0
+  Downloaded aws-lc-sys v0.45.0
+   Compiling blockzilla-bank-stream-v2 v0.1.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/blockzilla-bank-stream-v2)
+   Compiling blockzilla-bank-client v0.1.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/blockzilla-bank-client)
+warning: use of deprecated method `std::sync::atomic::Atomic::<usize>::fetch_update`: renamed to `try_update` for consistency
+   --> src/tests.rs:396:10
+    |
+396 |         .fetch_update(Ordering::SeqCst, Ordering::SeqCst, |v| v.checked_sub(1))
+    |          ^^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+help: replace the use of the deprecated method
+    |
+396 -         .fetch_update(Ordering::SeqCst, Ordering::SeqCst, |v| v.checked_sub(1))
+396 +         .try_update(Ordering::SeqCst, Ordering::SeqCst, |v| v.checked_sub(1))
+    |
+
+warning: `blockzilla-bank-client` (lib test) generated 1 warning (run `cargo fix --lib -p blockzilla-bank-client --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 11.94s
+     Running unittests src/lib.rs (/Users/augustin/Developement/ferno/blockzilla-v1/crates/blockzilla-bank-client/target/debug/deps/blockzilla_bank_client-9553decd8f56089a)
+
+running 45 tests
+test recovery::tests::duplicates_sequence_gaps_event_changes_and_source_changes_are_rejected ... ok
+test recovery::tests::invalid_notice_and_control_never_send_customer_key_to_worker ... ok
+test recovery::tests::native_worker_read_preserves_original_bytes_and_reuses_client_without_store ... ok
+test ssh_beam::finalized_tests::cancelled_queued_lookup_cannot_start_unbounded_reads_or_lose_its_permit ... ok
+test recovery::tests::wrong_hash_parent_source_expiry_archive_and_redirect_fail_without_retry ... ok
+test recovery::tests::partial_worker_body_retries_the_same_pins_and_never_delivers_partial_bytes ... ok
+test ssh_beam::finalized_tests::unavailable_finalized_block_preserves_checked_rolling_head_without_skip_proof ... ok
+test ssh_beam::finalized_tests::exact_finalized_lookup_preserves_original_frame_and_requires_successful_helper_exit ... ok
+test ssh_beam::tests::cancellation_keeps_pending_bytes_and_digest_errors_are_terminal ... ok
+test ssh_beam::finalized_tests::one_session_finalized_path_checks_all_original_bytes_and_parent_links_before_success ... ok
+test ssh_beam::tests::finite_dependencies_are_exact_and_read_only_commands_remain_pinned ... ok
+test ssh_beam::tests::partial_next_frame_recovers_from_last_complete_application_boundary ... ok
+test ssh_beam::finalized_tests::finalized_binary_truncation_trailing_bytes_and_corrupt_objects_fail_closed ... ok
+test ssh_beam::tests::partial_ssh_frame_never_advances_and_exact_resume_is_valid ... ok
+test ssh_beam::tests::remote_arguments_are_shell_quoted_and_hosts_cannot_inject_options ... ok
+test ssh_beam::tests::status_is_bounded_and_binary_bytes_remain_for_frame_reader ... ok
+test ssh_beam::recovery_tests::finite_plan_has_only_metadata_for_blocks_and_exact_original_controls ... ok
+test tests::binary_beam_preserves_all_wire_bytes_without_ack_projection_or_finite_gets ... ok
+test ssh_beam::tests::checked_finite_body_requires_clean_helper_exit ... ok
+test ssh_beam::finalized_tests::finalized_path_limits_and_anchor_identity_cannot_be_relaxed_by_the_helper ... ok
+test ssh_beam::finalized_tests::finalized_headers_cannot_admit_a_different_source_scope_identity_or_digest ... ok
+test tests::binary_beam_rejects_gaps_source_changes_corruption_and_truncation ... ok
+test tests::coverage_gap_variants_preserve_unknown_and_null_bank_semantics ... ok
+test ssh_beam::finalized_tests::finalized_path_rejects_partial_records_wrong_digests_missing_ancestors_and_trailing_bytes ... ok
+test tests::cancelled_checkpoint_keeps_pending_bank_and_old_boundary ... ok
+test tests::checkpoint_failure_preserves_resume_and_stops_readiness ... ok
+test tests::parser_bounds_and_crlf_multiline_fields ... ok
+test tests::notice_reservation_also_limits_the_response_body ... ok
+test tests::http_gap_authentication_and_stopped_source_are_terminal ... ok
+test tests::binary_beam_cancel_keeps_partial_frame_and_last_complete_boundary ... ok
+test tests::preprocessing_failure_never_advances_the_application_boundary ... ok
+test tests::rejected_notice_never_reaches_preprocessing ... ok
+test tests::rejects_notice_before_credentialed_fetch_and_checks_digest ... ok
+test tests::requires_https_pinned_source_and_valid_bounds ... ok
+test tests::reconnects_from_acknowledged_cursor_and_retries_503 ... ok
+test tests::sse_gap_is_terminal_and_never_resets_boundary ... ok
+test tests::resolves_exact_bootstrap_and_fetches_missing_control_dependency ... ok
+test tests::unix_socket_transport_preserves_admission_ack_and_sparse_coverage ... ok
+test ssh_beam::recovery_tests::duplicate_gap_forged_control_block_copy_and_changed_pins_fail_closed ... ok
+test tests::validates_start_boundary_source_and_expired_resume ... ok
+test tests::cancelled_next_retains_control_and_dependency_fetch ... ok
+test tests::preserves_order_bounded_reads_and_durable_ack ... ok
+test tests::background_prefetch_refills_while_delivery_is_unacknowledged ... ok
+test tests::optional_preprocessing_is_parallel_but_delivery_and_ack_stay_ordered ... ok
+test tests::queued_byte_budget_stops_gets_and_drop_aborts_the_producer ... ok
+
+test result: ok. 45 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s
+
+     Running unittests src/bin/blockzilla-beam.rs (/Users/augustin/Developement/ferno/blockzilla-v1/crates/blockzilla-bank-client/target/debug/deps/blockzilla_beam-5d05e7ebc16dd4a9)
+
+running 5 tests
+test tests::fifo_inputs_are_rejected_without_waiting_and_clock_metadata_can_be_extended ... ok
+test tests::clock_sign_expiry_and_metrics_memory_are_bounded ... ok
+test tests::source_counters_lock_and_failed_receipt_cannot_advance_saved_boundary ... ok
+test tests::checkpoint_reopens_exact_cursor_and_static_bootstrap_never_overrides_it ... ok
+test tests::interrupted_second_frame_resumes_only_after_the_first_durable_receipt ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running unittests examples/direct_beam_probe.rs (/Users/augustin/Developement/ferno/blockzilla-v1/crates/blockzilla-bank-client/target/debug/examples/direct_beam_probe-f6a9a7dba392743e)
+
+running 3 tests
+test tests::original_frames_count_blocks_controls_and_resume_hash_chain_exactly ... ok
+test tests::source_gap_and_wrong_saved_generation_fail_without_advancing_cursor ... ok
+test tests::durable_state_is_small_and_has_matching_cursor_counters_and_hash ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests examples/worker_recovery_probe.rs (/Users/augustin/Developement/ferno/blockzilla-v1/crates/blockzilla-bank-client/target/debug/examples/worker_recovery_probe-bd2f3182367e5df9)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

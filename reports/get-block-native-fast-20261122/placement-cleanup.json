@@ -1,0 +1,19 @@
+{
+  "completedAt": "2026-11-22T08:23:49.944507+00:00",
+  "workers": [
+    {
+      "worker": "blockzilla-native-fast-place-ams",
+      "status": "DELETED",
+      "verifiedAbsentHttpStatus": 404
+    },
+    {
+      "worker": "blockzilla-native-fast-place-fra",
+      "status": "DELETED",
+      "verifiedAbsentHttpStatus": 404
+    }
+  ],
+  "retainedR2Objects": true,
+  "r2DataWrites": 0,
+  "fastWorkerUnchanged": true,
+  "baselineUnchanged": true
+}

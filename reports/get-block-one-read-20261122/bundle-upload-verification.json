@@ -1,0 +1,49 @@
+{
+  "timeUtc": "2026-11-22T11:00:50.294228+00:00",
+  "bucket": "blockzilla-get-block-native-test",
+  "objects": [
+    {
+      "slot": 470555971,
+      "key": "serving/slot-bundles-test-20261122-v1/epoch-1089/slot-470555971.bundle.wincode",
+      "length": 247594,
+      "sha256": "c0fc8383e217705dde28612195cc165e95b2163c73743e5cb1586aab220c8415",
+      "etag": "\"5081a3b1bf886b2db423365850af194f\"",
+      "nativeStoredSha256": "c0fc8383e217705dde28612195cc165e95b2163c73743e5cb1586aab220c8415",
+      "fullReadbackSha256": "c0fc8383e217705dde28612195cc165e95b2163c73743e5cb1586aab220c8415",
+      "verified": true
+    },
+    {
+      "slot": 470663944,
+      "key": "serving/slot-bundles-test-20261122-v1/epoch-1089/slot-470663944.bundle.wincode",
+      "length": 364638,
+      "sha256": "64ac916826fef959e8786beea3723836e22c7bbc40f3431617ff58be175a4775",
+      "etag": "\"63021fddff093f1466605b331a2f1f6b\"",
+      "nativeStoredSha256": "64ac916826fef959e8786beea3723836e22c7bbc40f3431617ff58be175a4775",
+      "fullReadbackSha256": "64ac916826fef959e8786beea3723836e22c7bbc40f3431617ff58be175a4775",
+      "verified": true
+    },
+    {
+      "slot": 470771932,
+      "key": "serving/slot-bundles-test-20261122-v1/epoch-1089/slot-470771932.bundle.wincode",
+      "length": 275803,
+      "sha256": "dab59abd834b055e114e76eb34245f5b1506ec9518c4496f89a29e4b34db764b",
+      "etag": "\"17dfbfbb6a3b99ddaa44882060f952b0\"",
+      "nativeStoredSha256": "dab59abd834b055e114e76eb34245f5b1506ec9518c4496f89a29e4b34db764b",
+      "fullReadbackSha256": "dab59abd834b055e114e76eb34245f5b1506ec9518c4496f89a29e4b34db764b",
+      "verified": true
+    },
+    {
+      "slot": 470879999,
+      "key": "serving/slot-bundles-test-20261122-v1/epoch-1089/slot-470879999.bundle.wincode",
+      "length": 124924,
+      "sha256": "977d110e3d2328889faee91eda72703b9dee3ee4e7cb7edc3a12ce58f429296a",
+      "etag": "\"a98314207e5699acc2126a1aa03e6802\"",
+      "nativeStoredSha256": "977d110e3d2328889faee91eda72703b9dee3ee4e7cb7edc3a12ce58f429296a",
+      "fullReadbackSha256": "977d110e3d2328889faee91eda72703b9dee3ee4e7cb7edc3a12ce58f429296a",
+      "verified": true
+    }
+  ],
+  "sourcePutCount": 4,
+  "readbackGetCount": 4,
+  "totalBytes": 1012959
+}

@@ -1,0 +1,41 @@
+{
+  "fetched_at": "2026-11-21T20:06:20.002717+00:00",
+  "window": {
+    "a": "8df0426c80fcd1a04ed439f441db9ff8",
+    "s": "2026-11-21T20:00:36.320Z",
+    "e": "2026-11-21T20:03:47.943613Z"
+  },
+  "expected_worker_http_requests": 208,
+  "response": {
+    "data": {
+      "viewer": {
+        "accounts": [
+          {
+            "workersInvocationsAdaptive": [
+              {
+                "quantiles": {
+                  "cpuTimeP50": 1631,
+                  "cpuTimeP95": 103383,
+                  "cpuTimeP99": 168398,
+                  "memoryUsageBytesP99": 21024064,
+                  "wasmMemoryBytesP99": 5177344
+                },
+                "sum": {
+                  "cpuTimeUs": 2495411,
+                  "errors": 0,
+                  "requests": 208,
+                  "startupCpuTimeUs": 37756,
+                  "subrequests": 112
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "errors": null
+  },
+  "note": "Adaptive platform metrics; ingestion can lag; mixed cold/cache states and formats. This is not CPU per format or an invoice.",
+  "observed_mean_cpu_ms": 11.99716826923077,
+  "observed_cpu_usd_before_allowances": 4.990822e-05
+}

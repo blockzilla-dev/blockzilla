@@ -1,0 +1,25 @@
+{
+  "time": "2026-11-22T15:39:11.996493+00:00",
+  "command": "blockzilla-stream status",
+  "returncode": 0,
+  "status": {
+    "input": "live",
+    "inputMode": "raw_ssh",
+    "payloadMode": "compact-only",
+    "signingReady": true,
+    "beamCommittedCursor": "000000000000000018ea5078fdda19df-13e843:p363586:c7ecd8db99ca2e445007d60211c89b0cd31ba0e1d4b49cdd325ff81519422a24",
+    "outputCursor": "000000000000000018ea5078fdda19df-13e843:o219617:40d07f44ab0dc9a357602942f52a1a962f2cfd2b2a1373f619f2e4792f8955df",
+    "workerRecovery": {
+      "active": false,
+      "committedBlocks": 8,
+      "committedControls": 16,
+      "completedWindows": 1,
+      "enabled": true,
+      "failedAttempts": 0,
+      "fromCursor": "000000000000000018ea5078fdda19df-13e843:p362754:e6a92580387c751df892f494c60c34ca5eed3efe002ea0ddfaa152cf890a6570",
+      "lastError": null,
+      "toCursor": "000000000000000018ea5078fdda19df-13e843:p362778:9143cd706e93417e5e0282bf4a4b5b19c57107179481fa3a8aa600e96f8202f1"
+    },
+    "error": null
+  }
+}

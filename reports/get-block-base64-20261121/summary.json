@@ -1,0 +1,451 @@
+{
+  "schema": "blockzilla-base64-get-block-benchmark-summary-v1",
+  "workerVersion": "074812ac-a908-4eba-bec5-02752230eae6",
+  "workerGeneration": "foundation-query-20261121-base64-v9",
+  "placement": "default edge",
+  "startedAt": "2026-11-21T20:53:40.813Z",
+  "endedAt": "2026-11-21T20:54:25.877437Z",
+  "durationMs": 45064.437,
+  "plan": {
+    "slots": [
+      470987967,
+      471096104,
+      471204030,
+      471311999,
+      470555971,
+      470663944,
+      470771932,
+      470879999
+    ],
+    "rounds": 5,
+    "concurrency": 1,
+    "timeoutMs": 90000,
+    "uncachedRounds": 1,
+    "maxRequests": 250,
+    "requests": 192,
+    "representations": [
+      "bin",
+      "json",
+      "bin-no-access"
+    ],
+    "providerIncluded": true,
+    "providerLabels": [
+      "helius"
+    ],
+    "jsonOptions": {
+      "commitment": "finalized",
+      "encoding": "base64",
+      "transactionDetails": "full",
+      "rewards": false,
+      "maxSupportedTransactionVersion": 1
+    }
+  },
+  "networkRequests": {
+    "worker": 144,
+    "helius": 48,
+    "total": 192
+  },
+  "networkErrors": 0,
+  "identityMatchedSlots": 8,
+  "liveCanonicalMatchedSlots": 8,
+  "savedBase64ReferenceChecks": {
+    "reference": "../get-block-cold-profile-20261121/reference-base64.json",
+    "samples": 96,
+    "matched": 96,
+    "slots": [
+      {
+        "slot": 470987967,
+        "samples": 12,
+        "matched": 12,
+        "expectedSha256": "c4b1975a554979145bf7124a44bac3b227088cf1c79ac5d520a7f5b7a44206b0"
+      },
+      {
+        "slot": 471096104,
+        "samples": 12,
+        "matched": 12,
+        "expectedSha256": "c17db9c7d485f4e4b3e6595dcdfc1e34617224a2bce3efee8b70a19e50dccdd5"
+      },
+      {
+        "slot": 471204030,
+        "samples": 12,
+        "matched": 12,
+        "expectedSha256": "16a05c47d65a8f1e8cf044f60a075ba0c3d3de8c7fc466f2d57a2aa8015cf668"
+      },
+      {
+        "slot": 471311999,
+        "samples": 12,
+        "matched": 12,
+        "expectedSha256": "c10f8b9aaa3f2ddc3e18e8581938c0738a545ca5d7175dc5b554af2285c9e774"
+      },
+      {
+        "slot": 470555971,
+        "samples": 12,
+        "matched": 12,
+        "expectedSha256": "2b955b420e98d124742667ddfb00bbb12b6eb736d3e6fc8b1b2ed46d7c72ce7d"
+      },
+      {
+        "slot": 470663944,
+        "samples": 12,
+        "matched": 12,
+        "expectedSha256": "bed833a434be2dafcab86daafdd1b5b18c2d01c37e93048528a7953013afd005"
+      },
+      {
+        "slot": 470771932,
+        "samples": 12,
+        "matched": 12,
+        "expectedSha256": "a9f32819f8ef9b3f024392e68487d8261c9bdd2613b414923787777d0cba5170"
+      },
+      {
+        "slot": 470879999,
+        "samples": 12,
+        "matched": 12,
+        "expectedSha256": "d175745a35a80b37a24a0c57d73a6e0af318ceeaf4beb7669160dcc3429c5ba7"
+      }
+    ]
+  },
+  "groups": [
+    {
+      "label": "blockzilla",
+      "representation": "bin",
+      "phase": "origin_uncached",
+      "cache": "ALL",
+      "requests": 8,
+      "successful": 8,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 485.648,
+        "p95": 1101.841,
+        "p99": 1101.841
+      },
+      "totalMs": {
+        "p50": 504.209,
+        "p95": 1139.346,
+        "p99": 1139.346
+      },
+      "cacheCounts": {
+        "BYPASS": 8
+      },
+      "storageBytesModes": {
+        "streamed-completion": 8
+      },
+      "originGetsMean": 3,
+      "originHeadsMean": 0,
+      "bufferedOriginBytesMean": 78200.25,
+      "declaredOriginWindowBytesMean": 173405.625,
+      "edgeLocations": {
+        "CDG": 8
+      }
+    },
+    {
+      "label": "blockzilla",
+      "representation": "json",
+      "phase": "origin_uncached",
+      "cache": "ALL",
+      "requests": 8,
+      "successful": 8,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 502.753,
+        "p95": 815.153,
+        "p99": 815.153
+      },
+      "totalMs": {
+        "p50": 525.105,
+        "p95": 866.116,
+        "p99": 866.116
+      },
+      "cacheCounts": {
+        "BYPASS": 8
+      },
+      "storageBytesModes": {
+        "buffered": 8
+      },
+      "originGetsMean": 3,
+      "originHeadsMean": 0,
+      "bufferedOriginBytesMean": 251605.875,
+      "declaredOriginWindowBytesMean": null,
+      "edgeLocations": {
+        "CDG": 8
+      }
+    },
+    {
+      "label": "blockzilla",
+      "representation": "bin-no-access",
+      "phase": "origin_uncached",
+      "cache": "ALL",
+      "requests": 8,
+      "successful": 8,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 419.927,
+        "p95": 580.995,
+        "p99": 580.995
+      },
+      "totalMs": {
+        "p50": 433.286,
+        "p95": 944.827,
+        "p99": 944.827
+      },
+      "cacheCounts": {
+        "BYPASS": 8
+      },
+      "storageBytesModes": {
+        "streamed-completion": 8
+      },
+      "originGetsMean": 2,
+      "originHeadsMean": 0,
+      "bufferedOriginBytesMean": 78200.25,
+      "declaredOriginWindowBytesMean": 147629.625,
+      "edgeLocations": {
+        "CDG": 8
+      }
+    },
+    {
+      "label": "helius",
+      "representation": "json",
+      "phase": "origin_uncached",
+      "cache": "ALL",
+      "requests": 8,
+      "successful": 8,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 51.914,
+        "p95": 98.53,
+        "p99": 98.53
+      },
+      "totalMs": {
+        "p50": 100.634,
+        "p95": 186.722,
+        "p99": 186.722
+      },
+      "cacheCounts": {
+        "UNREPORTED": 8
+      },
+      "storageBytesModes": {
+        "unreported": 8
+      },
+      "originGetsMean": null,
+      "originHeadsMean": null,
+      "bufferedOriginBytesMean": null,
+      "declaredOriginWindowBytesMean": null,
+      "edgeLocations": {
+        "CDG": 8
+      }
+    },
+    {
+      "label": "blockzilla",
+      "representation": "json",
+      "phase": "repeat",
+      "cache": "HIT",
+      "requests": 32,
+      "successful": 32,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 30.132,
+        "p95": 61.335,
+        "p99": 61.384
+      },
+      "totalMs": {
+        "p50": 62.347,
+        "p95": 97.985,
+        "p99": 127.903
+      },
+      "cacheCounts": {
+        "HIT": 32
+      },
+      "storageBytesModes": {
+        "response-cache": 32
+      },
+      "originGetsMean": 0,
+      "originHeadsMean": 0,
+      "bufferedOriginBytesMean": 0,
+      "declaredOriginWindowBytesMean": 0,
+      "edgeLocations": {
+        "CDG": 32
+      }
+    },
+    {
+      "label": "blockzilla",
+      "representation": "bin-no-access",
+      "phase": "repeat",
+      "cache": "HIT",
+      "requests": 32,
+      "successful": 32,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 30.707,
+        "p95": 41.701,
+        "p99": 105.794
+      },
+      "totalMs": {
+        "p50": 33.748,
+        "p95": 71.621,
+        "p99": 110.472
+      },
+      "cacheCounts": {
+        "HIT": 32
+      },
+      "storageBytesModes": {
+        "response-cache": 32
+      },
+      "originGetsMean": 0,
+      "originHeadsMean": 0,
+      "bufferedOriginBytesMean": 0,
+      "declaredOriginWindowBytesMean": 0,
+      "edgeLocations": {
+        "CDG": 32
+      }
+    },
+    {
+      "label": "helius",
+      "representation": "json",
+      "phase": "repeat",
+      "cache": "ALL",
+      "requests": 32,
+      "successful": 32,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 47.04,
+        "p95": 58.584,
+        "p99": 68.441
+      },
+      "totalMs": {
+        "p50": 96.824,
+        "p95": 170.813,
+        "p99": 346.162
+      },
+      "cacheCounts": {
+        "UNREPORTED": 32
+      },
+      "storageBytesModes": {
+        "unreported": 32
+      },
+      "originGetsMean": null,
+      "originHeadsMean": null,
+      "bufferedOriginBytesMean": null,
+      "declaredOriginWindowBytesMean": null,
+      "edgeLocations": {
+        "CDG": 32
+      }
+    },
+    {
+      "label": "blockzilla",
+      "representation": "bin",
+      "phase": "repeat",
+      "cache": "HIT",
+      "requests": 32,
+      "successful": 32,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 31.118,
+        "p95": 46.082,
+        "p99": 112.569
+      },
+      "totalMs": {
+        "p50": 44.101,
+        "p95": 73.334,
+        "p99": 132.928
+      },
+      "cacheCounts": {
+        "HIT": 32
+      },
+      "storageBytesModes": {
+        "response-cache": 32
+      },
+      "originGetsMean": 0,
+      "originHeadsMean": 0,
+      "bufferedOriginBytesMean": 0,
+      "declaredOriginWindowBytesMean": 0,
+      "edgeLocations": {
+        "CDG": 32
+      }
+    }
+  ],
+  "coldOperationProof": [
+    {
+      "representation": "bin",
+      "requests": 8,
+      "r2GetsPerRequest": [
+        1
+      ],
+      "s3GetsPerRequest": [
+        2
+      ],
+      "headsPerRequest": [
+        0
+      ],
+      "allWorkerCachesBypassed": true
+    },
+    {
+      "representation": "json",
+      "requests": 8,
+      "r2GetsPerRequest": [
+        1
+      ],
+      "s3GetsPerRequest": [
+        2
+      ],
+      "headsPerRequest": [
+        0
+      ],
+      "allWorkerCachesBypassed": true
+    },
+    {
+      "representation": "bin-no-access",
+      "requests": 8,
+      "r2GetsPerRequest": [
+        1
+      ],
+      "s3GetsPerRequest": [
+        1
+      ],
+      "headsPerRequest": [
+        0
+      ],
+      "allWorkerCachesBypassed": true
+    }
+  ],
+  "responseHits": {
+    "requests": 96,
+    "allZeroOriginReads": true
+  },
+  "jsonCompressionHeaders": {
+    "blockzilla": {
+      "zstd": 48
+    },
+    "helius": {
+      "gzip": 48
+    }
+  },
+  "decodedJsonBytes": {
+    "workerMean": 2863425.875,
+    "heliusMean": 2863425.875,
+    "sameBySlot": true
+  },
+  "notes": [
+    "All eight blocks use full transactions, base64 transaction tuples, full metadata, rewards=false, and maxSupportedTransactionVersion=1. Metadata retains standard RPC encodings.",
+    "There are eight origin-uncached and 32 repeated samples per representation/provider. Percentiles use successful samples and the nearest-rank method.",
+    "Profile=1 bypasses Worker response/archive caches. R2 physical cache and provider cache states remain unknown. This is not a physical-disk cold-read test.",
+    "Full-result canonical hashes match live Helius and the earlier provider-only base64 reference for all 96 JSON samples. Exact JSON numbers and array order are preserved.",
+    "R2/S3 counters measure object API operations. They do not measure physical disk reads.",
+    "For streamed binary responses, header byte receipts contain buffered index bytes only. Declared source-window bytes remain separate from actual buffered byte counters.",
+    "The JSON network timer stops before local validation. Fetch body sizes are decoded bytes; compression headers do not provide total wire bytes.",
+    "Binary groups measure complete body transfer and content type. Exact V1 byte checks and native protocol checks are separate artifacts and integration tests.",
+    "Two bounded production CPU profile requests returned 404/code10393 and captured no profile. The first was after the main window; the retry was near the separate stage pass. Sanitized receipts are in ../get-block-cold-profile-20261121/production-cpu-profile-capture{,-2}.json. Version-filtered platform CPU metrics are separate evidence.",
+    "This one-host run does not prove a global fastest-provider result.",
+    "No stack CPU profile was captured. The attempts at 20:54:33.384546\u201320:54:34.446893 UTC and 20:55:10.113778\u201320:55:11.131046 UTC returned HTTP 404/code10393. Neither attempt overlapped this benchmark. See ../get-block-cold-profile-20261121/production-cpu-profile-capture.json and production-cpu-profile-capture-2.json."
+  ],
+  "platformCpuEvidence": {
+    "metrics": "platform-cpu-v9.json",
+    "mainInvocationCount": {
+      "planned": 144,
+      "observed": 143,
+      "note": "Keep adaptive ingestion and count uncertainty."
+    },
+    "stackProfileCaptured": false,
+    "failedStackProfileReceipts": [
+      "../get-block-cold-profile-20261121/production-cpu-profile-capture.json",
+      "../get-block-cold-profile-20261121/production-cpu-profile-capture-2.json"
+    ]
+  }
+}

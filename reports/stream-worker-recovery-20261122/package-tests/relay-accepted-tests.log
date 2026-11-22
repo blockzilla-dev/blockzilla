@@ -1,0 +1,103 @@
+warning: constant `BLS_AFFINE_LEN` is never used
+  --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/old-faithful/of-car-reader/src/blockmarker.rs:20:7
+   |
+20 | const BLS_AFFINE_LEN: usize = 192;
+   |       ^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `of-car-reader` (lib) generated 1 warning
+   Compiling hivezilla-stream v0.1.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/hivezilla/stream-relay)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 17.50s
+     Running unittests src/lib.rs (/Users/augustin/Developement/ferno/blockzilla-v1/indexer/blockzilla-resolution-service/target/debug/deps/hivezilla_stream-d1c7f9c0b8128a99)
+
+running 74 tests
+test bank_server::tests::direct_authority_is_explicit_and_cannot_rebind_the_feed ... ok
+test bank_server::tests::direct_beam_is_exact_bounded_and_has_no_ack_or_projection ... ok
+test bank_server::tests::direct_chunks_keep_only_proven_late_control_dependencies_at_or_below_floor ... ok
+test bank_server::tests::direct_floor_overrides_spool_aliases_for_every_read_and_error_head ... ok
+test bank_server::tests::direct_process_uses_only_native_feed_and_recovers_its_unix_socket ... ignored, requires the matching private release binary
+test bank_server::tests::finalized_events_cover_the_root_path_and_resume_by_block_id ... ok
+test bank_server::tests::finalized_lookup_forwards_only_the_pinned_exact_origin_block ... ok
+test bank_server::tests::notice_url_and_id_are_checked_before_any_credentialed_get ... ok
+test bank_server::tests::origin_ack_is_authenticated_pinned_bounded_and_duplicate_safe_after_retirement ... ok
+test bank_server::tests::origin_coverage_pages_are_private_sparse_and_report_retired_positions ... ok
+test bank_server::tests::origin_replays_exact_retained_source_before_spool_without_jump_or_ack ... ok
+test bank_server::tests::public_bank_views_share_native_confirmation_and_keep_full_blocks_private ... ok
+test bank_server::tests::public_v2_bearer_headers_cursor_conflict_and_gap_contract ... ok
+test bank_server::tests::raw_replay_preserves_source_digest_floors_and_relay_window ... ok
+test bank_source::cold_tests::cold_payload_is_unavailable_until_exact_files_are_restored ... ok
+test bank_source::cold_tests::continuous_floor_keeps_exact_payload_dependencies_and_sparse_gap_cursors ... ok
+test bank_source::cold_tests::finalized_lookup_rejects_changed_root_and_catalog_commits ... ok
+test bank_source::cold_tests::finalized_lookup_returns_original_frame_and_never_infers_a_skip ... ok
+test bank_store::tests::batch_commit_is_atomic_bounded_and_restores_all_dependencies ... ok
+test bank_store::tests::bounded_spool_capacity_and_exact_restore ... ignored, finite disk and replay capacity measurement
+test bank_store::tests::durable_control_dependencies_resume_and_duplicate_admission ... ok
+test bank_store::tests::finalized_window_emits_exact_rooted_path_and_skips_unrooted_forks ... ok
+test bank_store::tests::finalized_window_limits_batches_and_can_resume_from_an_ancestor ... ok
+test bank_store::tests::finalized_window_refuses_conflicting_roots_even_on_fresh_join ... ok
+test bank_store::tests::full_window_capacity_and_exact_restore ... ignored, full retained-window disk and reader capacity measurement
+test bank_store::tests::landed_root_fallback_checks_earlier_confirmations_for_the_same_block ... ok
+test bank_store::tests::memory_store_replays_exact_frames_and_has_no_saved_boundary ... ok
+test bank_store::tests::oversized_batch_cannot_change_the_durable_boundary ... ok
+test bank_store::tests::repeated_health_or_older_root_cannot_renew_observation_age ... ok
+test bank_store::tests::retention_pins_control_and_head_and_expiry_is_an_explicit_gap ... ok
+test bank_store::tests::status_cadence_leaves_delivery_margin_but_a_real_health_stall_expires ... ok
+test bank_upstream::tests::concurrent_downloads_keep_durable_order_and_the_saved_boundary ... ok
+test bank_upstream::tests::fresh_bootstrap_retries_connection_refusal_without_reset ... ok
+test bank_upstream::tests::restart_uses_saved_boundary_without_bootstrap_route ... ok
+test consumer_ack::tests::ack_is_durable_monotonic_and_idempotent_after_origin_retirement ... ok
+test consumer_ack::tests::all_registered_consumers_are_required_and_bindings_cannot_change ... ok
+test frame::tests::bounds_are_checked_before_allocation ... ok
+test frame::tests::competing_banks_controls_and_sequence_gaps ... ok
+test frame::tests::corruption_and_missing_dependencies_fail ... ok
+test frame::tests::cursors_do_not_accept_ambiguous_or_foreign_syntax ... ok
+test frame::tests::skipped_slots_are_allowed_but_parent_gaps_are_not ... ok
+test publisher::tests::cancelled_object_upload_joins_without_starting_manifest_or_head ... ok
+test publisher::tests::changed_pending_intent_is_rejected_and_committed_intent_is_reclaimed ... ok
+test publisher::tests::final_status_write_failure_after_remote_head_does_not_commit ... ok
+test publisher::tests::gaps_and_remote_conflicts_do_not_publish_a_head ... ok
+test publisher::tests::initial_status_write_failure_starts_no_remote_work ... ok
+test publisher::tests::larger_batch_keeps_the_durable_head_and_restart_boundaries ... ok
+test publisher::tests::lost_reply_reuses_bytes_without_advancing_checkpoint ... ok
+test publisher::tests::parallel_batch_is_atomic_and_resumes_partial_uploads ... ok
+test publisher::tests::processed_publication_reuses_payload_and_saves_ordered_controls ... ok
+test publisher::tests::remote_failure_joins_before_failed_status_and_keeps_intent ... ok
+test publisher::tests::slow_batch_log_is_bounded_and_only_reports_completed_slow_batches ... ok
+test publisher::tests::status_write_failure_during_head_readback_does_not_commit ... ok
+test publisher::tests::upload_status_is_live_during_blocked_objects_without_advancing_checkpoint ... ok
+test publisher::tests::upload_status_is_live_during_head_readback_without_advancing_checkpoint ... ok
+test server::tests::active_sse_survives_multiple_connection_idle_intervals ... ok
+test server::tests::origin_tls_cannot_disable_client_verification ... ok
+test server::tests::private_socket_keeps_authentication_and_cleans_only_its_own_inode ... ok
+test server::tests::public_metadata_has_fork_events_resume_and_no_block_access ... ok
+test server::tests::public_request_budget_does_not_take_private_capacity ... ok
+test server::tests::query_keys_are_opt_in_and_conflicts_fail_closed ... ok
+test server::tests::silent_http_connection_expires_and_releases_its_task ... ok
+test server::tests::socket_cleanup_preserves_a_replacement_socket ... ok
+test server::tests::socket_recovery_rejects_live_or_unsafe_paths_and_recovers_only_a_stale_socket ... ok
+test server::tests::url_key_works_for_notices_and_chunk_get_without_exposure ... ok
+test server::tests::zero_progress_reads_and_blocked_writes_do_not_renew_idle_time ... ok
+test signing_view::tests::stale_or_older_selection_cannot_restore_readiness ... ok
+test source::tests::audit_alone_cannot_publish_a_pending_artifact ... ok
+test source::tests::readonly_reader_follows_wal_growth_and_reset_without_writing_source_rows ... ok
+test source::tests::traversal_and_symlinks_are_rejected ... ok
+test store::tests::durable_restart_and_conflicts ... ok
+test store::tests::processed_restart_keeps_same_slot_controls ... ok
+test store::tests::slow_cursor_expires_without_blocking_intake ... ok
+test upstream::tests::no_cleartext_remote_or_redirect_credentials ... ok
+
+test result: ok. 71 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out; finished in 16.30s
+
+     Running unittests src/main.rs (/Users/augustin/Developement/ferno/blockzilla-v1/indexer/blockzilla-resolution-service/target/debug/deps/hivezilla_stream-ae50a95bb742eb08)
+
+running 1 test
+test transport_tests::private_socket_and_fixed_consumer_are_opt_in_and_do_not_change_tcp_defaults ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests hivezilla_stream
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

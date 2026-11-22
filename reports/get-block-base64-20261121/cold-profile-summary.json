@@ -1,0 +1,78 @@
+{
+  "schema": "blockzilla-base64-cold-profile-summary-v1",
+  "version_id": "074812ac-a908-4eba-bec5-02752230eae6",
+  "placement": "default edge",
+  "transaction_encoding": "base64",
+  "json_requests": 8,
+  "json_parity_matches": 8,
+  "binary_requests": 2,
+  "binary_parity_matches": 2,
+  "stages": {
+    "authentication": {
+      "requests": 8,
+      "arithmetic_median_ms": 4.0,
+      "maximum_ms": 6
+    },
+    "resolution_headers": {
+      "requests": 8,
+      "arithmetic_median_ms": 43.0,
+      "maximum_ms": 51
+    },
+    "resolution_body": {
+      "requests": 8,
+      "arithmetic_median_ms": 0.0,
+      "maximum_ms": 2
+    },
+    "resolution_decode": {
+      "requests": 8,
+      "arithmetic_median_ms": 0.0,
+      "maximum_ms": 0
+    },
+    "block_headers": {
+      "requests": 8,
+      "arithmetic_median_ms": 389.0,
+      "maximum_ms": 567
+    },
+    "block_body": {
+      "requests": 8,
+      "arithmetic_median_ms": 1.0,
+      "maximum_ms": 207
+    },
+    "signature_headers": {
+      "requests": 8,
+      "arithmetic_median_ms": 386.0,
+      "maximum_ms": 435
+    },
+    "signature_body": {
+      "requests": 8,
+      "arithmetic_median_ms": 0.0,
+      "maximum_ms": 10
+    },
+    "source_ranges_parallel": {
+      "requests": 8,
+      "arithmetic_median_ms": 463.5,
+      "maximum_ms": 567
+    },
+    "resolution_access_decode": {
+      "requests": 8,
+      "arithmetic_median_ms": 0.0,
+      "maximum_ms": 0
+    },
+    "resolution_fetch_total": {
+      "requests": 8,
+      "arithmetic_median_ms": 509.0,
+      "maximum_ms": 608
+    }
+  },
+  "source_colos": [
+    "CDG"
+  ],
+  "notes": [
+    "Stage arithmetic medians use the mean of the middle pair for eight observations. The benchmark runner uses its own documented lower quantile for p50. Do not equate these different definitions.",
+    "Source ranges run concurrently: the recorded source_ranges_parallel stage is their elapsed time, not their sum.",
+    "Worker clocks can remain fixed during CPU work. Zero decode/render durations do not measure CPU.",
+    "Stream profile headers are sent before final rendering and omit its final events. Native CPU and Cloudflare platform CPU are separate evidence.",
+    "Physical R2 cache and Helius cache states are unknown.",
+    "The separate stage pass followed the main benchmark; do not subtract stage medians from main request medians."
+  ]
+}

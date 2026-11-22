@@ -1,0 +1,32 @@
+[Unit]
+Description=Blockzilla read-only recent Compact V2 and archive resolution
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/live/hivezilla-validator-20260930/jobs/recent-get-block-recovery-20261122
+ExecStart=/home/ubuntu/live/hivezilla-validator-20260930/jobs/recent-get-block-recovery-20261122/bin/blockzilla-resolution-service --mirror-root /home/ubuntu/data/blockzilla-resolution-indexes/source-v1 --catalog /home/ubuntu/live/hivezilla-validator-20260930/jobs/recent-get-block-recovery-20261122/catalog.json --token-file /home/ubuntu/live/hivezilla-validator-20260930/jobs/recent-get-block-recovery-20261122/broker-token.txt --listen 127.0.0.1:18962 --cache-mib 0 --max-concurrent 8 --recent-config /home/ubuntu/live/hivezilla-validator-20260930/jobs/recent-get-block-recovery-20261122/recent-config.json
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=15
+Nice=10
+IOSchedulingClass=idle
+CPUQuota=200%
+MemoryHigh=1800M
+MemoryMax=2G
+MemorySwapMax=0
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=true
+ReadOnlyPaths=/home/ubuntu/data/blockzilla-resolution-indexes/source-v1
+ReadOnlyPaths=/home/ubuntu/live/hivezilla-validator-20260930/jobs/native-continuous-20261121/runs/c1739ce6fcee61291f41548b1960aa27/bank-v2
+ReadOnlyPaths=/home/ubuntu/live/hivezilla-validator-20260930/jobs/native-continuous-20261121/runs/c1739ce6fcee61291f41548b1960aa27/processed
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

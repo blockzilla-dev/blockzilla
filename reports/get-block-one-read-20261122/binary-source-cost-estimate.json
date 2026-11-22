@@ -1,0 +1,387 @@
+{
+  "schema": "blockzilla-one-read-binary-source-cost-v1",
+  "createdAt": "2026-11-22T11:13:24.959864+00:00",
+  "worker": "blockzilla-get-block-bundle-test",
+  "version": "8142880e-9475-4c45-b3a1-dc16b538d52f",
+  "wasmSha256": "7b5b0f00ce65baef7c33adaa9fb020f34a040d5f86077a2203c92df216cab875",
+  "requests": "binary-source-supplement.json",
+  "platformCpu": "platform-cpu-binary-source.json",
+  "original119CallCost": "cost-estimate.json",
+  "window": {
+    "start": "2026-11-22T11:10:57.288Z",
+    "end": "2026-11-22T11:11:13.686Z"
+  },
+  "allGroupsMatchedUnsampled": true,
+  "rates": {
+    "r2StandardStorageUsdPerGbMonth": 0.015,
+    "r2ClassAPutUsdPerMillion": 4.5,
+    "r2ClassBReadUsdPerMillion": 0.36,
+    "workerRequestsUsdPerMillion": 0.3,
+    "cpuUsdPerMillionMs": 0.02,
+    "authKvReadsUsdPerMillion": 0.5,
+    "workerLogEventsUsdPerMillion": 0.6,
+    "analyticsEngineCurrentlyBilled": false
+  },
+  "phases": {
+    "auth_warm_0": {
+      "cpu": {
+        "selectedQuery": "AuthWarm0",
+        "observedRequests": 1,
+        "countMatchesPlan": true,
+        "errors": 0,
+        "cpuTimeUs": 22020,
+        "startupCpuTimeUs": 16314,
+        "meanCpuMs": 22.02,
+        "meanCpuIncludingAttributedStartupMs": 38.334,
+        "cpuP50Ms": 22.02,
+        "cpuP95Ms": 22.02,
+        "cpuUsdPerMillionRequestsBeforeAllowances": 0.4404,
+        "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.76668,
+        "adaptiveSampleInterval": 1,
+        "sampleSize": 1,
+        "unsampled": true,
+        "confidence95": {
+          "cpuTimeUs": {
+            "estimate": 22020,
+            "isValid": false,
+            "lower": 22020,
+            "sampleSize": 1,
+            "upper": 22020
+          },
+          "requests": {
+            "estimate": 1,
+            "isValid": false,
+            "lower": 1,
+            "sampleSize": 1,
+            "upper": 1
+          }
+        },
+        "usableForMatchedUnsampledEstimate": true
+      },
+      "requests": 1,
+      "sampleIndices": [
+        0
+      ],
+      "meanInvocationCpuMs": 22.02,
+      "meanAttributedStartupMs": 16.314,
+      "ownerR2Gets": 0,
+      "ownerR2Heads": 0,
+      "authKvReads": 1,
+      "authTierCounts": {
+        "KV": 1
+      },
+      "responseCacheCounts": {
+        "HIT": 1
+      },
+      "componentsUsdPerMillionHttpRequests": {
+        "workerRequests": 0.3,
+        "r2Reads": 0.0,
+        "authKvReads": 0.5,
+        "invocationCpu": 0.4404,
+        "attributedStartupCpu": 0.32628
+      },
+      "totalExcludingLogsUsdPerMillionHttpRequests": 1.2404,
+      "includingAttributedStartupExcludingLogsUsdPerMillionHttpRequests": 1.56668,
+      "withExpectedOnePercentInvocationLogsUsdPerMillionHttpRequests": 1.2464,
+      "includingStartupAndExpectedLogsUsdPerMillionHttpRequests": 1.57268,
+      "batchExcludingLogsUsd": 1.2404e-06,
+      "batchWithStartupExcludingLogsUsd": 1.56668e-06
+    },
+    "binary_source_0": {
+      "cpu": {
+        "selectedQuery": "BinarySource0",
+        "observedRequests": 4,
+        "countMatchesPlan": true,
+        "errors": 0,
+        "cpuTimeUs": 25051,
+        "startupCpuTimeUs": 0,
+        "meanCpuMs": 6.26275,
+        "meanCpuIncludingAttributedStartupMs": 6.26275,
+        "cpuP50Ms": 4.891,
+        "cpuP95Ms": 10.437,
+        "cpuUsdPerMillionRequestsBeforeAllowances": 0.125255,
+        "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.125255,
+        "adaptiveSampleInterval": 1,
+        "sampleSize": 4,
+        "unsampled": true,
+        "confidence95": {
+          "cpuTimeUs": {
+            "estimate": 25051,
+            "isValid": false,
+            "lower": 25051,
+            "sampleSize": 4,
+            "upper": 25051
+          },
+          "requests": {
+            "estimate": 4,
+            "isValid": false,
+            "lower": 4,
+            "sampleSize": 4,
+            "upper": 4
+          }
+        },
+        "usableForMatchedUnsampledEstimate": true
+      },
+      "requests": 4,
+      "sampleIndices": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "meanInvocationCpuMs": 6.26275,
+      "meanAttributedStartupMs": 0.0,
+      "ownerR2Gets": 4,
+      "ownerR2Heads": 0,
+      "authKvReads": 0,
+      "authTierCounts": {
+        "MEMORY": 4
+      },
+      "responseCacheCounts": {
+        "BYPASS": 4
+      },
+      "componentsUsdPerMillionHttpRequests": {
+        "workerRequests": 0.3,
+        "r2Reads": 0.36,
+        "authKvReads": 0.0,
+        "invocationCpu": 0.125255,
+        "attributedStartupCpu": 0.0
+      },
+      "totalExcludingLogsUsdPerMillionHttpRequests": 0.785255,
+      "includingAttributedStartupExcludingLogsUsdPerMillionHttpRequests": 0.785255,
+      "withExpectedOnePercentInvocationLogsUsdPerMillionHttpRequests": 0.791255,
+      "includingStartupAndExpectedLogsUsdPerMillionHttpRequests": 0.791255,
+      "batchExcludingLogsUsd": 3.14102e-06,
+      "batchWithStartupExcludingLogsUsd": 3.14102e-06
+    },
+    "auth_warm_1": {
+      "cpu": {
+        "selectedQuery": "AuthWarm1",
+        "observedRequests": 1,
+        "countMatchesPlan": true,
+        "errors": 0,
+        "cpuTimeUs": 25298,
+        "startupCpuTimeUs": 18187,
+        "meanCpuMs": 25.298,
+        "meanCpuIncludingAttributedStartupMs": 43.485,
+        "cpuP50Ms": 25.298,
+        "cpuP95Ms": 25.298,
+        "cpuUsdPerMillionRequestsBeforeAllowances": 0.5059600000000001,
+        "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.8697,
+        "adaptiveSampleInterval": 1,
+        "sampleSize": 1,
+        "unsampled": true,
+        "confidence95": {
+          "cpuTimeUs": {
+            "estimate": 25298,
+            "isValid": false,
+            "lower": 25298,
+            "sampleSize": 1,
+            "upper": 25298
+          },
+          "requests": {
+            "estimate": 1,
+            "isValid": false,
+            "lower": 1,
+            "sampleSize": 1,
+            "upper": 1
+          }
+        },
+        "usableForMatchedUnsampledEstimate": true
+      },
+      "requests": 1,
+      "sampleIndices": [
+        5
+      ],
+      "meanInvocationCpuMs": 25.298,
+      "meanAttributedStartupMs": 18.187,
+      "ownerR2Gets": 0,
+      "ownerR2Heads": 0,
+      "authKvReads": 1,
+      "authTierCounts": {
+        "KV": 1
+      },
+      "responseCacheCounts": {
+        "HIT": 1
+      },
+      "componentsUsdPerMillionHttpRequests": {
+        "workerRequests": 0.3,
+        "r2Reads": 0.0,
+        "authKvReads": 0.5,
+        "invocationCpu": 0.50596,
+        "attributedStartupCpu": 0.36374
+      },
+      "totalExcludingLogsUsdPerMillionHttpRequests": 1.30596,
+      "includingAttributedStartupExcludingLogsUsdPerMillionHttpRequests": 1.6697,
+      "withExpectedOnePercentInvocationLogsUsdPerMillionHttpRequests": 1.31196,
+      "includingStartupAndExpectedLogsUsdPerMillionHttpRequests": 1.6757,
+      "batchExcludingLogsUsd": 1.30596e-06,
+      "batchWithStartupExcludingLogsUsd": 1.6697e-06
+    },
+    "binary_source_1": {
+      "cpu": {
+        "selectedQuery": "BinarySource1",
+        "observedRequests": 4,
+        "countMatchesPlan": true,
+        "errors": 0,
+        "cpuTimeUs": 27181,
+        "startupCpuTimeUs": 0,
+        "meanCpuMs": 6.79525,
+        "meanCpuIncludingAttributedStartupMs": 6.79525,
+        "cpuP50Ms": 5.512,
+        "cpuP95Ms": 12.132,
+        "cpuUsdPerMillionRequestsBeforeAllowances": 0.135905,
+        "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.135905,
+        "adaptiveSampleInterval": 1,
+        "sampleSize": 4,
+        "unsampled": true,
+        "confidence95": {
+          "cpuTimeUs": {
+            "estimate": 27181,
+            "isValid": false,
+            "lower": 27181,
+            "sampleSize": 4,
+            "upper": 27181
+          },
+          "requests": {
+            "estimate": 4,
+            "isValid": false,
+            "lower": 4,
+            "sampleSize": 4,
+            "upper": 4
+          }
+        },
+        "usableForMatchedUnsampledEstimate": true
+      },
+      "requests": 4,
+      "sampleIndices": [
+        6,
+        7,
+        8,
+        9
+      ],
+      "meanInvocationCpuMs": 6.79525,
+      "meanAttributedStartupMs": 0.0,
+      "ownerR2Gets": 4,
+      "ownerR2Heads": 0,
+      "authKvReads": 0,
+      "authTierCounts": {
+        "MEMORY": 4
+      },
+      "responseCacheCounts": {
+        "BYPASS": 4
+      },
+      "componentsUsdPerMillionHttpRequests": {
+        "workerRequests": 0.3,
+        "r2Reads": 0.36,
+        "authKvReads": 0.0,
+        "invocationCpu": 0.135905,
+        "attributedStartupCpu": 0.0
+      },
+      "totalExcludingLogsUsdPerMillionHttpRequests": 0.795905,
+      "includingAttributedStartupExcludingLogsUsdPerMillionHttpRequests": 0.795905,
+      "withExpectedOnePercentInvocationLogsUsdPerMillionHttpRequests": 0.801905,
+      "includingStartupAndExpectedLogsUsdPerMillionHttpRequests": 0.801905,
+      "batchExcludingLogsUsd": 3.18362e-06,
+      "batchWithStartupExcludingLogsUsd": 3.18362e-06
+    }
+  },
+  "binarySourcePooled": {
+    "requests": 8,
+    "sampleIndices": [
+      1,
+      2,
+      3,
+      4,
+      6,
+      7,
+      8,
+      9
+    ],
+    "meanInvocationCpuMs": 6.529,
+    "meanAttributedStartupMs": 0.0,
+    "ownerR2Gets": 8,
+    "ownerR2Heads": 0,
+    "authKvReads": 0,
+    "authTierCounts": {
+      "MEMORY": 8
+    },
+    "responseCacheCounts": {
+      "BYPASS": 8
+    },
+    "componentsUsdPerMillionHttpRequests": {
+      "workerRequests": 0.3,
+      "r2Reads": 0.36,
+      "authKvReads": 0.0,
+      "invocationCpu": 0.13058,
+      "attributedStartupCpu": 0.0
+    },
+    "totalExcludingLogsUsdPerMillionHttpRequests": 0.79058,
+    "includingAttributedStartupExcludingLogsUsdPerMillionHttpRequests": 0.79058,
+    "withExpectedOnePercentInvocationLogsUsdPerMillionHttpRequests": 0.79658,
+    "includingStartupAndExpectedLogsUsdPerMillionHttpRequests": 0.79658,
+    "batchExcludingLogsUsd": 6.32464e-06,
+    "batchWithStartupExcludingLogsUsd": 6.32464e-06
+  },
+  "allTenRequestsIncludingChargedWarmups": {
+    "requests": 10,
+    "sampleIndices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "meanInvocationCpuMs": 9.955,
+    "meanAttributedStartupMs": 3.4501,
+    "ownerR2Gets": 8,
+    "ownerR2Heads": 0,
+    "authKvReads": 2,
+    "authTierCounts": {
+      "KV": 2,
+      "MEMORY": 8
+    },
+    "responseCacheCounts": {
+      "HIT": 2,
+      "BYPASS": 8
+    },
+    "componentsUsdPerMillionHttpRequests": {
+      "workerRequests": 0.3,
+      "r2Reads": 0.288,
+      "authKvReads": 0.1,
+      "invocationCpu": 0.1991,
+      "attributedStartupCpu": 0.069002
+    },
+    "totalExcludingLogsUsdPerMillionHttpRequests": 0.8871,
+    "includingAttributedStartupExcludingLogsUsdPerMillionHttpRequests": 0.956102,
+    "withExpectedOnePercentInvocationLogsUsdPerMillionHttpRequests": 0.8931,
+    "includingStartupAndExpectedLogsUsdPerMillionHttpRequests": 0.962102,
+    "batchExcludingLogsUsd": 8.871e-06,
+    "batchWithStartupExcludingLogsUsd": 9.56102e-06
+  },
+  "warmupOverheadAssignedToEightBinaryOutputs": {
+    "binaryOutputs": 8,
+    "jsonWarmupRequests": 2,
+    "totalHttpRequests": 10,
+    "formula": "Total cost of all ten requests divided by eight desired binary outputs. This is a different denominator from cost per HTTP request.",
+    "totalExcludingLogsUsdPerMillionBinaryOutputs": 1.108875,
+    "includingAttributedStartupExcludingLogsUsdPerMillionBinaryOutputs": 1.1951275,
+    "withExpectedOnePercentInvocationLogsUsdPerMillionBinaryOutputs": 1.116375,
+    "includingStartupAndExpectedLogsUsdPerMillionBinaryOutputs": 1.2026275
+  },
+  "limits": [
+    "Eight binary source requests only, across the same four selected modern blocks.",
+    "All eight source bodies matched their original full V1 SHA-256 values, with one GET and no KV read each.",
+    "Auth was warm from the separately charged JSON requests. This is not fully cold authentication. No source bytes were served from the data caches in these eight calls.",
+    "All selected CPU groups have exact request counts, sample interval one and matching sample sizes. Platform small-sample confidence intervals remain invalid.",
+    "Attributed startup is zero in the binary cohorts and appears in the JSON warmups. It is preserved in separate totals.",
+    "The original cold binary cohort had one fresh KV read per request and still cost more than $1/M.",
+    "Costs use marginal published rates before shared account allowances, fixed fees/storage and billing rounding. Expected logs are a separate model, not measured log counts.",
+    "The analysis sent no additional data requests. All ten supplement requests were explicitly authorized and are separate from the original 119-call latency result."
+  ]
+}

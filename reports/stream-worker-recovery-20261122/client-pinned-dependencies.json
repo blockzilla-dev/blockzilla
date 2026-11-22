@@ -1,0 +1,9 @@
+{
+  "source": "/Users/augustin/Developement/ferno/blockzilla-v1/.codex/reports/ferno-compact-only-20261122/build-20261122T134831Z/INPUT-SOURCE-FILES.json",
+  "files": [
+    "Cargo.toml",
+    "hivezilla/stream-relay/decoder/src/lib.rs",
+    "hivezilla/stream-relay/decoder/src/tests.rs"
+  ],
+  "reason": "Keep the deployed decoder; concurrent wallet changes stay outside this release."
+}

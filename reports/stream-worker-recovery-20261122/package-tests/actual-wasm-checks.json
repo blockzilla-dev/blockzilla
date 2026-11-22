@@ -1,0 +1,31 @@
+{
+  "schema": "package-getblock-actual-wasm-checks-v1",
+  "state": "PASS",
+  "phases": [
+    {
+      "label": "recent-wasm",
+      "started_ms": 1795362957567,
+      "exit_code": 0,
+      "finished_ms": 1795362962426,
+      "checks": 41,
+      "status": "PASS"
+    },
+    {
+      "label": "foundation-wasm",
+      "started_ms": 1795362962426,
+      "exit_code": 0,
+      "finished_ms": 1795362980942,
+      "checks": 110,
+      "status": "PASS"
+    },
+    {
+      "label": "range-probe-wasm",
+      "started_ms": 1795362980948,
+      "exit_code": 0,
+      "finished_ms": 1795362983904,
+      "checks": 11,
+      "status": "PASS"
+    }
+  ],
+  "total_checks": 162
+}

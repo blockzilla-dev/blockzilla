@@ -1,0 +1,36 @@
+{
+  "checkedAt": "2026-11-22T11:04:18.918028+00:00",
+  "worker": "blockzilla-get-block-bundle-test",
+  "url": "https://blockzilla-get-block-bundle-test.cheron-augustin.workers.dev",
+  "version": "8142880e-9475-4c45-b3a1-dc16b538d52f",
+  "wasmSha256": "7b5b0f00ce65baef7c33adaa9fb020f34a040d5f86077a2203c92df216cab875",
+  "config": "edgezilla/get-block/wrangler.bundle-test.jsonc",
+  "bucket": "blockzilla-get-block-native-test",
+  "prefix": "serving/slot-bundles-test-20261122-v1",
+  "admittedSlots": [
+    470555971,
+    470663944,
+    470771932,
+    470879999
+  ],
+  "newDataObjects": 4,
+  "fullEpochMigration": false,
+  "baselineVersionsUnchanged": true,
+  "deployments": {
+    "blockzilla-get-block-bundle-test": {
+      "version": "8142880e-9475-4c45-b3a1-dc16b538d52f",
+      "createdOn": "2026-11-22T11:03:58.075137Z",
+      "deploymentId": "ffa699e2-e51d-4783-a304-155860123307"
+    },
+    "blockzilla-get-block-native-fast": {
+      "version": "bf0bedfc-7216-4550-8e79-b671a93318f8",
+      "createdOn": "2026-11-22T08:33:54.936063Z",
+      "deploymentId": "683b2bca-3f90-4ba6-8f77-6aa69efe5c68"
+    },
+    "blockzilla-get-block": {
+      "version": "2359b1b3-d95b-4e3b-bffc-b4161aac406f",
+      "createdOn": "2026-11-21T21:36:14.893431Z",
+      "deploymentId": "1bd87671-c88a-46ee-a7fd-658963e1241c"
+    }
+  }
+}

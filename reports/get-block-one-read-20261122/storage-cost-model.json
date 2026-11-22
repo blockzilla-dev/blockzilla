@@ -1,0 +1,206 @@
+{
+  "schema": "blockzilla-one-read-storage-cost-model-v1",
+  "createdAt": "2026-11-22T10:58:02.831481+00:00",
+  "status": "COMPLETE: four remote bundles verified; 119-call main run and separate ten-call supplement passed; CPU collected with explicit HIT count limits",
+  "scope": {
+    "epoch": 1089,
+    "slots": [
+      470555971,
+      470663944,
+      470771932,
+      470879999
+    ],
+    "completeEpochServingCoverage": false,
+    "bucket": "blockzilla-get-block-native-test",
+    "cloudWritesByThisAnalysis": false,
+    "oldObjectsDeleted": false,
+    "comparison": "The same four selected blocks and their current full-sized owner resolution objects. Whole-epoch payload bytes are not used as this four-block denominator."
+  },
+  "records": [
+    {
+      "slot": 470555971,
+      "epoch": 1089,
+      "localBundlePath": ".codex-tmp/get-block-resolution-20261121/inputs/470555971.bundle.wincode",
+      "bundleBytes": 247594,
+      "bundleSha256": "c0fc8383e217705dde28612195cc165e95b2163c73743e5cb1586aab220c8415",
+      "sameBlockCompressedHotBytes": 145910,
+      "sameBlockOrderedSignatureBytes": 26880,
+      "sameBlockSourceBytes": 172790,
+      "currentResolutionBytes": 75677,
+      "currentResolutionSha256": "4630be8d6e600009c27f1a9fc03b2bf8533720fed38929ff702c6e4079ef0c31",
+      "currentThreeReadQueryBytes": 248467,
+      "bundleOverSourceBytes": 74804
+    },
+    {
+      "slot": 470663944,
+      "epoch": 1089,
+      "localBundlePath": ".codex-tmp/get-block-resolution-20261121/inputs/470663944.bundle.wincode",
+      "bundleBytes": 364638,
+      "bundleSha256": "64ac916826fef959e8786beea3723836e22c7bbc40f3431617ff58be175a4775",
+      "sameBlockCompressedHotBytes": 229322,
+      "sameBlockOrderedSignatureBytes": 32576,
+      "sameBlockSourceBytes": 261898,
+      "currentResolutionBytes": 103689,
+      "currentResolutionSha256": "6c4a07ae7c5df4e7fdbd3fc8fb92136df422c852f2780a76d23342254177a51d",
+      "currentThreeReadQueryBytes": 365587,
+      "bundleOverSourceBytes": 102740
+    },
+    {
+      "slot": 470771932,
+      "epoch": 1089,
+      "localBundlePath": ".codex-tmp/get-block-resolution-20261121/inputs/470771932.bundle.wincode",
+      "bundleBytes": 275803,
+      "bundleSha256": "dab59abd834b055e114e76eb34245f5b1506ec9518c4496f89a29e4b34db764b",
+      "sameBlockCompressedHotBytes": 153791,
+      "sameBlockOrderedSignatureBytes": 31616,
+      "sameBlockSourceBytes": 185407,
+      "currentResolutionBytes": 91326,
+      "currentResolutionSha256": "5f7218aa7b67a2a01c173776809bd30f5830cf3c45a3e75a6eca8f6e499a051b",
+      "currentThreeReadQueryBytes": 276733,
+      "bundleOverSourceBytes": 90396
+    },
+    {
+      "slot": 470879999,
+      "epoch": 1089,
+      "localBundlePath": ".codex-tmp/get-block-resolution-20261121/inputs/470879999.bundle.wincode",
+      "bundleBytes": 124924,
+      "bundleSha256": "977d110e3d2328889faee91eda72703b9dee3ee4e7cb7edc3a12ce58f429296a",
+      "sameBlockCompressedHotBytes": 66157,
+      "sameBlockOrderedSignatureBytes": 15040,
+      "sameBlockSourceBytes": 81197,
+      "currentResolutionBytes": 44425,
+      "currentResolutionSha256": "0c0194fe9689ad16c7e7586aca92ab679cb7f00b7e6cb7a97ed65a01de9c692f",
+      "currentThreeReadQueryBytes": 125622,
+      "bundleOverSourceBytes": 43727
+    }
+  ],
+  "totals": {
+    "bundleBytes": 1012959,
+    "sameBlockCompressedHotBytes": 595180,
+    "sameBlockOrderedSignatureBytes": 106112,
+    "sameBlockSourceBytes": 701292,
+    "currentResolutionBytes": 315117,
+    "currentThreeReadQueryBytes": 1016409,
+    "bundleOverSourceBytes": 311667
+  },
+  "sameFourComparison": {
+    "bundleMinusCurrentQueryBytes": -3450,
+    "bundleReductionFraction": 0.0033943028839767964,
+    "bundleOverSourceFraction": 0.4444183022193323,
+    "currentResolutionOverSourceFraction": 0.44933779367225063
+  },
+  "rates": {
+    "r2StandardStorageUsdPerGbMonth": 0.015,
+    "r2ClassAPutUsdPerMillion": 4.5,
+    "r2ClassBReadUsdPerMillion": 0.36,
+    "workerRequestsUsdPerMillion": 0.3,
+    "cpuUsdPerMillionMs": 0.02,
+    "authKvReadsUsdPerMillion": 0.5,
+    "workerLogEventsUsdPerMillion": 0.6,
+    "analyticsEngineCurrentlyBilled": false
+  },
+  "ratesVerifiedAt": "2026-11-22",
+  "sources": {
+    "r2": "https://developers.cloudflare.com/r2/pricing/",
+    "workers": "https://developers.cloudflare.com/workers/platform/pricing/",
+    "kv": "https://developers.cloudflare.com/kv/platform/pricing/",
+    "analyticsEngine": "https://developers.cloudflare.com/analytics/analytics-engine/pricing/"
+  },
+  "testIncrement": {
+    "bundleObjectCount": 4,
+    "copiedBytes": 1012959,
+    "fixedFullMonthStorageUsdBeforeAllowancesAndRounding": 1.5194384999999999e-05,
+    "putOperationsAssumingOnePutPerSmallObject": 4,
+    "oneTimePutUsdBeforeAllowancesAndRounding": 1.8e-05,
+    "addedToExistingOwnerFiles": true,
+    "meaning": "All four bundle files are additional test copies. The earlier payload and resolution objects stay in place.",
+    "verifiedUploadedObjectCount": 4,
+    "uploadReadbackGetCount": 4,
+    "oneTimeReadbackUsdBeforeAllowancesAndRounding": 1.44e-06,
+    "oneTimePutAndReadbackUsdBeforeAllowancesAndRounding": 1.944e-05
+  },
+  "hypotheticalSameFourReplacement": {
+    "currentSelectedRepresentationBytes": 1016409,
+    "bundleRepresentationBytes": 1012959,
+    "differenceBytes": -3450,
+    "performed": false,
+    "meaning": "This is a byte comparison only. The four original ranges cannot be removed from the immutable epoch objects without a separate rewrite. Foundation copies also remain."
+  },
+  "sampleLimitedProjection": {
+    "assumedIndexedBlocks": 432000,
+    "measuredSampleBlocks": 4,
+    "formula": "four-block measured bytes / 4 * 432000; multiply GB by $0.015 per month",
+    "projectedBundleBytes": 109399572000.0,
+    "projectedBundleStorageUsdPerMonth": 1.64099358,
+    "projectedSameBlockHotAndSignaturesBytes": 75739536000.0,
+    "projectedCurrentQueryRepresentationBytes": 109772172000.0,
+    "projectedBundleOverHotAndSignatureBytes": 33660036000.0,
+    "projectedBundleOverHotAndSignatureStorageUsdPerMonth": 0.50490054,
+    "oneTimePerBlockPutCount": 432000,
+    "oneTimePerBlockPutUsdBeforeAllowancesAndRounding": 1.944,
+    "warning": "A projection from four selected modern blocks only. It is not a measured full-epoch size, produced-block count, coverage, compression ratio, or migration plan."
+  },
+  "requestCostBeforeCpu": {
+    "unit": "USD per million HTTP requests before account allowances, fixed subscription/storage, logs and billing rounding",
+    "oneGetFreshKv": 1.16,
+    "oneGetCachedAuth": 0.66,
+    "responseHitFreshKv": 0.8,
+    "responseHitCachedAuth": 0.3,
+    "oneGetCachedAuthCpuBudgetForOneDollarMs": 17,
+    "formula": "0.30 + 0.36 * mean_object_reads + 0.50 * mean_KV_reads + 0.02 * mean_CPU_ms",
+    "warning": "These are component floors. Measured JSON/binary costs and the separate cached-auth binary supplement are recorded in cost-estimate.json and binary-source-cost-estimate.json. Full-bypass calls each use fresh KV auth; cached-auth status is proved by the request receipts."
+  },
+  "cpuCollection": {
+    "status": "COMPLETE_WITH_REFERENCES; key main and binary-source phases matched and unsampled; HIT CPU totals remain unmatched",
+    "willSendWorkerDataRequests": false,
+    "requirements": [
+      "Filter Worker name, deployed version and separate JSON/binary/response-hit phase windows.",
+      "Record observed request count, adaptive sample interval, sample size, invocation CPU and startup CPU separately.",
+      "Use actual per-response object/KV counters. Keep warmup and diagnostic traffic separate.",
+      "Use a matched unsampled phase for exact observed component estimates; label sampled or count-mismatched phases as estimates or unusable."
+    ],
+    "receipts": [
+      "platform-cpu-bundle.json",
+      "platform-cpu-baseline.json",
+      "platform-cpu-binary-source.json"
+    ],
+    "noExtraWorkerDataRequestsSent": true,
+    "costReceipts": [
+      "cost-estimate.json",
+      "binary-source-cost-estimate.json"
+    ],
+    "notes": "The 119-call main run and the separate 10-call supplement use separate windows. All eight binary source requests used one GET and zero KV reads. Warmup costs, startup, and unmatched HIT counts are explicit.",
+    "furtherApiOrDataReadsPlanned": false
+  },
+  "limits": [
+    "R2 counts are object API operations, not physical disk reads.",
+    "No physical R2 cache state is controlled.",
+    "Rates are marginal published rates. Shared account allowances, monthly billing-unit rounding, minimum subscription, storage duration and actual log counts are separate.",
+    "One-GET operation count and byte identity must be proved by deployed benchmark receipts before this model is reported as an actual result."
+  ],
+  "remoteReadbackReceipt": "bundle-upload-verification.json",
+  "deployedExperiment": {
+    "worker": "blockzilla-get-block-bundle-test",
+    "version": "8142880e-9475-4c45-b3a1-dc16b538d52f",
+    "wasmSha256": "7b5b0f00ce65baef7c33adaa9fb020f34a040d5f86077a2203c92df216cab875",
+    "deploymentReceipt": "deployment.json",
+    "requests": "main.json",
+    "measuredCost": "cost-estimate.json",
+    "fullColdJsonCallsProvingOneGetAndKvOne": 8,
+    "fullColdBinaryCallsProvingOneGetAndKvOne": 8
+  },
+  "measuredBinarySourceSupplement": {
+    "requestReceipt": "binary-source-supplement.json",
+    "cpuReceipt": "platform-cpu-binary-source.json",
+    "costReceipt": "binary-source-cost-estimate.json",
+    "binaryRequests": 8,
+    "chargedJsonAuthWarmups": 2,
+    "matchedUnsampled": true,
+    "objectGetsPerBinaryRequest": 1,
+    "kvReadsPerBinaryRequest": 0,
+    "meanInvocationCpuMs": 6.529,
+    "binaryRequestCostUsdPerMillionBeforeLogsStorageAllowancesAndRounding": 0.79058,
+    "allWarmupAndStartupCostAssignedToEightBinaryOutputsUsdPerMillion": 1.1951275,
+    "fullyColdAuthentication": false
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "schema": "blockzilla-package-worker-validation-v1",
+  "status": "PASS",
+  "time": "2026-11-22T16:02:34.032166+00:00",
+  "worktree": "/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1",
+  "cargo_phases": {
+    "worker_feature": {
+      "passed": 130,
+      "failed": 0,
+      "ignored": 0,
+      "log": "worker-feature-tests.log"
+    },
+    "native_resolution": {
+      "passed": 30,
+      "failed": 0,
+      "ignored": 0,
+      "log": "native-resolution-tests.log"
+    },
+    "relay": {
+      "passed": 72,
+      "failed": 0,
+      "ignored": 3,
+      "log": "relay-accepted-tests.log"
+    }
+  },
+  "worker_core_included_in_feature_count": 53,
+  "actual_wasm_checks": {
+    "schema": "package-getblock-actual-wasm-checks-v1",
+    "state": "PASS",
+    "phases": [
+      {
+        "label": "recent-wasm",
+        "started_ms": 1795362957567,
+        "exit_code": 0,
+        "finished_ms": 1795362962426,
+        "checks": 41,
+        "status": "PASS"
+      },
+      {
+        "label": "foundation-wasm",
+        "started_ms": 1795362962426,
+        "exit_code": 0,
+        "finished_ms": 1795362980942,
+        "checks": 110,
+        "status": "PASS"
+      },
+      {
+        "label": "range-probe-wasm",
+        "started_ms": 1795362980948,
+        "exit_code": 0,
+        "finished_ms": 1795362983904,
+        "checks": 11,
+        "status": "PASS"
+      }
+    ],
+    "total_checks": 162
+  },
+  "static_body_checks": 10,
+  "all_target_all_feature_cargo_check": true,
+  "wasm_sha256": "c9e7539a9935840dae0b99cfb7bb50a3e5611a8684fbe0946812e4181d018fb5",
+  "wasm_bytes": 2358301,
+  "live_cloud_calls": 0,
+  "deployments": 0,
+  "source_compatibility": "10 legacy synthetic block constructors now explicitly set empty upstream Alpenglow fields; no runtime algorithm changes",
+  "earlier_relay_failures": "macOS /tmp symlink and default tempfile directory mode; tests fixed with canonical temp parent and explicit0700, production guard unchanged; one contention timeout passed in final serial suite",
+  "logs": ".codex-tmp/package-getblock-20261122"
+}

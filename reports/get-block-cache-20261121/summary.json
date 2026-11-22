@@ -1,0 +1,934 @@
+{
+  "schema": "blockzilla-cache-get-block-benchmark-summary-v1",
+  "workerVersion": "566ecc0a-949d-417b-90cd-89c629bc9073",
+  "workerGeneration": "foundation-query-20261121-base64-cache-v10",
+  "workerWasmSha256": "eb6c78dcede9eb1c1db205d3a0441544492b76062c8d40340bfbb7ba0e6bd2e4",
+  "placement": "default edge",
+  "startedAt": "2026-11-21T21:12:08.245Z",
+  "endedAt": "2026-11-21T21:13:12.052062Z",
+  "durationMs": 63807.062,
+  "plan": {
+    "slots": [
+      470987967,
+      471096104,
+      471204030,
+      471311999,
+      470555971,
+      470663944,
+      470771932,
+      470879999
+    ],
+    "rounds": 5,
+    "concurrency": 1,
+    "timeoutMs": 90000,
+    "uncachedRounds": 1,
+    "maxRequests": 250,
+    "requests": 192,
+    "representations": [
+      "bin",
+      "json",
+      "bin-no-access"
+    ],
+    "providerIncluded": true,
+    "providerLabels": [
+      "helius"
+    ],
+    "jsonOptions": {
+      "commitment": "finalized",
+      "encoding": "base64",
+      "transactionDetails": "full",
+      "rewards": false,
+      "maxSupportedTransactionVersion": 1
+    }
+  },
+  "networkRequests": {
+    "worker": 144,
+    "helius": 48,
+    "total": 192
+  },
+  "networkErrors": 0,
+  "identityMatchedSlots": 8,
+  "liveCanonicalMatchedSlots": 8,
+  "savedBase64ReferenceChecks": {
+    "reference": "../get-block-cold-profile-20261121/reference-base64.json",
+    "samples": 96,
+    "matched": 96,
+    "slots": [
+      {
+        "slot": 470987967,
+        "samples": 12,
+        "matched": 12
+      },
+      {
+        "slot": 471096104,
+        "samples": 12,
+        "matched": 12
+      },
+      {
+        "slot": 471204030,
+        "samples": 12,
+        "matched": 12
+      },
+      {
+        "slot": 471311999,
+        "samples": 12,
+        "matched": 12
+      },
+      {
+        "slot": 470555971,
+        "samples": 12,
+        "matched": 12
+      },
+      {
+        "slot": 470663944,
+        "samples": 12,
+        "matched": 12
+      },
+      {
+        "slot": 470771932,
+        "samples": 12,
+        "matched": 12
+      },
+      {
+        "slot": 470879999,
+        "samples": 12,
+        "matched": 12
+      }
+    ]
+  },
+  "groups": [
+    {
+      "label": "blockzilla",
+      "representation": "bin",
+      "phase": "origin_uncached",
+      "cache": "ALL",
+      "requests": 8,
+      "successful": 8,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 569.246,
+        "p95": 1071.897,
+        "p99": 1071.897
+      },
+      "totalMs": {
+        "p50": 577.724,
+        "p95": 1090.542,
+        "p99": 1090.542
+      },
+      "cacheCounts": {
+        "BYPASS": 8
+      },
+      "storageBytesModes": {
+        "streamed-completion": 8
+      },
+      "originGetsMean": 3,
+      "originHeadsMean": 0,
+      "archiveMemoryHitsMean": 0,
+      "archiveEdgeHitsMean": 0,
+      "bufferedOriginBytesMean": 78200.25,
+      "declaredOriginWindowBytesMean": 173405.625
+    },
+    {
+      "label": "blockzilla",
+      "representation": "json",
+      "phase": "origin_uncached",
+      "cache": "ALL",
+      "requests": 8,
+      "successful": 8,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 576.987,
+        "p95": 771.601,
+        "p99": 771.601
+      },
+      "totalMs": {
+        "p50": 613.624,
+        "p95": 803.644,
+        "p99": 803.644
+      },
+      "cacheCounts": {
+        "BYPASS": 8
+      },
+      "storageBytesModes": {
+        "buffered": 8
+      },
+      "originGetsMean": 3,
+      "originHeadsMean": 0,
+      "archiveMemoryHitsMean": 0,
+      "archiveEdgeHitsMean": 0,
+      "bufferedOriginBytesMean": 251605.875,
+      "declaredOriginWindowBytesMean": null
+    },
+    {
+      "label": "blockzilla",
+      "representation": "bin-no-access",
+      "phase": "origin_uncached",
+      "cache": "ALL",
+      "requests": 8,
+      "successful": 8,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 460.314,
+        "p95": 672.785,
+        "p99": 672.785
+      },
+      "totalMs": {
+        "p50": 485.805,
+        "p95": 1216.482,
+        "p99": 1216.482
+      },
+      "cacheCounts": {
+        "BYPASS": 8
+      },
+      "storageBytesModes": {
+        "streamed-completion": 8
+      },
+      "originGetsMean": 2,
+      "originHeadsMean": 0,
+      "archiveMemoryHitsMean": 0,
+      "archiveEdgeHitsMean": 0,
+      "bufferedOriginBytesMean": 78200.25,
+      "declaredOriginWindowBytesMean": 147629.625
+    },
+    {
+      "label": "helius",
+      "representation": "json",
+      "phase": "origin_uncached",
+      "cache": "ALL",
+      "requests": 8,
+      "successful": 8,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 53.842,
+        "p95": 82.25,
+        "p99": 82.25
+      },
+      "totalMs": {
+        "p50": 127.721,
+        "p95": 3312.731,
+        "p99": 3312.731
+      },
+      "cacheCounts": {
+        "UNREPORTED": 8
+      },
+      "storageBytesModes": {
+        "unreported": 8
+      },
+      "originGetsMean": null,
+      "originHeadsMean": null,
+      "archiveMemoryHitsMean": null,
+      "archiveEdgeHitsMean": null,
+      "bufferedOriginBytesMean": null,
+      "declaredOriginWindowBytesMean": null
+    },
+    {
+      "label": "blockzilla",
+      "representation": "json",
+      "phase": "repeat",
+      "cache": "HIT",
+      "requests": 32,
+      "successful": 32,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 33.89,
+        "p95": 44.874,
+        "p99": 57.423
+      },
+      "totalMs": {
+        "p50": 70.798,
+        "p95": 276.717,
+        "p99": 775.298
+      },
+      "cacheCounts": {
+        "HIT": 32
+      },
+      "storageBytesModes": {
+        "response-cache": 32
+      },
+      "originGetsMean": 0,
+      "originHeadsMean": 0,
+      "archiveMemoryHitsMean": 0,
+      "archiveEdgeHitsMean": 0,
+      "bufferedOriginBytesMean": 0,
+      "declaredOriginWindowBytesMean": 0
+    },
+    {
+      "label": "blockzilla",
+      "representation": "bin-no-access",
+      "phase": "repeat",
+      "cache": "HIT",
+      "requests": 32,
+      "successful": 32,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 34.406,
+        "p95": 85.124,
+        "p99": 219.237
+      },
+      "totalMs": {
+        "p50": 38.081,
+        "p95": 219.772,
+        "p99": 2294.043
+      },
+      "cacheCounts": {
+        "HIT": 32
+      },
+      "storageBytesModes": {
+        "response-cache": 32
+      },
+      "originGetsMean": 0,
+      "originHeadsMean": 0,
+      "archiveMemoryHitsMean": 0,
+      "archiveEdgeHitsMean": 0,
+      "bufferedOriginBytesMean": 0,
+      "declaredOriginWindowBytesMean": 0
+    },
+    {
+      "label": "helius",
+      "representation": "json",
+      "phase": "repeat",
+      "cache": "ALL",
+      "requests": 32,
+      "successful": 32,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 51.906,
+        "p95": 90.636,
+        "p99": 1877.469
+      },
+      "totalMs": {
+        "p50": 126.74,
+        "p95": 336.508,
+        "p99": 2522.391
+      },
+      "cacheCounts": {
+        "UNREPORTED": 32
+      },
+      "storageBytesModes": {
+        "unreported": 32
+      },
+      "originGetsMean": null,
+      "originHeadsMean": null,
+      "archiveMemoryHitsMean": null,
+      "archiveEdgeHitsMean": null,
+      "bufferedOriginBytesMean": null,
+      "declaredOriginWindowBytesMean": null
+    },
+    {
+      "label": "blockzilla",
+      "representation": "bin",
+      "phase": "repeat",
+      "cache": "HIT",
+      "requests": 32,
+      "successful": 32,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 32.611,
+        "p95": 53.984,
+        "p99": 70.629
+      },
+      "totalMs": {
+        "p50": 40.793,
+        "p95": 119.014,
+        "p99": 239.667
+      },
+      "cacheCounts": {
+        "HIT": 32
+      },
+      "storageBytesModes": {
+        "response-cache": 32
+      },
+      "originGetsMean": 0,
+      "originHeadsMean": 0,
+      "archiveMemoryHitsMean": 0,
+      "archiveEdgeHitsMean": 0,
+      "bufferedOriginBytesMean": 0,
+      "declaredOriginWindowBytesMean": 0
+    }
+  ],
+  "coldOperationProof": [
+    {
+      "representation": "bin",
+      "requests": 8,
+      "r2GetsPerRequest": [
+        1
+      ],
+      "s3GetsPerRequest": [
+        2
+      ],
+      "headsPerRequest": [
+        0
+      ],
+      "allWorkerCachesBypassed": true,
+      "archiveMemoryHits": 0,
+      "archiveEdgeHits": 0
+    },
+    {
+      "representation": "json",
+      "requests": 8,
+      "r2GetsPerRequest": [
+        1
+      ],
+      "s3GetsPerRequest": [
+        2
+      ],
+      "headsPerRequest": [
+        0
+      ],
+      "allWorkerCachesBypassed": true,
+      "archiveMemoryHits": 0,
+      "archiveEdgeHits": 0
+    },
+    {
+      "representation": "bin-no-access",
+      "requests": 8,
+      "r2GetsPerRequest": [
+        1
+      ],
+      "s3GetsPerRequest": [
+        1
+      ],
+      "headsPerRequest": [
+        0
+      ],
+      "allWorkerCachesBypassed": true,
+      "archiveMemoryHits": 0,
+      "archiveEdgeHits": 0
+    }
+  ],
+  "responseHits": {
+    "requests": 96,
+    "allZeroOriginReads": true
+  },
+  "crossFormatFirstNormalPass": {
+    "workerRequests": 24,
+    "firstWorkerFormats": 8,
+    "laterWorkerFormats": 16,
+    "laterFormatMissWithZeroGetsAndArchiveHits": 14,
+    "originGetsAllFormats": 24,
+    "originGetsByRepresentation": {
+      "bin": 14,
+      "json": 6,
+      "bin-no-access": 4
+    },
+    "responseCacheCounts": {
+      "MISS": 24
+    },
+    "perSlot": [
+      {
+        "slot": 470987967,
+        "formatOrder": [
+          "bin",
+          "json",
+          "bin-no-access"
+        ],
+        "requests": [
+          {
+            "workerFormatOrdinal": 1,
+            "representation": "bin",
+            "responseCache": "MISS",
+            "storageClass": "storage_backed_miss",
+            "r2Gets": 1,
+            "s3Gets": 2,
+            "originGets": 3,
+            "originHeads": 0,
+            "archiveMemoryHits": 0,
+            "archiveEdgeHits": 0,
+            "ttfbMs": 542.854,
+            "totalMs": 585.894,
+            "laterFormatMissWithZeroGetsAndArchiveHits": false
+          },
+          {
+            "workerFormatOrdinal": 2,
+            "representation": "json",
+            "responseCache": "MISS",
+            "storageClass": "archive_cache_only",
+            "r2Gets": 0,
+            "s3Gets": 0,
+            "originGets": 0,
+            "originHeads": 0,
+            "archiveMemoryHits": 1,
+            "archiveEdgeHits": 2,
+            "ttfbMs": 66.153,
+            "totalMs": 106.295,
+            "laterFormatMissWithZeroGetsAndArchiveHits": true
+          },
+          {
+            "workerFormatOrdinal": 3,
+            "representation": "bin-no-access",
+            "responseCache": "MISS",
+            "storageClass": "archive_cache_only",
+            "r2Gets": 0,
+            "s3Gets": 0,
+            "originGets": 0,
+            "originHeads": 0,
+            "archiveMemoryHits": 1,
+            "archiveEdgeHits": 1,
+            "ttfbMs": 45.283,
+            "totalMs": 47.643,
+            "laterFormatMissWithZeroGetsAndArchiveHits": true
+          }
+        ]
+      },
+      {
+        "slot": 471096104,
+        "formatOrder": [
+          "json",
+          "bin-no-access",
+          "bin"
+        ],
+        "requests": [
+          {
+            "workerFormatOrdinal": 1,
+            "representation": "json",
+            "responseCache": "MISS",
+            "storageClass": "storage_backed_miss",
+            "r2Gets": 1,
+            "s3Gets": 2,
+            "originGets": 3,
+            "originHeads": 0,
+            "archiveMemoryHits": 0,
+            "archiveEdgeHits": 0,
+            "ttfbMs": 4428.238,
+            "totalMs": 4471.253,
+            "laterFormatMissWithZeroGetsAndArchiveHits": false
+          },
+          {
+            "workerFormatOrdinal": 2,
+            "representation": "bin-no-access",
+            "responseCache": "MISS",
+            "storageClass": "archive_cache_only",
+            "r2Gets": 0,
+            "s3Gets": 0,
+            "originGets": 0,
+            "originHeads": 0,
+            "archiveMemoryHits": 1,
+            "archiveEdgeHits": 1,
+            "ttfbMs": 36.318,
+            "totalMs": 43.293,
+            "laterFormatMissWithZeroGetsAndArchiveHits": true
+          },
+          {
+            "workerFormatOrdinal": 3,
+            "representation": "bin",
+            "responseCache": "MISS",
+            "storageClass": "archive_cache_only",
+            "r2Gets": 0,
+            "s3Gets": 0,
+            "originGets": 0,
+            "originHeads": 0,
+            "archiveMemoryHits": 1,
+            "archiveEdgeHits": 2,
+            "ttfbMs": 47.374,
+            "totalMs": 70.043,
+            "laterFormatMissWithZeroGetsAndArchiveHits": true
+          }
+        ]
+      },
+      {
+        "slot": 471204030,
+        "formatOrder": [
+          "bin-no-access",
+          "bin",
+          "json"
+        ],
+        "requests": [
+          {
+            "workerFormatOrdinal": 1,
+            "representation": "bin-no-access",
+            "responseCache": "MISS",
+            "storageClass": "storage_backed_miss",
+            "r2Gets": 1,
+            "s3Gets": 1,
+            "originGets": 2,
+            "originHeads": 0,
+            "archiveMemoryHits": 0,
+            "archiveEdgeHits": 0,
+            "ttfbMs": 469.138,
+            "totalMs": 472.241,
+            "laterFormatMissWithZeroGetsAndArchiveHits": false
+          },
+          {
+            "workerFormatOrdinal": 2,
+            "representation": "bin",
+            "responseCache": "MISS",
+            "storageClass": "storage_backed_miss",
+            "r2Gets": 0,
+            "s3Gets": 1,
+            "originGets": 1,
+            "originHeads": 0,
+            "archiveMemoryHits": 1,
+            "archiveEdgeHits": 1,
+            "ttfbMs": 439.22,
+            "totalMs": 441.59,
+            "laterFormatMissWithZeroGetsAndArchiveHits": false
+          },
+          {
+            "workerFormatOrdinal": 3,
+            "representation": "json",
+            "responseCache": "MISS",
+            "storageClass": "archive_cache_only",
+            "r2Gets": 0,
+            "s3Gets": 0,
+            "originGets": 0,
+            "originHeads": 0,
+            "archiveMemoryHits": 1,
+            "archiveEdgeHits": 2,
+            "ttfbMs": 74.484,
+            "totalMs": 92.419,
+            "laterFormatMissWithZeroGetsAndArchiveHits": true
+          }
+        ]
+      },
+      {
+        "slot": 471311999,
+        "formatOrder": [
+          "bin",
+          "json",
+          "bin-no-access"
+        ],
+        "requests": [
+          {
+            "workerFormatOrdinal": 1,
+            "representation": "bin",
+            "responseCache": "MISS",
+            "storageClass": "storage_backed_miss",
+            "r2Gets": 1,
+            "s3Gets": 2,
+            "originGets": 3,
+            "originHeads": 0,
+            "archiveMemoryHits": 0,
+            "archiveEdgeHits": 0,
+            "ttfbMs": 638.345,
+            "totalMs": 647.066,
+            "laterFormatMissWithZeroGetsAndArchiveHits": false
+          },
+          {
+            "workerFormatOrdinal": 2,
+            "representation": "json",
+            "responseCache": "MISS",
+            "storageClass": "archive_cache_only",
+            "r2Gets": 0,
+            "s3Gets": 0,
+            "originGets": 0,
+            "originHeads": 0,
+            "archiveMemoryHits": 1,
+            "archiveEdgeHits": 2,
+            "ttfbMs": 63.983,
+            "totalMs": 80.963,
+            "laterFormatMissWithZeroGetsAndArchiveHits": true
+          },
+          {
+            "workerFormatOrdinal": 3,
+            "representation": "bin-no-access",
+            "responseCache": "MISS",
+            "storageClass": "archive_cache_only",
+            "r2Gets": 0,
+            "s3Gets": 0,
+            "originGets": 0,
+            "originHeads": 0,
+            "archiveMemoryHits": 1,
+            "archiveEdgeHits": 1,
+            "ttfbMs": 34.524,
+            "totalMs": 38.232,
+            "laterFormatMissWithZeroGetsAndArchiveHits": true
+          }
+        ]
+      },
+      {
+        "slot": 470555971,
+        "formatOrder": [
+          "bin",
+          "json",
+          "bin-no-access"
+        ],
+        "requests": [
+          {
+            "workerFormatOrdinal": 1,
+            "representation": "bin",
+            "responseCache": "MISS",
+            "storageClass": "storage_backed_miss",
+            "r2Gets": 1,
+            "s3Gets": 2,
+            "originGets": 3,
+            "originHeads": 0,
+            "archiveMemoryHits": 0,
+            "archiveEdgeHits": 0,
+            "ttfbMs": 603.223,
+            "totalMs": 607.438,
+            "laterFormatMissWithZeroGetsAndArchiveHits": false
+          },
+          {
+            "workerFormatOrdinal": 2,
+            "representation": "json",
+            "responseCache": "MISS",
+            "storageClass": "archive_cache_only",
+            "r2Gets": 0,
+            "s3Gets": 0,
+            "originGets": 0,
+            "originHeads": 0,
+            "archiveMemoryHits": 1,
+            "archiveEdgeHits": 2,
+            "ttfbMs": 86.237,
+            "totalMs": 112.961,
+            "laterFormatMissWithZeroGetsAndArchiveHits": true
+          },
+          {
+            "workerFormatOrdinal": 3,
+            "representation": "bin-no-access",
+            "responseCache": "MISS",
+            "storageClass": "archive_cache_only",
+            "r2Gets": 0,
+            "s3Gets": 0,
+            "originGets": 0,
+            "originHeads": 0,
+            "archiveMemoryHits": 1,
+            "archiveEdgeHits": 1,
+            "ttfbMs": 41.924,
+            "totalMs": 42.321,
+            "laterFormatMissWithZeroGetsAndArchiveHits": true
+          }
+        ]
+      },
+      {
+        "slot": 470663944,
+        "formatOrder": [
+          "json",
+          "bin-no-access",
+          "bin"
+        ],
+        "requests": [
+          {
+            "workerFormatOrdinal": 1,
+            "representation": "json",
+            "responseCache": "MISS",
+            "storageClass": "storage_backed_miss",
+            "r2Gets": 1,
+            "s3Gets": 2,
+            "originGets": 3,
+            "originHeads": 0,
+            "archiveMemoryHits": 0,
+            "archiveEdgeHits": 0,
+            "ttfbMs": 634.597,
+            "totalMs": 714.535,
+            "laterFormatMissWithZeroGetsAndArchiveHits": false
+          },
+          {
+            "workerFormatOrdinal": 2,
+            "representation": "bin-no-access",
+            "responseCache": "MISS",
+            "storageClass": "archive_cache_only",
+            "r2Gets": 0,
+            "s3Gets": 0,
+            "originGets": 0,
+            "originHeads": 0,
+            "archiveMemoryHits": 1,
+            "archiveEdgeHits": 1,
+            "ttfbMs": 43.33,
+            "totalMs": 52.332,
+            "laterFormatMissWithZeroGetsAndArchiveHits": true
+          },
+          {
+            "workerFormatOrdinal": 3,
+            "representation": "bin",
+            "responseCache": "MISS",
+            "storageClass": "archive_cache_only",
+            "r2Gets": 0,
+            "s3Gets": 0,
+            "originGets": 0,
+            "originHeads": 0,
+            "archiveMemoryHits": 1,
+            "archiveEdgeHits": 2,
+            "ttfbMs": 38.421,
+            "totalMs": 55.492,
+            "laterFormatMissWithZeroGetsAndArchiveHits": true
+          }
+        ]
+      },
+      {
+        "slot": 470771932,
+        "formatOrder": [
+          "bin-no-access",
+          "bin",
+          "json"
+        ],
+        "requests": [
+          {
+            "workerFormatOrdinal": 1,
+            "representation": "bin-no-access",
+            "responseCache": "MISS",
+            "storageClass": "storage_backed_miss",
+            "r2Gets": 1,
+            "s3Gets": 1,
+            "originGets": 2,
+            "originHeads": 0,
+            "archiveMemoryHits": 0,
+            "archiveEdgeHits": 0,
+            "ttfbMs": 704.489,
+            "totalMs": 706.23,
+            "laterFormatMissWithZeroGetsAndArchiveHits": false
+          },
+          {
+            "workerFormatOrdinal": 2,
+            "representation": "bin",
+            "responseCache": "MISS",
+            "storageClass": "storage_backed_miss",
+            "r2Gets": 0,
+            "s3Gets": 1,
+            "originGets": 1,
+            "originHeads": 0,
+            "archiveMemoryHits": 1,
+            "archiveEdgeHits": 1,
+            "ttfbMs": 404.393,
+            "totalMs": 420.022,
+            "laterFormatMissWithZeroGetsAndArchiveHits": false
+          },
+          {
+            "workerFormatOrdinal": 3,
+            "representation": "json",
+            "responseCache": "MISS",
+            "storageClass": "archive_cache_only",
+            "r2Gets": 0,
+            "s3Gets": 0,
+            "originGets": 0,
+            "originHeads": 0,
+            "archiveMemoryHits": 1,
+            "archiveEdgeHits": 2,
+            "ttfbMs": 93.094,
+            "totalMs": 134.888,
+            "laterFormatMissWithZeroGetsAndArchiveHits": true
+          }
+        ]
+      },
+      {
+        "slot": 470879999,
+        "formatOrder": [
+          "bin",
+          "json",
+          "bin-no-access"
+        ],
+        "requests": [
+          {
+            "workerFormatOrdinal": 1,
+            "representation": "bin",
+            "responseCache": "MISS",
+            "storageClass": "storage_backed_miss",
+            "r2Gets": 1,
+            "s3Gets": 2,
+            "originGets": 3,
+            "originHeads": 0,
+            "archiveMemoryHits": 0,
+            "archiveEdgeHits": 0,
+            "ttfbMs": 481.38,
+            "totalMs": 493.414,
+            "laterFormatMissWithZeroGetsAndArchiveHits": false
+          },
+          {
+            "workerFormatOrdinal": 2,
+            "representation": "json",
+            "responseCache": "MISS",
+            "storageClass": "archive_cache_only",
+            "r2Gets": 0,
+            "s3Gets": 0,
+            "originGets": 0,
+            "originHeads": 0,
+            "archiveMemoryHits": 1,
+            "archiveEdgeHits": 2,
+            "ttfbMs": 50.429,
+            "totalMs": 67.678,
+            "laterFormatMissWithZeroGetsAndArchiveHits": true
+          },
+          {
+            "workerFormatOrdinal": 3,
+            "representation": "bin-no-access",
+            "responseCache": "MISS",
+            "storageClass": "archive_cache_only",
+            "r2Gets": 0,
+            "s3Gets": 0,
+            "originGets": 0,
+            "originHeads": 0,
+            "archiveMemoryHits": 1,
+            "archiveEdgeHits": 1,
+            "ttfbMs": 31.197,
+            "totalMs": 36.181,
+            "laterFormatMissWithZeroGetsAndArchiveHits": true
+          }
+        ]
+      }
+    ],
+    "zeroGetMissTimingByRepresentation": [
+      {
+        "representation": "bin",
+        "requests": 2,
+        "totalMs": {
+          "p50": 55.492,
+          "p95": 70.043,
+          "p99": 70.043
+        },
+        "ttfbMs": {
+          "p50": 38.421,
+          "p95": 47.374,
+          "p99": 47.374
+        }
+      },
+      {
+        "representation": "json",
+        "requests": 6,
+        "totalMs": {
+          "p50": 92.419,
+          "p95": 134.888,
+          "p99": 134.888
+        },
+        "ttfbMs": {
+          "p50": 66.153,
+          "p95": 93.094,
+          "p99": 93.094
+        }
+      },
+      {
+        "representation": "bin-no-access",
+        "requests": 6,
+        "totalMs": {
+          "p50": 42.321,
+          "p95": 52.332,
+          "p99": 52.332
+        },
+        "ttfbMs": {
+          "p50": 36.318,
+          "p95": 45.283,
+          "p99": 45.283
+        }
+      }
+    ],
+    "requiredSignatureReadsAfterAccess0": 2
+  },
+  "notes": [
+    "The first normal pass uses the existing rotating request order. No extra cache probe or warmup request was added.",
+    "Cross-format reuse is proved only when a later format has response MISS, zero origin GETs, and positive archive cache hits.",
+    "A first normal request can already find data in an archive cache. Its actual receipt is preserved.",
+    "Forced-cold profile requests bypass response and archive caches. Physical R2 and provider cache states remain unknown.",
+    "Object API read counters do not measure physical disk reads.",
+    "For streamed-completion bodies, header storage bytes contain buffered input only. Declared source-window bytes remain separate.",
+    "The complete JSON result uses base64 transactions and standard RPC metadata. Saved and live full-result hashes use exact JSON numbers.",
+    "Percentiles use successful samples and the nearest-rank method. Client timers stop before local JSON validation.",
+    "This single-host run does not establish a global fastest-provider result.",
+    "The two later binary requests with one GET followed access=0 as the first format. They reused the resolution and hot frame and fetched only the signature range that access=0 had omitted."
+  ],
+  "firstNormalPassOperationComparison": {
+    "v9": {
+      "requests": 24,
+      "r2Gets": 8,
+      "s3Gets": 40,
+      "originGets": 48,
+      "heads": 0
+    },
+    "v10": {
+      "requests": 24,
+      "r2Gets": 8,
+      "s3Gets": 16,
+      "originGets": 24,
+      "heads": 0
+    },
+    "note": "Same eight slots and rotating format plan; separate run windows. Counts show object API operations, not physical disk reads."
+  }
+}

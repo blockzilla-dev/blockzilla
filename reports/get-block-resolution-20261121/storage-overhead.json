@@ -1,0 +1,152 @@
+{
+  "schema": "blockzilla-slot-resolution-storage-cost-v1",
+  "date": "2026-11-21",
+  "account": "owner",
+  "bucket": "blockzilla-get-block-index",
+  "source_account": "Foundation",
+  "measured": {
+    "slots": 8,
+    "index_bytes_total": 625602,
+    "index_bytes_mean": 78200.25,
+    "index_bytes_min": 44472,
+    "index_bytes_max": 106968,
+    "original_block_and_signature_bytes": 1387245,
+    "added_index_percent_of_original_block_and_signatures": 45.09672047835818,
+    "signature_bytes_copied": 0,
+    "block_bytes_copied": 0,
+    "objects_published": 8
+  },
+  "per_slot": [
+    {
+      "slot": 470987967,
+      "index_bytes": 74364,
+      "compressed_block_bytes": 117962,
+      "original_signature_bytes": 26432,
+      "overhead_percent": 51.50075487901159
+    },
+    {
+      "slot": 471096104,
+      "index_bytes": 106968,
+      "compressed_block_bytes": 240636,
+      "original_signature_bytes": 34432,
+      "overhead_percent": 38.88783864353542
+    },
+    {
+      "slot": 471204030,
+      "index_bytes": 65006,
+      "compressed_block_bytes": 108839,
+      "original_signature_bytes": 20288,
+      "overhead_percent": 50.34268588289049
+    },
+    {
+      "slot": 471311999,
+      "index_bytes": 63959,
+      "compressed_block_bytes": 118420,
+      "original_signature_bytes": 18944,
+      "overhead_percent": 46.56169010803413
+    },
+    {
+      "slot": 470555971,
+      "index_bytes": 75724,
+      "compressed_block_bytes": 145910,
+      "original_signature_bytes": 26880,
+      "overhead_percent": 43.82429538746455
+    },
+    {
+      "slot": 470663944,
+      "index_bytes": 103736,
+      "compressed_block_bytes": 229322,
+      "original_signature_bytes": 32576,
+      "overhead_percent": 39.609313549549825
+    },
+    {
+      "slot": 470771932,
+      "index_bytes": 91373,
+      "compressed_block_bytes": 153791,
+      "original_signature_bytes": 31616,
+      "overhead_percent": 49.28238955379246
+    },
+    {
+      "slot": 470879999,
+      "index_bytes": 44472,
+      "compressed_block_bytes": 66157,
+      "original_signature_bytes": 15040,
+      "overhead_percent": 54.770496446913064
+    }
+  ],
+  "extrapolation": {
+    "status": "Eight-block sample, not a full epoch or full-history measurement",
+    "slots_per_epoch_assumed": 432000,
+    "index_gb_per_full_epoch": 33.782508,
+    "index_storage_usd_per_full_epoch_month": 0.50673762,
+    "one_time_put_usd_per_full_epoch": 1.944,
+    "epochs_assumed": 1092,
+    "full_history_index_tb_example": 36.890498736,
+    "full_history_index_storage_usd_month_example": 553.35748104,
+    "one_time_put_usd_all_1092_full_epochs_example": 2122.848
+  },
+  "read_costs_usd_per_million_cold_requests_before_allowances": {
+    "full_json_or_wincode": {
+      "owner_index_gets": 1,
+      "foundation_original_gets": 2,
+      "owner_r2_usd": 0.36,
+      "foundation_r2_usd": 0.72,
+      "total_r2_usd": 1.08
+    },
+    "client_index_download_once_per_block_generation": {
+      "owner_gets": 1,
+      "foundation_gets": 0,
+      "total_r2_usd": 0.36
+    },
+    "client_parts_with_saved_index": {
+      "owner_index_gets": 0,
+      "foundation_original_gets": 2,
+      "total_r2_usd": 0.72
+    },
+    "full_response_hit": {
+      "r2_gets": 0,
+      "r2_usd": 0
+    }
+  },
+  "notes": [
+    "R2 Standard rates; own index bucket explicitly created Standard.",
+    "Shared free allowances and bill-unit rounding apply. Tables give marginal costs, not account invoices.",
+    "One-time object upload costs are Class A; construction source reads and CPU are additional.",
+    "Complete response hits still run Worker authentication, CPU and metrics.",
+    "Per-slot resolution data are specific to one block and immutable generation; they cannot resolve all other blocks in the epoch.",
+    "Browser clients need only the chosen per-block objects. Whole-epoch pubkey tables are a different optional strategy.",
+    "The full-epoch and 1092-epoch estimates assume the eight-block mean and full slot counts; actual history differs.",
+    "Existing epoch pubkey/hash tables are not removed or duplicated by this publication.",
+    "The overhead denominator includes compressed hot blocks and signatures for the eight samples, not every existing archive sidecar.",
+    "Source-object R2 charges accrue to the Foundation bucket account. Owner payment for those charges would need reimbursement or another billing arrangement, not a second archive copy.",
+    "Observed Worker CPU is from208mixedformats/cache states; do notapplyitunchangedtoadifferenttrafficmix."
+  ],
+  "sources": {
+    "r2_pricing": "https://developers.cloudflare.com/r2/pricing/",
+    "registry_sizes": "registry-heads.json",
+    "publication": "publication.json",
+    "build": "build-results.json"
+  },
+  "worker_kv_monthly_estimator": {
+    "variables": {
+      "Q": "Total Worker HTTP requests per month",
+      "K": "KV key reads per month, one per request with a syntactically valid Bearer key",
+      "C": "Total Worker CPU milliseconds per month, from platform metrics",
+      "B": "Total R2 GET+HEAD operations per month across the Foundation account"
+    },
+    "workers_usd": "5 + max(0, Q - 10000000) / 1000000 * 0.30 + max(0, C - 30000000) / 1000000 * 0.02",
+    "kv_reads_usd": "max(0, K - 10000000) / 1000000 * 0.50",
+    "r2_class_b_usd": "ceil(max(0, B - 10000000) / 1000000) * 0.36",
+    "notes": [
+      "Included usage is shared with other services in each account. These formulas assume no other use and Standard rates.",
+      "Existing paid-account base subscription may already cover this service.",
+      "CPU quantiles do not supply average CPU per format; do not use network wall time as CPU.",
+      "Existing archive storage, KV storage/writes, log storage, provider API credits and taxes are excluded.",
+      "Analytics Engine is currently not billed; announced future point rate is additional."
+    ]
+  },
+  "worker_price_source": "https://developers.cloudflare.com/workers/platform/pricing/",
+  "kv_price_source": "https://developers.cloudflare.com/kv/platform/pricing/",
+  "platform_cpu_sample": "platform-cpu.json",
+  "observed_sample_mean_worker_cpu_ms": 11.99716826923077
+}
