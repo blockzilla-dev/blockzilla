@@ -7,6 +7,9 @@ set -euo pipefail
 # exact report and fails CI. The native canary builder's output audit and the
 # sampled native/CAR diagnostic also retain direct decoding. Neither is a public
 # archive reader or a source of canonical catalog admission.
+# The Worker's existing schema dispatch moved from worker.rs to archive_schema.rs.
+# The ledger writer output audit and native decoder mutation fixtures inspect
+# known test messages only. Keep their exact counts here; new sites still fail.
 pattern='ArchiveV2HotMessagePayload\s*=\s*wincode::config::deserialize|deserialize(?:_exact)?::<\s*ArchiveV2HotMessagePayload|fn\s+decode_message[\s\S]{0,1200}wincode::config::deserialize'
 
 actual="$({
@@ -27,7 +30,9 @@ blockzilla/cli/src/bin/verify_access_vote_hashes.rs:1
 blockzilla/cli/src/token_events.rs:5
 indexer/blockzilla-token-transaction-dump/src/consolidate_v3.rs:1
 examples/token-api/src/indexer.rs:1
-edgezilla/get-block/src/worker.rs:1
+edgezilla/get-block/src/archive_schema.rs:1
+hivezilla/ledger-archive/src/convert.rs:1
+hivezilla/stream-relay/decoder/src/tests.rs:1
 EOF
 )"
 

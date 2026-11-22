@@ -476,7 +476,16 @@ pub(super) async fn foundation_archive_binary_response_for_hash(
         .ok_or("Foundation is not configured")?;
     route.validate(&source.archive_prefix, config.generation(), slot)?;
     if route.message_schema == 0 && route.metadata_schema == 0 && config.binary_uses_raw_block() {
-        return foundation_native_binary_response(source, slot, route, ctx, metrics, key, expected_hash).await;
+        return foundation_native_binary_response(
+            source,
+            slot,
+            route,
+            ctx,
+            metrics,
+            key,
+            expected_hash,
+        )
+        .await;
     }
     let sig_path = epoch_file(
         &source.archive_prefix,

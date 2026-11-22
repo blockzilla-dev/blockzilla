@@ -113,6 +113,41 @@ jobs:
       - name: Test release graph inspection
         run: python3 scripts/test_check_crate_release.py
 
+  recovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      RUSTFLAGS: -C target-cpu=native
+      CARGO_TARGET_DIR: target/recovery
+      CARGO_BUILD_JOBS: 2
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install Rust toolchain and formatter
+        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt
+      - name: Check standalone recovery formatting
+        run: |
+          for manifest in \
+            crates/blockzilla-bank-client/Cargo.toml \
+            hivezilla/stream-sidecar/Cargo.toml \
+            indexer/blockzilla-resolution-service/Cargo.toml; do
+            cargo fmt --manifest-path "$manifest" -- --check
+          done
+      - name: Test standalone recovery crates and tools
+        run: |
+          umask 077
+          for manifest in \
+            crates/blockzilla-bank-client/Cargo.toml \
+            hivezilla/stream-sidecar/Cargo.toml \
+            indexer/blockzilla-resolution-service/Cargo.toml; do
+            cargo test --locked --all-targets --manifest-path "$manifest"
+          done
+      - name: Test restricted recovery gateway
+        working-directory: hivezilla/deploy/direct-agave
+        run: python3 -m unittest test_beam_ssh_recovery test_beam_ssh_gateway test_beam_ssh_forced test_deploy_beam_recovery
+      - name: Test same-database consumer activation
+        working-directory: reports/stream-worker-recovery-20261122
+        run: python3 -m unittest test_activate_consumer
+
   worker:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -192,6 +227,7 @@ jobs:
             "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/$archive"
           echo "$GITLEAKS_SHA256  $RUNNER_TEMP/$archive" | sha256sum --check --strict
           tar -xzf "$RUNNER_TEMP/$archive" -C "$RUNNER_TEMP" gitleaks
+          python3 scripts/test_gitleaks_policy.py --gitleaks "$RUNNER_TEMP/gitleaks"
           "$RUNNER_TEMP/gitleaks" git . \
             --config=.gitleaks.toml \
             --log-opts=--all \

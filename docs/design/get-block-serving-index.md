@@ -65,7 +65,7 @@ $0.51 per epoch-month at R2 Standard prices before allowances and rounding.
 One object PUT per block adds about $1.94 per full epoch during construction.
 These are sample estimates, not measured full-history totals. See the
 [storage model](../../reports/get-block-resolution-20261121/storage-overhead.json)
-and [publication receipt](../../reports/get-block-resolution-20261121/README.md).
+and [publication receipt](../../reports/get-block-resolution-20261121/main.json).
 
 The current pubkey registries are about 994 MB and 1.047 GB for epochs 1089
 and 1090. They are existing archive data, not a new index copy. A native bulk
@@ -118,7 +118,7 @@ resolution, compressed-block or signature objects were published in this step.
 
 ## Measured problem and current code
 
-The [pilot report](../../reports/get-block-cloudflare-20261121/README.md) reads
+The [pilot report](../../reports/get-block-cloudflare-20261121/main.json) reads
 slot `470987967`, with 370 transactions. Its forced origin JSON read used 624
 object operations: 619 GETs and five HEADs. It read 3,123,246 archive bytes and
 took 17,755.155 ms. The full binary read used the same operation count and took

@@ -818,8 +818,7 @@ mod tests {
             .prefix("bz-uds-")
             .tempdir_in(std::fs::canonicalize("/tmp").unwrap())
             .unwrap();
-        std::fs::set_permissions(directory.path(), std::fs::Permissions::from_mode(0o700))
-            .unwrap();
+        std::fs::set_permissions(directory.path(), std::fs::Permissions::from_mode(0o700)).unwrap();
         let socket = directory.path().join("origin.sock");
         let path = socket.clone();
         let task = tokio::spawn(async move { serve_unix(path, test_api()).await });
@@ -883,8 +882,7 @@ mod tests {
             .prefix("bz-uds-")
             .tempdir_in(std::fs::canonicalize("/tmp").unwrap())
             .unwrap();
-        std::fs::set_permissions(directory.path(), std::fs::Permissions::from_mode(0o700))
-            .unwrap();
+        std::fs::set_permissions(directory.path(), std::fs::Permissions::from_mode(0o700)).unwrap();
         let path = directory.path().join("origin.sock");
         std::fs::write(&path, b"owned data").unwrap();
         assert!(private_listener(&path).await.is_err());
@@ -912,8 +910,7 @@ mod tests {
             .prefix("bz-uds-")
             .tempdir_in(std::fs::canonicalize("/tmp").unwrap())
             .unwrap();
-        std::fs::set_permissions(directory.path(), std::fs::Permissions::from_mode(0o700))
-            .unwrap();
+        std::fs::set_permissions(directory.path(), std::fs::Permissions::from_mode(0o700)).unwrap();
         let path = directory.path().join("origin.sock");
         let (old, owner) = private_listener(&path).await.unwrap();
         std::fs::remove_file(&path).unwrap();

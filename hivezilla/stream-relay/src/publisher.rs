@@ -221,7 +221,15 @@ fn commit_batch(
     chunks: &[Chunk],
     workers: usize,
 ) -> Result<()> {
-    let next = upload_batch(remote, state, cp, previous, chunks, workers, &AtomicBool::new(false))?;
+    let next = upload_batch(
+        remote,
+        state,
+        cp,
+        previous,
+        chunks,
+        workers,
+        &AtomicBool::new(false),
+    )?;
     finish_batch(state, cp, next)
 }
 
@@ -318,7 +326,10 @@ fn upload_batch(
         for _ in 0..workers.min(chunks.len()) {
             handles.push(scope.spawn(|| -> Result<()> {
                 loop {
-                    ensure!(!cancelled.load(Ordering::Acquire), "publisher_status_write_failed");
+                    ensure!(
+                        !cancelled.load(Ordering::Acquire),
+                        "publisher_status_write_failed"
+                    );
                     let i = index.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
                     let Some(c) = chunks.get(i) else {
                         return Ok(());
@@ -328,7 +339,10 @@ fn upload_batch(
                         &c.wire,
                         "application/vnd.blockzilla.stream.v1",
                     )?;
-                    ensure!(!cancelled.load(Ordering::Acquire), "publisher_status_write_failed");
+                    ensure!(
+                        !cancelled.load(Ordering::Acquire),
+                        "publisher_status_write_failed"
+                    );
                     remote.immutable(
                         &manifest_key(cp, cp.sequence + i as u64 + 1),
                         &serde_json::to_vec(&manifests[i])?,
@@ -353,7 +367,10 @@ fn upload_batch(
         }
         Ok(())
     })?;
-    ensure!(!cancelled.load(Ordering::Acquire), "publisher_status_write_failed");
+    ensure!(
+        !cancelled.load(Ordering::Acquire),
+        "publisher_status_write_failed"
+    );
     let c = chunks.last().unwrap();
     let head = json!({"schema":"blockzilla-native-stream-catalog-v1",
         "profile":c.envelope.profile,"event":c.envelope.event,"session":cp.session,
@@ -391,7 +408,15 @@ fn commit_batch_with_liveness(
         let (send, receive) = sync_channel(1);
         let cancelled_ref = &cancelled;
         let handle = scope.spawn(move || {
-            let result = upload_batch(remote, state, durable, previous, chunks, workers, cancelled_ref);
+            let result = upload_batch(
+                remote,
+                state,
+                durable,
+                previous,
+                chunks,
+                workers,
+                cancelled_ref,
+            );
             let _ = send.send(result);
         });
         let result = loop {
@@ -405,7 +430,9 @@ fn commit_batch_with_liveness(
                         }
                     }
                 }
-                Err(RecvTimeoutError::Disconnected) => break Err(anyhow::anyhow!("publisher_upload_worker_panicked")),
+                Err(RecvTimeoutError::Disconnected) => {
+                    break Err(anyhow::anyhow!("publisher_upload_worker_panicked"));
+                }
             }
         };
         // Reporting failure cannot detach a request or release the state lock.
@@ -432,19 +459,30 @@ fn upload_status(
     batch_started: u64,
     last_durable_progress: Option<u64>,
 ) -> Result<()> {
-    save(&state.join("STATUS.json"), &json!({"state":"RUNNING","updated_unix_ms":now_ms(),
+    save(
+        &state.join("STATUS.json"),
+        &json!({"state":"RUNNING","updated_unix_ms":now_ms(),
         "phase":"upload_commit","in_flight":true,"batch_started_unix_ms":batch_started,
         "last_durable_progress_unix_ms":last_durable_progress,
-        "checkpoint":cp,"last_batch":last_batch}))
+        "checkpoint":cp,"last_batch":last_batch}),
+    )
 }
 
-fn slow_batch_record(started: u64, finished: u64, events: usize, bytes: usize,
-    old_sequence: u64, new_sequence: u64) -> Option<Value> {
+fn slow_batch_record(
+    started: u64,
+    finished: u64,
+    events: usize,
+    bytes: usize,
+    old_sequence: u64,
+    new_sequence: u64,
+) -> Option<Value> {
     let duration = finished.saturating_sub(started);
-    (duration >= 60_000).then(|| json!({"event":"publisher_slow_batch",
+    (duration >= 60_000).then(|| {
+        json!({"event":"publisher_slow_batch",
         "batch_started_unix_ms":started,"batch_finished_unix_ms":finished,
         "upload_commit_ms":duration,"events":events,"bytes":bytes,
-        "old_sequence":old_sequence,"new_sequence":new_sequence}))
+        "old_sequence":old_sequence,"new_sequence":new_sequence})
+    })
 }
 
 fn stale_intent(state: &Path, cp: &Checkpoint) -> Result<()> {
@@ -479,7 +517,10 @@ pub fn run(options: Options) -> Result<()> {
         "invalid_tail_window"
     );
     ensure!(options.max_chunks != Some(0), "invalid_chunk_limit");
-    ensure!((1..=MAX_BATCH_EVENTS).contains(&options.batch_events), "invalid_batch_event_limit");
+    ensure!(
+        (1..=MAX_BATCH_EVENTS).contains(&options.batch_events),
+        "invalid_batch_event_limit"
+    );
     ensure!(
         (1..=64).contains(&options.upload_workers),
         "invalid_upload_worker_limit"
@@ -656,12 +697,26 @@ pub fn run(options: Options) -> Result<()> {
                 &chunks,
                 options.upload_workers,
                 Duration::from_secs(5),
-                |durable| upload_status(&state, durable, &last_batch, upload_started, last_durable_progress),
+                |durable| {
+                    upload_status(
+                        &state,
+                        durable,
+                        &last_batch,
+                        upload_started,
+                        last_durable_progress,
+                    )
+                },
             )?;
             let upload_finished = now_ms();
             last_durable_progress = Some(upload_finished);
-            if let Some(record) = slow_batch_record(upload_started, upload_finished,
-                chunks.len(), bytes, old_sequence, cp.sequence) {
+            if let Some(record) = slow_batch_record(
+                upload_started,
+                upload_finished,
+                chunks.len(),
+                bytes,
+                old_sequence,
+                cp.sequence,
+            ) {
                 eprintln!("{record}");
             }
             last_batch = json!({"events":chunks.len(),"bytes":bytes,
@@ -679,7 +734,10 @@ pub fn run(options: Options) -> Result<()> {
             )?;
             return Err(error);
         }
-        if matches!(&result, Ok(true)) || now_ms() - last_status >= 5000 || options.max_chunks.is_some() {
+        if matches!(&result, Ok(true))
+            || now_ms() - last_status >= 5000
+            || options.max_chunks.is_some()
+        {
             save(
                 &state.join("STATUS.json"),
                 &json!({"state":"RUNNING","updated_unix_ms":now_ms(),
@@ -765,7 +823,11 @@ mod tests {
         fn wait(&self) -> Result<()> {
             self.active.store(true, Ordering::SeqCst);
             self.entered.store(true, Ordering::SeqCst);
-            let result = self.release.lock().unwrap().recv_timeout(Duration::from_secs(3));
+            let result = self
+                .release
+                .lock()
+                .unwrap()
+                .recv_timeout(Duration::from_secs(3));
             self.active.store(false, Ordering::SeqCst);
             result.context("test_remote_gate_not_released")?;
             ensure!(!self.fail, "test_remote_failure");
@@ -791,41 +853,70 @@ mod tests {
         let mut cp = checkpoint();
         save(&t.path().join("CHECKPOINT.json"), &cp).unwrap();
         let (release, receive) = sync_channel(1);
-        let remote = GatedRemote { inner: Fake::default(), at_head, fail,
-            entered: AtomicBool::new(false), active: AtomicBool::new(false), release: Mutex::new(receive) };
+        let remote = GatedRemote {
+            inner: Fake::default(),
+            at_head,
+            fail,
+            entered: AtomicBool::new(false),
+            active: AtomicBool::new(false),
+            release: Mutex::new(receive),
+        };
         let mut blocked_reports = 0;
         let batch_started = now_ms();
-        let result = commit_batch_with_liveness(&remote, t.path(), &mut cp, None,
-            &[frame::fixture(100, 99)], 1, Duration::from_millis(10), |durable| {
+        let result = commit_batch_with_liveness(
+            &remote,
+            t.path(),
+            &mut cp,
+            None,
+            &[frame::fixture(100, 99)],
+            1,
+            Duration::from_millis(10),
+            |durable| {
                 assert_eq!(durable.sequence, 0);
                 upload_status(t.path(), durable, &Value::Null, batch_started, Some(7))?;
-                let status: Value = serde_json::from_slice(&fs::read(t.path().join("STATUS.json"))?)?;
+                let status: Value =
+                    serde_json::from_slice(&fs::read(t.path().join("STATUS.json"))?)?;
                 assert_eq!(status["state"], "RUNNING");
                 assert_eq!(status["phase"], "upload_commit");
                 assert_eq!(status["in_flight"], true);
                 assert_eq!(status["batch_started_unix_ms"], batch_started);
                 assert_eq!(status["last_durable_progress_unix_ms"], 7);
                 assert_eq!(status["checkpoint"]["sequence"], 0);
-                let disk: Checkpoint = serde_json::from_slice(&fs::read(t.path().join("CHECKPOINT.json"))?)?;
+                let disk: Checkpoint =
+                    serde_json::from_slice(&fs::read(t.path().join("CHECKPOINT.json"))?)?;
                 assert_eq!(disk.sequence, 0);
                 if remote.active.load(Ordering::SeqCst) {
                     blocked_reports += 1;
-                    if blocked_reports == 2 { release.send(())?; }
+                    if blocked_reports == 2 {
+                        release.send(())?;
+                    }
                 }
                 Ok(())
-            });
+            },
+        );
         assert!(blocked_reports >= 2);
         assert!(!remote.active.load(Ordering::SeqCst));
-        let disk: Checkpoint = serde_json::from_slice(&fs::read(t.path().join("CHECKPOINT.json")).unwrap()).unwrap();
+        let disk: Checkpoint =
+            serde_json::from_slice(&fs::read(t.path().join("CHECKPOINT.json")).unwrap()).unwrap();
         if fail {
-            assert!(result.unwrap_err().to_string().contains("test_remote_failure"));
+            assert!(
+                result
+                    .unwrap_err()
+                    .to_string()
+                    .contains("test_remote_failure")
+            );
             assert_eq!(cp.sequence, 0);
             assert_eq!(disk.sequence, 0);
             assert!(t.path().join("INTENT.json").exists());
             // A final FAILED report is written only after the worker has joined.
-            save(&t.path().join("STATUS.json"), &json!({"state":"FAILED","checkpoint":cp})).unwrap();
+            save(
+                &t.path().join("STATUS.json"),
+                &json!({"state":"FAILED","checkpoint":cp}),
+            )
+            .unwrap();
             std::thread::sleep(Duration::from_millis(30));
-            let status: Value = serde_json::from_slice(&fs::read(t.path().join("STATUS.json")).unwrap()).unwrap();
+            let status: Value =
+                serde_json::from_slice(&fs::read(t.path().join("STATUS.json")).unwrap()).unwrap();
             assert_eq!(status["state"], "FAILED");
         } else {
             result.unwrap();
@@ -852,23 +943,39 @@ mod tests {
         let mut cp = checkpoint();
         save(&t.path().join("CHECKPOINT.json"), &cp).unwrap();
         let (release, receive) = sync_channel(1);
-        let remote = GatedRemote { inner: Fake::default(), at_head: true, fail: false,
-            entered: AtomicBool::new(false), active: AtomicBool::new(false), release: Mutex::new(receive) };
+        let remote = GatedRemote {
+            inner: Fake::default(),
+            at_head: true,
+            fail: false,
+            entered: AtomicBool::new(false),
+            active: AtomicBool::new(false),
+            release: Mutex::new(receive),
+        };
         let mut reports = 0;
-        let error = commit_batch_with_liveness(&remote, t.path(), &mut cp, None,
-            &[frame::fixture(100, 99)], 1, Duration::from_millis(10), |_| {
+        let error = commit_batch_with_liveness(
+            &remote,
+            t.path(),
+            &mut cp,
+            None,
+            &[frame::fixture(100, 99)],
+            1,
+            Duration::from_millis(10),
+            |_| {
                 reports += 1;
                 if remote.active.load(Ordering::SeqCst) {
                     release.send(())?;
                     anyhow::bail!("test_status_write_failure");
                 }
                 Ok(())
-            }).unwrap_err();
+            },
+        )
+        .unwrap_err();
         assert!(reports >= 2);
         assert_eq!(error.to_string(), "publisher_status_write_failed");
         assert!(!remote.active.load(Ordering::SeqCst));
         assert_eq!(cp.sequence, 0);
-        let disk: Checkpoint = serde_json::from_slice(&fs::read(t.path().join("CHECKPOINT.json")).unwrap()).unwrap();
+        let disk: Checkpoint =
+            serde_json::from_slice(&fs::read(t.path().join("CHECKPOINT.json")).unwrap()).unwrap();
         assert_eq!(disk.sequence, 0);
         assert!(t.path().join("INTENT.json").exists());
     }
@@ -878,17 +985,37 @@ mod tests {
         let mut cp = checkpoint();
         let remote = Fake::default();
         let head = format!("{}/HEAD.json", cp.prefix);
-        let error = commit_batch_with_liveness(&remote, t.path(), &mut cp, None,
-            &[frame::fixture(100, 99)], 1, Duration::from_secs(1), |_| {
-                ensure!(!remote.objects.lock().unwrap().contains_key(&head), "test_status_write_failure");
+        let error = commit_batch_with_liveness(
+            &remote,
+            t.path(),
+            &mut cp,
+            None,
+            &[frame::fixture(100, 99)],
+            1,
+            Duration::from_secs(1),
+            |_| {
+                ensure!(
+                    !remote.objects.lock().unwrap().contains_key(&head),
+                    "test_status_write_failure"
+                );
                 Ok(())
-            }).unwrap_err();
+            },
+        )
+        .unwrap_err();
         assert_eq!(error.to_string(), "publisher_status_write_failed");
         assert_eq!(cp.sequence, 0);
         assert!(!t.path().join("CHECKPOINT.json").exists());
         assert!(t.path().join("INTENT.json").exists());
         // The existing exact intent can be retried after remote HEAD succeeds.
-        commit_batch(&remote, t.path(), &mut cp, None, &[frame::fixture(100, 99)], 1).unwrap();
+        commit_batch(
+            &remote,
+            t.path(),
+            &mut cp,
+            None,
+            &[frame::fixture(100, 99)],
+            1,
+        )
+        .unwrap();
         assert_eq!(cp.sequence, 1);
         assert!(!t.path().join("INTENT.json").exists());
     }
@@ -898,12 +1025,19 @@ mod tests {
         let cp = checkpoint();
         save(&t.path().join("CHECKPOINT.json"), &cp).unwrap();
         let (release, receive) = sync_channel(1);
-        let remote = GatedRemote { inner: Fake::default(), at_head: false, fail: false,
-            entered: AtomicBool::new(false), active: AtomicBool::new(false), release: Mutex::new(receive) };
+        let remote = GatedRemote {
+            inner: Fake::default(),
+            at_head: false,
+            fail: false,
+            entered: AtomicBool::new(false),
+            active: AtomicBool::new(false),
+            release: Mutex::new(receive),
+        };
         let cancelled = AtomicBool::new(false);
         let chunks = [frame::fixture(100, 99)];
         std::thread::scope(|scope| {
-            let handle = scope.spawn(|| upload_batch(&remote, t.path(), &cp, None, &chunks, 1, &cancelled));
+            let handle =
+                scope.spawn(|| upload_batch(&remote, t.path(), &cp, None, &chunks, 1, &cancelled));
             let deadline = std::time::Instant::now() + Duration::from_secs(3);
             while !remote.entered.load(Ordering::SeqCst) {
                 assert!(std::time::Instant::now() < deadline);
@@ -922,7 +1056,8 @@ mod tests {
         assert_eq!(objects.len(), 1);
         assert!(!objects.contains_key(&format!("{}/HEAD.json", cp.prefix)));
         assert!(t.path().join("INTENT.json").exists());
-        let disk: Checkpoint = serde_json::from_slice(&fs::read(t.path().join("CHECKPOINT.json")).unwrap()).unwrap();
+        let disk: Checkpoint =
+            serde_json::from_slice(&fs::read(t.path().join("CHECKPOINT.json")).unwrap()).unwrap();
         assert_eq!(disk.sequence, 0);
     }
     #[test]
@@ -930,9 +1065,17 @@ mod tests {
         let t = tempfile::tempdir().unwrap();
         let mut cp = checkpoint();
         let remote = Fake::default();
-        let error = commit_batch_with_liveness(&remote, t.path(), &mut cp, None,
-            &[frame::fixture(100, 99)], 1, Duration::from_millis(10), |_| anyhow::bail!("test_status_write_failure"))
-            .unwrap_err();
+        let error = commit_batch_with_liveness(
+            &remote,
+            t.path(),
+            &mut cp,
+            None,
+            &[frame::fixture(100, 99)],
+            1,
+            Duration::from_millis(10),
+            |_| anyhow::bail!("test_status_write_failure"),
+        )
+        .unwrap_err();
         assert_eq!(error.to_string(), "publisher_status_write_failed");
         assert_eq!(cp.sequence, 0);
         assert!(remote.objects.lock().unwrap().is_empty());
@@ -943,10 +1086,13 @@ mod tests {
     fn slow_batch_log_is_bounded_and_only_reports_completed_slow_batches() {
         assert!(slow_batch_record(1, 60_000, 3, 100, 7, 10).is_none());
         assert!(slow_batch_record(2, 1, 3, 100, 7, 10).is_none());
-        assert_eq!(slow_batch_record(1, 60_001, 3, 100, 7, 10), Some(json!({
+        assert_eq!(
+            slow_batch_record(1, 60_001, 3, 100, 7, 10),
+            Some(json!({
             "event":"publisher_slow_batch","batch_started_unix_ms":1,
             "batch_finished_unix_ms":60_001,"upload_commit_ms":60_000,
-            "events":3,"bytes":100,"old_sequence":7,"new_sequence":10})));
+            "events":3,"bytes":100,"old_sequence":7,"new_sequence":10}))
+        );
     }
     #[test]
     fn parallel_batch_is_atomic_and_resumes_partial_uploads() {
@@ -982,7 +1128,9 @@ mod tests {
         let t = tempfile::tempdir().unwrap();
         let remote = Fake::default();
         let mut cp = checkpoint();
-        let chunks = (100..228).map(|slot| frame::fixture(slot, slot - 1)).collect::<Vec<_>>();
+        let chunks = (100..228)
+            .map(|slot| frame::fixture(slot, slot - 1))
+            .collect::<Vec<_>>();
         remote.lose_reply.store(true, Ordering::SeqCst);
         assert!(commit_batch(&remote, t.path(), &mut cp, None, &chunks, 64).is_err());
         assert_eq!(cp.sequence, 0);
@@ -991,7 +1139,10 @@ mod tests {
         assert_eq!(cp.sequence, 128);
         assert_eq!(cp.blocks, 128);
         assert!(!t.path().join("INTENT.json").exists());
-        let head: Value = serde_json::from_slice(&remote.objects.lock().unwrap()[&format!("{}/HEAD.json", cp.prefix)]).unwrap();
+        let head: Value = serde_json::from_slice(
+            &remote.objects.lock().unwrap()[&format!("{}/HEAD.json", cp.prefix)],
+        )
+        .unwrap();
         assert_eq!(head["sequence"], 128);
     }
     #[test]
