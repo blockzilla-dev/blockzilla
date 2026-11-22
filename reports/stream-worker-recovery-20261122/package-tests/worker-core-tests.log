@@ -1,0 +1,122 @@
+warning: constant `BLS_AFFINE_LEN` is never used
+  --> crates/old-faithful/of-car-reader/src/blockmarker.rs:20:7
+   |
+20 | const BLS_AFFINE_LEN: usize = 192;
+   |       ^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `of-car-reader` (lib) generated 1 warning
+   Compiling blockzilla-get-block v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block)
+warning: constant `CURRENT_MESSAGE_MARKER_FILE` is never used
+  --> edgezilla/get-block/src/archive_schema.rs:24:11
+   |
+24 | pub const CURRENT_MESSAGE_MARKER_FILE: &str = "archive-v2-message-schema-current-v1.marker";
+   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `MAY24_MESSAGE_MARKER_FILE` is never used
+  --> edgezilla/get-block/src/archive_schema.rs:25:11
+   |
+25 | pub const MAY24_MESSAGE_MARKER_FILE: &str =
+   |           ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `LEGACY_METADATA_MARKER_FILE` is never used
+  --> edgezilla/get-block/src/archive_schema.rs:27:11
+   |
+27 | pub const LEGACY_METADATA_MARKER_FILE: &str =
+   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `CURRENT_MESSAGE_MARKER_BYTES` is never used
+  --> edgezilla/get-block/src/archive_schema.rs:29:11
+   |
+29 | pub const CURRENT_MESSAGE_MARKER_BYTES: &[u8; 52] = include_bytes!(
+   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `MAY24_MESSAGE_MARKER_BYTES` is never used
+  --> edgezilla/get-block/src/archive_schema.rs:32:11
+   |
+32 | pub const MAY24_MESSAGE_MARKER_BYTES: &[u8; 87] = include_bytes!(
+   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `LEGACY_METADATA_MARKER_BYTES` is never used
+  --> edgezilla/get-block/src/archive_schema.rs:35:11
+   |
+35 | pub const LEGACY_METADATA_MARKER_BYTES: &[u8; 58] = include_bytes!(
+   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: methods `attempt_foundation_recent_http`, `attempt_foundation_resolve_http`, and `attempt_foundation_lookup_http` are never used
+   --> edgezilla/get-block/src/storage_metrics.rs:95:19
+    |
+ 94 | impl StorageMetrics {
+    | ------------------- methods in this implementation
+ 95 |     pub(crate) fn attempt_foundation_recent_http(&self) {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+101 |     pub(crate) fn attempt_foundation_resolve_http(&self) {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+175 |     pub(crate) fn attempt_foundation_lookup_http(&self) {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `blockzilla-get-block` (lib test) generated 7 warnings
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.38s
+     Running unittests src/lib.rs (target/debug/deps/blockzilla_get_block-e85b0bdb1691b24f)
+
+running 53 tests
+test archive_cache::tests::bounds_entry_count_and_replaces_without_duplicate_cost ... ok
+test archive_cache::tests::bounds_bytes_and_evicts_the_least_recent_entry ... ok
+test archive_schema::tests::hostile_declared_sequence_lengths_do_not_allocate_unbounded_memory ... ok
+test archive_schema::tests::current_failed_transaction_error_decodes_without_legacy_retry ... ok
+test archive_schema::tests::stored_metadata_decodes_known_program_log_tag_seventeen ... ok
+test rpc_access::tests::collapses_all_backend_attempts_to_one_billable_read ... ok
+test archive_schema::tests::current_unknown_instruction_fallbacks_keep_the_current_enum_order ... ok
+test archive_schema::tests::source_schema_declarations_are_explicit_and_checked ... ok
+test rpc_access::tests::canonical_cache_identity_contains_only_content_dimensions ... ok
+test archive_schema::tests::real_epoch_900_legacy_failed_transaction_uses_the_selected_grammar ... ok
+test archive_schema::tests::current_and_legacy_source_integers_can_have_padding ... ok
+test rpc_access::tests::hashes_keys_as_lowercase_sha256 ... ok
+test archive_schema::tests::real_may24_message_keeps_exact_bytes_and_selected_variant_order ... ok
+test rpc_access::tests::keeps_metric_method_cardinality_bounded ... ok
+test rpc_access::tests::parses_and_validates_key_record ... ok
+test archive_schema::tests::foundation_metadata_with_known_program_log_keeps_complete_wire_grammar ... ok
+test rpc_access::tests::rejects_missing_or_malformed_bearer_key ... ok
+test slot_index::tests::header_round_trip_and_fixed_geometry ... ok
+test rpc_access::tests::parses_well_formed_bearer_key ... ok
+test slot_index::tests::rejects_wrong_identity_overflow_and_object_bounds ... ok
+test rpc_access::tests::rejects_unsafe_or_ambiguous_key_records ... ok
+test slot_index::tests::absent_rows_are_unambiguous ... ok
+test slot_index::tests::rejects_bad_header_and_truncation ... ok
+test slot_lookup::tests::every_present_ordinal_is_inside_its_window_for_every_eight_slot_subset ... ok
+test slot_index::tests::row_round_trip_keeps_parent_across_epoch_boundary ... ok
+test slot_lookup::tests::full_range_selects_one_ordinal_and_near_full_range_stays_small ... ok
+test slot_lookup::tests::rejects_invalid_counts_slots_and_overflow ... ok
+test slot_lookup::tests::zero_rows_have_empty_windows_at_every_slot ... ok
+test slot_references::tests::collector_rejects_raw_fallback_bad_rows_and_signature_disagreement ... ok
+test slot_references::tests::complete_collector_covers_metadata_lookup_log_reward_and_vote_columns ... ok
+test slot_resolution::tests::checked_decode_preserves_binary_segments_and_moves_decoded_tables ... ok
+test slot_references::tests::legacy_first_block_uses_actual_tail_hash_and_checks_its_slot ... ok
+test slot_references::tests::missing_vote_columns_and_short_reads_fail_closed ... ok
+test slot_references::tests::reference_validation_rejects_missing_header_hash_duplicates_and_empty_votes ... ok
+test slot_resolution::tests::checked_decode_rejects_digest_identity_and_signature_mismatches ... ok
+test slot_resolution::tests::checks_signature_counts_dictionary_membership_and_bounds ... ok
+test slot_references::tests::local_resolution_batches_tables_and_never_reads_signature_bytes ... ok
+test slot_resolution::tests::prehashed_decode_keeps_all_framing_and_header_checks ... ok
+test slot_resolution::tests::rejects_corruption_truncation_and_extra_bytes ... ok
+test slot_resolution::tests::rejects_mixed_generation_parent_and_source_ranges ... ok
+test slot_resolution::tests::round_trip_exposes_exact_zero_copy_access_segments ... ok
+test storage_metrics::tests::cloned_sources_share_only_one_request_and_cache_hits_do_not_read_storage ... ok
+test storage_metrics::tests::counts_attempts_failures_missing_objects_and_returned_bytes_separately ... ok
+test storage_metrics::tests::native_reader_transport_and_confirmed_r2_work_are_separate ... ok
+test transaction_rpc::tests::binary_encoder_preserves_signatures_and_v0_lookup_bytes ... ok
+test slot_resolution::tests::valid_digest_cannot_promote_invalid_dictionary_or_envelope ... ok
+test transaction_rpc::tests::exact_lookup_rejects_other_signers_and_corrupt_signature_ranges ... ok
+test transaction_rpc::tests::live_archive_prefixes_are_bounded_plain_object_keys ... ok
+test transaction_rpc::tests::live_locator_pins_identity_and_accepts_new_catalog_generations ... ok
+test transaction_rpc::tests::live_locator_rejects_bad_candidates_and_excess_work ... ok
+test transaction_rpc::tests::validates_locator_signature_catalog_and_slot ... ok
+test transaction_rpc::tests::validates_signature_config_commitment_and_version_before_io ... ok
+test transaction_rpc::tests::validates_canonical_generation_binding_and_rejects_changed_objects ... ok
+
+test result: ok. 53 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s

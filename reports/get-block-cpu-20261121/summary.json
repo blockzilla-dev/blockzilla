@@ -1,0 +1,1284 @@
+{
+  "schema": "blockzilla-source-cache-cpu-benchmark-summary-v1",
+  "workerVersion": "2359b1b3-d95b-4e3b-bffc-b4161aac406f",
+  "workerGeneration": "foundation-query-20261121-cpu-auth-v11",
+  "workerWasmSha256": "e7a09f5414cc35d3be12522bf54f984e177045f258fad459737b30b13dbee185",
+  "placement": "default edge",
+  "startedAt": "2026-11-21T21:36:42.943Z",
+  "endedAt": "2026-11-21T21:37:34.522681Z",
+  "durationMs": 51579.681,
+  "plan": {
+    "slots": [
+      470987967,
+      471096104,
+      471204030,
+      471311999,
+      470555971,
+      470663944,
+      470771932,
+      470879999
+    ],
+    "rounds": 5,
+    "concurrency": 1,
+    "timeoutMs": 90000,
+    "uncachedRounds": 1,
+    "maxRequests": 250,
+    "requests": 232,
+    "sourceUncachedRounds": 1,
+    "sourceWarmupRequests": 8,
+    "representations": [
+      "bin",
+      "json",
+      "bin-no-access"
+    ],
+    "providerIncluded": true,
+    "providerLabels": [
+      "helius"
+    ],
+    "jsonOptions": {
+      "commitment": "finalized",
+      "encoding": "base64",
+      "transactionDetails": "full",
+      "rewards": false,
+      "maxSupportedTransactionVersion": 1
+    }
+  },
+  "networkRequests": {
+    "worker": 176,
+    "helius": 56,
+    "total": 232
+  },
+  "networkErrors": 0,
+  "identityMatchedSlots": 8,
+  "liveCanonicalMatchedSlots": 8,
+  "savedBase64ReferenceChecks": {
+    "reference": "../get-block-cold-profile-20261121/reference-base64.json",
+    "samples": 112,
+    "matched": 112,
+    "slots": [
+      {
+        "slot": 470987967,
+        "samples": 14,
+        "matched": 14
+      },
+      {
+        "slot": 471096104,
+        "samples": 14,
+        "matched": 14
+      },
+      {
+        "slot": 471204030,
+        "samples": 14,
+        "matched": 14
+      },
+      {
+        "slot": 471311999,
+        "samples": 14,
+        "matched": 14
+      },
+      {
+        "slot": 470555971,
+        "samples": 14,
+        "matched": 14
+      },
+      {
+        "slot": 470663944,
+        "samples": 14,
+        "matched": 14
+      },
+      {
+        "slot": 470771932,
+        "samples": 14,
+        "matched": 14
+      },
+      {
+        "slot": 470879999,
+        "samples": 14,
+        "matched": 14
+      }
+    ]
+  },
+  "groups": [
+    {
+      "label": "blockzilla",
+      "representation": "bin",
+      "phase": "origin_uncached",
+      "cache": "ALL",
+      "requests": 8,
+      "successful": 8,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 552.748,
+        "p95": 833.061,
+        "p99": 833.061
+      },
+      "totalMs": {
+        "p50": 566.694,
+        "p95": 850.417,
+        "p99": 850.417
+      },
+      "cacheCounts": {
+        "BYPASS": 8
+      },
+      "storageBytesModes": {
+        "streamed-completion": 8
+      },
+      "auth": {
+        "cacheCounts": {
+          "BYPASS": 8
+        },
+        "kvReads": {
+          "reportedRequests": 8,
+          "total": 8,
+          "mean": 1,
+          "p50": 1,
+          "p95": 1,
+          "p99": 1
+        }
+      },
+      "verifiedFullyColdWithAuthBypass": 8,
+      "verifiedSourceIndexCached": 0,
+      "verifiedSourceIndexAndAuthCached": 0,
+      "sourceConditionTiming": null,
+      "originGetsMean": 3,
+      "originHeadsMean": 0,
+      "bufferedOriginBytesMean": 78200.25,
+      "declaredOriginWindowBytesMean": 173405.625
+    },
+    {
+      "label": "blockzilla",
+      "representation": "json",
+      "phase": "origin_uncached",
+      "cache": "ALL",
+      "requests": 8,
+      "successful": 8,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 576.911,
+        "p95": 900.939,
+        "p99": 900.939
+      },
+      "totalMs": {
+        "p50": 581.988,
+        "p95": 963.037,
+        "p99": 963.037
+      },
+      "cacheCounts": {
+        "BYPASS": 8
+      },
+      "storageBytesModes": {
+        "buffered": 8
+      },
+      "auth": {
+        "cacheCounts": {
+          "BYPASS": 8
+        },
+        "kvReads": {
+          "reportedRequests": 8,
+          "total": 8,
+          "mean": 1,
+          "p50": 1,
+          "p95": 1,
+          "p99": 1
+        }
+      },
+      "verifiedFullyColdWithAuthBypass": 8,
+      "verifiedSourceIndexCached": 0,
+      "verifiedSourceIndexAndAuthCached": 0,
+      "sourceConditionTiming": null,
+      "originGetsMean": 3,
+      "originHeadsMean": 0,
+      "bufferedOriginBytesMean": 251605.875,
+      "declaredOriginWindowBytesMean": null
+    },
+    {
+      "label": "blockzilla",
+      "representation": "bin-no-access",
+      "phase": "origin_uncached",
+      "cache": "ALL",
+      "requests": 8,
+      "successful": 8,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 492.509,
+        "p95": 721.356,
+        "p99": 721.356
+      },
+      "totalMs": {
+        "p50": 536.435,
+        "p95": 726.931,
+        "p99": 726.931
+      },
+      "cacheCounts": {
+        "BYPASS": 8
+      },
+      "storageBytesModes": {
+        "streamed-completion": 8
+      },
+      "auth": {
+        "cacheCounts": {
+          "BYPASS": 8
+        },
+        "kvReads": {
+          "reportedRequests": 8,
+          "total": 8,
+          "mean": 1,
+          "p50": 1,
+          "p95": 1,
+          "p99": 1
+        }
+      },
+      "verifiedFullyColdWithAuthBypass": 8,
+      "verifiedSourceIndexCached": 0,
+      "verifiedSourceIndexAndAuthCached": 0,
+      "sourceConditionTiming": null,
+      "originGetsMean": 2,
+      "originHeadsMean": 0,
+      "bufferedOriginBytesMean": 78200.25,
+      "declaredOriginWindowBytesMean": 147629.625
+    },
+    {
+      "label": "helius",
+      "representation": "json",
+      "phase": "origin_uncached",
+      "cache": "ALL",
+      "requests": 8,
+      "successful": 8,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 44.125,
+        "p95": 81.353,
+        "p99": 81.353
+      },
+      "totalMs": {
+        "p50": 94.317,
+        "p95": 198.884,
+        "p99": 198.884
+      },
+      "cacheCounts": {
+        "UNREPORTED": 8
+      },
+      "storageBytesModes": {
+        "unreported": 8
+      },
+      "auth": {
+        "cacheCounts": {
+          "unreported": 8
+        },
+        "kvReads": {
+          "reportedRequests": 0,
+          "total": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        }
+      },
+      "verifiedFullyColdWithAuthBypass": 0,
+      "verifiedSourceIndexCached": 0,
+      "verifiedSourceIndexAndAuthCached": 0,
+      "sourceConditionTiming": null,
+      "originGetsMean": null,
+      "originHeadsMean": null,
+      "bufferedOriginBytesMean": null,
+      "declaredOriginWindowBytesMean": null
+    },
+    {
+      "label": "blockzilla",
+      "representation": "resolution",
+      "phase": "index_auth_warmup",
+      "cache": "ALL",
+      "requests": 8,
+      "successful": 8,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 92.098,
+        "p95": 129.187,
+        "p99": 129.187
+      },
+      "totalMs": {
+        "p50": 92.941,
+        "p95": 129.623,
+        "p99": 129.623
+      },
+      "cacheCounts": {
+        "MISS": 8
+      },
+      "storageBytesModes": {
+        "buffered": 8
+      },
+      "auth": {
+        "cacheCounts": {
+          "MISS": 1,
+          "HIT": 7
+        },
+        "kvReads": {
+          "reportedRequests": 8,
+          "total": 1,
+          "mean": 0.125,
+          "p50": 0,
+          "p95": 1,
+          "p99": 1
+        }
+      },
+      "verifiedFullyColdWithAuthBypass": 0,
+      "verifiedSourceIndexCached": 0,
+      "verifiedSourceIndexAndAuthCached": 0,
+      "sourceConditionTiming": null,
+      "originGetsMean": 1,
+      "originHeadsMean": 0,
+      "bufferedOriginBytesMean": 78200.25,
+      "declaredOriginWindowBytesMean": null
+    },
+    {
+      "label": "blockzilla",
+      "representation": "bin",
+      "phase": "source_uncached",
+      "cache": "ALL",
+      "requests": 8,
+      "successful": 8,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 398.992,
+        "p95": 658.271,
+        "p99": 658.271
+      },
+      "totalMs": {
+        "p50": 442.235,
+        "p95": 670.957,
+        "p99": 670.957
+      },
+      "cacheCounts": {
+        "BYPASS": 8
+      },
+      "storageBytesModes": {
+        "streamed-completion": 8
+      },
+      "auth": {
+        "cacheCounts": {
+          "HIT": 8
+        },
+        "kvReads": {
+          "reportedRequests": 8,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        }
+      },
+      "verifiedFullyColdWithAuthBypass": 0,
+      "verifiedSourceIndexCached": 8,
+      "verifiedSourceIndexAndAuthCached": 8,
+      "sourceConditionTiming": {
+        "cachedIndex": {
+          "requests": 8,
+          "ttfbMs": {
+            "p50": 398.992,
+            "p95": 658.271,
+            "p99": 658.271
+          },
+          "totalMs": {
+            "p50": 442.235,
+            "p95": 670.957,
+            "p99": 670.957
+          }
+        },
+        "cachedIndexAndAuth": {
+          "requests": 8,
+          "ttfbMs": {
+            "p50": 398.992,
+            "p95": 658.271,
+            "p99": 658.271
+          },
+          "totalMs": {
+            "p50": 442.235,
+            "p95": 670.957,
+            "p99": 670.957
+          }
+        },
+        "cachedIndexWithAuthKvRead": {
+          "requests": 0,
+          "ttfbMs": {
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "totalMs": {
+            "p50": null,
+            "p95": null,
+            "p99": null
+          }
+        }
+      },
+      "originGetsMean": 2,
+      "originHeadsMean": 0,
+      "bufferedOriginBytesMean": 0,
+      "declaredOriginWindowBytesMean": 173405.625
+    },
+    {
+      "label": "blockzilla",
+      "representation": "json",
+      "phase": "source_uncached",
+      "cache": "ALL",
+      "requests": 8,
+      "successful": 8,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 494.457,
+        "p95": 653.944,
+        "p99": 653.944
+      },
+      "totalMs": {
+        "p50": 520.678,
+        "p95": 709.137,
+        "p99": 709.137
+      },
+      "cacheCounts": {
+        "BYPASS": 8
+      },
+      "storageBytesModes": {
+        "buffered": 8
+      },
+      "auth": {
+        "cacheCounts": {
+          "HIT": 7,
+          "MISS": 1
+        },
+        "kvReads": {
+          "reportedRequests": 8,
+          "total": 1,
+          "mean": 0.125,
+          "p50": 0,
+          "p95": 1,
+          "p99": 1
+        }
+      },
+      "verifiedFullyColdWithAuthBypass": 0,
+      "verifiedSourceIndexCached": 8,
+      "verifiedSourceIndexAndAuthCached": 7,
+      "sourceConditionTiming": {
+        "cachedIndex": {
+          "requests": 8,
+          "ttfbMs": {
+            "p50": 494.457,
+            "p95": 653.944,
+            "p99": 653.944
+          },
+          "totalMs": {
+            "p50": 520.678,
+            "p95": 709.137,
+            "p99": 709.137
+          }
+        },
+        "cachedIndexAndAuth": {
+          "requests": 7,
+          "ttfbMs": {
+            "p50": 505.934,
+            "p95": 653.944,
+            "p99": 653.944
+          },
+          "totalMs": {
+            "p50": 525.168,
+            "p95": 709.137,
+            "p99": 709.137
+          }
+        },
+        "cachedIndexWithAuthKvRead": {
+          "requests": 1,
+          "ttfbMs": {
+            "p50": 460.539,
+            "p95": 460.539,
+            "p99": 460.539
+          },
+          "totalMs": {
+            "p50": 483.923,
+            "p95": 483.923,
+            "p99": 483.923
+          }
+        }
+      },
+      "originGetsMean": 2,
+      "originHeadsMean": 0,
+      "bufferedOriginBytesMean": 173405.625,
+      "declaredOriginWindowBytesMean": null
+    },
+    {
+      "label": "blockzilla",
+      "representation": "bin-no-access",
+      "phase": "source_uncached",
+      "cache": "ALL",
+      "requests": 8,
+      "successful": 8,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 373.31,
+        "p95": 473.938,
+        "p99": 473.938
+      },
+      "totalMs": {
+        "p50": 396.168,
+        "p95": 621.859,
+        "p99": 621.859
+      },
+      "cacheCounts": {
+        "BYPASS": 8
+      },
+      "storageBytesModes": {
+        "streamed-completion": 8
+      },
+      "auth": {
+        "cacheCounts": {
+          "HIT": 7,
+          "MISS": 1
+        },
+        "kvReads": {
+          "reportedRequests": 8,
+          "total": 1,
+          "mean": 0.125,
+          "p50": 0,
+          "p95": 1,
+          "p99": 1
+        }
+      },
+      "verifiedFullyColdWithAuthBypass": 0,
+      "verifiedSourceIndexCached": 8,
+      "verifiedSourceIndexAndAuthCached": 7,
+      "sourceConditionTiming": {
+        "cachedIndex": {
+          "requests": 8,
+          "ttfbMs": {
+            "p50": 373.31,
+            "p95": 473.938,
+            "p99": 473.938
+          },
+          "totalMs": {
+            "p50": 396.168,
+            "p95": 621.859,
+            "p99": 621.859
+          }
+        },
+        "cachedIndexAndAuth": {
+          "requests": 7,
+          "ttfbMs": {
+            "p50": 373.31,
+            "p95": 473.938,
+            "p99": 473.938
+          },
+          "totalMs": {
+            "p50": 415.14,
+            "p95": 621.859,
+            "p99": 621.859
+          }
+        },
+        "cachedIndexWithAuthKvRead": {
+          "requests": 1,
+          "ttfbMs": {
+            "p50": 376.637,
+            "p95": 376.637,
+            "p99": 376.637
+          },
+          "totalMs": {
+            "p50": 395.437,
+            "p95": 395.437,
+            "p99": 395.437
+          }
+        }
+      },
+      "originGetsMean": 1,
+      "originHeadsMean": 0,
+      "bufferedOriginBytesMean": 0,
+      "declaredOriginWindowBytesMean": 147629.625
+    },
+    {
+      "label": "helius",
+      "representation": "json",
+      "phase": "source_uncached",
+      "cache": "ALL",
+      "requests": 8,
+      "successful": 8,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 45.465,
+        "p95": 93.116,
+        "p99": 93.116
+      },
+      "totalMs": {
+        "p50": 99.259,
+        "p95": 148.177,
+        "p99": 148.177
+      },
+      "cacheCounts": {
+        "UNREPORTED": 8
+      },
+      "storageBytesModes": {
+        "unreported": 8
+      },
+      "auth": {
+        "cacheCounts": {
+          "unreported": 8
+        },
+        "kvReads": {
+          "reportedRequests": 0,
+          "total": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        }
+      },
+      "verifiedFullyColdWithAuthBypass": 0,
+      "verifiedSourceIndexCached": 0,
+      "verifiedSourceIndexAndAuthCached": 0,
+      "sourceConditionTiming": null,
+      "originGetsMean": null,
+      "originHeadsMean": null,
+      "bufferedOriginBytesMean": null,
+      "declaredOriginWindowBytesMean": null
+    },
+    {
+      "label": "blockzilla",
+      "representation": "bin",
+      "phase": "first",
+      "cache": "ALL",
+      "requests": 8,
+      "successful": 8,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 373.181,
+        "p95": 446.274,
+        "p99": 446.274
+      },
+      "totalMs": {
+        "p50": 383.989,
+        "p95": 460.091,
+        "p99": 460.091
+      },
+      "cacheCounts": {
+        "MISS": 8
+      },
+      "storageBytesModes": {
+        "streamed-completion": 8
+      },
+      "auth": {
+        "cacheCounts": {
+          "HIT": 7,
+          "MISS": 1
+        },
+        "kvReads": {
+          "reportedRequests": 8,
+          "total": 1,
+          "mean": 0.125,
+          "p50": 0,
+          "p95": 1,
+          "p99": 1
+        }
+      },
+      "verifiedFullyColdWithAuthBypass": 0,
+      "verifiedSourceIndexCached": 0,
+      "verifiedSourceIndexAndAuthCached": 0,
+      "sourceConditionTiming": null,
+      "originGetsMean": 1.25,
+      "originHeadsMean": 0,
+      "bufferedOriginBytesMean": 0,
+      "declaredOriginWindowBytesMean": 73456.125
+    },
+    {
+      "label": "blockzilla",
+      "representation": "json",
+      "phase": "first",
+      "cache": "ALL",
+      "requests": 8,
+      "successful": 8,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 67.733,
+        "p95": 482.902,
+        "p99": 482.902
+      },
+      "totalMs": {
+        "p50": 89.689,
+        "p95": 519.483,
+        "p99": 519.483
+      },
+      "cacheCounts": {
+        "MISS": 8
+      },
+      "storageBytesModes": {
+        "buffered": 8
+      },
+      "auth": {
+        "cacheCounts": {
+          "MISS": 1,
+          "HIT": 7
+        },
+        "kvReads": {
+          "reportedRequests": 8,
+          "total": 1,
+          "mean": 0.125,
+          "p50": 0,
+          "p95": 1,
+          "p99": 1
+        }
+      },
+      "verifiedFullyColdWithAuthBypass": 0,
+      "verifiedSourceIndexCached": 0,
+      "verifiedSourceIndexAndAuthCached": 0,
+      "sourceConditionTiming": null,
+      "originGetsMean": 0.5,
+      "originHeadsMean": 0,
+      "bufferedOriginBytesMean": 67120.75,
+      "declaredOriginWindowBytesMean": null
+    },
+    {
+      "label": "blockzilla",
+      "representation": "bin-no-access",
+      "phase": "first",
+      "cache": "ALL",
+      "requests": 8,
+      "successful": 8,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 36.657,
+        "p95": 435.603,
+        "p99": 435.603
+      },
+      "totalMs": {
+        "p50": 40.181,
+        "p95": 449.796,
+        "p99": 449.796
+      },
+      "cacheCounts": {
+        "MISS": 8
+      },
+      "storageBytesModes": {
+        "streamed-completion": 8
+      },
+      "auth": {
+        "cacheCounts": {
+          "HIT": 8
+        },
+        "kvReads": {
+          "reportedRequests": 8,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        }
+      },
+      "verifiedFullyColdWithAuthBypass": 0,
+      "verifiedSourceIndexCached": 0,
+      "verifiedSourceIndexAndAuthCached": 0,
+      "sourceConditionTiming": null,
+      "originGetsMean": 0.25,
+      "originHeadsMean": 0,
+      "bufferedOriginBytesMean": 0,
+      "declaredOriginWindowBytesMean": 32828.75
+    },
+    {
+      "label": "helius",
+      "representation": "json",
+      "phase": "first",
+      "cache": "ALL",
+      "requests": 8,
+      "successful": 8,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 47.096,
+        "p95": 72.588,
+        "p99": 72.588
+      },
+      "totalMs": {
+        "p50": 98.642,
+        "p95": 166.443,
+        "p99": 166.443
+      },
+      "cacheCounts": {
+        "UNREPORTED": 8
+      },
+      "storageBytesModes": {
+        "unreported": 8
+      },
+      "auth": {
+        "cacheCounts": {
+          "unreported": 8
+        },
+        "kvReads": {
+          "reportedRequests": 0,
+          "total": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        }
+      },
+      "verifiedFullyColdWithAuthBypass": 0,
+      "verifiedSourceIndexCached": 0,
+      "verifiedSourceIndexAndAuthCached": 0,
+      "sourceConditionTiming": null,
+      "originGetsMean": null,
+      "originHeadsMean": null,
+      "bufferedOriginBytesMean": null,
+      "declaredOriginWindowBytesMean": null
+    },
+    {
+      "label": "blockzilla",
+      "representation": "json",
+      "phase": "repeat",
+      "cache": "HIT",
+      "requests": 32,
+      "successful": 32,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 23.979,
+        "p95": 26.568,
+        "p99": 27.652
+      },
+      "totalMs": {
+        "p50": 51.724,
+        "p95": 94.177,
+        "p99": 97.256
+      },
+      "cacheCounts": {
+        "HIT": 32
+      },
+      "storageBytesModes": {
+        "response-cache": 32
+      },
+      "auth": {
+        "cacheCounts": {
+          "HIT": 32
+        },
+        "kvReads": {
+          "reportedRequests": 32,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        }
+      },
+      "verifiedFullyColdWithAuthBypass": 0,
+      "verifiedSourceIndexCached": 0,
+      "verifiedSourceIndexAndAuthCached": 0,
+      "sourceConditionTiming": null,
+      "originGetsMean": 0,
+      "originHeadsMean": 0,
+      "bufferedOriginBytesMean": 0,
+      "declaredOriginWindowBytesMean": 0
+    },
+    {
+      "label": "blockzilla",
+      "representation": "bin-no-access",
+      "phase": "repeat",
+      "cache": "HIT",
+      "requests": 32,
+      "successful": 32,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 22.911,
+        "p95": 28.924,
+        "p99": 29.027
+      },
+      "totalMs": {
+        "p50": 25.386,
+        "p95": 31.509,
+        "p99": 35.537
+      },
+      "cacheCounts": {
+        "HIT": 32
+      },
+      "storageBytesModes": {
+        "response-cache": 32
+      },
+      "auth": {
+        "cacheCounts": {
+          "HIT": 31,
+          "MISS": 1
+        },
+        "kvReads": {
+          "reportedRequests": 32,
+          "total": 1,
+          "mean": 0.031,
+          "p50": 0,
+          "p95": 0,
+          "p99": 1
+        }
+      },
+      "verifiedFullyColdWithAuthBypass": 0,
+      "verifiedSourceIndexCached": 0,
+      "verifiedSourceIndexAndAuthCached": 0,
+      "sourceConditionTiming": null,
+      "originGetsMean": 0,
+      "originHeadsMean": 0,
+      "bufferedOriginBytesMean": 0,
+      "declaredOriginWindowBytesMean": 0
+    },
+    {
+      "label": "helius",
+      "representation": "json",
+      "phase": "repeat",
+      "cache": "ALL",
+      "requests": 32,
+      "successful": 32,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 48.494,
+        "p95": 84.002,
+        "p99": 92.21
+      },
+      "totalMs": {
+        "p50": 105.454,
+        "p95": 157.666,
+        "p99": 161.209
+      },
+      "cacheCounts": {
+        "UNREPORTED": 32
+      },
+      "storageBytesModes": {
+        "unreported": 32
+      },
+      "auth": {
+        "cacheCounts": {
+          "unreported": 32
+        },
+        "kvReads": {
+          "reportedRequests": 0,
+          "total": 0,
+          "mean": null,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        }
+      },
+      "verifiedFullyColdWithAuthBypass": 0,
+      "verifiedSourceIndexCached": 0,
+      "verifiedSourceIndexAndAuthCached": 0,
+      "sourceConditionTiming": null,
+      "originGetsMean": null,
+      "originHeadsMean": null,
+      "bufferedOriginBytesMean": null,
+      "declaredOriginWindowBytesMean": null
+    },
+    {
+      "label": "blockzilla",
+      "representation": "bin",
+      "phase": "repeat",
+      "cache": "HIT",
+      "requests": 32,
+      "successful": 32,
+      "errors": {},
+      "ttfbMs": {
+        "p50": 22.825,
+        "p95": 28.805,
+        "p99": 31.739
+      },
+      "totalMs": {
+        "p50": 27.908,
+        "p95": 48.974,
+        "p99": 80.41
+      },
+      "cacheCounts": {
+        "HIT": 32
+      },
+      "storageBytesModes": {
+        "response-cache": 32
+      },
+      "auth": {
+        "cacheCounts": {
+          "HIT": 31,
+          "MISS": 1
+        },
+        "kvReads": {
+          "reportedRequests": 32,
+          "total": 1,
+          "mean": 0.031,
+          "p50": 0,
+          "p95": 0,
+          "p99": 1
+        }
+      },
+      "verifiedFullyColdWithAuthBypass": 0,
+      "verifiedSourceIndexCached": 0,
+      "verifiedSourceIndexAndAuthCached": 0,
+      "sourceConditionTiming": null,
+      "originGetsMean": 0,
+      "originHeadsMean": 0,
+      "bufferedOriginBytesMean": 0,
+      "declaredOriginWindowBytesMean": 0
+    }
+  ],
+  "readAndAuthProof": [
+    {
+      "phase": "origin_uncached",
+      "representation": "bin",
+      "requests": 8,
+      "profileModes": {
+        "full": 8
+      },
+      "r2GetsPerRequest": [
+        1
+      ],
+      "s3GetsPerRequest": [
+        2
+      ],
+      "headsPerRequest": [
+        0
+      ],
+      "sourceIndexCachedVerified": 0,
+      "sourceIndexAndAuthCachedVerified": 0,
+      "fullyColdWithAuthBypassVerified": 8,
+      "authCacheCounts": {
+        "BYPASS": 8
+      },
+      "authKvReads": 8
+    },
+    {
+      "phase": "origin_uncached",
+      "representation": "json",
+      "requests": 8,
+      "profileModes": {
+        "full": 8
+      },
+      "r2GetsPerRequest": [
+        1
+      ],
+      "s3GetsPerRequest": [
+        2
+      ],
+      "headsPerRequest": [
+        0
+      ],
+      "sourceIndexCachedVerified": 0,
+      "sourceIndexAndAuthCachedVerified": 0,
+      "fullyColdWithAuthBypassVerified": 8,
+      "authCacheCounts": {
+        "BYPASS": 8
+      },
+      "authKvReads": 8
+    },
+    {
+      "phase": "origin_uncached",
+      "representation": "bin-no-access",
+      "requests": 8,
+      "profileModes": {
+        "full": 8
+      },
+      "r2GetsPerRequest": [
+        1
+      ],
+      "s3GetsPerRequest": [
+        1
+      ],
+      "headsPerRequest": [
+        0
+      ],
+      "sourceIndexCachedVerified": 0,
+      "sourceIndexAndAuthCachedVerified": 0,
+      "fullyColdWithAuthBypassVerified": 8,
+      "authCacheCounts": {
+        "BYPASS": 8
+      },
+      "authKvReads": 8
+    },
+    {
+      "phase": "source_uncached",
+      "representation": "bin",
+      "requests": 8,
+      "profileModes": {
+        "source": 8
+      },
+      "r2GetsPerRequest": [
+        0
+      ],
+      "s3GetsPerRequest": [
+        2
+      ],
+      "headsPerRequest": [
+        0
+      ],
+      "sourceIndexCachedVerified": 8,
+      "sourceIndexAndAuthCachedVerified": 8,
+      "fullyColdWithAuthBypassVerified": 0,
+      "authCacheCounts": {
+        "HIT": 8
+      },
+      "authKvReads": 0
+    },
+    {
+      "phase": "source_uncached",
+      "representation": "json",
+      "requests": 8,
+      "profileModes": {
+        "source": 8
+      },
+      "r2GetsPerRequest": [
+        0
+      ],
+      "s3GetsPerRequest": [
+        2
+      ],
+      "headsPerRequest": [
+        0
+      ],
+      "sourceIndexCachedVerified": 8,
+      "sourceIndexAndAuthCachedVerified": 7,
+      "fullyColdWithAuthBypassVerified": 0,
+      "authCacheCounts": {
+        "HIT": 7,
+        "MISS": 1
+      },
+      "authKvReads": 1
+    },
+    {
+      "phase": "source_uncached",
+      "representation": "bin-no-access",
+      "requests": 8,
+      "profileModes": {
+        "source": 8
+      },
+      "r2GetsPerRequest": [
+        0
+      ],
+      "s3GetsPerRequest": [
+        1
+      ],
+      "headsPerRequest": [
+        0
+      ],
+      "sourceIndexCachedVerified": 8,
+      "sourceIndexAndAuthCachedVerified": 7,
+      "fullyColdWithAuthBypassVerified": 0,
+      "authCacheCounts": {
+        "HIT": 7,
+        "MISS": 1
+      },
+      "authKvReads": 1
+    }
+  ],
+  "oneTimeIndexAuthWarmup": {
+    "requests": 8,
+    "responseCacheCounts": {
+      "MISS": 8
+    },
+    "r2Gets": 8,
+    "s3Gets": 0,
+    "heads": 0,
+    "originBytes": 625602,
+    "responseBytes": 625602,
+    "authKvReads": 1,
+    "authCacheCounts": {
+      "MISS": 1,
+      "HIT": 7
+    },
+    "allResolutionBodiesValidated": true
+  },
+  "responseHits": {
+    "requests": 96,
+    "allZeroOriginReads": true,
+    "authKvReads": 2,
+    "authCacheCounts": {
+      "HIT": 94,
+      "MISS": 2
+    }
+  },
+  "authByWorkerPhase": [
+    {
+      "phase": "origin_uncached",
+      "requests": 24,
+      "kvReads": 24,
+      "cacheCounts": {
+        "BYPASS": 24
+      }
+    },
+    {
+      "phase": "index_auth_warmup",
+      "requests": 8,
+      "kvReads": 1,
+      "cacheCounts": {
+        "MISS": 1,
+        "HIT": 7
+      }
+    },
+    {
+      "phase": "source_uncached",
+      "requests": 24,
+      "kvReads": 2,
+      "cacheCounts": {
+        "HIT": 22,
+        "MISS": 2
+      }
+    },
+    {
+      "phase": "first",
+      "requests": 24,
+      "kvReads": 2,
+      "cacheCounts": {
+        "HIT": 22,
+        "MISS": 2
+      }
+    },
+    {
+      "phase": "repeat",
+      "requests": 96,
+      "kvReads": 2,
+      "cacheCounts": {
+        "HIT": 94,
+        "MISS": 2
+      }
+    }
+  ],
+  "notes": [
+    "Fully cold means Worker response, index, source-range, and API-key caches bypassed. Positive reads and auth BYPASS/KV1 prove that scope; physical R2 caches remain unknown.",
+    "Source-uncached means response and source-range caches bypassed, with the index/API-key caches enabled. It is not fully cold.",
+    "Source-index proof requires zero R2 reads, no HEADs, and exactly two S3 GETs for full blocks or one for access=0.",
+    "Source auth-cache proof additionally requires auth HIT and zero KV reads. A legitimate five-second TTL miss stays visible and successful, with its real KV read.",
+    "One-time index/auth warmup requests and costs are separate from source latency and repeated response-cache hits.",
+    "All JSON comparisons use complete base64-transaction results, full metadata, rewards=false, exact decimal numbers, and the same eight blocks.",
+    "Provider cache state is unknown. No retry or extra cache-probe request was sent.",
+    "GET/HEAD counters measure object API operations, not physical disk reads. Declared streamed source-window bytes remain separate from buffered actual byte receipts.",
+    "Client timers stop before local validation. CPU is not inferred from these network timings or from frozen Worker clocks.",
+    "This run is a one-host comparison, not proof of a global fastest-provider result.",
+    "The full-cold label covers Worker caches. Physical R2 and KV service cache states are not controlled or measured; one reported KV API read is still counted."
+  ],
+  "authEvidenceComplete": true,
+  "sourceIndexAndAuthCachedJsonComparison": {
+    "slots": [
+      470555971,
+      470663944,
+      470771932,
+      470879999,
+      470987967,
+      471096104,
+      471311999
+    ],
+    "worker": {
+      "requests": 7,
+      "ttfbMs": {
+        "p50": 505.934,
+        "p95": 653.944,
+        "p99": 653.944
+      },
+      "totalMs": {
+        "p50": 525.168,
+        "p95": 709.137,
+        "p99": 709.137
+      }
+    },
+    "heliusSameSlots": {
+      "requests": 7,
+      "ttfbMs": {
+        "p50": 45.465,
+        "p95": 93.116,
+        "p99": 93.116
+      },
+      "totalMs": {
+        "p50": 112.934,
+        "p95": 148.177,
+        "p99": 148.177
+      }
+    },
+    "note": "Same-block subset selected by actual cached-index and auth HIT/KV0 receipts. The other source-mode JSON sample remains in the complete eight-block group with its real KV read."
+  }
+}

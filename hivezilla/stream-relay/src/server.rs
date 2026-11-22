@@ -102,11 +102,15 @@ fn authorized(req: &Request, api: &Api) -> bool {
         .is_some_and(|key| key_matches(key, &api.token))
 }
 async fn access(State(api): State<Api>, req: Request, next: Next) -> Response {
-    let public = api.public_blockhashes
-        && matches!(
-            req.uri().path(),
-            "/v1/blockhashes" | "/demo" | "/demo.js" | "/demo.css"
-        )
+    let public_route = match req.uri().path() {
+        "/v1/blockhashes" | "/demo" | "/demo.js" | "/demo.css" => api.public_blockhashes,
+        "/v2/blockhashes" | "/v2/landed-blocks" => api
+            .banks
+            .as_ref()
+            .is_some_and(|banks| !banks.origin && banks.public_views.is_some()),
+        _ => false,
+    };
+    let public = public_route
         && matches!(
             *req.method(),
             axum::http::Method::GET | axum::http::Method::OPTIONS
@@ -189,11 +193,13 @@ fn cors(r: &mut Response, origin: Option<&str>) {
             .insert(header::VARY, "Origin".parse().unwrap());
         r.headers_mut().insert(
             header::ACCESS_CONTROL_ALLOW_METHODS,
-            "GET, OPTIONS".parse().unwrap(),
+            "GET, POST, OPTIONS".parse().unwrap(),
         );
         r.headers_mut().insert(
             header::ACCESS_CONTROL_ALLOW_HEADERS,
-            "Authorization, Last-Event-ID".parse().unwrap(),
+            "Authorization, Content-Type, Last-Event-ID"
+                .parse()
+                .unwrap(),
         );
         r.headers_mut().insert(
             header::ACCESS_CONTROL_EXPOSE_HEADERS,
@@ -212,7 +218,10 @@ pub fn router(api: Api) -> Router {
             .route("/v1/chunks/{id}", get(chunk))
     };
     if let Some(banks) = &api.banks {
-        routes = routes.merge(crate::bank_server::routes(banks.origin));
+        routes = routes.merge(crate::bank_server::routes(
+            banks.origin,
+            banks.public_views.is_some(),
+        ));
     }
     if api.public_blockhashes {
         routes = routes
@@ -624,6 +633,162 @@ pub async fn serve(bind: SocketAddr, api: Api, tls: Tls, origin: bool) -> Result
     }
 }
 
+#[cfg(unix)]
+struct SocketOwner {
+    path: PathBuf,
+    device: u64,
+    inode: u64,
+    _lock: std::fs::File,
+}
+#[cfg(unix)]
+impl Drop for SocketOwner {
+    fn drop(&mut self) {
+        use std::os::unix::fs::{FileTypeExt, MetadataExt};
+        if let Ok(metadata) = std::fs::symlink_metadata(&self.path)
+            && metadata.file_type().is_socket()
+            && metadata.dev() == self.device
+            && metadata.ino() == self.inode
+        {
+            let _ = std::fs::remove_file(&self.path);
+        }
+    }
+}
+
+#[cfg(unix)]
+async fn private_listener(
+    path: &std::path::Path,
+) -> Result<(tokio::net::UnixListener, SocketOwner)> {
+    use std::os::{
+        fd::AsRawFd,
+        unix::{
+            ffi::OsStrExt,
+            fs::{FileTypeExt, MetadataExt, OpenOptionsExt, PermissionsExt},
+        },
+    };
+    use std::path::Component;
+    ensure!(
+        path.is_absolute() && path.as_os_str().as_bytes().len() <= 100,
+        "invalid_private_socket_path"
+    );
+    let parent = path.parent().context("private_socket_has_no_parent")?;
+    let mut checked = PathBuf::new();
+    for component in parent.components() {
+        ensure!(
+            matches!(component, Component::RootDir | Component::Normal(_)),
+            "unsafe_private_socket_path"
+        );
+        checked.push(component.as_os_str());
+        ensure!(
+            !std::fs::symlink_metadata(&checked)?
+                .file_type()
+                .is_symlink(),
+            "symlink_in_private_socket_path"
+        );
+    }
+    let uid = unsafe { libc::geteuid() };
+    let metadata = std::fs::symlink_metadata(parent)?;
+    ensure!(
+        metadata.is_dir() && metadata.uid() == uid && metadata.mode() & 0o077 == 0,
+        "private_socket_parent_requires_owned_0700_directory"
+    );
+    let lock_path = path.with_extension("sock.lock");
+    let lock = std::fs::OpenOptions::new()
+        .read(true)
+        .write(true)
+        .create(true)
+        .truncate(false)
+        .mode(0o600)
+        .custom_flags(libc::O_NOFOLLOW | libc::O_CLOEXEC)
+        .open(&lock_path)?;
+    let metadata = lock.metadata()?;
+    ensure!(
+        metadata.is_file()
+            && metadata.nlink() == 1
+            && metadata.uid() == uid
+            && metadata.mode() & 0o077 == 0,
+        "unsafe_private_socket_lock"
+    );
+    ensure!(
+        unsafe { libc::flock(lock.as_raw_fd(), libc::LOCK_EX | libc::LOCK_NB) } == 0,
+        "private_socket_already_owned"
+    );
+    match std::fs::symlink_metadata(path) {
+        Ok(before) => {
+            ensure!(
+                before.file_type().is_socket() && before.uid() == uid && before.mode() & 0o077 == 0,
+                "unsafe_existing_private_socket"
+            );
+            match tokio::time::timeout(
+                Duration::from_millis(500),
+                tokio::net::UnixStream::connect(path),
+            )
+            .await
+            {
+                Ok(Err(error)) if error.kind() == io::ErrorKind::ConnectionRefused => {}
+                _ => anyhow::bail!("private_socket_active_or_unproven"),
+            }
+            let after = std::fs::symlink_metadata(path)?;
+            ensure!(
+                after.file_type().is_socket()
+                    && before.dev() == after.dev()
+                    && before.ino() == after.ino(),
+                "private_socket_changed_during_recovery"
+            );
+            std::fs::remove_file(path)?;
+        }
+        Err(error) if error.kind() == io::ErrorKind::NotFound => {}
+        Err(error) => return Err(error.into()),
+    }
+    let listener = tokio::net::UnixListener::bind(path).context("bind private stream socket")?;
+    let metadata = std::fs::symlink_metadata(path)?;
+    ensure!(
+        metadata.file_type().is_socket() && metadata.uid() == uid,
+        "unsafe_bound_private_socket"
+    );
+    let owner = SocketOwner {
+        path: path.into(),
+        device: metadata.dev(),
+        inode: metadata.ino(),
+        _lock: lock,
+    };
+    std::fs::set_permissions(path, std::fs::Permissions::from_mode(0o600))?;
+    let metadata = std::fs::symlink_metadata(path)?;
+    ensure!(
+        metadata.file_type().is_socket()
+            && metadata.uid() == uid
+            && metadata.mode() & 0o077 == 0
+            && metadata.dev() == owner.device
+            && metadata.ino() == owner.inode,
+        "unsafe_bound_private_socket"
+    );
+    Ok((listener, owner))
+}
+
+/// The same authenticated HTTP/SSE router on a private local transport. TCP
+/// binding and TLS policy remain in `serve` and are not changed by this path.
+#[cfg(unix)]
+pub async fn serve_unix(path: PathBuf, api: Api) -> Result<()> {
+    let (listener, _owner) = private_listener(&path).await?;
+    let connections = Arc::new(Semaphore::new(64));
+    let app = router(api);
+    loop {
+        let (socket, _) = listener.accept().await?;
+        let Ok(permit) = connections.clone().try_acquire_owned() else {
+            drop(socket);
+            continue;
+        };
+        let app = app.clone();
+        tokio::spawn(async move {
+            let _permit = permit;
+            http_connection(socket, app, Duration::from_secs(300)).await;
+        });
+    }
+}
+#[cfg(not(unix))]
+pub async fn serve_unix(_path: PathBuf, _api: Api) -> Result<()> {
+    anyhow::bail!("unix_socket_transport_not_supported")
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -644,6 +809,118 @@ mod tests {
             banks: None,
             bank_only: false,
         }
+    }
+    #[cfg(unix)]
+    #[tokio::test]
+    async fn private_socket_keeps_authentication_and_cleans_only_its_own_inode() {
+        use std::os::unix::fs::{MetadataExt, PermissionsExt};
+        let directory = tempfile::Builder::new()
+            .prefix("bz-uds-")
+            .tempdir_in(std::fs::canonicalize("/tmp").unwrap())
+            .unwrap();
+        std::fs::set_permissions(directory.path(), std::fs::Permissions::from_mode(0o700)).unwrap();
+        let socket = directory.path().join("origin.sock");
+        let path = socket.clone();
+        let task = tokio::spawn(async move { serve_unix(path, test_api()).await });
+        let deadline = tokio::time::Instant::now() + Duration::from_secs(2);
+        while !socket.exists() {
+            assert!(!task.is_finished());
+            assert!(tokio::time::Instant::now() < deadline);
+            tokio::time::sleep(Duration::from_millis(5)).await;
+        }
+        assert_eq!(
+            std::fs::symlink_metadata(&socket).unwrap().mode() & 0o777,
+            0o600
+        );
+        let client = reqwest::Client::builder()
+            .no_proxy()
+            .unix_socket(socket.clone())
+            .http1_only()
+            .timeout(Duration::from_secs(2))
+            .build()
+            .unwrap();
+        assert_eq!(
+            client
+                .get("http://localhost/v1/head")
+                .send()
+                .await
+                .unwrap()
+                .status(),
+            StatusCode::UNAUTHORIZED
+        );
+        let head = client
+            .get("http://localhost/v1/head")
+            .bearer_auth("abc+/?#%=")
+            .send()
+            .await
+            .unwrap();
+        assert_eq!(head.status(), StatusCode::OK);
+        head.json::<serde_json::Value>().await.unwrap();
+        let stream = client
+            .get("http://localhost/v1/events")
+            .bearer_auth("abc+/?#%=")
+            .send()
+            .await
+            .unwrap();
+        assert_eq!(stream.status(), StatusCode::OK);
+        assert!(
+            stream.headers()[header::CONTENT_TYPE]
+                .to_str()
+                .unwrap()
+                .starts_with("text/event-stream")
+        );
+        drop(stream);
+        task.abort();
+        let _ = task.await;
+        assert!(!socket.exists());
+    }
+    #[cfg(unix)]
+    #[tokio::test]
+    async fn socket_recovery_rejects_live_or_unsafe_paths_and_recovers_only_a_stale_socket() {
+        use std::os::unix::fs::PermissionsExt;
+        let directory = tempfile::Builder::new()
+            .prefix("bz-uds-")
+            .tempdir_in(std::fs::canonicalize("/tmp").unwrap())
+            .unwrap();
+        std::fs::set_permissions(directory.path(), std::fs::Permissions::from_mode(0o700)).unwrap();
+        let path = directory.path().join("origin.sock");
+        std::fs::write(&path, b"owned data").unwrap();
+        assert!(private_listener(&path).await.is_err());
+        assert_eq!(std::fs::read(&path).unwrap(), b"owned data");
+        std::fs::remove_file(&path).unwrap();
+        let live = std::os::unix::net::UnixListener::bind(&path).unwrap();
+        std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o600)).unwrap();
+        assert!(private_listener(&path).await.is_err());
+        assert!(path.exists());
+        drop(live);
+        let (listener, owner) = private_listener(&path).await.unwrap();
+        assert!(private_listener(&path).await.is_err());
+        drop(listener);
+        drop(owner);
+        assert!(!path.exists());
+        std::fs::set_permissions(directory.path(), std::fs::Permissions::from_mode(0o755)).unwrap();
+        assert!(private_listener(&path).await.is_err());
+        assert!(!path.exists());
+    }
+    #[cfg(unix)]
+    #[tokio::test]
+    async fn socket_cleanup_preserves_a_replacement_socket() {
+        use std::os::unix::fs::{MetadataExt, PermissionsExt};
+        let directory = tempfile::Builder::new()
+            .prefix("bz-uds-")
+            .tempdir_in(std::fs::canonicalize("/tmp").unwrap())
+            .unwrap();
+        std::fs::set_permissions(directory.path(), std::fs::Permissions::from_mode(0o700)).unwrap();
+        let path = directory.path().join("origin.sock");
+        let (old, owner) = private_listener(&path).await.unwrap();
+        std::fs::remove_file(&path).unwrap();
+        let replacement = std::os::unix::net::UnixListener::bind(&path).unwrap();
+        std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o600)).unwrap();
+        let ino = path.metadata().unwrap().ino();
+        drop(owner);
+        assert_eq!(path.metadata().unwrap().ino(), ino);
+        drop(old);
+        drop(replacement);
     }
     fn request(query: Option<&str>, header: Option<&str>) -> Request {
         let mut b = Request::builder().uri(format!(

@@ -1,0 +1,10 @@
+{
+  "observedAtUtc": "2026-11-22T15:06:36.149638+00:00",
+  "worker": "blockzilla-get-block",
+  "version": "50aaba11-468b-4c57-b1ad-ddc999ea9152",
+  "percentage": 100,
+  "tunnelConfigVersion": 3,
+  "existingTunnelRulesPreserved": true,
+  "dnsChanged": false,
+  "newTunnelCreated": false
+}

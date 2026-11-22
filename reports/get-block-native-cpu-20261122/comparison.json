@@ -1,0 +1,225 @@
+{
+  "status": "PASS",
+  "completedAt": "2026-11-22T08:00:01.822778+00:00",
+  "scope": "Actual release WASM on four retained real epoch-1089 blocks. Local native R2 holds only exact windows; adapter checks original offsets, full sizes and ETags. No external calls, deployment or data/index publication.",
+  "slots": [
+    470555971,
+    470663944,
+    470771932,
+    470879999
+  ],
+  "changes": [
+    "CheckedResolution keeps private validated state and decoded dictionaries. Framing, source identities, generation, signature counts, dictionary bounds and sorted unique IDs remain checked. into_access moves the same validated table allocations instead of decoding them a third time.",
+    "The parent integrated native WebCrypto SHA-256 over the exact bounded payload. The trusted local digest is compared to the stored header, and the existing public decode() retains native Rust SHA-256 and all checks. These measurements assess the combined candidate."
+  ],
+  "warmSequentialABBA": [
+    {
+      "name": "baseline-clean-1",
+      "wasmSha256": "a27fbc8b0325a1f6046629d5dee07efbe2aeb8b4300d52a36718adc9ae9736c2",
+      "reads": 32,
+      "sampledActiveMsPerRead": 57.1601875,
+      "sampledWasmMsPerRead": 43.43115625,
+      "leafGroupsMsPerRead": {
+        "sha256": 1.05915625,
+        "base58": 9.864562499999995,
+        "zstd": 6.688906249999998,
+        "allocator": 3.8975625,
+        "resolution_tables": 0.47778125
+      },
+      "parity": "all independent full JSON digests match; binary warmups match original full bundles",
+      "receipt": "reports/get-block-native-cpu-20261122/baseline-clean-1.json"
+    },
+    {
+      "name": "native-sha-clean-1",
+      "wasmSha256": "6764ecd1b9fa43c568a122ac54c02c5e001cc84143ec8a441fcc008d6b13f0f1",
+      "reads": 32,
+      "sampledActiveMsPerRead": 44.954875,
+      "sampledWasmMsPerRead": 36.22759375,
+      "leafGroupsMsPerRead": {
+        "sha256": 0.27584375,
+        "base58": 7.044312499999996,
+        "zstd": 2.8053437500000005,
+        "allocator": 3.0710312499999994,
+        "resolution_tables": 0.0
+      },
+      "parity": "all independent full JSON digests match; binary warmups match original full bundles",
+      "receipt": "reports/get-block-native-cpu-20261122/native-sha-clean-1.json"
+    },
+    {
+      "name": "native-sha-clean-2",
+      "wasmSha256": "6764ecd1b9fa43c568a122ac54c02c5e001cc84143ec8a441fcc008d6b13f0f1",
+      "reads": 32,
+      "sampledActiveMsPerRead": 42.91315625,
+      "sampledWasmMsPerRead": 34.291,
+      "leafGroupsMsPerRead": {
+        "sha256": 0.0,
+        "base58": 8.885187499999997,
+        "zstd": 3.555625,
+        "allocator": 2.27675,
+        "resolution_tables": 0.0
+      },
+      "parity": "all independent full JSON digests match; binary warmups match original full bundles",
+      "receipt": "reports/get-block-native-cpu-20261122/native-sha-clean-2.json"
+    },
+    {
+      "name": "baseline-clean-2",
+      "wasmSha256": "a27fbc8b0325a1f6046629d5dee07efbe2aeb8b4300d52a36718adc9ae9736c2",
+      "reads": 32,
+      "sampledActiveMsPerRead": 44.84903125,
+      "sampledWasmMsPerRead": 37.1581875,
+      "leafGroupsMsPerRead": {
+        "sha256": 2.29565625,
+        "base58": 8.721874999999999,
+        "zstd": 3.0920625000000013,
+        "allocator": 1.9614375,
+        "resolution_tables": 0.232625
+      },
+      "parity": "all independent full JSON digests match; binary warmups match original full bundles",
+      "receipt": "reports/get-block-native-cpu-20261122/baseline-clean-2.json"
+    }
+  ],
+  "warmSummary": {
+    "baselineRangeMs": [
+      57.1601875,
+      44.84903125
+    ],
+    "candidateRangeMs": [
+      44.954875,
+      42.91315625
+    ],
+    "baselinePooledSampledActiveMs": 51.004609375,
+    "candidatePooledSampledActiveMs": 43.934015625,
+    "pooledObservedReductionPercent": 13.862656408198404,
+    "interpretation": "Two runs per build show material variance. Keep the full ranges; pooled difference is an observation, not a stable production speedup."
+  },
+  "freshRuntime": [
+    {
+      "name": "baseline-fresh",
+      "wasmSha256": "a27fbc8b0325a1f6046629d5dee07efbe2aeb8b4300d52a36718adc9ae9736c2",
+      "firstRequests": 4,
+      "sampledActiveMsPerRead": 103.31199999999998,
+      "sampledWasmMsPerRead": 94.839,
+      "slots": [
+        {
+          "slot": 470555971,
+          "sampledActiveMs": 100.383,
+          "sampledWasmMs": 95.219,
+          "jsonBytes": 2531323,
+          "binaryBytes": 247594,
+          "jsonSha256": "bd74d5beecba1aff0a4f82c5cebc0b64b7114ca1f14b04e24ff85fc87ff6f9ae",
+          "binarySha256": "c0fc8383e217705dde28612195cc165e95b2163c73743e5cb1586aab220c8415"
+        },
+        {
+          "slot": 470663944,
+          "sampledActiveMs": 121.245,
+          "sampledWasmMs": 110.605,
+          "jsonBytes": 4008256,
+          "binaryBytes": 364638,
+          "jsonSha256": "423b6900a13eb043355232db1a51eca023ca7b594ae95b704acc8bc391f90f27",
+          "binarySha256": "64ac916826fef959e8786beea3723836e22c7bbc40f3431617ff58be175a4775"
+        },
+        {
+          "slot": 470771932,
+          "sampledActiveMs": 120.585,
+          "sampledWasmMs": 110.324,
+          "jsonBytes": 3380451,
+          "binaryBytes": 275803,
+          "jsonSha256": "4c22c8563d508456569f44fbd519b4936347b3eb6d49cdb468c64ddcb8b2d861",
+          "binarySha256": "dab59abd834b055e114e76eb34245f5b1506ec9518c4496f89a29e4b34db764b"
+        },
+        {
+          "slot": 470879999,
+          "sampledActiveMs": 71.035,
+          "sampledWasmMs": 63.208,
+          "jsonBytes": 996544,
+          "binaryBytes": 124924,
+          "jsonSha256": "f23d112cd3102f50453e187ee9cdbb2b2cd3d36504d357a2d33bf139f67a7b88",
+          "binarySha256": "977d110e3d2328889faee91eda72703b9dee3ee4e7cb7edc3a12ce58f429296a"
+        }
+      ],
+      "receipt": "reports/get-block-native-cpu-20261122/baseline-fresh.json"
+    },
+    {
+      "name": "native-sha-fresh",
+      "wasmSha256": "6764ecd1b9fa43c568a122ac54c02c5e001cc84143ec8a441fcc008d6b13f0f1",
+      "firstRequests": 4,
+      "sampledActiveMsPerRead": 96.44825,
+      "sampledWasmMsPerRead": 89.18775000000001,
+      "slots": [
+        {
+          "slot": 470555971,
+          "sampledActiveMs": 105.357,
+          "sampledWasmMs": 105.357,
+          "jsonBytes": 2531323,
+          "binaryBytes": 247594,
+          "jsonSha256": "bd74d5beecba1aff0a4f82c5cebc0b64b7114ca1f14b04e24ff85fc87ff6f9ae",
+          "binarySha256": "c0fc8383e217705dde28612195cc165e95b2163c73743e5cb1586aab220c8415"
+        },
+        {
+          "slot": 470663944,
+          "sampledActiveMs": 113.444,
+          "sampledWasmMs": 99.645,
+          "jsonBytes": 4008256,
+          "binaryBytes": 364638,
+          "jsonSha256": "423b6900a13eb043355232db1a51eca023ca7b594ae95b704acc8bc391f90f27",
+          "binarySha256": "64ac916826fef959e8786beea3723836e22c7bbc40f3431617ff58be175a4775"
+        },
+        {
+          "slot": 470771932,
+          "sampledActiveMs": 98.194,
+          "sampledWasmMs": 93.146,
+          "jsonBytes": 3380451,
+          "binaryBytes": 275803,
+          "jsonSha256": "4c22c8563d508456569f44fbd519b4936347b3eb6d49cdb468c64ddcb8b2d861",
+          "binarySha256": "dab59abd834b055e114e76eb34245f5b1506ec9518c4496f89a29e4b34db764b"
+        },
+        {
+          "slot": 470879999,
+          "sampledActiveMs": 68.798,
+          "sampledWasmMs": 58.603,
+          "jsonBytes": 996544,
+          "binaryBytes": 124924,
+          "jsonSha256": "f23d112cd3102f50453e187ee9cdbb2b2cd3d36504d357a2d33bf139f67a7b88",
+          "binarySha256": "977d110e3d2328889faee91eda72703b9dee3ee4e7cb7edc3a12ce58f429296a"
+        }
+      ],
+      "receipt": "reports/get-block-native-cpu-20261122/native-sha-fresh.json"
+    }
+  ],
+  "freshSummary": {
+    "baselineSampledActiveMs": 103.31199999999998,
+    "candidateSampledActiveMs": 96.44825,
+    "activeReductionPercent": 6.643710314387475,
+    "baselineSampledWasmMs": 94.839,
+    "candidateSampledWasmMs": 89.18775000000001,
+    "wasmReductionPercent": 5.958782779236382
+  },
+  "correctness": {
+    "sampledWarmJsonReads": 128,
+    "freshRuntimeJsonReads": 8,
+    "allIndependentFullJsonDigestsMatch": true,
+    "allBinaryChecksByteExact": true,
+    "nativeResolutionTests": 8,
+    "newNativeRegressionTests": 4,
+    "parentActualWasmResolutionChecks": 18
+  },
+  "files": [
+    "edgezilla/get-block/src/slot_resolution.rs",
+    "edgezilla/get-block/scripts/profile-native-cpu.mjs",
+    "edgezilla/get-block/scripts/profile-local-cpu.mjs"
+  ],
+  "limitations": [
+    "V8 sampled time is not hosted billable CPU and does not establish the $1-per-million CPU target.",
+    "Synthetic adapter I/O cannot establish network or full-object R2 latency.",
+    "JSON canonicalization and client hashing occur after Profiler.stop in all primary comparison runs. Earlier baseline-warm and harness-smoke receipts had validation inside sampling and are exploratory only.",
+    "Fresh profiles include the first application request after runtime creation, but WASM module startup occurs before inspector sampling.",
+    "Current full JSON still requires Base58 for standard metadata fields; variable Base58 remains the largest renderer leaf group.",
+    "No binary bulk source bodies are copied through WASM by the serving path. This change concerns only bounded resolution objects."
+  ],
+  "base58Followup": {
+    "status": "REJECTED_AND_REVERTED",
+    "receipt": "base58-comparison.json",
+    "sampledJsonReads": 192,
+    "reason": "Native short-input microbenchmark was promising, but real-WASM ABBA did not show clear improvement. Original Base58 implementation retained."
+  }
+}

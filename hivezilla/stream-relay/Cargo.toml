@@ -8,10 +8,12 @@ publish = false
 
 # Transport has no validator ABI or Solana runtime dependencies.
 [workspace]
+exclude = ["decoder"]
 
 [dependencies]
 anyhow = "1.0.104"
 blockzilla-bank-stream-v2 = { path = "../../crates/blockzilla-bank-stream-v2" }
+blockzilla-stream-decoder = { path = "decoder" }
 async-stream = "0.3.6"
 axum = "0.8.8"
 bytes = "1.11"

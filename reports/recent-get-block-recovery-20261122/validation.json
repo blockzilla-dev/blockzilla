@@ -1,0 +1,62 @@
+{
+  "status": "PRODUCTION_RECENT_FIRST_COMPACT_RECOVERY_ACCEPTED",
+  "observedAtUtc": "2026-11-22T15:14:14.445579+00:00",
+  "worker": "blockzilla-get-block",
+  "version": "50aaba11-468b-4c57-b1ad-ddc999ea9152",
+  "wasmSha256": "abdf6f5a4a57e44fb0c9b343ced6c980f4a61e92eb20d597ef8453a4e6fc323b",
+  "nativeBinarySha256": "49c6611aa0bb46607653067736a55945f8ff6f321fe77cff54e752af0ea33974",
+  "productionRequestsPassed": 27,
+  "canaryRequestsPassed": 27,
+  "productionLegacyChecksPassed": 8,
+  "canaryLegacyChecksPassed": 8,
+  "actualWasmChecksPassed": 162,
+  "nativeServiceTestsPassed": 26,
+  "recentR2Reads": 0,
+  "archiveFallbackGETsPerTestedBlock": 2,
+  "recoveredBlockPayloadsPerRun": 4,
+  "exactReplayedFramesPerRun": 12,
+  "newServingBlockCopies": 0,
+  "newPerBlockIndexes": 0,
+  "newResultRamCaches": 0,
+  "heliusRequests": 0,
+  "nativeGenerationUnchanged": true,
+  "originalUnitChecks": {
+    "banks": {
+      "ActiveState": true,
+      "InvocationID": true,
+      "MainPID": true,
+      "NRestarts": true
+    },
+    "origin": {
+      "ActiveState": true,
+      "InvocationID": true,
+      "MainPID": true,
+      "NRestarts": true
+    },
+    "processed": {
+      "ActiveState": true,
+      "InvocationID": true,
+      "MainPID": true,
+      "NRestarts": true
+    }
+  },
+  "validatorRestarts": 0,
+  "newReaderEnabled": true,
+  "newReaderFiniteLifetime": false,
+  "temporaryWorkerDeleted": true,
+  "cloudflareRecentColdAuthVariableUsdPerMillion": 0.96184,
+  "costScope": "Warm runtime; 4 requests, unsampled CPU; request+CPU+KV and 1% invocation-log model; excludes fixed subscription and Foundation host/network",
+  "allInCostBelowOneUsdProven": false,
+  "fullHistoricalCoverageProven": false,
+  "liveUnrootedNegativeProven": false,
+  "checks": {
+    "production-recovery.json": "PASS",
+    "canary-recovery-v3.json": "PASS",
+    "production-legacy-compatibility.json": "PASS",
+    "canary-legacy-compatibility.json": "PASS",
+    "recent-worker-acceptance-v4.json": "PASS",
+    "worker-acceptance-v4.json": "PASS",
+    "probe-acceptance-v4.json": "PASS"
+  },
+  "report": "README.md"
+}

@@ -1,0 +1,10 @@
+{
+  "changed_production_sdk_files": [
+    "crates/blockzilla-bank-client/src/recovery.rs"
+  ],
+  "new_regression_tests_in_final_snapshot": true,
+  "final_decoder_pinned_to_previous_deployment": true,
+  "live_probe_core_byte_identical": false,
+  "live_probe_core_semantics_unchanged": true,
+  "reviewed_difference": "recovery.rs import list line wrapping only; no executable statement changed"
+}

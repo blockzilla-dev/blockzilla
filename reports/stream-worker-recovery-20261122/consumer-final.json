@@ -1,0 +1,86 @@
+{
+  "status": "PASS",
+  "samples": [
+    {
+      "time_ms": 1795361952502,
+      "unit": {
+        "MainPID": "1457002",
+        "NRestarts": "0",
+        "InvocationID": "84f38bcead4a4c30950119b51a583e1c"
+      },
+      "head": {
+        "input": "live",
+        "payloadMode": "compact-only",
+        "signingReady": true,
+        "beamCommittedCursor": "000000000000000018ea5078fdda19df-13e843:p363591:ecca0e3b07a06e274d50d5fcc4be1d45b44c9210146f0de43dbb6b528602ff25",
+        "outputCursor": "000000000000000018ea5078fdda19df-13e843:o219623:94c56ed2beb47d2ba0657c22f76229d3a7926bdb9362860006de8f1df6bfa945",
+        "workerRecovery": {
+          "active": false,
+          "committedBlocks": 8,
+          "committedControls": 16,
+          "completedWindows": 1,
+          "enabled": true,
+          "failedAttempts": 0,
+          "fromCursor": "000000000000000018ea5078fdda19df-13e843:p362754:e6a92580387c751df892f494c60c34ca5eed3efe002ea0ddfaa152cf890a6570",
+          "lastError": null,
+          "toCursor": "000000000000000018ea5078fdda19df-13e843:p362778:9143cd706e93417e5e0282bf4a4b5b19c57107179481fa3a8aa600e96f8202f1"
+        },
+        "error": null
+      }
+    },
+    {
+      "time_ms": 1795361955520,
+      "unit": {
+        "MainPID": "1457002",
+        "NRestarts": "0",
+        "InvocationID": "84f38bcead4a4c30950119b51a583e1c"
+      },
+      "head": {
+        "input": "live",
+        "payloadMode": "compact-only",
+        "signingReady": true,
+        "beamCommittedCursor": "000000000000000018ea5078fdda19df-13e843:p363631:623643a2efca2e9e609dfb89ea085f65e350b0d961ff1fcbaaa591afb948de96",
+        "outputCursor": "000000000000000018ea5078fdda19df-13e843:o219662:e0c6616dabe646146b9fec572fa4fffeafa9bd0f8c852eaf37f220b2d17b1fcf",
+        "workerRecovery": {
+          "active": false,
+          "committedBlocks": 8,
+          "committedControls": 16,
+          "completedWindows": 1,
+          "enabled": true,
+          "failedAttempts": 0,
+          "fromCursor": "000000000000000018ea5078fdda19df-13e843:p362754:e6a92580387c751df892f494c60c34ca5eed3efe002ea0ddfaa152cf890a6570",
+          "lastError": null,
+          "toCursor": "000000000000000018ea5078fdda19df-13e843:p362778:9143cd706e93417e5e0282bf4a4b5b19c57107179481fa3a8aa600e96f8202f1"
+        },
+        "error": null
+      }
+    },
+    {
+      "time_ms": 1795361958535,
+      "unit": {
+        "MainPID": "1457002",
+        "NRestarts": "0",
+        "InvocationID": "84f38bcead4a4c30950119b51a583e1c"
+      },
+      "head": {
+        "input": "live",
+        "payloadMode": "compact-only",
+        "signingReady": true,
+        "beamCommittedCursor": "000000000000000018ea5078fdda19df-13e843:p363675:99e89fa5e45132173a423b14726522bb1b2a3d8e9ea0dd14b71c9219b09eb662",
+        "outputCursor": "000000000000000018ea5078fdda19df-13e843:o219706:ef6ecc7714653c492fefae903e62a1e50e4763dc5076fb45364d352c39c2990e",
+        "workerRecovery": {
+          "active": false,
+          "committedBlocks": 8,
+          "committedControls": 16,
+          "completedWindows": 1,
+          "enabled": true,
+          "failedAttempts": 0,
+          "fromCursor": "000000000000000018ea5078fdda19df-13e843:p362754:e6a92580387c751df892f494c60c34ca5eed3efe002ea0ddfaa152cf890a6570",
+          "lastError": null,
+          "toCursor": "000000000000000018ea5078fdda19df-13e843:p362778:9143cd706e93417e5e0282bf4a4b5b19c57107179481fa3a8aa600e96f8202f1"
+        },
+        "error": null
+      }
+    }
+  ]
+}

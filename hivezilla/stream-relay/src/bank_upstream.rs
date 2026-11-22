@@ -8,6 +8,25 @@ use blockzilla_bank_stream_v2::{self as v2, Frame, Head, Notice, SourceIdentity}
 use bytes::BytesMut;
 use futures_util::StreamExt;
 use std::{sync::Arc, time::Duration};
+use tokio::sync::{OwnedSemaphorePermit, Semaphore, mpsc};
+
+const MAX_IN_FLIGHT: usize = 4;
+const LIVE_BATCH_WAIT: Duration = Duration::from_millis(10);
+const REPLAY_BATCH_WAIT: Duration = Duration::from_millis(100);
+struct IntakeTask(tokio::task::JoinHandle<()>);
+impl Drop for IntakeTask {
+    fn drop(&mut self) {
+        self.0.abort();
+    }
+}
+enum Inbound {
+    Status(Box<Head>),
+    Chunk(Notice, String, u64),
+}
+enum Downloaded {
+    Status(Box<Head>),
+    Frame(Box<Frame>, OwnedSemaphorePermit),
+}
 
 #[derive(Default)]
 pub struct Sse {
@@ -74,6 +93,15 @@ pub async fn fetch(
     sha: &str,
     source: &SourceIdentity,
 ) -> Result<Frame> {
+    fetch_bounded(u, client, sha, source, v2::MAX_FRAME).await
+}
+async fn fetch_bounded(
+    u: &Upstream,
+    client: &reqwest::Client,
+    sha: &str,
+    source: &SourceIdentity,
+    limit: usize,
+) -> Result<Frame> {
     ensure!(v2::is_digest(sha), "invalid_digest");
     let r = client
         .get(format!("{}v2/banks/chunks/{sha}", u.url))
@@ -93,7 +121,7 @@ pub async fn fetch(
             == Some("application/vnd.blockzilla.stream.v2"),
         "chunk_content_type_mismatch"
     );
-    let f = v2::decode(bounded(r, v2::MAX_FRAME).await?.into())?;
+    let f = v2::decode(bounded(r, limit).await?.into())?;
     ensure!(
         f.sha256 == sha && &f.source == source,
         "source_or_digest_changed"
@@ -154,7 +182,7 @@ pub async fn install(
     Ok(())
 }
 async fn receive(u: &Upstream, client: &reqwest::Client, store: &Arc<BankStore>) -> Result<()> {
-    let mut after = store.latest();
+    let after = store.latest();
     let mut url = reqwest::Url::parse(&format!("{}v2/banks/events", u.url))?;
     url.query_pairs_mut().append_pair("after", &after);
     let r = client.get(url).bearer_auth(&u.token).send().await?;
@@ -178,26 +206,132 @@ async fn receive(u: &Upstream, client: &reqwest::Client, store: &Arc<BankStore>)
             .is_some_and(|s| s.starts_with("text/event-stream")),
         "upstream_content_type_mismatch"
     );
-    let mut input = r.bytes_stream();
-    let mut sse = Sse::default();
-    let mut initial = true;
+    let (sender, mut input) = mpsc::channel(MAX_IN_FLIGHT);
+    let requests = Arc::new(Semaphore::new(MAX_IN_FLIGHT));
+    let intake_requests = requests.clone();
+    let intake_upstream = u.clone();
+    let intake_client = client.clone();
+    let source = store.source.clone();
+    let intake = IntakeTask(tokio::spawn(async move {
+        if let Err(error) = download(
+            r,
+            intake_upstream,
+            intake_client,
+            source,
+            after,
+            intake_requests,
+            &sender,
+        )
+        .await
+        {
+            let _ = sender.send(Err(error)).await;
+        }
+    }));
     let mut batch: Vec<(Frame, Option<Frame>)> = Vec::new();
+    let mut permits = Vec::new();
+    let mut batch_bytes = 0;
+    let mut announced_sequence = 0;
     let mut flush_due = tokio::time::Instant::now();
     loop {
         let next = if batch.is_empty() {
-            input.next().await
+            input.recv().await
         } else {
             tokio::select! {
-                value=input.next()=>value,
-                _=tokio::time::sleep_until(flush_due)=>{flush(store,&mut batch).await?;continue;}
+                value=input.recv()=>value,
+                _=tokio::time::sleep_until(flush_due)=>{
+                    flush(store,&mut batch).await?;
+                    permits.clear();batch_bytes=0;continue;
+                }
             }
         };
-        let Some(part) = next else { break };
+        let Some(event) = next else { break };
+        match event? {
+            Downloaded::Status(h) => {
+                flush(store, &mut batch).await?;
+                permits.clear();
+                batch_bytes = 0;
+                ensure!(h.status != "failed", "source_failed");
+                announced_sequence = h
+                    .cursor
+                    .as_deref()
+                    .map(v2::parse_cursor)
+                    .transpose()?
+                    .map_or(0, |(_, n, _)| n);
+                store.set_health(&h.status, None);
+            }
+            Downloaded::Frame(frame, permit) => {
+                let frame = *frame;
+                let dependency = if let Some(sha) = &frame.envelope.event.payload_frame_sha256 {
+                    if store.chunk(sha).is_none()
+                        && !batch.iter().any(|(f, dep)| {
+                            &f.sha256 == sha || dep.as_ref().is_some_and(|d| &d.sha256 == sha)
+                        })
+                    {
+                        let _request = requests.acquire().await?;
+                        Some(fetch(u, client, sha, &store.source).await?)
+                    } else {
+                        None
+                    }
+                } else {
+                    None
+                };
+                let bytes = frame.wire.len() + dependency.as_ref().map_or(0, |f| f.wire.len());
+                if batch_bytes + bytes > crate::bank_store::MAX_BATCH_BYTES {
+                    flush(store, &mut batch).await?;
+                    permits.clear();
+                    batch_bytes = 0;
+                }
+                if batch.is_empty() {
+                    let backlog = announced_sequence.saturating_sub(frame.envelope.event.sequence);
+                    let wait = if backlog >= crate::bank_store::MAX_BATCH_EVENTS as u64 {
+                        REPLAY_BATCH_WAIT
+                    } else {
+                        LIVE_BATCH_WAIT
+                    };
+                    flush_due = tokio::time::Instant::now() + wait;
+                }
+                batch_bytes += bytes;
+                batch.push((frame, dependency));
+                permits.push(permit);
+                if batch.len() >= crate::bank_store::MAX_BATCH_EVENTS
+                    || tokio::time::Instant::now() >= flush_due
+                {
+                    flush(store, &mut batch).await?;
+                    permits.clear();
+                    batch_bytes = 0;
+                }
+            }
+        }
+    }
+    drop(intake);
+    flush(store, &mut batch).await?;
+    anyhow::bail!("upstream_closed")
+}
+fn require(condition: bool, error: &str) -> Result<()> {
+    ensure!(condition, "{error}");
+    Ok(())
+}
+async fn download(
+    response: reqwest::Response,
+    u: Upstream,
+    client: reqwest::Client,
+    source: SourceIdentity,
+    mut after: String,
+    requests: Arc<Semaphore>,
+    sender: &mpsc::Sender<Result<Downloaded>>,
+) -> Result<()> {
+    let budget = Arc::new(Semaphore::new(crate::bank_store::MAX_BATCH_BYTES));
+    let mut input = response.bytes_stream();
+    let mut sse = Sse::default();
+    let mut initial = true;
+    let notice_source = source.clone();
+    let events = async_stream::try_stream! {
+      while let Some(part) = input.next().await {
         let part = part?;
-        ensure!(
+        require(
             sse.pending.len() + part.len() <= 2 * v2::MAX_META,
             "sse_read_too_large"
-        );
+        )?;
         sse.pending.extend_from_slice(&part);
         while let Some(end) = sse.pending.iter().position(|b| *b == b'\n') {
             let line = sse.pending.split_to(end + 1);
@@ -205,33 +339,31 @@ async fn receive(u: &Upstream, client: &reqwest::Client, store: &Arc<BankStore>)
                 continue;
             };
             if initial {
-                ensure!(event == "status" && id.is_empty(), "missing_initial_status");
+                require(event == "status" && id.is_empty(), "missing_initial_status")?;
                 initial = false;
             }
             match event.as_str() {
                 "status" => {
-                    flush(store, &mut batch).await?;
-                    ensure!(id.is_empty(), "status_has_id");
+                    require(id.is_empty(), "status_has_id")?;
                     let h: Head = serde_json::from_str(&data)?;
                     h.validate(
-                        &store.source,
+                        &notice_source,
                         crate::store::now_ms(),
                         v2::DEFAULT_MAX_LAG_MS,
                     )?;
-                    ensure!(h.status != "failed", "source_failed");
-                    store.set_health(&h.status, None);
+                    yield Inbound::Status(Box::new(h));
                 }
                 "gap" => {
-                    ensure!(id.is_empty(), "gap_has_id");
+                    require(id.is_empty(), "gap_has_id")?;
                     let gap: serde_json::Value = serde_json::from_str(&data)?;
                     let h: Head = serde_json::from_value(gap["head"].clone())?;
                     h.validate(
-                        &store.source,
+                        &notice_source,
                         crate::store::now_ms(),
                         v2::DEFAULT_MAX_LAG_MS,
                     )?;
                     let error = gap["error"].as_str().context("invalid_gap")?;
-                    ensure!(
+                    require(
                         matches!(
                             error,
                             "source_changed"
@@ -240,8 +372,8 @@ async fn receive(u: &Upstream, client: &reqwest::Client, store: &Arc<BankStore>)
                                 | "dependency_unavailable"
                         ),
                         "invalid_gap"
-                    );
-                    anyhow::bail!("{error}");
+                    )?;
+                    Err(anyhow::anyhow!("{error}"))?;
                 }
                 "chunk" => {
                     let notice: Notice = serde_json::from_str(&data)?;
@@ -249,39 +381,50 @@ async fn receive(u: &Upstream, client: &reqwest::Client, store: &Arc<BankStore>)
                         .1
                         .checked_add(1)
                         .context("sequence_overflow")?;
-                    notice.preflight(&id, sequence, &store.source)?;
-                    let frame = fetch(u, client, &notice.sha256, &store.source).await?;
-                    notice.validate(&id, &frame, sequence, &store.source)?;
-                    let dependency = if let Some(sha) = &frame.envelope.event.payload_frame_sha256 {
-                        if store.chunk(sha).is_none()
-                            && !batch.iter().any(|(f, dep)| {
-                                &f.sha256 == sha || dep.as_ref().is_some_and(|d| &d.sha256 == sha)
-                            })
-                        {
-                            Some(fetch(u, client, sha, &store.source).await?)
-                        } else {
-                            None
-                        }
-                    } else {
-                        None
-                    };
-                    after = frame.cursor.clone();
-                    if batch.is_empty() {
-                        flush_due = tokio::time::Instant::now() + Duration::from_millis(10);
-                    }
-                    batch.push((frame, dependency));
-                    if batch.len() >= crate::bank_store::MAX_BATCH_EVENTS
-                        || tokio::time::Instant::now() >= flush_due
-                    {
-                        flush(store, &mut batch).await?;
-                    }
+                    notice.preflight(&id, sequence, &notice_source)?;
+                    after = notice.cursor.clone();
+                    yield Inbound::Chunk(notice, id, sequence);
                 }
-                _ => anyhow::bail!("unsupported_sse_event"),
+                _ => Err(anyhow::anyhow!("unsupported_sse_event"))?,
             }
         }
+      }
+      require(sse.pending.is_empty() && sse.size == 0, "upstream_truncated_sse")?;
+    };
+    let downloads = events
+        .map(|event: Result<Inbound>| {
+            let budget = budget.clone();
+            let u = &u;
+            let client = &client;
+            let source = &source;
+            let requests = &requests;
+            async move {
+                match event? {
+                    Inbound::Status(h) => Ok(Downloaded::Status(h)),
+                    Inbound::Chunk(notice, id, sequence) => {
+                        // Reserve advertised bytes before GET. The permit covers
+                        // primary frames in downloads, ordered results, queued
+                        // delivery and the pending disk batch until durable commit.
+                        // Missing control dependencies have a separate finite bound.
+                        let permit = budget.acquire_many_owned(notice.bytes as u32).await?;
+                        let _request = requests.acquire().await?;
+                        let frame =
+                            fetch_bounded(u, client, &notice.sha256, source, notice.bytes).await?;
+                        notice.validate(&id, &frame, sequence, source)?;
+                        Ok(Downloaded::Frame(Box::new(frame), permit))
+                    }
+                }
+            }
+        })
+        .buffered(MAX_IN_FLIGHT);
+    futures_util::pin_mut!(downloads);
+    while let Some(event) = downloads.next().await {
+        sender
+            .send(event)
+            .await
+            .map_err(|_| anyhow::anyhow!("intake_cancelled"))?;
     }
-    flush(store, &mut batch).await?;
-    anyhow::bail!("upstream_closed")
+    Ok(())
 }
 async fn flush(store: &Arc<BankStore>, batch: &mut Vec<(Frame, Option<Frame>)>) -> Result<()> {
     if !batch.is_empty() {
@@ -307,7 +450,8 @@ pub async fn run(u: Upstream, client: reqwest::Client, store: Arc<BankStore>) {
         .await;
         if let Err(e) = result {
             let msg = e.to_string();
-            let retry = e.downcast_ref::<reqwest::Error>().is_some() || msg == "upstream_closed";
+            let retry = e.downcast_ref::<reqwest::Error>().is_some()
+                || matches!(msg.as_str(), "upstream_closed" | "upstream_truncated_sse");
             store.set_health(if retry { "stale" } else { "failed" }, Some(msg));
             if !retry {
                 return;
@@ -350,6 +494,9 @@ mod tests {
                 store: banks,
                 origin,
                 output: None,
+                public_views: None,
+                hot_upstream: None,
+                direct_beam: false,
             }),
             bank_only: true,
         }
@@ -455,6 +602,79 @@ mod tests {
         wait_sequence(&relay, 4).await;
         assert!(relay.chunk(&b.sha256).is_some());
         assert_eq!(relay.head().status, "live");
+        task.abort();
+        server.abort();
+    }
+    #[tokio::test]
+    async fn concurrent_downloads_keep_durable_order_and_the_saved_boundary() {
+        use std::sync::atomic::{AtomicUsize, Ordering};
+        let t = tempfile::tempdir().unwrap();
+        let origin = store(&t.path().join("origin"));
+        let relay = store(&t.path().join("relay"));
+        let mut frames = Vec::new();
+        for bank in 1..=120 {
+            let b = fresh(block(2 * bank - 1, bank + 8, bank, bank + 7, bank + 8));
+            let root = control(&b, 2 * bank, "root", crate::store::now_ms());
+            frames.extend([b, root]);
+        }
+        for batch in frames.chunks(crate::bank_store::MAX_BATCH_EVENTS) {
+            origin
+                .admit_batch(batch.iter().cloned().map(|f| (f, None)).collect())
+                .unwrap();
+        }
+        relay
+            .admit_batch(frames[..2].iter().cloned().map(|f| (f, None)).collect())
+            .unwrap();
+        origin.set_health("live", None);
+        let active = Arc::new(AtomicUsize::new(0));
+        let maximum = Arc::new(AtomicUsize::new(0));
+        let active_requests = active.clone();
+        let maximum_requests = maximum.clone();
+        let slow = frames[2].sha256.clone();
+        let middleware = axum::middleware::from_fn(
+            move |request: axum::extract::Request, next: axum::middleware::Next| {
+                let active = active_requests.clone();
+                let maximum = maximum_requests.clone();
+                let slow = slow.clone();
+                async move {
+                    let chunk = request.uri().path().starts_with("/v2/banks/chunks/");
+                    if chunk {
+                        maximum
+                            .fetch_max(active.fetch_add(1, Ordering::SeqCst) + 1, Ordering::SeqCst);
+                        tokio::time::sleep(Duration::from_millis(
+                            if request.uri().path().ends_with(&slow) {
+                                80
+                            } else {
+                                20
+                            },
+                        ))
+                        .await;
+                    }
+                    let response = next.run(request).await;
+                    if chunk {
+                        active.fetch_sub(1, Ordering::SeqCst);
+                    }
+                    response
+                }
+            },
+        );
+        let app = server::router(api(origin, false)).layer(middleware);
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let addr = listener.local_addr().unwrap();
+        let server = tokio::spawn(async move {
+            axum::serve(listener, app).await.unwrap();
+        });
+        let u = upstream(addr);
+        let task = tokio::spawn(run(u.clone(), u.client().unwrap(), relay.clone()));
+        wait_sequence(&relay, 240).await;
+        assert!((2..=MAX_IN_FLIGHT).contains(&maximum.load(Ordering::SeqCst)));
+        let mut cursor = v2::cursor(&source().session_id, 0, "-");
+        for expected in frames {
+            let actual = relay.after(&cursor).unwrap().unwrap();
+            assert_eq!(actual.cursor, expected.cursor);
+            cursor = actual.cursor.clone();
+        }
+        assert!(relay.after(&cursor).unwrap().is_none());
         task.abort();
         server.abort();
     }

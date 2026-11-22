@@ -1,0 +1,657 @@
+{
+  "schema": "blockzilla-own-native-r2-cost-plan-v1",
+  "status": "MEASURED_PARTIAL_EPOCH_PILOT",
+  "preparedDate": "2026-11-22",
+  "unit": "USD per one million HTTP requests, before account allowances and billing-unit rounding",
+  "experiment": {
+    "deployment": "Separate owner-account native R2 canary; public Foundation-S3 V11 API is unchanged",
+    "publicBaselineVersion": "2359b1b3-d95b-4e3b-bffc-b4161aac406f",
+    "nativeWorker": "blockzilla-get-block-native-test",
+    "nativeVersion": "c3ca487a-ce71-42ba-802f-b2f7a38e234b",
+    "selectedBlocks": 8,
+    "sourceEpochs": 2,
+    "plannedSourceObjects": 4,
+    "plannedResolutionObjects": 8,
+    "storageClass": "Standard",
+    "requestedBucketLocationHint": "WEUR",
+    "physicalPlacementVerified": false,
+    "sourceBytes": 1387245,
+    "resolutionBytes": 624895,
+    "totalBytes": 2012140,
+    "resolutionOverSourceFraction": 0.4504575615698741,
+    "resolutionOverTotalFraction": 0.31056238631506755,
+    "manifestReceipt": "upload-receipt.json",
+    "remoteObjectsVerified": 12,
+    "sameBucketS3Control": "Omitted: the current owner OAuth cannot manage API tokens; no keys were created",
+    "foundationReaderInvocations": 0
+  },
+  "rates": {
+    "workerRequestsUsdPerMillion": 0.3,
+    "workerCpuUsdPerMillionMs": 0.02,
+    "kvReadsUsdPerMillion": 0.5,
+    "r2StandardClassAUsdPerMillion": 4.5,
+    "r2StandardClassBUsdPerMillion": 0.36,
+    "r2StandardStorageUsdPerGbMonth": 0.015,
+    "r2EgressUsd": 0,
+    "verifiedAt": "2026-11-22",
+    "sources": {
+      "workers": "https://developers.cloudflare.com/workers/platform/pricing/",
+      "kv": "https://developers.cloudflare.com/kv/platform/pricing/",
+      "r2": "https://developers.cloudflare.com/r2/pricing/",
+      "analyticsEngine": "https://developers.cloudflare.com/analytics/analytics-engine/pricing/"
+    },
+    "analyticsEngineCurrentlyBilled": false
+  },
+  "formulas": {
+    "r2ReadsPerHttp": "(observed R2 GET attempts + HEAD attempts) / observed HTTP requests; successful test reads only until failure billing is classified",
+    "r2ReadCost": "r2ReadsPerHttp * 0.36",
+    "workerRequestCost": "0.30 for one public Worker invocation per HTTP request",
+    "kvReadCost": "observed KV reads / observed HTTP requests * 0.50",
+    "meanCpuMs": "platform sum.cpuTimeUs / platform sum.requests / 1000",
+    "cpuCost": "meanCpuMs * 0.02",
+    "cpuIncludingAttributedStartup": "(sum.cpuTimeUs + sum.startupCpuTimeUs) / sum.requests / 1000 * 0.02; report separately",
+    "total": "r2ReadCost + workerRequestCost + kvReadCost + cpuCost",
+    "storageMonthlyUsd": "(sourceBytes + resolutionBytes) / 1000000000 * 0.015; constant one-month occupancy, before allowances and rounding",
+    "objectUploadUsd": "observed PUT count / 1000000 * 4.50; bucket creation, lists, retries and readback are separate"
+  },
+  "plannedOperationCasesNotMeasured": {
+    "fullyColdJsonOrFullBinary": {
+      "r2Gets": 3,
+      "r2Heads": 0,
+      "kvReads": 1,
+      "r2UsdPerMillion": 1.08,
+      "baseUsdPerMillionExcludingCpu": 1.88
+    },
+    "fullyColdBinaryWithoutAccess": {
+      "r2Gets": 2,
+      "r2Heads": 0,
+      "kvReads": 1,
+      "r2UsdPerMillion": 0.72,
+      "baseUsdPerMillionExcludingCpu": 1.52
+    },
+    "sourceOnlyJsonOrFullBinaryWithAuthHit": {
+      "r2Gets": 2,
+      "r2Heads": 0,
+      "kvReads": 0,
+      "r2UsdPerMillion": 0.72,
+      "baseUsdPerMillionExcludingCpu": 1.02
+    },
+    "sourceOnlyBinaryWithoutAccessWithAuthHit": {
+      "r2Gets": 1,
+      "r2Heads": 0,
+      "kvReads": 0,
+      "r2UsdPerMillion": 0.36,
+      "baseUsdPerMillionExcludingCpu": 0.66
+    },
+    "completeResponseHitWithAuthHit": {
+      "r2Gets": 0,
+      "r2Heads": 0,
+      "kvReads": 0,
+      "r2UsdPerMillion": 0,
+      "baseUsdPerMillionExcludingCpu": 0.3
+    }
+  },
+  "observations": {
+    "foundationS3BaselineReceipt": "foundation-s3-baseline-summary.json",
+    "nativeBenchmarkReceipt": "main.json",
+    "nativeSourceReceipt": "main.json",
+    "nativeCacheHitReceipt": "main.json",
+    "platformCpuReceipt": "platform-cpu-json.json",
+    "phaseEstimates": {
+      "fullyColdJson": {
+        "receipt": "cpu-pass.json",
+        "sampleIndices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "requests": 8,
+        "allResponsesOk": true,
+        "authCacheCounts": {
+          "BYPASS": 8
+        },
+        "responseCacheCounts": {
+          "BYPASS": 8
+        },
+        "objectOperations": {
+          "ownerR2Gets": 24,
+          "ownerR2Heads": 0,
+          "ownerR2GetSuccesses": 24,
+          "completedOriginBytes": 2012140,
+          "directS3Gets": 0,
+          "foundationR2Gets": 0,
+          "readerHttpRequests": 0,
+          "kvReads": 8
+        },
+        "platformCpu": {
+          "receipt": "platform-cpu-json.json",
+          "aliases": [
+            "CpuFullJson"
+          ],
+          "queryBoundary": "exact windows only; auth-hit subset boundary variants are excluded",
+          "observedRequests": 8,
+          "countMatchesClientSelection": true,
+          "cpuTimeUs": 293979,
+          "attributedStartupCpuTimeUs": 12730,
+          "meanInvocationCpuMs": 36.747375,
+          "meanCpuIncludingAttributedStartupMs": 38.338625,
+          "adaptiveSampleIntervals": [
+            1
+          ],
+          "unsampled": true,
+          "platformErrors": 0,
+          "combinedQuantiles": {
+            "cpuTimeP50": 31196,
+            "cpuTimeP95": 78933,
+            "cpuTimeP99": 78933,
+            "memoryUsageBytesP99": 22269404,
+            "wasmMemoryBytesP99": 5177344
+          },
+          "confidenceIntervals": "Raw API confidence is retained; isValid=false for these small cohorts, so no statistical confidence claim is made."
+        },
+        "estimate": {
+          "kind": "Unsampled platform CPU and matching client operation counts; marginal estimate, not invoice",
+          "unit": "USD per one million HTTP requests, before account allowances and billing-unit rounding",
+          "componentsUsdPerMillionHttp": {
+            "workerRequests": 0.3,
+            "ownerR2Reads": 1.08,
+            "kvReads": 0.5,
+            "invocationCpu": 0.7349475,
+            "analyticsEngineCurrent": 0
+          },
+          "totalUsdPerMillionHttp": 2.6149475,
+          "conservativeIncludingAttributedStartup": {
+            "additionalCpuUsdPerMillionHttp": 0.031825,
+            "totalUsdPerMillionHttp": 2.6467725
+          },
+          "observedBatchUsdBeforeAllowances": 2.091958e-05
+        },
+        "limits": [
+          "These CPU-only requests are separate from the original232-call latency result.",
+          "This selected cohort does not predict every block or region."
+        ]
+      },
+      "sourceJsonAuthHitSubset": {
+        "receipt": "cpu-pass.json",
+        "sampleIndices": [
+          16,
+          17,
+          18,
+          19,
+          20
+        ],
+        "requests": 5,
+        "allResponsesOk": true,
+        "authCacheCounts": {
+          "HIT": 5
+        },
+        "responseCacheCounts": {
+          "BYPASS": 5
+        },
+        "objectOperations": {
+          "ownerR2Gets": 10,
+          "ownerR2Heads": 0,
+          "ownerR2GetSuccesses": 10,
+          "completedOriginBytes": 858743,
+          "directS3Gets": 0,
+          "foundationR2Gets": 0,
+          "readerHttpRequests": 0,
+          "kvReads": 0
+        },
+        "platformCpu": {
+          "receipt": "platform-cpu-json.json",
+          "aliases": [
+            "SourceAuthHitPrefix"
+          ],
+          "queryBoundary": "exact windows only; auth-hit subset boundary variants are excluded",
+          "observedRequests": 5,
+          "countMatchesClientSelection": true,
+          "cpuTimeUs": 138991,
+          "attributedStartupCpuTimeUs": 0,
+          "meanInvocationCpuMs": 27.7982,
+          "meanCpuIncludingAttributedStartupMs": 27.7982,
+          "adaptiveSampleIntervals": [
+            1
+          ],
+          "unsampled": true,
+          "platformErrors": 0,
+          "combinedQuantiles": {
+            "cpuTimeP50": 24751,
+            "cpuTimeP95": 43397,
+            "cpuTimeP99": 43397,
+            "memoryUsageBytesP99": 22939368,
+            "wasmMemoryBytesP99": 6291456
+          },
+          "confidenceIntervals": "Raw API confidence is retained; isValid=false for these small cohorts, so no statistical confidence claim is made."
+        },
+        "estimate": {
+          "kind": "Unsampled platform CPU and matching client operation counts; marginal estimate, not invoice",
+          "unit": "USD per one million HTTP requests, before account allowances and billing-unit rounding",
+          "componentsUsdPerMillionHttp": {
+            "workerRequests": 0.3,
+            "ownerR2Reads": 0.72,
+            "kvReads": 0.0,
+            "invocationCpu": 0.555964,
+            "analyticsEngineCurrent": 0
+          },
+          "totalUsdPerMillionHttp": 1.575964,
+          "conservativeIncludingAttributedStartup": {
+            "additionalCpuUsdPerMillionHttp": 0.0,
+            "totalUsdPerMillionHttp": 1.575964
+          },
+          "observedBatchUsdBeforeAllowances": 7.87982e-06
+        },
+        "limits": [
+          "These CPU-only requests are separate from the original232-call latency result.",
+          "This selected cohort does not predict every block or region.",
+          "A whole-second subset excludes TTL-miss seconds. It has fewer blocks or calls than the whole phase; do not compare its mean as the same eight-block mixture."
+        ]
+      },
+      "responseHitJsonAuthHitSubset": {
+        "receipt": "cpu-pass.json",
+        "sampleIndices": [
+          32,
+          33,
+          34,
+          35,
+          53,
+          54,
+          55
+        ],
+        "requests": 7,
+        "allResponsesOk": true,
+        "authCacheCounts": {
+          "HIT": 7
+        },
+        "responseCacheCounts": {
+          "HIT": 7
+        },
+        "objectOperations": {
+          "ownerR2Gets": 0,
+          "ownerR2Heads": 0,
+          "ownerR2GetSuccesses": 0,
+          "completedOriginBytes": 0,
+          "directS3Gets": 0,
+          "foundationR2Gets": 0,
+          "readerHttpRequests": 0,
+          "kvReads": 0
+        },
+        "platformCpu": {
+          "receipt": "platform-cpu-json.json",
+          "aliases": [
+            "ResponseAuthHitA",
+            "ResponseAuthHitC"
+          ],
+          "queryBoundary": "exact windows only; auth-hit subset boundary variants are excluded",
+          "observedRequests": 7,
+          "countMatchesClientSelection": true,
+          "cpuTimeUs": 8882,
+          "attributedStartupCpuTimeUs": 0,
+          "meanInvocationCpuMs": 1.268857142857143,
+          "meanCpuIncludingAttributedStartupMs": 1.268857142857143,
+          "adaptiveSampleIntervals": [
+            1,
+            1
+          ],
+          "unsampled": true,
+          "platformErrors": 0,
+          "combinedQuantiles": null,
+          "confidenceIntervals": "Raw API confidence is retained; isValid=false for these small cohorts, so no statistical confidence claim is made."
+        },
+        "estimate": {
+          "kind": "Unsampled platform CPU and matching client operation counts; marginal estimate, not invoice",
+          "unit": "USD per one million HTTP requests, before account allowances and billing-unit rounding",
+          "componentsUsdPerMillionHttp": {
+            "workerRequests": 0.3,
+            "ownerR2Reads": 0.0,
+            "kvReads": 0.0,
+            "invocationCpu": 0.025377142857,
+            "analyticsEngineCurrent": 0
+          },
+          "totalUsdPerMillionHttp": 0.325377142857,
+          "conservativeIncludingAttributedStartup": {
+            "additionalCpuUsdPerMillionHttp": 0.0,
+            "totalUsdPerMillionHttp": 0.325377142857
+          },
+          "observedBatchUsdBeforeAllowances": 2.27764e-06
+        },
+        "limits": [
+          "These CPU-only requests are separate from the original232-call latency result.",
+          "This selected cohort does not predict every block or region.",
+          "A whole-second subset excludes TTL-miss seconds. It has fewer blocks or calls than the whole phase; do not compare its mean as the same eight-block mixture."
+        ]
+      },
+      "sourceJsonObservedAuthMix": {
+        "receipt": "cpu-pass.json",
+        "sampleIndices": [
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23
+        ],
+        "requests": 8,
+        "allResponsesOk": true,
+        "authCacheCounts": {
+          "HIT": 7,
+          "MISS": 1
+        },
+        "responseCacheCounts": {
+          "BYPASS": 8
+        },
+        "objectOperations": {
+          "ownerR2Gets": 16,
+          "ownerR2Heads": 0,
+          "ownerR2GetSuccesses": 16,
+          "completedOriginBytes": 1387245,
+          "directS3Gets": 0,
+          "foundationR2Gets": 0,
+          "readerHttpRequests": 0,
+          "kvReads": 1
+        },
+        "platformCpu": {
+          "receipt": "platform-cpu-json.json",
+          "aliases": [
+            "CpuSourceJson"
+          ],
+          "queryBoundary": "exact windows only; auth-hit subset boundary variants are excluded",
+          "observedRequests": 8,
+          "countMatchesClientSelection": true,
+          "cpuTimeUs": 225182,
+          "attributedStartupCpuTimeUs": 0,
+          "meanInvocationCpuMs": 28.14775,
+          "meanCpuIncludingAttributedStartupMs": 28.14775,
+          "adaptiveSampleIntervals": [
+            1
+          ],
+          "unsampled": true,
+          "platformErrors": 0,
+          "combinedQuantiles": {
+            "cpuTimeP50": 24751,
+            "cpuTimeP95": 43397,
+            "cpuTimeP99": 43397,
+            "memoryUsageBytesP99": 22939368,
+            "wasmMemoryBytesP99": 6291456
+          },
+          "confidenceIntervals": "Raw API confidence is retained; isValid=false for these small cohorts, so no statistical confidence claim is made."
+        },
+        "estimate": {
+          "kind": "Unsampled platform CPU and matching client operation counts; marginal estimate, not invoice",
+          "unit": "USD per one million HTTP requests, before account allowances and billing-unit rounding",
+          "componentsUsdPerMillionHttp": {
+            "workerRequests": 0.3,
+            "ownerR2Reads": 0.72,
+            "kvReads": 0.0625,
+            "invocationCpu": 0.562955,
+            "analyticsEngineCurrent": 0
+          },
+          "totalUsdPerMillionHttp": 1.645455,
+          "conservativeIncludingAttributedStartup": {
+            "additionalCpuUsdPerMillionHttp": 0.0,
+            "totalUsdPerMillionHttp": 1.645455
+          },
+          "observedBatchUsdBeforeAllowances": 1.316364e-05
+        },
+        "limits": [
+          "These CPU-only requests are separate from the original232-call latency result.",
+          "This selected cohort does not predict every block or region."
+        ]
+      },
+      "responseHitJsonObservedAuthMixSampled": {
+        "receipt": "cpu-pass.json",
+        "sampleIndices": [
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55
+        ],
+        "requests": 24,
+        "allResponsesOk": true,
+        "authCacheCounts": {
+          "HIT": 22,
+          "MISS": 2
+        },
+        "responseCacheCounts": {
+          "HIT": 24
+        },
+        "objectOperations": {
+          "ownerR2Gets": 0,
+          "ownerR2Heads": 0,
+          "ownerR2GetSuccesses": 0,
+          "completedOriginBytes": 0,
+          "directS3Gets": 0,
+          "foundationR2Gets": 0,
+          "readerHttpRequests": 0,
+          "kvReads": 2
+        },
+        "platformCpu": {
+          "receipt": "platform-cpu-json.json",
+          "aliases": [
+            "CpuResponseHitJson"
+          ],
+          "queryBoundary": "exact windows only; auth-hit subset boundary variants are excluded",
+          "observedRequests": 24,
+          "countMatchesClientSelection": true,
+          "cpuTimeUs": 29747,
+          "attributedStartupCpuTimeUs": 0,
+          "meanInvocationCpuMs": 1.2394583333333333,
+          "meanCpuIncludingAttributedStartupMs": 1.2394583333333333,
+          "adaptiveSampleIntervals": [
+            1.0909090909090908
+          ],
+          "unsampled": false,
+          "platformErrors": 0,
+          "combinedQuantiles": {
+            "cpuTimeP50": 1101,
+            "cpuTimeP95": 1628,
+            "cpuTimeP99": 2602,
+            "memoryUsageBytesP99": 4779960,
+            "wasmMemoryBytesP99": 1376256
+          },
+          "confidenceIntervals": "Raw API confidence is retained; isValid=false for these small cohorts, so no statistical confidence claim is made."
+        },
+        "estimate": {
+          "kind": "Sampled platform CPU estimate with exact client operation receipts",
+          "unit": "USD per one million HTTP requests, before account allowances and billing-unit rounding",
+          "componentsUsdPerMillionHttp": {
+            "workerRequests": 0.3,
+            "ownerR2Reads": 0.0,
+            "kvReads": 0.041666666667,
+            "invocationCpu": 0.024789166667,
+            "analyticsEngineCurrent": 0
+          },
+          "totalUsdPerMillionHttp": 0.366455833334,
+          "conservativeIncludingAttributedStartup": {
+            "additionalCpuUsdPerMillionHttp": 0.0,
+            "totalUsdPerMillionHttp": 0.366455833334
+          },
+          "observedBatchUsdBeforeAllowances": 8.79494e-06
+        },
+        "limits": [
+          "These CPU-only requests are separate from the original232-call latency result.",
+          "This selected cohort does not predict every block or region.",
+          "Adaptive sampleInterval>1 remains visible despite the matching24-request estimate. This row is sampled and is not used as the unsampled auth-hit result."
+        ]
+      }
+    },
+    "uploadAndReadbackOperations": {
+      "receipt": "upload-receipt.json",
+      "remoteVerification": "Every byte, SHA256, length and native ETag matches the packed manifest",
+      "minimumSuccessfulObjectPuts": 12,
+      "minimumSuccessfulObjectReadbacks": 12,
+      "attemptsIncludingRetries": null,
+      "minimumObjectPutUsdBeforeAllowances": 5.4e-05,
+      "minimumReadbackGetUsdBeforeAllowances": 4.32e-06,
+      "bucketCreateListAndOtherOperations": "Not included in these object minimums"
+    },
+    "constantMonthStorageUsdBeforeAllowancesAndRounding": {
+      "source": 2.0808675e-05,
+      "resolution": 9.373425e-06,
+      "total": 3.01821e-05,
+      "occupancy": "All verified sample objects retained for one complete month"
+    },
+    "preliminaryMixedPlatformCpuReceipt": "platform-cpu-main-preliminary.json",
+    "preliminaryPlatformCpuUse": "Do not use for per-JSON costs: mixed formats, whole-second timestamps and adaptive sampling;169 estimated main invocations versus176 actual.",
+    "mainJsonOperations": {
+      "fullyColdJson": {
+        "receipt": "main.json",
+        "selection": "fullyColdJson",
+        "requests": 8,
+        "allResponsesOk": true,
+        "ownerR2Gets": 24,
+        "ownerR2Heads": 0,
+        "ownerR2GetSuccesses": 24,
+        "completedOriginBytes": 2012140,
+        "directS3Gets": 0,
+        "readerHttpRequests": 0,
+        "foundationR2Gets": 0,
+        "kvReads": 8,
+        "authCounts": {
+          "BYPASS": 8
+        },
+        "baseUsdPerMillionExcludingCpu": 1.88,
+        "cpuAttribution": "Pending separate JSON-only platform windows; main mixed-format CPU cannot be allocated to this group."
+      },
+      "sourceJsonAuthHit": {
+        "receipt": "main.json",
+        "selection": "sourceJsonAuthHit",
+        "requests": 8,
+        "allResponsesOk": true,
+        "ownerR2Gets": 16,
+        "ownerR2Heads": 0,
+        "ownerR2GetSuccesses": 16,
+        "completedOriginBytes": 1387245,
+        "directS3Gets": 0,
+        "readerHttpRequests": 0,
+        "foundationR2Gets": 0,
+        "kvReads": 0,
+        "authCounts": {
+          "HIT": 8
+        },
+        "baseUsdPerMillionExcludingCpu": 1.02,
+        "cpuAttribution": "Pending separate JSON-only platform windows; main mixed-format CPU cannot be allocated to this group."
+      },
+      "responseHitJsonObservedAuthMix": {
+        "receipt": "main.json",
+        "selection": "responseHitJsonObservedAuthMix",
+        "requests": 32,
+        "allResponsesOk": true,
+        "ownerR2Gets": 0,
+        "ownerR2Heads": 0,
+        "ownerR2GetSuccesses": 0,
+        "completedOriginBytes": 0,
+        "directS3Gets": 0,
+        "readerHttpRequests": 0,
+        "foundationR2Gets": 0,
+        "kvReads": 1,
+        "authCounts": {
+          "HIT": 31,
+          "MISS": 1
+        },
+        "baseUsdPerMillionExcludingCpu": 0.315625,
+        "cpuAttribution": "Pending separate JSON-only platform windows; main mixed-format CPU cannot be allocated to this group."
+      },
+      "responseHitJsonAuthHitOperations": {
+        "receipt": "main.json",
+        "selection": "responseHitJsonAuthHitOperations",
+        "requests": 31,
+        "allResponsesOk": true,
+        "ownerR2Gets": 0,
+        "ownerR2Heads": 0,
+        "ownerR2GetSuccesses": 0,
+        "completedOriginBytes": 0,
+        "directS3Gets": 0,
+        "readerHttpRequests": 0,
+        "foundationR2Gets": 0,
+        "kvReads": 0,
+        "authCounts": {
+          "HIT": 31
+        },
+        "baseUsdPerMillionExcludingCpu": 0.3,
+        "cpuAttribution": "Pending separate JSON-only platform windows; main mixed-format CPU cannot be allocated to this group."
+      }
+    },
+    "dedicatedCpuPassReceipt": "cpu-pass.json",
+    "latencyClaimsUse": "main.json only; CPU-only pass is separate"
+  },
+  "targetConstraint": {
+    "usdPerMillionArchiveBackedRequests": 1,
+    "fullyColdFullBlockMeetsTargetBeforeCpu": false,
+    "reason": "Three Standard R2 reads alone cost $1.08; one Worker request adds $0.30 before KV and CPU. Full-cold KV adds $0.50. Cached requests have a different cost and must not hide cold-request cost."
+  },
+  "limits": [
+    "These are planned operation cases, not measurements or invoice totals. Fill phase estimates only after operation receipts and version-filtered platform request counts agree.",
+    "R2 object API operations are not physical disk reads. This test does not control internal R2 caching.",
+    "Streaming headers can show expected source bytes before transfer. Completed bytes and successes use deferred completion receipts; do not call an initial zero-byte header a completed zero-byte read.",
+    "Source mode retains the index and may retain auth. Separate verified auth-hit samples from five-second TTL misses and count warmups separately.",
+    "The monthly subscription, account-wide allowances, rounding, stored-byte occupancy and other account traffic are not known invoice adjustments here.",
+    "The twelve planned object uploads do not include bucket creation, listing, verification, retries or later removal. Do not infer actual upload operations from object count.",
+    "No Foundation native reader runs in this experiment, so no helper Worker request or helper CPU charges apply.",
+    "JSON CPU rows use version-filtered quiet windows. Full-cold8, source-auth-hit5 and response/auth-hit7 have matching platform counts and sampleInterval1. These are small samples, not global estimates.",
+    "The whole24-response-hit CPU phase is sampled. The API reports invalid small-sample confidence intervals; raw fields are retained without a confidence claim.",
+    "The separate full-geometry epoch1089 copy is in progress and is not included in these pilot storage, upload, CPU or latency totals. See full-epoch-size-plan.json.",
+    "Analytics Engine pricing documentation states that use is not currently billed, checked22November2026. Future announced rates are not charged in these current estimates."
+  ],
+  "separateFullGeometryControl": {
+    "status": "COPY_IN_PROGRESS_NOT_A_LATENCY_RESULT",
+    "planReceipt": "full-epoch-size-plan.json",
+    "epoch": 1089,
+    "plannedPayloadBytes": 62977283190,
+    "plannedConstantFullMonthStorageUsdBeforeAllowances": 0.94465924785,
+    "includedInPilotTotals": false,
+    "plannedAdmittedResolutionObjects": 4,
+    "fullProjectedIndexGenerated": false
+  },
+  "sampleBasedFullIndexProjection": {
+    "status": "PROJECTION_ONLY_NOT_BUILT",
+    "basis": "Eight selected modern blocks from two epochs; actual pilot resolution objects",
+    "basisReceipt": "upload-receipt.json",
+    "sampleResolutionObjects": 8,
+    "sampleResolutionBytes": 624895,
+    "meanResolutionBytesPerIndexedBlock": 78111.875,
+    "assumedIndexedBlocks": 432000,
+    "projectedResolutionBytes": 33744330000,
+    "projectedResolutionDecimalGb": 33.74433,
+    "projectedConstantFullMonthStorageUsdBeforeAllowancesAndRounding": 0.50616495,
+    "projectedOneTimeObjectPuts": 432000,
+    "projectedOneTimePutUsdBeforeAllowancesAndRounding": 1.944,
+    "includedInMeasuredPilotCosts": false,
+    "includedInCopiedPayloadStorage": false,
+    "limits": [
+      "This is a linear projection from eight selected modern blocks, not a measured epoch-wide size or coverage result.",
+      "432,000 is an assumed count of indexed blocks. Actual produced-block counts and resolution sizes can differ by epoch.",
+      "The full index has not been generated, uploaded or verified.",
+      "The full-sized epoch1089 payload copy will have only four admitted resolution records. It does not include this projected index.",
+      "PUT projection excludes building, multipart overhead if needed, verification reads, retries, listing and other operations.",
+      "Storage assumes all projected bytes are retained for one complete month and is separate from payload storage."
+    ]
+  }
+}

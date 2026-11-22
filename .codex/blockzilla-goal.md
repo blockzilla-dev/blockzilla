@@ -542,3 +542,126 @@ restarted. The example is not a durable reconnect/backfill SDK. Source flags
 remain canonical=false and publication_ready=false. Public R2 recovery, CDN
 caching, sustained fan-out, and a second relay machine remain unfinished.
 See the current deployment record and `docs/start/live-stream.md`.
+
+## getBlock stream recovery and R2 placement, 22 November 2026
+
+The owner says the main purpose of `getBlock` is backup when the block stream
+fails. Keep exact cursor replay as the first recovery path for retained
+processed stream frames and controls. Archived finalized block reads are a
+separate gap-fill path. The owner requests separate connection, first-byte
+and transfer measurements for both R2 ranges, placement tests on the owner's
+Cloudflare account, and a Compact V2 binary comparison. Do not copy more
+archive data or add a new per-block index for these tests. Worker fetch does
+not expose TCP/TLS setup; external measurements must be labelled separately.
+This paragraph records the target, not completed placement or recovery tests.
+
+The R2 placement experiment is complete. All 140 cloud and 64 direct R2
+requests passed. The 11 probe checks and 110 prior Worker checks passed.
+Native range headers p50 were 360/368 ms at the edge, 240/201 ms for the US
+east target and 177/188 ms for the US west target (hot/signatures). Direct
+connections with proven reuse still waited 362–400 ms for first response
+byte; fresh setup took about 15–30 ms. This does not expose the Worker's
+managed connection timeline. Moving the whole Worker to US targets increased
+Foundation and client delay. No placement beat Helius: edge cold JSON was
+641.6 ms p50 versus paired Helius 104.1 ms, and all 32 pairs lost. Binary at
+the edge was 613.8 ms p50. Binary averaged 253 KB versus our encoded JSON
+410 KB, a 38.2% transfer saving. The binary is an archival Compact V2 Wincode
+bundle, not an original live stream frame. No recent-frame adapter was added.
+All four temporary placement Workers were deleted. No new archive object,
+index, result RAM cache or main API change was made. Keep edge placement for
+this archive path. See [the test report](../reports/r2-placement-20261122/README.md).
+
+
+## Recent Compact V2 recovery and cost priority, 22 November 2026
+
+The owner now asks to connect the owner's Worker to Foundation's existing
+recent Compact V2 blocks first, use R2 only on a miss, and test recovery after
+a stream failure without adding another block copy. Preserve existing JSON
+and Wincode routes; an explicit compact recovery route can return original
+native frames, with an explicit archival representation on finalized misses.
+Do not invent processed stream cursors or controls from archived blocks.
+
+The owner changed the comparison priority: beat RPC providers on cost, with
+adequate speed for small users. Stop competing with Helius on latency for this
+work. Extreme B2B speed is a separate product on dedicated network machines.
+Measure avoided R2 reads, Worker CPU and API-key reads, Foundation work and
+actual recovery correctness. Reuse the rolling native store and existing
+archive objects; do not build a new block store, per-block index or result
+RAM cache. Test connection failure on an isolated test reader. Keep the
+validator and the live client pipe running. This section records the target;
+it does not certify deployment or recovery acceptance.
+
+The recent compact recovery route is deployed and accepted on the owner's
+public Worker, version `50aaba11-468b-4c57-b1ad-ddc999ea9152`, WASM
+`abdf6f5a4a57e44fb0c9b343ced6c980f4a61e92eb20d597ef8453a4e6fc323b`.
+`GET /block/{slot}.compact` requires an expected blockhash. Processed reads
+also require the exact cursor, Bank ID and source session. Recent reads use
+the existing read-only producer window. A checked finalized miss can use an
+admitted archive route with two original R2 ranges and Foundation resolution.
+Archive replies use an explicit Wincode representation; they do not claim
+native stream cursor/control history. No new block store, per-block index
+or result RAM cache was added. Existing `.bin` and JSON paths passed eight
+live compatibility checks each on canary and main, with no extra Foundation
+calls. Existing secrets were retained; only the new broker secret was added.
+
+Canary and main each passed 27/27 recovery requests: 19 exact recent payloads
+with zero R2 reads; four exact archive bundles with eight total GETs and no
+HEADs; and four identity/expiry rejections with no archive reads. Each
+isolated reader disconnect repaired four blocks and replayed twelve exact
+frames, including eight controls and four root proofs. No production client
+pipe, native origin or validator restart was used for the fault. The validator
+kept PID 1304643 and zero restarts; all original native process identities
+stayed fixed. All 162 actual-WASM checks and 26 Linux service tests passed.
+The candidate was already rooted, so no live unrooted negative is claimed.
+Earlier failed harness attempts remain recorded.
+
+The enabled private reader has no test lifetime limit. It uses loopback
+18962, eight work permits, a two-core CPU quota and 2 GiB memory maximum.
+It uses new private paths on the existing `stream.blockzilla.dev` Tunnel,
+with original rules and DNS preserved. No new tunnel process was added.
+The temporary recovery Worker was deleted after acceptance. The reader's
+blocking work keeps its permit even when its HTTP caller disconnects.
+
+Four warm-runtime/cold-auth recent reads averaged 7.792 ms Worker CPU. Their
+variable Cloudflare model is $0.962/M, including one KV read per call and a
+1% invocation-log scenario. Four finalized recent reads give $0.943/M; the
+archive fallback gives $1.904/M. Warm auth avoided KV, but its CPU is sampled
+and is not priced as a validated exact estimate. The rejection CPU cohort
+has only three records for four real responses; it is not priced. Startup,
+fixed subscription and Foundation host/network charges remain separate; an
+all-in sub-$1/M claim is not established. Foundation recent work averaged
+about 1 ms CPU. Client medians were 79 ms cold-auth and 39 ms warm-auth,
+without a provider speed comparison. This covers retained frames and a
+configured 12-epoch archive catalog. It does not connect publication handoff
+or prove full-history/long-unpublished-gap recovery. See the
+[production recovery report](../reports/recent-get-block-recovery-20261122/README.md).
+
+The owner requests automatic recovery in the Rust stream client. After a
+disconnect, start from its durable native cursor. Use bounded ordered metadata
+from the existing native feed, fetch missing block frames through the Worker,
+check all hashes and identities, commit each frame and cursor together, then
+resume the exact next native event. Keep original control frames. An expired
+range or changed source must stop with an explicit gap. Do not infer native
+controls from finalized archive blocks or add another block store.
+
+Client integration is deployed on the Hetzner raw Rust consumer, release
+`00631e8678ad3f86afadc698d316e19404222efccb2ef1a477f735704b2b67eb`.
+All 105 Linux tests passed, including automatic interrupted-read recovery,
+Worker retry and reopening the same committed database. The isolated live
+SDK reader recovered 15 blocks and 29 controls, then resumed six exact raw
+events, with zero gaps or duplicates and no payload files. A single controlled
+consumer update recovered 8 blocks and 16 controls automatically on startup.
+It kept the same database inode/schema and advanced both cursors. No database
+backup or extra production block copy was made. Foundation native process
+identities and the six existing application containers stayed fixed. The
+Mac status command confirmed live compact-only input and recovery enabled.
+This change covers the raw input client inside the retained native window;
+it does not add automatic reconnect to the Mac output SSE CLI or recreate
+expired processed history. See the
+[client recovery acceptance](../reports/stream-worker-recovery-20261122/README.md).
+
+The owner also requests a Blockzilla domain. `getblock.blockzilla.dev` is
+attached to the existing owner Worker. HTTPS, current-key access, unauthenticated
+rejection, one original archive digest and missing-recovery-pin rejection
+passed. The existing Worker version and stream domain stay in use. See the
+[domain checks](../reports/stream-worker-recovery-20261122/domain-check.json).

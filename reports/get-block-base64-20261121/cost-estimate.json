@@ -1,0 +1,35 @@
+{
+  "schema": "blockzilla-base64-cost-estimate-v1",
+  "checked_date_utc": "2026-11-21",
+  "basis": "marginal paid usage after shared allowances, per one million cold full JSON requests",
+  "sample": {
+    "cold_json_requests": 8,
+    "mean_worker_cpu_ms": 63.513,
+    "evidence": "platform-cpu-v9.json"
+  },
+  "usd_per_million_cold_json_requests": {
+    "owner_index_r2_get": 0.36,
+    "foundation_two_source_r2_gets": 0.72,
+    "worker_requests": 0.3,
+    "worker_cpu_at_sample_mean": 1.27026,
+    "one_auth_kv_read_per_request": 0.5
+  },
+  "owner_subtotal_usd": 2.43026,
+  "foundation_subtotal_usd": 0.72,
+  "both_accounts_subtotal_usd": 3.15026,
+  "source_urls": {
+    "r2": "https://developers.cloudflare.com/r2/pricing/",
+    "workers": "https://developers.cloudflare.com/workers/platform/pricing/",
+    "kv": "https://developers.cloudflare.com/kv/platform/pricing/",
+    "analytics_engine": "https://developers.cloudflare.com/analytics/analytics-engine/pricing/"
+  },
+  "storage_forecast": "../get-block-cold-profile-20261121/resolution-storage-forecast.json",
+  "notes": [
+    "This is a sample estimate, not an invoice. Eight selected blocks do not establish the whole-history mean CPU.",
+    "Excludes the $5/month Workers account subscription, shared free/included allowances, rounding, taxes, index/source storage, construction PUTs, observability logs and analytics queries.",
+    "Worker CPU is billed only for compute, not network wait. CPU uses the measured mean, not p50.",
+    "Each request authenticates with one KV key read, including response-cache hits. Cache hits use zero R2 operations but still use Worker request/CPU and KV resources.",
+    "The Analytics Engine pricing page currently states no usage billing. Its announced future write rate is $0.25 per million after included usage; it is not added to this current subtotal.",
+    "The existing customer price of $1 per million archive-backed requests was not changed."
+  ]
+}

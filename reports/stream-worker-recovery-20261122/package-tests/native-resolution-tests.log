@@ -1,0 +1,352 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+ Downloading crates ...
+  Downloaded fs2 v0.4.3
+  Downloaded hex v0.4.3
+  Downloaded chrono v0.4.45
+  Downloaded iana-time-zone v0.1.65
+  Downloaded aws-lc-rs v1.19.0
+  Downloaded md-5 v0.11.0
+  Downloaded quick-xml v0.42.0
+  Downloaded rand_pcg v0.10.3
+  Downloaded rustls-pki-types v1.16.0
+  Downloaded rustls-webpki v0.103.17
+  Downloaded ruzstd v0.9.1
+  Downloaded sha1 v0.11.0
+  Downloaded aws-lc-sys v0.47.0
+  Downloaded twox-hash v2.1.5
+  Downloaded url v2.5.9
+    Blocking waiting for file lock on package cache
+   Compiling of-car-reader v0.2.1 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/old-faithful/of-car-reader)
+   Compiling blockzilla-primitives v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/blockzilla-primitives)
+   Compiling blockzilla-log-parser v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/parser/blockzilla-log-parser)
+   Compiling blockzilla-bank-stream-v2 v0.1.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/blockzilla-bank-stream-v2)
+   Compiling hivezilla-object-store v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/hivezilla/object-store)
+   Compiling blockzilla-registry v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/compact-v2/blockzilla-registry)
+   Compiling blockzilla-program-logs v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/parser/blockzilla-program-logs)
+warning: constant `BLS_AFFINE_LEN` is never used
+  --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/old-faithful/of-car-reader/src/blockmarker.rs:20:7
+   |
+20 | const BLS_AFFINE_LEN: usize = 192;
+   |       ^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `of-car-reader` (lib) generated 1 warning
+   Compiling blockzilla-compact v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/compact-v2/blockzilla-compact)
+   Compiling blockzilla-archive-v2 v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/compact-v2/blockzilla-archive-v2)
+   Compiling blockzilla-stream-decoder v0.1.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/hivezilla/stream-relay/decoder)
+   Compiling blockzilla-get-block v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block)
+   Compiling hivezilla-stream v0.1.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/hivezilla/stream-relay)
+warning: struct `ArchiveByteCache` is never constructed
+ --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/archive_cache.rs:5:19
+  |
+5 | pub(crate) struct ArchiveByteCache {
+  |                   ^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated items `new`, `get`, and `insert` are never used
+  --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/archive_cache.rs:13:19
+   |
+12 | impl ArchiveByteCache {
+   | --------------------- associated items in this implementation
+13 |     pub(crate) fn new(limit: usize, entry_limit: usize) -> Self {
+   |                   ^^^
+...
+22 |     pub(crate) fn get(&mut self, key: &str) -> Option<Vec<u8>> {
+   |                   ^^^
+...
+33 |     pub(crate) fn insert(&mut self, key: String, bytes: Vec<u8>) {
+   |                   ^^^^^^
+
+warning: constant `CURRENT_MESSAGE_MARKER_FILE` is never used
+  --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/archive_schema.rs:24:11
+   |
+24 | pub const CURRENT_MESSAGE_MARKER_FILE: &str = "archive-v2-message-schema-current-v1.marker";
+   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `MAY24_MESSAGE_MARKER_FILE` is never used
+  --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/archive_schema.rs:25:11
+   |
+25 | pub const MAY24_MESSAGE_MARKER_FILE: &str =
+   |           ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `LEGACY_METADATA_MARKER_FILE` is never used
+  --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/archive_schema.rs:27:11
+   |
+27 | pub const LEGACY_METADATA_MARKER_FILE: &str =
+   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `CURRENT_MESSAGE_MARKER_BYTES` is never used
+  --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/archive_schema.rs:29:11
+   |
+29 | pub const CURRENT_MESSAGE_MARKER_BYTES: &[u8; 52] = include_bytes!(
+   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `MAY24_MESSAGE_MARKER_BYTES` is never used
+  --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/archive_schema.rs:32:11
+   |
+32 | pub const MAY24_MESSAGE_MARKER_BYTES: &[u8; 87] = include_bytes!(
+   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `LEGACY_METADATA_MARKER_BYTES` is never used
+  --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/archive_schema.rs:35:11
+   |
+35 | pub const LEGACY_METADATA_MARKER_BYTES: &[u8; 58] = include_bytes!(
+   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `message_schema_overrides` is never used
+  --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/archive_schema.rs:61:15
+   |
+61 | pub(crate) fn message_schema_overrides(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `metadata_schema_override` is never used
+  --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/archive_schema.rs:93:15
+   |
+93 | pub(crate) fn metadata_schema_override(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `RPC_API_KEY_PREFIX` is never used
+ --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/rpc_access.rs:6:18
+  |
+6 | pub(crate) const RPC_API_KEY_PREFIX: &str = "bz_live_";
+  |                  ^^^^^^^^^^^^^^^^^^
+
+warning: enum `DirectCacheVariant` is never used
+ --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/rpc_access.rs:9:17
+  |
+9 | pub(crate) enum DirectCacheVariant {
+  |                 ^^^^^^^^^^^^^^^^^^
+
+warning: struct `DirectCacheIdentity` is never constructed
+  --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/rpc_access.rs:15:19
+   |
+15 | pub(crate) struct DirectCacheIdentity {
+   |                   ^^^^^^^^^^^^^^^^^^^
+
+warning: function `direct_cache_identity` is never used
+  --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/rpc_access.rs:21:15
+   |
+21 | pub(crate) fn direct_cache_identity(
+   |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `BackendReadTracker` is never constructed
+  --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/rpc_access.rs:51:19
+   |
+51 | pub(crate) struct BackendReadTracker(Rc<Cell<bool>>);
+   |                   ^^^^^^^^^^^^^^^^^^
+
+warning: methods `mark` and `billable_reads` are never used
+  --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/rpc_access.rs:54:19
+   |
+53 | impl BackendReadTracker {
+   | ----------------------- methods in this implementation
+54 |     pub(crate) fn mark(&self) {
+   |                   ^^^^
+...
+58 |     pub(crate) fn billable_reads(&self) -> u8 {
+   |                   ^^^^^^^^^^^^^^
+
+warning: enum `BearerKeyError` is never used
+  --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/rpc_access.rs:64:17
+   |
+64 | pub(crate) enum BearerKeyError {
+   |                 ^^^^^^^^^^^^^^
+
+warning: enum `RpcApiKeyStatus` is never used
+  --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/rpc_access.rs:71:17
+   |
+71 | pub(crate) enum RpcApiKeyStatus {
+   |                 ^^^^^^^^^^^^^^^
+
+warning: struct `RpcApiKeyRecord` is never constructed
+  --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/rpc_access.rs:78:19
+   |
+78 | pub(crate) struct RpcApiKeyRecord {
+   |                   ^^^^^^^^^^^^^^^
+
+warning: methods `validate` and `is_enabled` are never used
+   --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/rpc_access.rs:86:19
+    |
+ 85 | impl RpcApiKeyRecord {
+    | -------------------- methods in this implementation
+ 86 |     pub(crate) fn validate(&self) -> Result<(), &'static str> {
+    |                   ^^^^^^^^
+...
+102 |     pub(crate) fn is_enabled(&self) -> bool {
+    |                   ^^^^^^^^^^
+
+warning: function `parse_bearer_key` is never used
+   --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/rpc_access.rs:107:15
+    |
+107 | pub(crate) fn parse_bearer_key(header: Option<&str>) -> Result<&str, BearerKeyError> {
+    |               ^^^^^^^^^^^^^^^^
+
+warning: function `api_key_digest` is never used
+   --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/rpc_access.rs:118:15
+    |
+118 | pub(crate) fn api_key_digest(key: &str) -> String {
+    |               ^^^^^^^^^^^^^^
+
+warning: function `rpc_method_for_metrics` is never used
+   --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/rpc_access.rs:123:15
+    |
+123 | pub(crate) fn rpc_method_for_metrics(value: &Value) -> &'static str {
+    |               ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `valid_api_key` is never used
+   --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/rpc_access.rs:137:4
+    |
+137 | fn valid_api_key(key: &str) -> bool {
+    |    ^^^^^^^^^^^^^
+
+warning: function `valid_stable_id` is never used
+   --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/rpc_access.rs:147:4
+    |
+147 | fn valid_stable_id(value: &str) -> bool {
+    |    ^^^^^^^^^^^^^^^
+
+warning: function `hex_lower` is never used
+   --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/rpc_access.rs:155:4
+    |
+155 | fn hex_lower(bytes: &[u8]) -> String {
+    |    ^^^^^^^^^
+
+warning: function `ordinal_window` is never used
+  --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/slot_lookup.rs:10:15
+   |
+10 | pub(crate) fn ordinal_window(
+   |               ^^^^^^^^^^^^^^
+
+warning: enum `StorageBackend` is never used
+ --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/storage_metrics.rs:7:17
+  |
+7 | pub(crate) enum StorageBackend {
+  |                 ^^^^^^^^^^^^^^
+
+warning: struct `StorageSnapshot` is never constructed
+  --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/storage_metrics.rs:16:19
+   |
+16 | pub(crate) struct StorageSnapshot {
+   |                   ^^^^^^^^^^^^^^^
+
+warning: method `headers` is never used
+  --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/storage_metrics.rs:42:19
+   |
+38 | impl StorageSnapshot {
+   | -------------------- method in this implementation
+...
+42 |     pub(crate) fn headers(self) -> [(&'static str, u64); 22] {
+   |                   ^^^^^^^
+
+warning: struct `StorageMetrics` is never constructed
+  --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/storage_metrics.rs:92:19
+   |
+92 | pub(crate) struct StorageMetrics(Rc<Cell<StorageSnapshot>>);
+   |                   ^^^^^^^^^^^^^^
+
+warning: multiple methods are never used
+   --> /Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block/src/storage_metrics.rs:95:19
+    |
+ 94 | impl StorageMetrics {
+    | ------------------- methods in this implementation
+ 95 |     pub(crate) fn attempt_foundation_recent_http(&self) {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+101 |     pub(crate) fn attempt_foundation_resolve_http(&self) {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+107 |     pub(crate) fn snapshot(&self) -> StorageSnapshot {
+    |                   ^^^^^^^^
+...
+111 |     fn update(&self, apply: impl FnOnce(&mut StorageSnapshot)) {
+    |        ^^^^^^
+...
+117 |     pub(crate) fn attempt_get(&self, backend: StorageBackend) {
+    |                   ^^^^^^^^^^^
+...
+127 |     pub(crate) fn complete_get(&self, backend: StorageBackend, bytes: usize, exact: bool) {
+    |                   ^^^^^^^^^^^^
+...
+146 |     pub(crate) fn attempt_head(&self, backend: StorageBackend) {
+    |                   ^^^^^^^^^^^^
+...
+154 |     pub(crate) fn complete_head(&self, backend: StorageBackend, found: bool) {
+    |                   ^^^^^^^^^^^^^
+...
+168 |     pub(crate) fn attempt_reader_http(&self) {
+    |                   ^^^^^^^^^^^^^^^^^^^
+...
+175 |     pub(crate) fn attempt_foundation_lookup_http(&self) {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+182 |     pub(crate) fn memory_hit(&self) {
+    |                   ^^^^^^^^^^
+...
+188 |     pub(crate) fn edge_hit(&self) {
+    |                   ^^^^^^^^
+
+warning: `blockzilla-get-block` (lib) generated 32 warnings
+   Compiling blockzilla-resolution-service v0.1.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/indexer/blockzilla-resolution-service)
+    Finished `test` profile [unoptimized] target(s) in 1m 05s
+     Running unittests src/lib.rs (/Users/augustin/Developement/ferno/blockzilla-v1/indexer/blockzilla-resolution-service/target/debug/deps/blockzilla_resolution_service-94bd8db9f52151ff)
+
+running 26 tests
+test http::tests::a_nonzero_result_cache_budget_is_rejected ... ok
+test cache::tests::disabled_or_oversized_entries_are_never_admitted_and_replace_is_bounded ... ok
+test catalog::tests::source_parent_and_hash_ordinal_mismatches_fail_before_resolution ... ok
+test catalog::tests::resolves_only_local_id_windows_and_preserves_real_parent ... ok
+test catalog::tests::pending_needs_no_files_but_resolve_rejects_post_startup_mutation ... ok
+test http::tests::raw_hot_and_typed_ids_return_the_same_resolution_without_cache_or_signatures ... ok
+test catalog::tests::oversized_unselected_reward_row_does_not_reject_the_epoch ... ok
+test http::tests::every_mode_bypasses_result_cache_for_repeated_and_changed_requests ... ok
+test catalog::tests::startup_rejects_sha_mutability_and_symlink_mismatches ... ok
+test http::tests::cancelling_recent_http_does_not_release_a_running_blocking_job_permit ... ok
+test http::tests::recent_is_opt_in_and_requires_pins_authentication_and_complete_processed_identity ... ok
+test http::tests::resolution_wire_is_verified_and_every_mode_resolves_without_cache ... ok
+test http::tests::recent_expired_processed_and_corrupt_payload_never_return_archive_miss ... ok
+test http::tests::typed_miss_has_pinned_offsets_and_body_digest_and_no_resolve_call ... ok
+test http::tests::recent_finalized_miss_binds_archive_hash_before_any_r2_read ... ok
+test http::tests::recent_http_passes_original_processed_and_finalized_frames ... ok
+test http::tests::capacity_is_acquired_before_body_read_and_shared_with_get ... ok
+test recent::tests::absent_finalized_is_miss_but_absent_processed_is_expired ... ok
+test recent::tests::processed_requires_the_exact_cursor_bank_and_hash ... ok
+test recent::tests::retirement_removes_processed_frame_without_changing_the_reader_cursor ... ok
+test recent::tests::recent_processed_and_finalized_return_original_frame_without_a_new_file ... ok
+test recent::tests::changed_payload_and_root_proof_are_errors_not_cache_misses ... ok
+test http::tests::auth_source_digest_size_and_typed_id_failures_do_not_read_tables ... ok
+test recent::tests::changed_source_generation_payload_root_and_failed_health_are_errors ... ok
+test cache::tests::bounded_lru_distinguishes_generation_and_request_and_reuses_bytes ... ok
+test http::tests::raw_hot_rejects_wrong_sha_lengths_frames_and_source_before_table_reads ... ok
+
+test result: ok. 26 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.29s
+
+     Running unittests src/main.rs (/Users/augustin/Developement/ferno/blockzilla-v1/indexer/blockzilla-resolution-service/target/debug/deps/blockzilla_resolution_service-fcd96e533b5778e7)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/measure_direct_resolution.rs (/Users/augustin/Developement/ferno/blockzilla-v1/indexer/blockzilla-resolution-service/target/debug/deps/measure_direct_resolution-653eaad93d989f09)
+
+running 1 test
+test tests::fixture_run_writes_only_small_json_and_preserves_previous_hash_and_labels ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running unittests src/bin/measure_resolutions.rs (/Users/augustin/Developement/ferno/blockzilla-v1/indexer/blockzilla-resolution-service/target/debug/deps/measure_resolutions-ccea227e75bc2c6d)
+
+running 3 tests
+test tests::shared_variant_reconstructs_exact_resolution_and_binds_manifest ... ok
+test tests::reserve_parser_and_new_only_publication_are_checked ... ok
+test tests::offline_measurement_keeps_labels_omits_signatures_and_reports_unsupported_samples ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s
+
+   Doc-tests blockzilla_resolution_service
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

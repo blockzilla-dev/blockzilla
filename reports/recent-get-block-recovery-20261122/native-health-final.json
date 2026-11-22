@@ -1,0 +1,141 @@
+{
+  "observedAtUtc": "2026-11-22T15:06:34.537508+00:00",
+  "nativeStatus": {
+    "state": "RUNNING",
+    "capacity_admitted": true,
+    "source": {
+      "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+      "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+      "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+      "session_id": "000000000000000018ea5078fdda19df-13e843"
+    },
+    "generation": "c1739ce6fcee61291f41548b1960aa27",
+    "validator": {
+      "ActiveState": "active",
+      "InvocationID": "a1edd40e43404e8cb9c81a7caacfa1ee",
+      "MainPID": "1304643",
+      "NRestarts": "0"
+    },
+    "units": {
+      "banks": {
+        "ActiveState": "active",
+        "InvocationID": "5ca0025e445f4cb4ba3f6f6cceb4e5a8",
+        "MainPID": "3381564",
+        "NRestarts": "0"
+      },
+      "origin": {
+        "ActiveState": "active",
+        "InvocationID": "9d9c4e37deec4f45a542e076cb690c2b",
+        "MainPID": "3381565",
+        "NRestarts": "0"
+      },
+      "processed": {
+        "ActiveState": "active",
+        "InvocationID": "c65096c657134740bb8cb00dcd45d180",
+        "MainPID": "3381566",
+        "NRestarts": "0"
+      }
+    },
+    "updated_unix_ms": 1795359992855
+  },
+  "activeSource": {
+    "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+    "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+    "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+    "session_id": "000000000000000018ea5078fdda19df-13e843"
+  },
+  "activeGeneration": "c1739ce6fcee61291f41548b1960aa27",
+  "readerInfo": {
+    "available_permits": 8,
+    "blocking_thread_cpu_ns": 22309346,
+    "cache": {
+      "bytes": 0,
+      "enabled": false,
+      "entries": 0,
+      "evictions": 0,
+      "hits": 0,
+      "limit_bytes": 0,
+      "misses": 0
+    },
+    "cache_storage": "none",
+    "cpu_scope": "CLOCK_THREAD_CPUTIME_ID around synchronous blocking request work, including SHA, decode, collection, local resolution and response encoding; HTTP transport is excluded",
+    "generation": "foundation-direct-resolver-20261122-v1",
+    "local_pread_bytes": 821632,
+    "local_pread_calls": 7104,
+    "lookups": 0,
+    "persistent_result_files": 0,
+    "raw_block_resolves": 8,
+    "raw_signature_bytes_read": 0,
+    "raw_signature_bytes_read_scope": "local epoch resolution IO only; recent frames include original signatures",
+    "recent_blocking_thread_cpu_ns": 65214537,
+    "recent_blocking_work_ns": 65242736,
+    "recent_cpu_scope": "CLOCK_THREAD_CPUTIME_ID around read-only source checks, frame/root verification and archive-miss hash read; excludes HTTP and metadata/header encoding",
+    "recent_enabled": true,
+    "recent_errors": 2,
+    "recent_frame_bytes": 9730178,
+    "recent_hits": 54,
+    "recent_misses": 12,
+    "recent_reads": 68,
+    "recent_result_cache": false,
+    "recent_storage": "existing_read_only_producer_window",
+    "request_bytes": 1190360,
+    "resolution_ram_cache": "disabled",
+    "resolve_errors": 0,
+    "resolves": 8,
+    "source_prefix": "compact-v2/blockzilla-20261004",
+    "version": 1
+  },
+  "units": {
+    "blockzilla-recent-get-block.service": {
+      "ActiveState": "active",
+      "SubState": "running",
+      "UnitFileState": "enabled",
+      "InvocationID": "74cd410cbbde44b488e4a7e0e20101b6",
+      "MainPID": "321829",
+      "NRestarts": "0",
+      "MemoryCurrent": "898252800"
+    },
+    "hivezilla-tunnel.service": {
+      "ActiveState": "active",
+      "SubState": "running",
+      "UnitFileState": "enabled",
+      "InvocationID": "9d1592d736864f2da945d0353189cbad",
+      "MainPID": "480183",
+      "NRestarts": "0",
+      "MemoryCurrent": "46903296"
+    }
+  },
+  "readerProcessMemory": {
+    "VmHWM": "298752 kB",
+    "VmRSS": "298752 kB",
+    "Threads": "3"
+  },
+  "jobTopLevelFiles": [
+    "build-native-v2.py",
+    "build-receipt.json",
+    "broker-token.txt",
+    "canary-cpu-plan.json",
+    "native-source-final-manifest.json",
+    "native-source-v1.tar.gz",
+    "canary-recovery.json",
+    "canary-recovery-v2.json",
+    "canary-cpu-plan-v2.json",
+    "source-v1",
+    "build-native-v3.py",
+    "canary-recovery-v3.json",
+    "bin",
+    "build-native-final.py",
+    "canary-cpu-plan-v3.json",
+    "live-recovery.py",
+    "build-v1.log",
+    "production-cpu-plan.json",
+    "build-receipt-initial-path-failure.json",
+    "production-recovery.json",
+    "recent-config.json",
+    "build-receipt-v1.json",
+    "catalog.json",
+    "blockzilla-recent-get-block.service",
+    "build.log",
+    "build.py"
+  ]
+}

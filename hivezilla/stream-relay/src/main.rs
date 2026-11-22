@@ -27,6 +27,33 @@ enum Mode {
         output: PathBuf,
         #[arg(long)]
         spool: PathBuf,
+        /// Fixed required consumers; acknowledgements cannot create consumers.
+        #[arg(long = "ack-consumer")]
+        ack_consumers: Vec<String>,
+        /// Beam original frames from the producer-owned rolling window. No
+        /// origin spool, application projection or consumer ACK is used.
+        #[arg(long, conflicts_with = "ack_consumers", requires = "unix_socket")]
+        direct_beam: bool,
+    },
+    /// Relay native v2 banks with a bounded replay window in memory.
+    BankRelay {
+        #[command(flatten)]
+        http: Http,
+        #[arg(long)]
+        upstream: String,
+        #[arg(long)]
+        upstream_token_file: PathBuf,
+        #[arg(long)]
+        upstream_ca: Option<PathBuf>,
+        #[arg(long)]
+        upstream_identity: Option<PathBuf>,
+        #[arg(long)]
+        source_file: PathBuf,
+        /// Serve public signing blockhashes and confirmed block signatures.
+        #[arg(long)]
+        public_bank_views: bool,
+        #[arg(long, default_value_t = 8)]
+        public_max_requests: usize,
     },
     Origin {
         #[command(flatten)]
@@ -72,14 +99,20 @@ enum Mode {
         banks_source_file: Option<PathBuf>,
         #[arg(long, requires = "banks_upstream")]
         banks_spool: Option<PathBuf>,
+        /// Serve public signing blockhashes and confirmed block signatures.
+        #[arg(long, requires = "banks_upstream")]
+        public_bank_views: bool,
         #[arg(long, default_value_t = 4096, requires = "banks_upstream")]
         banks_replay_mib: usize,
     },
 }
 #[derive(Args)]
 struct Http {
-    #[arg(long, default_value = "127.0.0.1:8870")]
+    #[arg(long, default_value = "127.0.0.1:8870", conflicts_with = "unix_socket")]
     bind: SocketAddr,
+    /// Private local HTTP/SSE socket instead of a TCP listener.
+    #[arg(long, conflicts_with_all = ["bind", "tls_cert", "tls_key", "client_ca"])]
+    unix_socket: Option<PathBuf>,
     #[arg(long)]
     token_file: PathBuf,
     #[arg(long)]
@@ -128,6 +161,12 @@ fn api(http: &Http, store: Arc<Store>) -> Result<Api> {
     })
 }
 async fn serve(http: Http, api: Api, origin: bool) -> Result<()> {
+    if let Some(socket) = http.unix_socket {
+        return tokio::select! {
+            r=hivezilla_stream::server::serve_unix(socket,api)=>r,
+            _=tokio::signal::ctrl_c()=>Ok(())
+        };
+    }
     let tls = Tls {
         cert: http.tls_cert,
         key: http.tls_key,
@@ -147,53 +186,99 @@ async fn main() -> Result<()> {
             http,
             output,
             spool,
+            ack_consumers,
+            direct_beam,
         } => {
+            use blockzilla_bank_stream_v2::Frame;
             use hivezilla_stream::{
                 bank_server::BankApi, bank_source::BankSource, bank_store::BankStore,
             };
+            let output = output
+                .canonicalize()
+                .context("resolve bank origin output")?;
             let mut source = BankSource::open(&output)?;
-            let base = blockzilla_bank_stream_v2::cursor(&source.source.session_id, 0, "-");
-            let banks = BankStore::open(
-                source.source.clone(),
-                base,
-                http.replay_mib
-                    .checked_mul(1024 * 1024)
-                    .context("budget_overflow")?,
-                spool,
-            )?;
-            source.seek(&banks.latest())?;
+            if !ack_consumers.is_empty() {
+                hivezilla_stream::consumer_ack::configure(&output, &source.source, &ack_consumers)?;
+            }
+            let base = if direct_beam {
+                source.validate_beam_authority()?;
+                source.replay_floor_cursor()?
+            } else {
+                blockzilla_bank_stream_v2::cursor(&source.source.session_id, 0, "-")
+            };
+            let banks = if direct_beam {
+                BankStore::open_memory(
+                    source.source.clone(),
+                    base,
+                    blockzilla_bank_stream_v2::MAX_FRAME,
+                )?
+            } else {
+                BankStore::open(
+                    source.source.clone(),
+                    base,
+                    http.replay_mib
+                        .checked_mul(1024 * 1024)
+                        .context("budget_overflow")?,
+                    spool,
+                )?
+            };
             let store = banks.clone();
-            std::thread::spawn(move || {
-                loop {
-                    let result = (|| -> Result<()> {
-                        let status = source.health()?;
-                        store.set_health(status, None);
-                        let mut batch = Vec::new();
-                        for _ in 0..hivezilla_stream::bank_store::MAX_BATCH_EVENTS {
-                            let Some(f) = source.next()? else { break };
-                            let dep = if let Some(sha) = &f.envelope.event.payload_frame_sha256 {
-                                if store.chunk(sha).is_none() {
-                                    source.chunk(sha)?
+            let (intake_failed, intake_failure) = tokio::sync::oneshot::channel::<String>();
+            if !direct_beam {
+                source.seek(&banks.latest())?;
+                std::thread::spawn(move || {
+                    loop {
+                        let result = (|| -> Result<bool> {
+                            let status = source.health()?;
+                            store.set_health(status, None);
+                            ensure!(status != "failed", "source_failed");
+                            let mut batch: Vec<(Frame, Option<Frame>)> = Vec::new();
+                            let mut batch_bytes = 0;
+                            let mut progressed = false;
+                            for _ in 0..hivezilla_stream::bank_store::MAX_BATCH_EVENTS {
+                                let Some(f) = source.next()? else { break };
+                                let dep = if let Some(sha) = &f.envelope.event.payload_frame_sha256
+                                {
+                                    if store.chunk(sha).is_none()
+                                        && !batch.iter().any(|(f, dep)| {
+                                            &f.sha256 == sha
+                                                || dep.as_ref().is_some_and(|d| &d.sha256 == sha)
+                                        })
+                                    {
+                                        source.chunk(sha)?
+                                    } else {
+                                        None
+                                    }
                                 } else {
                                     None
+                                };
+                                let bytes = f.wire.len() + dep.as_ref().map_or(0, |f| f.wire.len());
+                                if batch_bytes + bytes
+                                    > hivezilla_stream::bank_store::MAX_BATCH_BYTES
+                                {
+                                    store.admit_batch(std::mem::take(&mut batch))?;
+                                    batch_bytes = 0;
                                 }
-                            } else {
-                                None
-                            };
-                            batch.push((f, dep));
+                                batch_bytes += bytes;
+                                batch.push((f, dep));
+                                progressed = true;
+                            }
+                            if !batch.is_empty() {
+                                store.admit_batch(batch)?;
+                            }
+                            Ok(progressed)
+                        })();
+                        if let Err(e) = result {
+                            store.set_health("failed", Some(e.to_string()));
+                            let _ = intake_failed.send(format!("{e:#}"));
+                            return;
                         }
-                        if !batch.is_empty() {
-                            store.admit_batch(batch)?;
+                        if !result.unwrap() {
+                            std::thread::sleep(Duration::from_millis(20));
                         }
-                        Ok(())
-                    })();
-                    if let Err(e) = result {
-                        store.set_health("failed", Some(e.to_string()));
-                        return;
                     }
-                    std::thread::sleep(Duration::from_millis(20));
-                }
-            });
+                });
+            }
             let dummy = Store::open(
                 format!("{}:0:-", banks.source.session_id),
                 16 * 1024 * 1024 + 65552,
@@ -205,8 +290,66 @@ async fn main() -> Result<()> {
                 store: banks,
                 origin: true,
                 output: Some(output),
+                public_views: None,
+                hot_upstream: None,
+                direct_beam,
             });
-            serve(http, a, true).await
+            tokio::select! {
+                result=serve(http,a,true)=>result,
+                failure=async { if direct_beam { std::future::pending::<std::result::Result<String,tokio::sync::oneshot::error::RecvError>>().await } else { intake_failure.await } }=>anyhow::bail!("bank_origin_intake_failed: {}", failure.unwrap_or_else(|_| "intake_thread_stopped".into())),
+            }
+        }
+        Mode::BankRelay {
+            http,
+            upstream,
+            upstream_token_file,
+            upstream_ca,
+            upstream_identity,
+            source_file,
+            public_bank_views,
+            public_max_requests,
+        } => {
+            use hivezilla_stream::{bank_server::BankApi, bank_store::BankStore, bank_upstream};
+
+            ensure!(
+                (1..=128).contains(&public_max_requests),
+                "invalid_public_request_budget"
+            );
+            let expected: blockzilla_bank_stream_v2::SourceIdentity =
+                serde_json::from_slice(&bounded_file(&source_file, 65536)?)?;
+            let base = blockzilla_bank_stream_v2::cursor(&expected.session_id, 0, "-");
+            let banks = BankStore::open_memory(
+                expected,
+                base,
+                http.replay_mib
+                    .checked_mul(1024 * 1024)
+                    .context("budget_overflow")?,
+            )?;
+            let u = Upstream {
+                url: format!("{}/", upstream.trim_end_matches('/')),
+                token: token(&upstream_token_file)?,
+                ca: upstream_ca,
+                identity: upstream_identity,
+            };
+            let client = u.client()?;
+            let dummy = Store::open(
+                format!("{}:0:-", banks.source.session_id),
+                16 * 1024 * 1024 + 65552,
+                None,
+            )?;
+            let mut a = api(&http, dummy)?;
+            a.bank_only = true;
+            a.public_requests = Arc::new(Semaphore::new(public_max_requests));
+            a.banks = Some(BankApi {
+                store: banks.clone(),
+                origin: false,
+                output: None,
+                public_views: public_bank_views.then(Default::default),
+                hot_upstream: Some((u.clone(), client.clone())),
+                direct_beam: false,
+            });
+            tokio::spawn(bank_upstream::run(u, client, banks));
+            serve(http, a, false).await
         }
         Mode::Origin {
             http,
@@ -277,6 +420,7 @@ async fn main() -> Result<()> {
             banks_upstream,
             banks_source_file,
             banks_spool,
+            public_bank_views,
             banks_replay_mib,
         } => {
             let u = Upstream {
@@ -333,11 +477,72 @@ async fn main() -> Result<()> {
                     store: banks.clone(),
                     origin: false,
                     output: None,
+                    public_views: public_bank_views.then(Default::default),
+                    hot_upstream: Some((bu.clone(), bc.clone())),
+                    direct_beam: false,
                 });
                 tokio::spawn(bank_upstream::run(bu, bc, banks));
             }
             tokio::spawn(u.run(client, store));
             serve(http, a, false).await
         }
+    }
+}
+
+#[cfg(test)]
+mod transport_tests {
+    use super::*;
+    fn arguments() -> Vec<&'static str> {
+        vec![
+            "hivezilla-stream",
+            "bank-origin",
+            "--output",
+            "/tmp/output",
+            "--spool",
+            "/tmp/spool",
+            "--token-file",
+            "/tmp/key",
+        ]
+    }
+    #[test]
+    fn private_socket_and_fixed_consumer_are_opt_in_and_do_not_change_tcp_defaults() {
+        let Mode::BankOrigin {
+            http,
+            ack_consumers,
+            ..
+        } = Cli::try_parse_from(arguments()).unwrap().command
+        else {
+            panic!()
+        };
+        assert_eq!(http.bind, "127.0.0.1:8870".parse::<SocketAddr>().unwrap());
+        assert!(http.unix_socket.is_none());
+        assert!(ack_consumers.is_empty());
+        let mut args = arguments();
+        args.extend([
+            "--unix-socket",
+            "/tmp/origin.sock",
+            "--ack-consumer",
+            "sidecar-primary",
+        ]);
+        let Mode::BankOrigin {
+            http,
+            ack_consumers,
+            ..
+        } = Cli::try_parse_from(args.clone()).unwrap().command
+        else {
+            panic!()
+        };
+        assert_eq!(http.unix_socket, Some(PathBuf::from("/tmp/origin.sock")));
+        assert_eq!(ack_consumers, ["sidecar-primary"]);
+        args.extend(["--bind", "127.0.0.1:8890"]);
+        assert!(Cli::try_parse_from(args).is_err());
+        let mut args = arguments();
+        args.extend([
+            "--unix-socket",
+            "/tmp/origin.sock",
+            "--tls-cert",
+            "/tmp/cert",
+        ]);
+        assert!(Cli::try_parse_from(args).is_err());
     }
 }

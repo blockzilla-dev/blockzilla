@@ -1,0 +1,24 @@
+{
+  "already_installed": false,
+  "authorized_keys_after_sha256": "20bc872fcb14e5cd2c9872ed436d2b5ae7883c3acd51fa4c4eb0f333ac82e9fc",
+  "authorized_keys_before_sha256": "7b569d42ace0b16ff6e82f5dca470dc99c4685fbd85db5fc09ee29ebdad38000",
+  "backup": "/home/ubuntu/.ssh/authorized_keys.before-recovery-7b569d42ace0b16f",
+  "block_files_written": 0,
+  "files": {
+    "beam_ssh_forced.py": {
+      "bytes": 4176,
+      "sha256": "b4c23647dea39f467508f0af8789b882ae1b776ff6da85bbc2e5f3071335aa9a"
+    },
+    "beam_ssh_gateway.py": {
+      "bytes": 29962,
+      "sha256": "93ef3aef5593c417c2e224bf945906228b4c3d30fb60b92e4894b7827d68a54a"
+    }
+  },
+  "new_gateway": "/home/ubuntu/live/hivezilla-validator-20260930/releases/native-relay-recovery-20261122-93ef3aef5593c417/beam_ssh_gateway.py",
+  "new_line_sha256": "06376f42c5fdd55f256fe27696d87ad2ba64ed0981ea54b33fe7b845a6cc0704",
+  "old_gateway": "/home/ubuntu/live/hivezilla-validator-20260930/releases/native-relay-access-20261122-c74ca0aa24f762ed/beam_ssh_gateway.py",
+  "old_line_sha256": "5b2bf6f7afd8c234a9b1886f69898014c52205251f93407b12c9b363df506177",
+  "release": "/home/ubuntu/live/hivezilla-validator-20260930/releases/native-relay-recovery-20261122-93ef3aef5593c417",
+  "schema": "blockzilla-beam-recovery-deployment-v1",
+  "service_restart": false
+}

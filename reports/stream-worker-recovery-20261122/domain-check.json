@@ -1,0 +1,67 @@
+{
+  "schema": "blockzilla-domain-check-v1",
+  "host": "getblock.blockzilla.dev",
+  "time": "2026-11-22T15:25:44.202467+00:00",
+  "resolver": "1.1.1.1",
+  "addresses": [
+    "172.67.181.253",
+    "104.21.75.208"
+  ],
+  "tls_hostname_verified": true,
+  "payload_files_written": false,
+  "checks": [
+    {
+      "case": "info",
+      "status": 200,
+      "bytes": 1255,
+      "sha256": "2fb11ed27ee6a6da5b049c2aa471b4e4259ca3400d963277448274e2489d3f87",
+      "expected_status": 200,
+      "content_type": "application/json",
+      "archive_gets": {
+        "X-Blockzilla-R2-GETs": null,
+        "X-Blockzilla-S3-GETs": null
+      },
+      "passed": true
+    },
+    {
+      "case": "unauthenticated",
+      "status": 401,
+      "bytes": 108,
+      "sha256": "b89664ff82e185844f4fdd584cbd45012abb5def1cac3b0ae98cbc02a348edfa",
+      "expected_status": 401,
+      "content_type": "application/json",
+      "archive_gets": {
+        "X-Blockzilla-R2-GETs": null,
+        "X-Blockzilla-S3-GETs": null
+      },
+      "passed": true
+    },
+    {
+      "case": "archive-bytes",
+      "status": 200,
+      "bytes": 247594,
+      "sha256": "c0fc8383e217705dde28612195cc165e95b2163c73743e5cb1586aab220c8415",
+      "expected_status": 200,
+      "content_type": "application/vnd.blockzilla.get-block-bundle.wincode",
+      "archive_gets": {
+        "X-Blockzilla-R2-GETs": "1",
+        "X-Blockzilla-S3-GETs": "2"
+      },
+      "passed": true
+    },
+    {
+      "case": "missing-recovery-pins",
+      "status": 400,
+      "bytes": 118,
+      "sha256": "7afe9d5f3397bc9084ba0ba12b415f8272a4e64c0dd129d16d3034c1c0a3c611",
+      "expected_status": 400,
+      "content_type": "application/json",
+      "archive_gets": {
+        "X-Blockzilla-R2-GETs": "0",
+        "X-Blockzilla-S3-GETs": "0"
+      },
+      "passed": true
+    }
+  ],
+  "passed": true
+}

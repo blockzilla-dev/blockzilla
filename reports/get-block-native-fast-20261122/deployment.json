@@ -1,0 +1,85 @@
+{
+  "checkedAt": "2026-11-22T08:41:51.202990+00:00",
+  "worker": "blockzilla-get-block-native-fast",
+  "url": "https://blockzilla-get-block-native-fast.cheron-augustin.workers.dev",
+  "version": "bf0bedfc-7216-4550-8e79-b671a93318f8",
+  "profilingVersion": "367152ef-a37b-4f7b-9e95-b41f9571979d",
+  "wasmSha256": "f5b9675e07138c899fcde1752ab7ceafc67ca4b7bc66a8e7da044f7a91f0b973",
+  "config": "edgezilla/get-block/wrangler.native-fast.jsonc",
+  "sourcePrefix": "compact-v2/native-r2-full-1089-20261122",
+  "resolutionPrefix": "serving/owner-native-full1089-20261122-v1",
+  "resolutionGeneration": "owner-native-full1089-20261122-v1",
+  "archiveCacheGeneration": "owner-native-fast-20261122-final-v2",
+  "headSamplingRate": 0.01,
+  "r2DataWrites": 0,
+  "newIndexObjects": 0,
+  "admittedSlots": [
+    470555971,
+    470663944,
+    470771932,
+    470879999
+  ],
+  "deployments": {
+    "blockzilla-get-block-native-fast": {
+      "id": "683b2bca-3f90-4ba6-8f77-6aa69efe5c68",
+      "source": "wrangler",
+      "strategy": "percentage",
+      "author_email": "cheron.augustin@gmail.com",
+      "annotations": {
+        "workers/message": "Share positive auth records across isolates within the original five-second KV deadline",
+        "workers/triggered_by": "deployment"
+      },
+      "versions": [
+        {
+          "version_id": "bf0bedfc-7216-4550-8e79-b671a93318f8",
+          "percentage": 100
+        }
+      ],
+      "created_on": "2026-11-22T08:33:54.936063Z"
+    },
+    "blockzilla-get-block-native-full-test": {
+      "id": "d70c29bf-27c0-41db-8874-2c1b5e609e8a",
+      "source": "wrangler",
+      "strategy": "percentage",
+      "author_email": "cheron.augustin@gmail.com",
+      "annotations": {
+        "workers/message": "Benchmark four original-offset blocks against f...",
+        "workers/triggered_by": "upload"
+      },
+      "versions": [
+        {
+          "version_id": "c757f003-018e-45db-b1b0-8a2decca8868",
+          "percentage": 100
+        }
+      ],
+      "created_on": "2026-11-21T23:58:03.411863Z"
+    },
+    "blockzilla-get-block": {
+      "id": "1bd87671-c88a-46ee-a7fd-658963e1241c",
+      "source": "wrangler",
+      "strategy": "percentage",
+      "author_email": "cheron.augustin@gmail.com",
+      "annotations": {
+        "workers/triggered_by": "deployment"
+      },
+      "versions": [
+        {
+          "version_id": "2359b1b3-d95b-4e3b-bffc-b4161aac406f",
+          "percentage": 100
+        }
+      ],
+      "created_on": "2026-11-21T21:36:14.893431Z"
+    }
+  },
+  "preEdgeAuthPerformanceVersion": "ddc5f9ff-8704-4c99-ba20-e712047ba360",
+  "authCache": {
+    "tiers": [
+      "memory",
+      "edge"
+    ],
+    "deadlineMs": 5000,
+    "anchoredTo": "original KV read start",
+    "sliding": false,
+    "maxEdgeEnvelopeBytes": 1024
+  }
+}

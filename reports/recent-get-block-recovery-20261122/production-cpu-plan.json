@@ -1,0 +1,106 @@
+{
+  "account_id": "8df0426c80fcd1a04ed439f441db9ff8",
+  "worker": "blockzilla-get-block",
+  "version": "50aaba11-468b-4c57-b1ad-ddc999ea9152",
+  "wasmSha256": "abdf6f5a4a57e44fb0c9b343ced6c980f4a61e92eb20d597ef8453a4e6fc323b",
+  "requestReceipt": "/Users/augustin/Developement/ferno/blockzilla-v1/reports/recent-get-block-recovery-20261122/production-recovery.json",
+  "observabilityHeadSamplingRate": 0.01,
+  "windows": {
+    "UnrootedFinalized": {
+      "start": "2026-11-22T14:56:27.653Z",
+      "end": "2026-11-22T14:56:27.964Z",
+      "expectedWorkerRequests": 1,
+      "traffic": {
+        "condition": "UnrootedFinalized",
+        "representation": "compact",
+        "measured": true,
+        "workerRequests": 1,
+        "heliusRequests": 0
+      }
+    },
+    "RuntimeWarm": {
+      "start": "2026-11-22T14:56:30.164Z",
+      "end": "2026-11-22T14:56:30.332Z",
+      "expectedWorkerRequests": 1,
+      "traffic": {
+        "condition": "RuntimeWarm",
+        "representation": "compact",
+        "measured": false,
+        "workerRequests": 1,
+        "heliusRequests": 0
+      }
+    },
+    "RecentCold": {
+      "start": "2026-11-22T14:56:32.532Z",
+      "end": "2026-11-22T14:56:32.860Z",
+      "expectedWorkerRequests": 4,
+      "traffic": {
+        "condition": "RecentCold",
+        "representation": "compact",
+        "measured": true,
+        "workerRequests": 4,
+        "heliusRequests": 0
+      }
+    },
+    "AuthPrime": {
+      "start": "2026-11-22T14:56:35.060Z",
+      "end": "2026-11-22T14:56:35.122Z",
+      "expectedWorkerRequests": 1,
+      "traffic": {
+        "condition": "AuthPrime",
+        "representation": "compact",
+        "measured": false,
+        "workerRequests": 1,
+        "heliusRequests": 0
+      }
+    },
+    "RecentAuthWarm": {
+      "start": "2026-11-22T14:56:37.322Z",
+      "end": "2026-11-22T14:56:37.692Z",
+      "expectedWorkerRequests": 8,
+      "traffic": {
+        "condition": "RecentAuthWarm",
+        "representation": "compact",
+        "measured": true,
+        "workerRequests": 8,
+        "heliusRequests": 0
+      }
+    },
+    "RecentFinalized": {
+      "start": "2026-11-22T14:56:39.901Z",
+      "end": "2026-11-22T14:56:40.129Z",
+      "expectedWorkerRequests": 4,
+      "traffic": {
+        "condition": "RecentFinalized",
+        "representation": "compact",
+        "measured": true,
+        "workerRequests": 4,
+        "heliusRequests": 0
+      }
+    },
+    "ArchiveFallback": {
+      "start": "2026-11-22T14:56:42.329Z",
+      "end": "2026-11-22T14:56:44.553Z",
+      "expectedWorkerRequests": 4,
+      "traffic": {
+        "condition": "ArchiveFallback",
+        "representation": "compact",
+        "measured": true,
+        "workerRequests": 4,
+        "heliusRequests": 0
+      }
+    },
+    "IdentityReject": {
+      "start": "2026-11-22T14:56:46.753Z",
+      "end": "2026-11-22T14:56:46.896Z",
+      "expectedWorkerRequests": 4,
+      "traffic": {
+        "condition": "IdentityReject",
+        "representation": "compact",
+        "measured": true,
+        "workerRequests": 4,
+        "heliusRequests": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,1341 @@
+{
+  "schema": "blockzilla.transport-diagnostic-summary.v1",
+  "status": "validated",
+  "startedAt": "2026-11-22T07:51:53.567Z",
+  "completedAt": "2026-11-22T07:51:58.794Z",
+  "deploymentVersion": "c757f003-018e-45db-b1b0-8a2decca8868",
+  "scope": {
+    "calls": 24,
+    "worker": 20,
+    "helius": 4,
+    "resolutionWarmups": 4,
+    "jsonCanonicalMatchesSavedReference": 20,
+    "errors": 0,
+    "retries": 0,
+    "fullyBypassedRequests": 8,
+    "sourceOnlyIndexAndAuthCachedRequests": 4,
+    "responseHits": 4
+  },
+  "instrumentation": {
+    "node": "v26.13.0",
+    "bundledUndici": "8.12.2",
+    "dispatcherUndici": "7.29.0",
+    "autoSelectFamily": true,
+    "autoSelectFamilyAttemptTimeoutMs": 500,
+    "dispatcherConnectionsPerOrigin": 1,
+    "pipelining": 1,
+    "protocol": "HTTP/1.1",
+    "localFixtureChecksPassed": 7,
+    "cpuCapture": {
+      "state": "no_profile_captured",
+      "overlappedDiagnostic": false,
+      "attempts": [
+        {
+          "httpStatus": 401,
+          "reason": "saved OAuth rejected before capture"
+        },
+        {
+          "httpStatus": 404,
+          "cloudflareCode": 10393,
+          "reason": "No recent executions",
+          "at": "2026-11-22T07:52:12Z",
+          "relationToDiagnostic": "after diagnostic completed"
+        }
+      ]
+    }
+  },
+  "connections": [
+    {
+      "id": 1,
+      "label": "blockzilla",
+      "requests": 20,
+      "events": [
+        {
+          "name": "connectStart",
+          "atMs": 0
+        },
+        {
+          "name": "dnsStart",
+          "atMs": 10.768
+        },
+        {
+          "name": "dnsComplete",
+          "atMs": 15.464,
+          "families": [
+            4,
+            4
+          ]
+        },
+        {
+          "name": "connectionAttempt",
+          "atMs": 15.697,
+          "family": 4
+        },
+        {
+          "name": "tcpConnected",
+          "atMs": 24.769
+        },
+        {
+          "name": "ready",
+          "atMs": 40.83
+        },
+        {
+          "name": "tlsConnected",
+          "atMs": 43.095
+        },
+        {
+          "name": "closed",
+          "atMs": 5221.964
+        }
+      ],
+      "remoteFamily": "IPv4",
+      "alpn": "http/1.1",
+      "tlsProtocol": "TLSv1.3",
+      "tlsSessionReused": false,
+      "durationBreakdownMs": {
+        "beforeDns": 10.768,
+        "dns": 4.696,
+        "addressAttemptToTcp": 9.072,
+        "tcpToTlsReady": 16.061,
+        "totalToReady": 40.83
+      },
+      "addressFallbackTimeouts": 0,
+      "attemptFamilies": [
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "label": "helius",
+      "requests": 4,
+      "events": [
+        {
+          "name": "connectStart",
+          "atMs": 0
+        },
+        {
+          "name": "dnsStart",
+          "atMs": 0.499
+        },
+        {
+          "name": "dnsComplete",
+          "atMs": 10.246,
+          "families": [
+            4,
+            4
+          ]
+        },
+        {
+          "name": "connectionAttempt",
+          "atMs": 10.282,
+          "family": 4
+        },
+        {
+          "name": "tcpConnected",
+          "atMs": 19.479
+        },
+        {
+          "name": "ready",
+          "atMs": 32.387
+        },
+        {
+          "name": "tlsConnected",
+          "atMs": 32.822
+        },
+        {
+          "name": "closed",
+          "atMs": 4720.138
+        }
+      ],
+      "remoteFamily": "IPv4",
+      "alpn": "http/1.1",
+      "tlsProtocol": "TLSv1.3",
+      "tlsSessionReused": false,
+      "durationBreakdownMs": {
+        "beforeDns": 0.499,
+        "dns": 9.747,
+        "addressAttemptToTcp": 9.197,
+        "tcpToTlsReady": 12.908,
+        "totalToReady": 32.387
+      },
+      "addressFallbackTimeouts": 0,
+      "attemptFamilies": [
+        4
+      ]
+    }
+  ],
+  "phases": [
+    {
+      "phase": "initial_full_bypass",
+      "requests": 4,
+      "cacheCounts": {
+        "BYPASS": 4
+      },
+      "totalMs": {
+        "p50": 280.569,
+        "p95": 411.417,
+        "p99": 411.417
+      },
+      "firstDecodedBodyByteMs": {
+        "p50": 257.614,
+        "p95": 386.952,
+        "p99": 386.952
+      },
+      "requestBodySentToResponseHeadersMs": {
+        "p50": 255.2,
+        "p95": 333.737,
+        "p99": 333.737
+      },
+      "encodedBodyTransferMs": {
+        "p50": 22.583,
+        "p95": 40.849,
+        "p99": 40.849
+      },
+      "newSockets": 1,
+      "sourceGetAttempts": 12,
+      "authKvReads": 4,
+      "stagesMs": {
+        "authentication": {
+          "p50": 3,
+          "p95": 30,
+          "p99": 30
+        },
+        "block_body": {
+          "p50": 0,
+          "p95": 6,
+          "p99": 6
+        },
+        "block_headers": {
+          "p50": 125,
+          "p95": 141,
+          "p99": 141
+        },
+        "resolution_access_decode": {
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "resolution_body": {
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "resolution_decode": {
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "resolution_fetch_total": {
+          "p50": 184,
+          "p95": 223,
+          "p99": 223
+        },
+        "resolution_headers": {
+          "p50": 39,
+          "p95": 49,
+          "p99": 49
+        },
+        "resolution_total": {
+          "p50": 39,
+          "p95": 49,
+          "p99": 49
+        },
+        "signature_body": {
+          "p50": 0,
+          "p95": 1,
+          "p99": 1
+        },
+        "signature_headers": {
+          "p50": 134,
+          "p95": 187,
+          "p99": 187
+        },
+        "source_ranges_parallel": {
+          "p50": 142,
+          "p95": 187,
+          "p99": 187
+        },
+        "stored_block_decode": {
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "worker_placement": {
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        }
+      }
+    },
+    {
+      "phase": "paired_provider",
+      "requests": 4,
+      "cacheCounts": {
+        "UNREPORTED": 4
+      },
+      "totalMs": {
+        "p50": 114.096,
+        "p95": 147.711,
+        "p99": 147.711
+      },
+      "firstDecodedBodyByteMs": {
+        "p50": 47.921,
+        "p95": 117.899,
+        "p99": 117.899
+      },
+      "requestBodySentToResponseHeadersMs": {
+        "p50": 44.175,
+        "p95": 115.974,
+        "p99": 115.974
+      },
+      "encodedBodyTransferMs": {
+        "p50": 61.402,
+        "p95": 65.429,
+        "p99": 65.429
+      },
+      "newSockets": 1,
+      "sourceGetAttempts": 0,
+      "authKvReads": 0,
+      "stagesMs": {}
+    },
+    {
+      "phase": "resolution_warmup",
+      "requests": 4,
+      "cacheCounts": {
+        "HIT": 4
+      },
+      "totalMs": {
+        "p50": 24.247,
+        "p95": 65.864,
+        "p99": 65.864
+      },
+      "firstDecodedBodyByteMs": {
+        "p50": 22.135,
+        "p95": 59.718,
+        "p99": 59.718
+      },
+      "requestBodySentToResponseHeadersMs": {
+        "p50": 20.262,
+        "p95": 57.418,
+        "p99": 57.418
+      },
+      "encodedBodyTransferMs": {
+        "p50": 0.877,
+        "p95": 7.882,
+        "p99": 7.882
+      },
+      "newSockets": 0,
+      "sourceGetAttempts": 0,
+      "authKvReads": 1,
+      "stagesMs": {}
+    },
+    {
+      "phase": "source_only",
+      "requests": 4,
+      "cacheCounts": {
+        "BYPASS": 4
+      },
+      "totalMs": {
+        "p50": 180.856,
+        "p95": 222.335,
+        "p99": 222.335
+      },
+      "firstDecodedBodyByteMs": {
+        "p50": 161.627,
+        "p95": 194.639,
+        "p99": 194.639
+      },
+      "requestBodySentToResponseHeadersMs": {
+        "p50": 159.396,
+        "p95": 192.954,
+        "p99": 192.954
+      },
+      "encodedBodyTransferMs": {
+        "p50": 17.332,
+        "p95": 31.976,
+        "p99": 31.976
+      },
+      "newSockets": 0,
+      "sourceGetAttempts": 8,
+      "authKvReads": 0,
+      "stagesMs": {
+        "authentication": {
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "block_body": {
+          "p50": 1,
+          "p95": 19,
+          "p99": 19
+        },
+        "block_headers": {
+          "p50": 92,
+          "p95": 131,
+          "p99": 131
+        },
+        "resolution_access_decode": {
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "resolution_decode": {
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "resolution_fetch_total": {
+          "p50": 106,
+          "p95": 140,
+          "p99": 140
+        },
+        "resolution_total": {
+          "p50": 6,
+          "p95": 15,
+          "p99": 15
+        },
+        "signature_body": {
+          "p50": 0,
+          "p95": 2,
+          "p99": 2
+        },
+        "signature_headers": {
+          "p50": 80,
+          "p95": 91,
+          "p99": 91
+        },
+        "source_ranges_parallel": {
+          "p50": 92,
+          "p95": 132,
+          "p99": 132
+        },
+        "stored_block_decode": {
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "worker_placement": {
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        }
+      }
+    },
+    {
+      "phase": "normal_response",
+      "requests": 4,
+      "cacheCounts": {
+        "HIT": 4
+      },
+      "totalMs": {
+        "p50": 69.292,
+        "p95": 233.457,
+        "p99": 233.457
+      },
+      "firstDecodedBodyByteMs": {
+        "p50": 27.317,
+        "p95": 45.773,
+        "p99": 45.773
+      },
+      "requestBodySentToResponseHeadersMs": {
+        "p50": 25.474,
+        "p95": 43.732,
+        "p99": 43.732
+      },
+      "encodedBodyTransferMs": {
+        "p50": 23.244,
+        "p95": 205.861,
+        "p99": 205.861
+      },
+      "newSockets": 0,
+      "sourceGetAttempts": 0,
+      "authKvReads": 0,
+      "stagesMs": {}
+    },
+    {
+      "phase": "reused_connection_full_bypass",
+      "requests": 4,
+      "cacheCounts": {
+        "BYPASS": 4
+      },
+      "totalMs": {
+        "p50": 157.464,
+        "p95": 168.207,
+        "p99": 168.207
+      },
+      "firstDecodedBodyByteMs": {
+        "p50": 136.02,
+        "p95": 146.126,
+        "p99": 146.126
+      },
+      "requestBodySentToResponseHeadersMs": {
+        "p50": 133.778,
+        "p95": 144.477,
+        "p99": 144.477
+      },
+      "encodedBodyTransferMs": {
+        "p50": 22.146,
+        "p95": 28.771,
+        "p99": 28.771
+      },
+      "newSockets": 0,
+      "sourceGetAttempts": 12,
+      "authKvReads": 4,
+      "stagesMs": {
+        "authentication": {
+          "p50": 3,
+          "p95": 4,
+          "p99": 4
+        },
+        "block_body": {
+          "p50": 2,
+          "p95": 5,
+          "p99": 5
+        },
+        "block_headers": {
+          "p50": 52,
+          "p95": 56,
+          "p99": 56
+        },
+        "resolution_access_decode": {
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "resolution_body": {
+          "p50": 0,
+          "p95": 1,
+          "p99": 1
+        },
+        "resolution_decode": {
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "resolution_fetch_total": {
+          "p50": 88,
+          "p95": 94,
+          "p99": 94
+        },
+        "resolution_headers": {
+          "p50": 30,
+          "p95": 39,
+          "p99": 39
+        },
+        "resolution_total": {
+          "p50": 31,
+          "p95": 39,
+          "p99": 39
+        },
+        "signature_body": {
+          "p50": 0,
+          "p95": 3,
+          "p99": 3
+        },
+        "signature_headers": {
+          "p50": 46,
+          "p95": 58,
+          "p99": 58
+        },
+        "source_ranges_parallel": {
+          "p50": 55,
+          "p95": 61,
+          "p99": 61
+        },
+        "stored_block_decode": {
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "worker_placement": {
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        }
+      }
+    }
+  ],
+  "waterfall": [
+    {
+      "label": "blockzilla",
+      "phase": "initial_full_bypass",
+      "slot": 470555971,
+      "startedAt": "2026-11-22T07:51:53.569Z",
+      "socketId": 1,
+      "socketReused": false,
+      "createdToSentMs": 43.094,
+      "bodySentAtMs": 46.861,
+      "sentToHeadersMs": 333.737,
+      "preHeaderProfileMs": 214,
+      "sentToHeadersMinusPreHeaderProfileMs": 119.737,
+      "firstEncodedBodyByteAtMs": 384.669,
+      "lastEncodedBodyChunkAtMs": 408.119,
+      "encodedBodyTransferMs": 23.575,
+      "decodedBodyCompleteAtMs": 410.421,
+      "totalMs": 411.417,
+      "contentEncoding": "zstd",
+      "encodedBodyBytes": 405903,
+      "decodedBodyBytes": 2531323,
+      "clientBodyCpuMs": {
+        "user": 74.358,
+        "system": 12.067
+      },
+      "cache": "BYPASS",
+      "auth": {
+        "cache": "BYPASS",
+        "kvReads": 1
+      },
+      "r2GetAttempts": 3
+    },
+    {
+      "label": "blockzilla",
+      "phase": "initial_full_bypass",
+      "slot": 470663944,
+      "startedAt": "2026-11-22T07:51:54.281Z",
+      "socketId": 1,
+      "socketReused": true,
+      "createdToSentMs": 0.397,
+      "bodySentAtMs": 0.898,
+      "sentToHeadersMs": 288.588,
+      "preHeaderProfileMs": 227,
+      "sentToHeadersMinusPreHeaderProfileMs": 61.588,
+      "firstEncodedBodyByteAtMs": 290.171,
+      "lastEncodedBodyChunkAtMs": 330.959,
+      "encodedBodyTransferMs": 40.849,
+      "decodedBodyCompleteAtMs": 334.238,
+      "totalMs": 334.253,
+      "contentEncoding": "zstd",
+      "encodedBodyBytes": 594907,
+      "decodedBodyBytes": 4008256,
+      "clientBodyCpuMs": {
+        "user": 29.714,
+        "system": 6.404
+      },
+      "cache": "BYPASS",
+      "auth": {
+        "cache": "BYPASS",
+        "kvReads": 1
+      },
+      "r2GetAttempts": 3
+    },
+    {
+      "label": "blockzilla",
+      "phase": "initial_full_bypass",
+      "slot": 470771932,
+      "startedAt": "2026-11-22T07:51:54.964Z",
+      "socketId": 1,
+      "socketReused": true,
+      "createdToSentMs": 0.809,
+      "bodySentAtMs": 1.339,
+      "sentToHeadersMs": 255.2,
+      "preHeaderProfileMs": 222,
+      "sentToHeadersMinusPreHeaderProfileMs": 33.2,
+      "firstEncodedBodyByteAtMs": 257.389,
+      "lastEncodedBodyChunkAtMs": 279.939,
+      "encodedBodyTransferMs": 22.583,
+      "decodedBodyCompleteAtMs": 280.56,
+      "totalMs": 280.569,
+      "contentEncoding": "zstd",
+      "encodedBodyBytes": 447809,
+      "decodedBodyBytes": 3380451,
+      "clientBodyCpuMs": {
+        "user": 26.738,
+        "system": 4.574
+      },
+      "cache": "BYPASS",
+      "auth": {
+        "cache": "BYPASS",
+        "kvReads": 1
+      },
+      "r2GetAttempts": 3
+    },
+    {
+      "label": "blockzilla",
+      "phase": "initial_full_bypass",
+      "slot": 470879999,
+      "startedAt": "2026-11-22T07:51:55.519Z",
+      "socketId": 1,
+      "socketReused": true,
+      "createdToSentMs": 1.329,
+      "bodySentAtMs": 1.776,
+      "sentToHeadersMs": 214.444,
+      "preHeaderProfileMs": 184,
+      "sentToHeadersMinusPreHeaderProfileMs": 30.444,
+      "firstEncodedBodyByteAtMs": 216.532,
+      "lastEncodedBodyChunkAtMs": 219.609,
+      "encodedBodyTransferMs": 3.097,
+      "decodedBodyCompleteAtMs": 221.453,
+      "totalMs": 221.466,
+      "contentEncoding": "zstd",
+      "encodedBodyBytes": 190841,
+      "decodedBodyBytes": 996544,
+      "clientBodyCpuMs": {
+        "user": 5.199,
+        "system": 1.268
+      },
+      "cache": "BYPASS",
+      "auth": {
+        "cache": "BYPASS",
+        "kvReads": 1
+      },
+      "r2GetAttempts": 3
+    },
+    {
+      "label": "helius",
+      "phase": "paired_provider",
+      "slot": 470555971,
+      "startedAt": "2026-11-22T07:51:54.073Z",
+      "socketId": 2,
+      "socketReused": false,
+      "createdToSentMs": 32.581,
+      "bodySentAtMs": 34.03,
+      "sentToHeadersMs": 44.175,
+      "preHeaderProfileMs": null,
+      "sentToHeadersMinusPreHeaderProfileMs": null,
+      "firstEncodedBodyByteAtMs": 78.639,
+      "lastEncodedBodyChunkAtMs": 141.257,
+      "encodedBodyTransferMs": 62.65,
+      "decodedBodyCompleteAtMs": 143.123,
+      "totalMs": 143.137,
+      "contentEncoding": "gzip",
+      "encodedBodyBytes": 624866,
+      "decodedBodyBytes": 2531323,
+      "clientBodyCpuMs": {
+        "user": 74.078,
+        "system": 11.335
+      },
+      "cache": "UNREPORTED",
+      "auth": null,
+      "r2GetAttempts": null
+    },
+    {
+      "label": "helius",
+      "phase": "paired_provider",
+      "slot": 470663944,
+      "startedAt": "2026-11-22T07:51:54.740Z",
+      "socketId": 2,
+      "socketReused": true,
+      "createdToSentMs": 0.979,
+      "bodySentAtMs": 1.975,
+      "sentToHeadersMs": 45.406,
+      "preHeaderProfileMs": null,
+      "sentToHeadersMinusPreHeaderProfileMs": null,
+      "firstEncodedBodyByteAtMs": 47.657,
+      "lastEncodedBodyChunkAtMs": 113.017,
+      "encodedBodyTransferMs": 65.429,
+      "decodedBodyCompleteAtMs": 114.086,
+      "totalMs": 114.096,
+      "contentEncoding": "gzip",
+      "encodedBodyBytes": 917353,
+      "decodedBodyBytes": 4008256,
+      "clientBodyCpuMs": {
+        "user": 31.876,
+        "system": 8.716
+      },
+      "cache": "UNREPORTED",
+      "auth": null,
+      "r2GetAttempts": null
+    },
+    {
+      "label": "helius",
+      "phase": "paired_provider",
+      "slot": 470771932,
+      "startedAt": "2026-11-22T07:51:55.327Z",
+      "socketId": 2,
+      "socketReused": true,
+      "createdToSentMs": 1.27,
+      "bodySentAtMs": 1.809,
+      "sentToHeadersMs": 41.505,
+      "preHeaderProfileMs": null,
+      "sentToHeadersMinusPreHeaderProfileMs": null,
+      "firstEncodedBodyByteAtMs": 43.534,
+      "lastEncodedBodyChunkAtMs": 104.912,
+      "encodedBodyTransferMs": 61.402,
+      "decodedBodyCompleteAtMs": 107.059,
+      "totalMs": 107.092,
+      "contentEncoding": "gzip",
+      "encodedBodyBytes": 855199,
+      "decodedBodyBytes": 3380451,
+      "clientBodyCpuMs": {
+        "user": 31.17,
+        "system": 7.948
+      },
+      "cache": "UNREPORTED",
+      "auth": null,
+      "r2GetAttempts": null
+    },
+    {
+      "label": "helius",
+      "phase": "paired_provider",
+      "slot": 470879999,
+      "startedAt": "2026-11-22T07:51:55.770Z",
+      "socketId": 2,
+      "socketReused": true,
+      "createdToSentMs": 0.404,
+      "bodySentAtMs": 1.05,
+      "sentToHeadersMs": 115.974,
+      "preHeaderProfileMs": null,
+      "sentToHeadersMinusPreHeaderProfileMs": null,
+      "firstEncodedBodyByteAtMs": 117.256,
+      "lastEncodedBodyChunkAtMs": 146.778,
+      "encodedBodyTransferMs": 29.553,
+      "decodedBodyCompleteAtMs": 147.701,
+      "totalMs": 147.711,
+      "contentEncoding": "gzip",
+      "encodedBodyBytes": 264444,
+      "decodedBodyBytes": 996544,
+      "clientBodyCpuMs": {
+        "user": 20.225,
+        "system": 2.75
+      },
+      "cache": "UNREPORTED",
+      "auth": null,
+      "r2GetAttempts": null
+    },
+    {
+      "label": "blockzilla",
+      "phase": "resolution_warmup",
+      "slot": 470555971,
+      "startedAt": "2026-11-22T07:51:55.944Z",
+      "socketId": 1,
+      "socketReused": true,
+      "createdToSentMs": 1.353,
+      "bodySentAtMs": 1.853,
+      "sentToHeadersMs": 57.418,
+      "preHeaderProfileMs": null,
+      "sentToHeadersMinusPreHeaderProfileMs": null,
+      "firstEncodedBodyByteAtMs": 59.707,
+      "lastEncodedBodyChunkAtMs": 60.542,
+      "encodedBodyTransferMs": 0.877,
+      "decodedBodyCompleteAtMs": 60.793,
+      "totalMs": 60.804,
+      "contentEncoding": null,
+      "encodedBodyBytes": 75677,
+      "decodedBodyBytes": 75677,
+      "clientBodyCpuMs": {
+        "user": 3.566,
+        "system": 0.474
+      },
+      "cache": "HIT",
+      "auth": {
+        "cache": "MISS",
+        "kvReads": 1
+      },
+      "r2GetAttempts": 0
+    },
+    {
+      "label": "blockzilla",
+      "phase": "resolution_warmup",
+      "slot": 470663944,
+      "startedAt": "2026-11-22T07:51:56.009Z",
+      "socketId": 1,
+      "socketReused": true,
+      "createdToSentMs": 1.352,
+      "bodySentAtMs": 1.715,
+      "sentToHeadersMs": 18.097,
+      "preHeaderProfileMs": null,
+      "sentToHeadersMinusPreHeaderProfileMs": null,
+      "firstEncodedBodyByteAtMs": 20.916,
+      "lastEncodedBodyChunkAtMs": 23.949,
+      "encodedBodyTransferMs": 3.108,
+      "decodedBodyCompleteAtMs": 24.224,
+      "totalMs": 24.247,
+      "contentEncoding": null,
+      "encodedBodyBytes": 103689,
+      "decodedBodyBytes": 103689,
+      "clientBodyCpuMs": {
+        "user": 2.267,
+        "system": 0.738
+      },
+      "cache": "HIT",
+      "auth": {
+        "cache": "HIT",
+        "kvReads": 0
+      },
+      "r2GetAttempts": 0
+    },
+    {
+      "label": "blockzilla",
+      "phase": "resolution_warmup",
+      "slot": 470771932,
+      "startedAt": "2026-11-22T07:51:56.034Z",
+      "socketId": 1,
+      "socketReused": true,
+      "createdToSentMs": 1.29,
+      "bodySentAtMs": 1.543,
+      "sentToHeadersMs": 40.948,
+      "preHeaderProfileMs": null,
+      "sentToHeadersMinusPreHeaderProfileMs": null,
+      "firstEncodedBodyByteAtMs": 57.782,
+      "lastEncodedBodyChunkAtMs": 65.642,
+      "encodedBodyTransferMs": 7.882,
+      "decodedBodyCompleteAtMs": 65.84,
+      "totalMs": 65.864,
+      "contentEncoding": null,
+      "encodedBodyBytes": 91326,
+      "decodedBodyBytes": 91326,
+      "clientBodyCpuMs": {
+        "user": 1.478,
+        "system": 0.381
+      },
+      "cache": "HIT",
+      "auth": {
+        "cache": "HIT",
+        "kvReads": 0
+      },
+      "r2GetAttempts": 0
+    },
+    {
+      "label": "blockzilla",
+      "phase": "resolution_warmup",
+      "slot": 470879999,
+      "startedAt": "2026-11-22T07:51:56.100Z",
+      "socketId": 1,
+      "socketReused": true,
+      "createdToSentMs": 1.269,
+      "bodySentAtMs": 1.503,
+      "sentToHeadersMs": 20.262,
+      "preHeaderProfileMs": null,
+      "sentToHeadersMinusPreHeaderProfileMs": null,
+      "firstEncodedBodyByteAtMs": 22.118,
+      "lastEncodedBodyChunkAtMs": 22.641,
+      "encodedBodyTransferMs": 0.533,
+      "decodedBodyCompleteAtMs": 22.693,
+      "totalMs": 22.702,
+      "contentEncoding": null,
+      "encodedBodyBytes": 44425,
+      "decodedBodyBytes": 44425,
+      "clientBodyCpuMs": {
+        "user": 1.507,
+        "system": 0.234
+      },
+      "cache": "HIT",
+      "auth": {
+        "cache": "HIT",
+        "kvReads": 0
+      },
+      "r2GetAttempts": 0
+    },
+    {
+      "label": "blockzilla",
+      "phase": "source_only",
+      "slot": 470555971,
+      "startedAt": "2026-11-22T07:51:56.123Z",
+      "socketId": 1,
+      "socketReused": true,
+      "createdToSentMs": 1.282,
+      "bodySentAtMs": 1.562,
+      "sentToHeadersMs": 159.396,
+      "preHeaderProfileMs": 98,
+      "sentToHeadersMinusPreHeaderProfileMs": 61.396,
+      "firstEncodedBodyByteAtMs": 161.301,
+      "lastEncodedBodyChunkAtMs": 178.607,
+      "encodedBodyTransferMs": 17.332,
+      "decodedBodyCompleteAtMs": 180.832,
+      "totalMs": 180.856,
+      "contentEncoding": "zstd",
+      "encodedBodyBytes": 406265,
+      "decodedBodyBytes": 2531323,
+      "clientBodyCpuMs": {
+        "user": 9.949,
+        "system": 3.169
+      },
+      "cache": "BYPASS",
+      "auth": {
+        "cache": "HIT",
+        "kvReads": 0
+      },
+      "r2GetAttempts": 2
+    },
+    {
+      "label": "blockzilla",
+      "phase": "source_only",
+      "slot": 470663944,
+      "startedAt": "2026-11-22T07:51:56.366Z",
+      "socketId": 1,
+      "socketReused": true,
+      "createdToSentMs": 2.066,
+      "bodySentAtMs": 2.454,
+      "sentToHeadersMs": 168.467,
+      "preHeaderProfileMs": 136,
+      "sentToHeadersMinusPreHeaderProfileMs": 32.467,
+      "firstEncodedBodyByteAtMs": 171.418,
+      "lastEncodedBodyChunkAtMs": 203.382,
+      "encodedBodyTransferMs": 31.976,
+      "decodedBodyCompleteAtMs": 203.864,
+      "totalMs": 203.869,
+      "contentEncoding": "zstd",
+      "encodedBodyBytes": 594015,
+      "decodedBodyBytes": 4008256,
+      "clientBodyCpuMs": {
+        "user": 19.701,
+        "system": 4.758
+      },
+      "cache": "BYPASS",
+      "auth": {
+        "cache": "HIT",
+        "kvReads": 0
+      },
+      "r2GetAttempts": 2
+    },
+    {
+      "label": "blockzilla",
+      "phase": "source_only",
+      "slot": 470771932,
+      "startedAt": "2026-11-22T07:51:56.669Z",
+      "socketId": 1,
+      "socketReused": true,
+      "createdToSentMs": 0.732,
+      "bodySentAtMs": 1.016,
+      "sentToHeadersMs": 192.954,
+      "preHeaderProfileMs": 140,
+      "sentToHeadersMinusPreHeaderProfileMs": 52.954,
+      "firstEncodedBodyByteAtMs": 194.508,
+      "lastEncodedBodyChunkAtMs": 221.539,
+      "encodedBodyTransferMs": 27.044,
+      "decodedBodyCompleteAtMs": 222.324,
+      "totalMs": 222.335,
+      "contentEncoding": "zstd",
+      "encodedBodyBytes": 446811,
+      "decodedBodyBytes": 3380451,
+      "clientBodyCpuMs": {
+        "user": 24.728,
+        "system": 4.012
+      },
+      "cache": "BYPASS",
+      "auth": {
+        "cache": "HIT",
+        "kvReads": 0
+      },
+      "r2GetAttempts": 2
+    },
+    {
+      "label": "blockzilla",
+      "phase": "source_only",
+      "slot": 470879999,
+      "startedAt": "2026-11-22T07:51:56.968Z",
+      "socketId": 1,
+      "socketReused": true,
+      "createdToSentMs": 1.236,
+      "bodySentAtMs": 1.519,
+      "sentToHeadersMs": 134.656,
+      "preHeaderProfileMs": 106,
+      "sentToHeadersMinusPreHeaderProfileMs": 28.656,
+      "firstEncodedBodyByteAtMs": 136.633,
+      "lastEncodedBodyChunkAtMs": 142.275,
+      "encodedBodyTransferMs": 5.651,
+      "decodedBodyCompleteAtMs": 143.735,
+      "totalMs": 143.744,
+      "contentEncoding": "zstd",
+      "encodedBodyBytes": 190529,
+      "decodedBodyBytes": 996544,
+      "clientBodyCpuMs": {
+        "user": 14.136,
+        "system": 1.73
+      },
+      "cache": "BYPASS",
+      "auth": {
+        "cache": "HIT",
+        "kvReads": 0
+      },
+      "r2GetAttempts": 2
+    },
+    {
+      "label": "blockzilla",
+      "phase": "normal_response",
+      "slot": 470555971,
+      "startedAt": "2026-11-22T07:51:57.136Z",
+      "socketId": 1,
+      "socketReused": true,
+      "createdToSentMs": 1.254,
+      "bodySentAtMs": 1.584,
+      "sentToHeadersMs": 43.732,
+      "preHeaderProfileMs": null,
+      "sentToHeadersMinusPreHeaderProfileMs": null,
+      "firstEncodedBodyByteAtMs": 45.735,
+      "lastEncodedBodyChunkAtMs": 68.967,
+      "encodedBodyTransferMs": 23.244,
+      "decodedBodyCompleteAtMs": 69.289,
+      "totalMs": 69.292,
+      "contentEncoding": "zstd",
+      "encodedBodyBytes": 422547,
+      "decodedBodyBytes": 2531323,
+      "clientBodyCpuMs": {
+        "user": 8.713,
+        "system": 3.183
+      },
+      "cache": "HIT",
+      "auth": {
+        "cache": "HIT",
+        "kvReads": 0
+      },
+      "r2GetAttempts": 0
+    },
+    {
+      "label": "blockzilla",
+      "phase": "normal_response",
+      "slot": 470663944,
+      "startedAt": "2026-11-22T07:51:57.257Z",
+      "socketId": 1,
+      "socketReused": true,
+      "createdToSentMs": 1.236,
+      "bodySentAtMs": 1.499,
+      "sentToHeadersMs": 17.853,
+      "preHeaderProfileMs": null,
+      "sentToHeadersMinusPreHeaderProfileMs": null,
+      "firstEncodedBodyByteAtMs": 19.79,
+      "lastEncodedBodyChunkAtMs": 113.002,
+      "encodedBodyTransferMs": 93.222,
+      "decodedBodyCompleteAtMs": 113.308,
+      "totalMs": 113.314,
+      "contentEncoding": "zstd",
+      "encodedBodyBytes": 618959,
+      "decodedBodyBytes": 4008256,
+      "clientBodyCpuMs": {
+        "user": 25.328,
+        "system": 6.414
+      },
+      "cache": "HIT",
+      "auth": {
+        "cache": "HIT",
+        "kvReads": 0
+      },
+      "r2GetAttempts": 0
+    },
+    {
+      "label": "blockzilla",
+      "phase": "normal_response",
+      "slot": 470771932,
+      "startedAt": "2026-11-22T07:51:57.470Z",
+      "socketId": 1,
+      "socketReused": true,
+      "createdToSentMs": 1.053,
+      "bodySentAtMs": 1.323,
+      "sentToHeadersMs": 25.474,
+      "preHeaderProfileMs": null,
+      "sentToHeadersMinusPreHeaderProfileMs": null,
+      "firstEncodedBodyByteAtMs": 27.262,
+      "lastEncodedBodyChunkAtMs": 233.051,
+      "encodedBodyTransferMs": 205.861,
+      "decodedBodyCompleteAtMs": 233.449,
+      "totalMs": 233.457,
+      "contentEncoding": "zstd",
+      "encodedBodyBytes": 467596,
+      "decodedBodyBytes": 3380451,
+      "clientBodyCpuMs": {
+        "user": 35.281,
+        "system": 8.138
+      },
+      "cache": "HIT",
+      "auth": {
+        "cache": "HIT",
+        "kvReads": 0
+      },
+      "r2GetAttempts": 0
+    },
+    {
+      "label": "blockzilla",
+      "phase": "normal_response",
+      "slot": 470879999,
+      "startedAt": "2026-11-22T07:51:57.782Z",
+      "socketId": 1,
+      "socketReused": true,
+      "createdToSentMs": 1.365,
+      "bodySentAtMs": 1.654,
+      "sentToHeadersMs": 39.034,
+      "preHeaderProfileMs": null,
+      "sentToHeadersMinusPreHeaderProfileMs": null,
+      "firstEncodedBodyByteAtMs": 41.095,
+      "lastEncodedBodyChunkAtMs": 51.052,
+      "encodedBodyTransferMs": 9.973,
+      "decodedBodyCompleteAtMs": 51.294,
+      "totalMs": 51.298,
+      "contentEncoding": "zstd",
+      "encodedBodyBytes": 197137,
+      "decodedBodyBytes": 996544,
+      "clientBodyCpuMs": {
+        "user": 4.814,
+        "system": 1.366
+      },
+      "cache": "HIT",
+      "auth": {
+        "cache": "HIT",
+        "kvReads": 0
+      },
+      "r2GetAttempts": 0
+    },
+    {
+      "label": "blockzilla",
+      "phase": "reused_connection_full_bypass",
+      "slot": 470555971,
+      "startedAt": "2026-11-22T07:51:57.855Z",
+      "socketId": 1,
+      "socketReused": true,
+      "createdToSentMs": 0.544,
+      "bodySentAtMs": 0.796,
+      "sentToHeadersMs": 144.477,
+      "preHeaderProfileMs": 95,
+      "sentToHeadersMinusPreHeaderProfileMs": 49.477,
+      "firstEncodedBodyByteAtMs": 145.646,
+      "lastEncodedBodyChunkAtMs": 167.777,
+      "encodedBodyTransferMs": 22.146,
+      "decodedBodyCompleteAtMs": 168.198,
+      "totalMs": 168.207,
+      "contentEncoding": "zstd",
+      "encodedBodyBytes": 406020,
+      "decodedBodyBytes": 2531323,
+      "clientBodyCpuMs": {
+        "user": 20.513,
+        "system": 3.384
+      },
+      "cache": "BYPASS",
+      "auth": {
+        "cache": "BYPASS",
+        "kvReads": 1
+      },
+      "r2GetAttempts": 3
+    },
+    {
+      "label": "blockzilla",
+      "phase": "reused_connection_full_bypass",
+      "slot": 470663944,
+      "startedAt": "2026-11-22T07:51:58.079Z",
+      "socketId": 1,
+      "socketReused": true,
+      "createdToSentMs": 1.245,
+      "bodySentAtMs": 1.518,
+      "sentToHeadersMs": 126.541,
+      "preHeaderProfileMs": 91,
+      "sentToHeadersMinusPreHeaderProfileMs": 35.541,
+      "firstEncodedBodyByteAtMs": 129.309,
+      "lastEncodedBodyChunkAtMs": 154.694,
+      "encodedBodyTransferMs": 25.409,
+      "decodedBodyCompleteAtMs": 157.458,
+      "totalMs": 157.464,
+      "contentEncoding": "zstd",
+      "encodedBodyBytes": 594476,
+      "decodedBodyBytes": 4008256,
+      "clientBodyCpuMs": {
+        "user": 10.371,
+        "system": 3.962
+      },
+      "cache": "BYPASS",
+      "auth": {
+        "cache": "BYPASS",
+        "kvReads": 1
+      },
+      "r2GetAttempts": 3
+    },
+    {
+      "label": "blockzilla",
+      "phase": "reused_connection_full_bypass",
+      "slot": 470771932,
+      "startedAt": "2026-11-22T07:51:58.354Z",
+      "socketId": 1,
+      "socketReused": true,
+      "createdToSentMs": 0.8,
+      "bodySentAtMs": 1.111,
+      "sentToHeadersMs": 133.778,
+      "preHeaderProfileMs": 97,
+      "sentToHeadersMinusPreHeaderProfileMs": 36.778,
+      "firstEncodedBodyByteAtMs": 135.822,
+      "lastEncodedBodyChunkAtMs": 164.57,
+      "encodedBodyTransferMs": 28.771,
+      "decodedBodyCompleteAtMs": 166.007,
+      "totalMs": 166.02,
+      "contentEncoding": "zstd",
+      "encodedBodyBytes": 446674,
+      "decodedBodyBytes": 3380451,
+      "clientBodyCpuMs": {
+        "user": 28.715,
+        "system": 6.118
+      },
+      "cache": "BYPASS",
+      "auth": {
+        "cache": "BYPASS",
+        "kvReads": 1
+      },
+      "r2GetAttempts": 3
+    },
+    {
+      "label": "blockzilla",
+      "phase": "reused_connection_full_bypass",
+      "slot": 470879999,
+      "startedAt": "2026-11-22T07:51:58.617Z",
+      "socketId": 1,
+      "socketReused": true,
+      "createdToSentMs": 1.222,
+      "bodySentAtMs": 1.495,
+      "sentToHeadersMs": 143.882,
+      "preHeaderProfileMs": 92,
+      "sentToHeadersMinusPreHeaderProfileMs": 51.882,
+      "firstEncodedBodyByteAtMs": 145.813,
+      "lastEncodedBodyChunkAtMs": 152.268,
+      "encodedBodyTransferMs": 6.468,
+      "decodedBodyCompleteAtMs": 152.635,
+      "totalMs": 152.652,
+      "contentEncoding": "zstd",
+      "encodedBodyBytes": 190819,
+      "decodedBodyBytes": 996544,
+      "clientBodyCpuMs": {
+        "user": 3.636,
+        "system": 1.192
+      },
+      "cache": "BYPASS",
+      "auth": {
+        "cache": "BYPASS",
+        "kvReads": 1
+      },
+      "r2GetAttempts": 3
+    }
+  ],
+  "findings": [
+    "One Worker TLS socket handled all 20 Worker calls; a second socket handled all 4 Helius calls. The later 19 Worker calls reused the same live socket. Both DNS lookups returned only IPv4 answers, and each connected with one IPv4 attempt. No fallback timeout occurred.",
+    "Worker DNS took 4.696 ms and TCP connect 9.072 ms after the address attempt. The TLS socket was ready 40.830 ms after connector start. Only the first Worker request paid this setup. The large waits on reused sockets occur after the request was sent.",
+    "The first Worker call took 411.417 ms, including 333.737 ms from request-body send to response headers and 214 ms in the pre-header Worker profile. Later initial full-bypass calls still waited 214.444\u2013288.588 ms for headers on the reused socket.",
+    "In the final four full-bypass calls, the same socket produced 152.652\u2013168.207 ms total times with 3 R2 GETs, Auth BYPASS and KV1 each. Their Worker profiles were 91\u201397 ms: auth 3\u20134 ms, index 30\u201339 ms, then parallel ranges 55\u201361 ms. A lower first-use or storage-service cost is possible, but this run does not identify its cause.",
+    "The slow cache HIT for slot 470771932 had response headers at 27.151 ms and encoded body transfer 205.861 ms. It used the reused socket, with 0 object GETs and 0 KV reads. Thus this visible tail is response-body delivery; it is not DNS, TCP/TLS setup, an index fetch or source range reads.",
+    "Worker responses used zstd and Helius used gzip. Encoded entity-byte counts prove that compression was present. Decompression completion followed encoded body completion closely in the slow HIT, so fetch decompression does not explain its 206 ms transfer span.",
+    "The diagnostic does not prove a 250 ms client IPv6 fallback. On this Node runtime the configured address-attempt timeout was 500 ms, and neither target made an IPv6 attempt."
+  ],
+  "actions": [
+    {
+      "scope": "client SDK and benchmark",
+      "action": "Keep one long-lived dispatcher per origin and finish or cancel every response body so that the connection can be reused.",
+      "evidence": "The first Worker connection needed 40.830 ms; all later 19 Worker calls used the same socket.",
+      "limit": "This can remove setup on later calls. It does not remove the measured post-send cold wait."
+    },
+    {
+      "scope": "Worker optimisation",
+      "action": "Use the cold index\u2192parallel range stages and a real CPU profile for the next optimisation. Preserve the existing cached-index/auth path and distinguish it from full bypass.",
+      "evidence": "The final full-bypass profile spent 30\u201339 ms on the index, then 55\u201361 ms on parallel ranges. The remaining 35\u201352 ms after send and outside that profile includes render, transit and other unmeasured work.",
+      "limit": "There is no evidence here for an explicit Worker TCP keepalive or NodeAgent patch; this diagnostic measures client sockets only."
+    },
+    {
+      "scope": "cache delivery",
+      "action": "Keep response-header latency and compressed-body completion as separate service metrics.",
+      "evidence": "One source-free cache HIT had 27 ms headers but 233 ms full delivery.",
+      "limit": "No claim is made about whether Cloudflare scheduling, storage delivery, client network or congestion caused the body-transfer stall."
+    }
+  ],
+  "limits": [
+    "This is an instrumented transport diagnostic, not a final latency benchmark. A concurrent platform CPU capture was planned; its actual window and outcome must be recorded separately.",
+    "Node global fetch uses an instrumented Undici dispatcher with one persistent HTTP/1.1 connection per target. The original benchmark used the default global dispatcher. No address family or DNS result was forced.",
+    "Socket reuse is proven only by the same live socket ID. Connection events are socket-level; each target has one sequential request in flight.",
+    "encodedBodyBytes counts compressed HTTP entity chunks before fetch decompression. It excludes TCP, TLS and HTTP framing. socketBytesReadDelta is a socket counter, not encrypted wire byte accounting.",
+    "Client CPU covers this Node process only. Validation-inclusive CPU is separate from CPU through decoded-body completion. Neither measures Worker CPU.",
+    "A profile=1 request bypasses owner application caches; Cloudflare storage service caches and provider caches remain unknown. Zero Worker profile CPU-stage milliseconds do not prove zero CPU.",
+    "No URLs, request headers, tokens, DNS addresses or response bodies are saved.",
+    "The phases run in a fixed order on one client and were not randomized. Differences between early and later cold requests cannot be assigned to connection reuse alone because runtime and storage read history also changed.",
+    "These 24 calls are a separate transport diagnostic. They do not replace the prior 72-call full-size control or the earlier packed pilot latency results.",
+    "Socket ready is recorded by the connector callback when TLS has completed. The later tlsConnected listener timestamp can include synchronous callback work; use ready for setup timing.",
+    "createdToSentMs contains local queue and connection work; the diagnostics do not measure a separate internal queue scheduler delay. Reported residual time is not a measurement of Worker CPU or TLS."
+  ],
+  "artifacts": {
+    "rawReport": "reports/get-block-own-r2-20261122/transport-diagnostic.json",
+    "rawReportSha256": "d1e5c5a50cc3e2124416c31b2fd196049434b4a5e2082680c1f536e7c075db66",
+    "script": "edgezilla/get-block/scripts/diagnose-get-block-transport.mjs",
+    "localUndiciSource": "edgezilla/get-block/node_modules/undici/lib/core/connect.js",
+    "localDiagnosticContract": "edgezilla/get-block/node_modules/undici/docs/docs/api/DiagnosticsChannel.md"
+  }
+}

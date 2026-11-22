@@ -1,0 +1,380 @@
+{
+  "status": "PASS",
+  "artifact": {
+    "build": "/Users/augustin/Developement/ferno/blockzilla-v1/.codex-tmp/recent-get-block-recovery-20261122/worker-build-v4/index.js",
+    "wasmSha256": "abdf6f5a4a57e44fb0c9b343ced6c980f4a61e92eb20d597ef8453a4e6fc323b",
+    "compatibilityDate": "2026-09-10"
+  },
+  "checks": [
+    {
+      "name": "finalized retained frame passes through exactly",
+      "slot": 470555971,
+      "status": 200,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "processed exact frame passes through exactly",
+      "slot": 470555971,
+      "status": 200,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "confirmed finalized miss uses exact archive bundle",
+      "slot": 470555971,
+      "status": 200,
+      "gets": 2,
+      "resolves": 1,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "finalized retained frame passes through exactly",
+      "slot": 470663944,
+      "status": 200,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "processed exact frame passes through exactly",
+      "slot": 470663944,
+      "status": 200,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "confirmed finalized miss uses exact archive bundle",
+      "slot": 470663944,
+      "status": 200,
+      "gets": 2,
+      "resolves": 1,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "finalized retained frame passes through exactly",
+      "slot": 470771932,
+      "status": 200,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "processed exact frame passes through exactly",
+      "slot": 470771932,
+      "status": 200,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "confirmed finalized miss uses exact archive bundle",
+      "slot": 470771932,
+      "status": 200,
+      "gets": 2,
+      "resolves": 1,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "finalized retained frame passes through exactly",
+      "slot": 470879999,
+      "status": 200,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "processed exact frame passes through exactly",
+      "slot": 470879999,
+      "status": 200,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "confirmed finalized miss uses exact archive bundle",
+      "slot": 470879999,
+      "status": 200,
+      "gets": 2,
+      "resolves": 1,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "recent-wrong-source has no archive read",
+      "slot": 470555971,
+      "status": 502,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "recent-wrong-hash has no archive read",
+      "slot": 470555971,
+      "status": 502,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "recent-wrong-parent has no archive read",
+      "slot": 470555971,
+      "status": 502,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "recent-wrong-digest has no archive read",
+      "slot": 470555971,
+      "status": 502,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "recent-wrong-prefix has no archive read",
+      "slot": 470555971,
+      "status": 502,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "recent-missing-proof has no archive read",
+      "slot": 470555971,
+      "status": 502,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "recent-auth has no archive read",
+      "slot": 470555971,
+      "status": 502,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "recent-redirect has no archive read",
+      "slot": 470555971,
+      "status": 502,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "recent-timeout has no archive read",
+      "slot": 470555971,
+      "status": 502,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "recent-archive-wrong-proof has no archive read",
+      "slot": 470555971,
+      "status": 502,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "recent-wrong-bank has no archive fallback",
+      "slot": 470555971,
+      "status": 502,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "recent-wrong-cursor has no archive fallback",
+      "slot": 470555971,
+      "status": 502,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "recent-false-processed-miss has no archive fallback",
+      "slot": 470555971,
+      "status": 502,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "processed retention miss is explicit",
+      "slot": 470555971,
+      "status": 410,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "source failure has no archive fallback",
+      "slot": 470555971,
+      "status": 503,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "unknown archive coverage has no speculative read",
+      "slot": 470555971,
+      "status": 404,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "disabled source has no lookup",
+      "slot": 470555971,
+      "status": 503,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 0,
+      "streamFailure": false
+    },
+    {
+      "name": "invalid recovery identity is rejected before lookup",
+      "slot": 470555971,
+      "status": 400,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 0,
+      "streamFailure": false
+    },
+    {
+      "name": "invalid recovery identity is rejected before lookup",
+      "slot": 470555971,
+      "status": 400,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 0,
+      "streamFailure": false
+    },
+    {
+      "name": "invalid recovery identity is rejected before lookup",
+      "slot": 470555971,
+      "status": 400,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 0,
+      "streamFailure": false
+    },
+    {
+      "name": "invalid recovery identity is rejected before lookup",
+      "slot": 470555971,
+      "status": 400,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 0,
+      "streamFailure": false
+    },
+    {
+      "name": "recent-short cannot complete a native frame",
+      "slot": 470555971,
+      "status": 200,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": true,
+      "checkedFrameRejected": true,
+      "requiredClientShaCheck": false
+    },
+    {
+      "name": "recent-long cannot complete a native frame",
+      "slot": 470555971,
+      "status": 200,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": true,
+      "checkedFrameRejected": true,
+      "requiredClientShaCheck": false
+    },
+    {
+      "name": "recent-error cannot complete a native frame",
+      "slot": 470555971,
+      "status": 200,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": true,
+      "checkedFrameRejected": true,
+      "requiredClientShaCheck": false
+    },
+    {
+      "name": "recent-stall cannot complete a native frame",
+      "slot": 470555971,
+      "status": 200,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": true,
+      "checkedFrameRejected": true,
+      "requiredClientShaCheck": false
+    },
+    {
+      "name": "normal request does not write a result cache",
+      "slot": 470555971,
+      "status": 200,
+      "gets": 0,
+      "resolves": 0,
+      "recent": 1,
+      "streamFailure": false
+    },
+    {
+      "name": "repeat uses existing native frame and adds no Worker result cache",
+      "gets": 0,
+      "recent": 1
+    },
+    {
+      "name": "json recent-only keeps the legacy archive path and adds no Foundation calls",
+      "gets": 3,
+      "recent": 0
+    },
+    {
+      "name": "bin recent-only keeps the legacy archive path and adds no Foundation calls",
+      "gets": 3,
+      "recent": 0
+    }
+  ],
+  "scope": "Actual WASM with opaque native transport fixtures and original archive windows; native frame contents are checked by separate Foundation and live recovery tests.",
+  "limits": [
+    "Recent pass-through trusts the authenticated broker checked-frame digest; recovery clients verify the original full frame and all object hashes.",
+    "No live deployment or hosted latency is claimed."
+  ]
+}

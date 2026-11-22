@@ -1,0 +1,34 @@
+{
+  "status": "COMPLETE_LENGTH_VERIFIED",
+  "startedAt": "2026-11-21T23:49:03.254434+00:00",
+  "finishedAt": "2026-11-21T23:56:24.117429+00:00",
+  "bucket": "blockzilla-get-block-native-test",
+  "sourcePrefix": "compact-v2/blockzilla-20261004",
+  "destinationPrefix": "compact-v2/native-r2-full-1089-20261122",
+  "epoch": 1089,
+  "partSizes": {
+    "archive-v2-blocks.zstd": 67108864,
+    "signatures.bin": 134217728
+  },
+  "concurrency": 8,
+  "bytes": 62977283190,
+  "objects": [
+    {
+      "key": "compact-v2/native-r2-full-1089-20261122/epoch-1089/archive-v2-blocks.zstd",
+      "length": 52177905206,
+      "etag": "\"a27d4990dcb9ff26589f1b4404bf6048-778\"",
+      "uploaded": "2026-11-21T23:56:23.519Z",
+      "sourceEtag": "\"a27d4990dcb9ff26589f1b4404bf6048-778\"",
+      "partCount": 778
+    },
+    {
+      "key": "compact-v2/native-r2-full-1089-20261122/epoch-1089/signatures.bin",
+      "length": 10799377984,
+      "etag": "\"83324114ba7b311be228f17f3ba1e909-81\"",
+      "uploaded": "2026-11-21T23:56:23.919Z",
+      "sourceEtag": "\"83324114ba7b311be228f17f3ba1e909-81\"",
+      "partCount": 81
+    }
+  ],
+  "verification": "Every part used source If-Match and exact range/ETag/length checks. Completed object lengths and ETags were checked. Whole-object source SHA-256 was not read."
+}

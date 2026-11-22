@@ -1,0 +1,37 @@
+{
+  "status": "EPOCH_1089_PAYLOAD_COPY_VERIFIED",
+  "activeFullGeometryCopyEpoch": 1089,
+  "source": "Saved original source descriptors; no extra Foundation metadata requests.",
+  "epochs": [
+    {
+      "epoch": 1089,
+      "blockBytes": 52177905206,
+      "signatureBytes": 10799377984,
+      "registryBytesSeparate": 993910560,
+      "payloadBytes": 62977283190,
+      "standardStorageUsdPerFullMonthBeforeAllowances": 0.94465924785,
+      "payloadCopied": true
+    },
+    {
+      "epoch": 1090,
+      "blockBytes": 63486272838,
+      "signatureBytes": 12241209856,
+      "registryBytesSeparate": 1046858176,
+      "payloadBytes": 75727482694,
+      "standardStorageUsdPerFullMonthBeforeAllowances": 1.13591224041,
+      "payloadCopied": false
+    }
+  ],
+  "limits": "Payload lengths are exact descriptor values. Complete epoch coverage and a full source read-back are not established by copying these two objects. Only selected block resolution records will be added for the benchmark.",
+  "pricingSource": "https://developers.cloudflare.com/r2/pricing/",
+  "copyReceipt": "../get-block-own-r2-full1089-20261122/copy-receipt.json",
+  "fullSizedPayloadCopyBytes": 62977283190,
+  "publishedResolutionBytes": 315117,
+  "admittedSlots": [
+    470555971,
+    470663944,
+    470771932,
+    470879999
+  ],
+  "temporaryCopyWorkerDeleted": true
+}

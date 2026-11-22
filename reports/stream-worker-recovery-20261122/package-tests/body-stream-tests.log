@@ -1,0 +1,11 @@
+Passed exact bytes use the original native chunks without a copy.
+Passed short body aborts before it can complete.
+Passed long body aborts before it can complete.
+Passed non-byte body aborts before it can complete.
+Passed upstream disconnect has a transport-specific reason.
+Passed a pending upstream read times out and cancels the source.
+Passed client backpressure does not consume the upstream wait budget.
+Passed cumulative upstream waits bound a slow drip response.
+Passed client cancellation aborts the lookup and releases the source.
+Passed invalid stream, byte and timeout bounds are rejected.
+{"status":"PASS","checks":10}

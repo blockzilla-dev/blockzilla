@@ -1,0 +1,46 @@
+[package]
+name = "blockzilla-resolution-service"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.98"
+license = "MIT"
+publish = false
+description = "Private block-local Compact V2 ID resolution from an immutable index mirror"
+
+[workspace]
+
+[dependencies]
+anyhow = "1.0.104"
+axum = { version = "0.8.9", features = ["http1", "json", "tokio"] }
+base64 = "0.23.1"
+bs58 = "0.5.1"
+blockzilla-get-block = { path = "../../edgezilla/get-block", default-features = false }
+blockzilla-archive-v2 = { path = "../../crates/compact-v2/blockzilla-archive-v2", default-features = false, features = ["known-program-logs"] }
+blockzilla-primitives = { path = "../../crates/blockzilla-primitives", default-features = false }
+blockzilla-bank-stream-v2 = { path = "../../crates/blockzilla-bank-stream-v2" }
+clap = { version = "4.6.6", features = ["derive", "env"] }
+hex = "0.4.3"
+libc = "0.2.190"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"
+hivezilla-stream = { path = "../../hivezilla/stream-relay" }
+sha2 = "0.11.0"
+subtle = "2.6.1"
+tokio = { version = "1.53.1", features = ["macros", "net", "rt-multi-thread", "signal", "sync", "time"] }
+wincode = "=0.6.1"
+zstd = "0.14.0"
+
+[dev-dependencies]
+blockzilla-bank-stream-v2 = { path = "../../crates/blockzilla-bank-stream-v2", features = ["test-fixtures"] }
+rusqlite = { version = "=0.40.2", features = ["bundled", "fallible_uint"] }
+http-body-util = "0.1.5"
+tempfile = "3.27.0"
+tower = { version = "0.5.3", features = ["util"] }
+
+[profile.dev]
+debug = 0
+incremental = false
+
+[profile.test]
+debug = 0
+incremental = false

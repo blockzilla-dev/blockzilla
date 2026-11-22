@@ -81,8 +81,8 @@ routes. Access application creation returned HTTP 403,
 These were permission limits, not a server connection failure. The later
 login refresh restored read access; it has not proved those write permissions.
 
-The proposed settings are saved in
-[`access-application.json`](../../hivezilla/deploy/validator-tunnel/access-application.json)
+The application settings template and route proposal are saved in
+[`access-application.example.json`](../../hivezilla/deploy/validator-tunnel/access-application.example.json)
 and [`private-route.json`](../../hivezilla/deploy/validator-tunnel/private-route.json).
 The policy permits only the account owner's email and applies to TCP traffic
 to the complete `/32`. No route was created before this policy could be applied.

@@ -1,0 +1,2055 @@
+{
+  "schema": "blockzilla-one-read-measured-marginal-cost-v1",
+  "createdAt": "2026-11-22T11:09:07.517496+00:00",
+  "requestReceipt": "main.json",
+  "storageReceipt": "storage-cost-model.json",
+  "window": {
+    "start": "2026-11-22T11:04:53.705Z",
+    "end": "2026-11-22T11:06:07.422Z",
+    "totalRequestsIncludingProvider": 119
+  },
+  "versions": {
+    "bundle": {
+      "worker": "blockzilla-get-block-bundle-test",
+      "version": "8142880e-9475-4c45-b3a1-dc16b538d52f",
+      "wasmSha256": "7b5b0f00ce65baef7c33adaa9fb020f34a040d5f86077a2203c92df216cab875"
+    },
+    "baseline": {
+      "worker": "blockzilla-get-block-native-fast",
+      "version": "bf0bedfc-7216-4550-8e79-b671a93318f8",
+      "wasmSha256": "f5b9675e07138c899fcde1752ab7ceafc67ca4b7bc66a8e7da044f7a91f0b973"
+    }
+  },
+  "rates": {
+    "r2StandardStorageUsdPerGbMonth": 0.015,
+    "r2ClassAPutUsdPerMillion": 4.5,
+    "r2ClassBReadUsdPerMillion": 0.36,
+    "workerRequestsUsdPerMillion": 0.3,
+    "cpuUsdPerMillionMs": 0.02,
+    "authKvReadsUsdPerMillion": 0.5,
+    "workerLogEventsUsdPerMillion": 0.6,
+    "analyticsEngineCurrentlyBilled": false
+  },
+  "ratesVerifiedAt": "2026-11-22",
+  "sources": {
+    "r2": "https://developers.cloudflare.com/r2/pricing/",
+    "workers": "https://developers.cloudflare.com/workers/platform/pricing/",
+    "kv": "https://developers.cloudflare.com/kv/platform/pricing/",
+    "analyticsEngine": "https://developers.cloudflare.com/analytics/analytics-engine/pricing/"
+  },
+  "phases": {
+    "bundle": {
+      "runtime_warm": {
+        "target": "bundle",
+        "phase": "runtime_warm",
+        "requests": 1,
+        "sampleIndices": [
+          0
+        ],
+        "representation": "json",
+        "firstRequestAt": "2026-11-22T11:04:53.707Z",
+        "lastRequestCompletedAt": "2026-11-22T11:04:54.122Z",
+        "allOk": true,
+        "responseCacheCounts": {
+          "BYPASS": 1
+        },
+        "authTierCounts": {
+          "BYPASS": 1
+        },
+        "operations": {
+          "ownerR2Gets": 1,
+          "ownerR2Heads": 0,
+          "authKvReads": 1,
+          "directS3Reads": 0,
+          "readerHttpRequests": 0,
+          "bufferedOriginBytesInHeaders": 247594,
+          "streamedExpectedOriginBytes": 0
+        },
+        "cpu": {
+          "selectedQuery": "RuntimeWarm",
+          "observedRequests": 1,
+          "countMatchesPlan": true,
+          "errors": 0,
+          "cpuTimeUs": 90735,
+          "startupCpuTimeUs": 17686,
+          "meanCpuMs": 90.735,
+          "meanCpuIncludingAttributedStartupMs": 108.421,
+          "cpuP50Ms": 90.735,
+          "cpuP95Ms": 90.735,
+          "cpuUsdPerMillionRequestsBeforeAllowances": 1.8147,
+          "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 2.1684200000000002,
+          "adaptiveSampleInterval": 1,
+          "sampleSize": 1,
+          "unsampled": true,
+          "confidence95": {
+            "cpuTimeUs": {
+              "estimate": 90735,
+              "isValid": false,
+              "lower": 90735,
+              "sampleSize": 1,
+              "upper": 90735
+            },
+            "requests": {
+              "estimate": 1,
+              "isValid": false,
+              "lower": 1,
+              "sampleSize": 1,
+              "upper": 1
+            }
+          },
+          "usableForMatchedUnsampledEstimate": true,
+          "receipt": "platform-cpu-bundle.json",
+          "meanInvocationCpuMs": 90.735,
+          "meanAttributedStartupMs": 17.686
+        },
+        "marginalCost": {
+          "unit": "USD per million HTTP requests in this cohort, before allowances, fixed fees, storage, logs and rounding",
+          "kind": "matched unsampled observed component estimate",
+          "matchedUnsampled": true,
+          "knownComponents": {
+            "workerRequests": 0.3,
+            "r2Reads": 0.36,
+            "authKvReads": 0.5
+          },
+          "knownTotalBeforeCpu": 1.16,
+          "totalExcludingLogs": 2.9747,
+          "includingAttributedStartupExcludingLogs": 3.32842,
+          "withExpectedOnePercentInvocationLogEvents": 2.9807,
+          "includingStartupAndExpectedLogs": 3.33442,
+          "observedBatchExcludingLogsUsd": 2.9747e-06
+        }
+      },
+      "full_cold_json": {
+        "target": "bundle",
+        "phase": "full_cold_json",
+        "requests": 8,
+        "sampleIndices": [
+          4,
+          7,
+          10,
+          13,
+          15,
+          18,
+          21,
+          24
+        ],
+        "representation": "json",
+        "firstRequestAt": "2026-11-22T11:04:57.340Z",
+        "lastRequestCompletedAt": "2026-11-22T11:05:04.067Z",
+        "allOk": true,
+        "responseCacheCounts": {
+          "BYPASS": 8
+        },
+        "authTierCounts": {
+          "BYPASS": 8
+        },
+        "operations": {
+          "ownerR2Gets": 8,
+          "ownerR2Heads": 0,
+          "authKvReads": 8,
+          "directS3Reads": 0,
+          "readerHttpRequests": 0,
+          "bufferedOriginBytesInHeaders": 2025918,
+          "streamedExpectedOriginBytes": 0
+        },
+        "cpu": {
+          "selectedQuery": "FullColdJson",
+          "observedRequests": 8,
+          "countMatchesPlan": true,
+          "errors": 0,
+          "cpuTimeUs": 241212,
+          "startupCpuTimeUs": 0,
+          "meanCpuMs": 30.1515,
+          "meanCpuIncludingAttributedStartupMs": 30.1515,
+          "cpuP50Ms": 31.98,
+          "cpuP95Ms": 46.847,
+          "cpuUsdPerMillionRequestsBeforeAllowances": 0.60303,
+          "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.60303,
+          "adaptiveSampleInterval": 1,
+          "sampleSize": 8,
+          "unsampled": true,
+          "confidence95": {
+            "cpuTimeUs": {
+              "estimate": 241212,
+              "isValid": false,
+              "lower": 241212,
+              "sampleSize": 8,
+              "upper": 241212
+            },
+            "requests": {
+              "estimate": 8,
+              "isValid": false,
+              "lower": 8,
+              "sampleSize": 8,
+              "upper": 8
+            }
+          },
+          "usableForMatchedUnsampledEstimate": true,
+          "receipt": "platform-cpu-bundle.json",
+          "meanInvocationCpuMs": 30.1515,
+          "meanAttributedStartupMs": 0.0
+        },
+        "marginalCost": {
+          "unit": "USD per million HTTP requests in this cohort, before allowances, fixed fees, storage, logs and rounding",
+          "kind": "matched unsampled observed component estimate",
+          "matchedUnsampled": true,
+          "knownComponents": {
+            "workerRequests": 0.3,
+            "r2Reads": 0.36,
+            "authKvReads": 0.5
+          },
+          "knownTotalBeforeCpu": 1.16,
+          "totalExcludingLogs": 1.76303,
+          "includingAttributedStartupExcludingLogs": 1.76303,
+          "withExpectedOnePercentInvocationLogEvents": 1.76903,
+          "includingStartupAndExpectedLogs": 1.76903,
+          "observedBatchExcludingLogsUsd": 1.410424e-05
+        }
+      },
+      "auth_warm_bundle_0": {
+        "target": "bundle",
+        "phase": "auth_warm_bundle_0",
+        "requests": 1,
+        "sampleIndices": [
+          27
+        ],
+        "representation": "json",
+        "firstRequestAt": "2026-11-22T11:05:09.717Z",
+        "lastRequestCompletedAt": "2026-11-22T11:05:10.031Z",
+        "allOk": true,
+        "responseCacheCounts": {
+          "MISS": 1
+        },
+        "authTierCounts": {
+          "KV": 1
+        },
+        "operations": {
+          "ownerR2Gets": 1,
+          "ownerR2Heads": 0,
+          "authKvReads": 1,
+          "directS3Reads": 0,
+          "readerHttpRequests": 0,
+          "bufferedOriginBytesInHeaders": 247594,
+          "streamedExpectedOriginBytes": 0
+        },
+        "cpu": {
+          "selectedQuery": "AuthWarmBundle0",
+          "observedRequests": 1,
+          "countMatchesPlan": true,
+          "errors": 0,
+          "cpuTimeUs": 36511,
+          "startupCpuTimeUs": 0,
+          "meanCpuMs": 36.511,
+          "meanCpuIncludingAttributedStartupMs": 36.511,
+          "cpuP50Ms": 36.511,
+          "cpuP95Ms": 36.511,
+          "cpuUsdPerMillionRequestsBeforeAllowances": 0.73022,
+          "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.73022,
+          "adaptiveSampleInterval": 1,
+          "sampleSize": 1,
+          "unsampled": true,
+          "confidence95": {
+            "cpuTimeUs": {
+              "estimate": 36511,
+              "isValid": false,
+              "lower": 36511,
+              "sampleSize": 1,
+              "upper": 36511
+            },
+            "requests": {
+              "estimate": 1,
+              "isValid": false,
+              "lower": 1,
+              "sampleSize": 1,
+              "upper": 1
+            }
+          },
+          "usableForMatchedUnsampledEstimate": true,
+          "receipt": "platform-cpu-bundle.json",
+          "meanInvocationCpuMs": 36.511,
+          "meanAttributedStartupMs": 0.0
+        },
+        "marginalCost": {
+          "unit": "USD per million HTTP requests in this cohort, before allowances, fixed fees, storage, logs and rounding",
+          "kind": "matched unsampled observed component estimate",
+          "matchedUnsampled": true,
+          "knownComponents": {
+            "workerRequests": 0.3,
+            "r2Reads": 0.36,
+            "authKvReads": 0.5
+          },
+          "knownTotalBeforeCpu": 1.16,
+          "totalExcludingLogs": 1.89022,
+          "includingAttributedStartupExcludingLogs": 1.89022,
+          "withExpectedOnePercentInvocationLogEvents": 1.89622,
+          "includingStartupAndExpectedLogs": 1.89622,
+          "observedBatchExcludingLogsUsd": 1.89022e-06
+        }
+      },
+      "source_bundle_0": {
+        "target": "bundle",
+        "phase": "source_bundle_0",
+        "requests": 4,
+        "sampleIndices": [
+          28,
+          29,
+          30,
+          31
+        ],
+        "representation": "json",
+        "firstRequestAt": "2026-11-22T11:05:12.232Z",
+        "lastRequestCompletedAt": "2026-11-22T11:05:13.057Z",
+        "allOk": true,
+        "responseCacheCounts": {
+          "BYPASS": 4
+        },
+        "authTierCounts": {
+          "MEMORY": 4
+        },
+        "operations": {
+          "ownerR2Gets": 4,
+          "ownerR2Heads": 0,
+          "authKvReads": 0,
+          "directS3Reads": 0,
+          "readerHttpRequests": 0,
+          "bufferedOriginBytesInHeaders": 1012959,
+          "streamedExpectedOriginBytes": 0
+        },
+        "cpu": {
+          "selectedQuery": "SourceBundle0",
+          "observedRequests": 4,
+          "countMatchesPlan": true,
+          "errors": 0,
+          "cpuTimeUs": 113732,
+          "startupCpuTimeUs": 0,
+          "meanCpuMs": 28.433,
+          "meanCpuIncludingAttributedStartupMs": 28.433,
+          "cpuP50Ms": 25.763,
+          "cpuP95Ms": 44.399,
+          "cpuUsdPerMillionRequestsBeforeAllowances": 0.5686599999999999,
+          "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.5686599999999999,
+          "adaptiveSampleInterval": 1,
+          "sampleSize": 4,
+          "unsampled": true,
+          "confidence95": {
+            "cpuTimeUs": {
+              "estimate": 113732,
+              "isValid": false,
+              "lower": 113732,
+              "sampleSize": 4,
+              "upper": 113732
+            },
+            "requests": {
+              "estimate": 4,
+              "isValid": false,
+              "lower": 4,
+              "sampleSize": 4,
+              "upper": 4
+            }
+          },
+          "usableForMatchedUnsampledEstimate": true,
+          "receipt": "platform-cpu-bundle.json",
+          "meanInvocationCpuMs": 28.433,
+          "meanAttributedStartupMs": 0.0
+        },
+        "marginalCost": {
+          "unit": "USD per million HTTP requests in this cohort, before allowances, fixed fees, storage, logs and rounding",
+          "kind": "matched unsampled observed component estimate",
+          "matchedUnsampled": true,
+          "knownComponents": {
+            "workerRequests": 0.3,
+            "r2Reads": 0.36,
+            "authKvReads": 0.0
+          },
+          "knownTotalBeforeCpu": 0.66,
+          "totalExcludingLogs": 1.22866,
+          "includingAttributedStartupExcludingLogs": 1.22866,
+          "withExpectedOnePercentInvocationLogEvents": 1.23466,
+          "includingStartupAndExpectedLogs": 1.23466,
+          "observedBatchExcludingLogsUsd": 4.91464e-06
+        }
+      },
+      "auth_warm_bundle_1": {
+        "target": "bundle",
+        "phase": "auth_warm_bundle_1",
+        "requests": 1,
+        "sampleIndices": [
+          46
+        ],
+        "representation": "json",
+        "firstRequestAt": "2026-11-22T11:05:38.867Z",
+        "lastRequestCompletedAt": "2026-11-22T11:05:39.107Z",
+        "allOk": true,
+        "responseCacheCounts": {
+          "HIT": 1
+        },
+        "authTierCounts": {
+          "KV": 1
+        },
+        "operations": {
+          "ownerR2Gets": 0,
+          "ownerR2Heads": 0,
+          "authKvReads": 1,
+          "directS3Reads": 0,
+          "readerHttpRequests": 0,
+          "bufferedOriginBytesInHeaders": 0,
+          "streamedExpectedOriginBytes": 0
+        },
+        "cpu": {
+          "selectedQuery": "AuthWarmBundle1",
+          "observedRequests": 1,
+          "countMatchesPlan": true,
+          "errors": 0,
+          "cpuTimeUs": 22189,
+          "startupCpuTimeUs": 17992,
+          "meanCpuMs": 22.189,
+          "meanCpuIncludingAttributedStartupMs": 40.181,
+          "cpuP50Ms": 22.189,
+          "cpuP95Ms": 22.189,
+          "cpuUsdPerMillionRequestsBeforeAllowances": 0.44378,
+          "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.80362,
+          "adaptiveSampleInterval": 1,
+          "sampleSize": 1,
+          "unsampled": true,
+          "confidence95": {
+            "cpuTimeUs": {
+              "estimate": 22189,
+              "isValid": false,
+              "lower": 22189,
+              "sampleSize": 1,
+              "upper": 22189
+            },
+            "requests": {
+              "estimate": 1,
+              "isValid": false,
+              "lower": 1,
+              "sampleSize": 1,
+              "upper": 1
+            }
+          },
+          "usableForMatchedUnsampledEstimate": true,
+          "receipt": "platform-cpu-bundle.json",
+          "meanInvocationCpuMs": 22.189,
+          "meanAttributedStartupMs": 17.992
+        },
+        "marginalCost": {
+          "unit": "USD per million HTTP requests in this cohort, before allowances, fixed fees, storage, logs and rounding",
+          "kind": "matched unsampled observed component estimate",
+          "matchedUnsampled": true,
+          "knownComponents": {
+            "workerRequests": 0.3,
+            "r2Reads": 0.0,
+            "authKvReads": 0.5
+          },
+          "knownTotalBeforeCpu": 0.8,
+          "totalExcludingLogs": 1.24378,
+          "includingAttributedStartupExcludingLogs": 1.60362,
+          "withExpectedOnePercentInvocationLogEvents": 1.24978,
+          "includingStartupAndExpectedLogs": 1.60962,
+          "observedBatchExcludingLogsUsd": 1.24378e-06
+        }
+      },
+      "source_bundle_1": {
+        "target": "bundle",
+        "phase": "source_bundle_1",
+        "requests": 4,
+        "sampleIndices": [
+          47,
+          48,
+          49,
+          50
+        ],
+        "representation": "json",
+        "firstRequestAt": "2026-11-22T11:05:41.309Z",
+        "lastRequestCompletedAt": "2026-11-22T11:05:42.339Z",
+        "allOk": true,
+        "responseCacheCounts": {
+          "BYPASS": 4
+        },
+        "authTierCounts": {
+          "MEMORY": 4
+        },
+        "operations": {
+          "ownerR2Gets": 4,
+          "ownerR2Heads": 0,
+          "authKvReads": 0,
+          "directS3Reads": 0,
+          "readerHttpRequests": 0,
+          "bufferedOriginBytesInHeaders": 1012959,
+          "streamedExpectedOriginBytes": 0
+        },
+        "cpu": {
+          "selectedQuery": "SourceBundle1",
+          "observedRequests": 4,
+          "countMatchesPlan": true,
+          "errors": 0,
+          "cpuTimeUs": 213833,
+          "startupCpuTimeUs": 0,
+          "meanCpuMs": 53.45825,
+          "meanCpuIncludingAttributedStartupMs": 53.45825,
+          "cpuP50Ms": 33.971,
+          "cpuP95Ms": 92.533,
+          "cpuUsdPerMillionRequestsBeforeAllowances": 1.069165,
+          "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 1.069165,
+          "adaptiveSampleInterval": 1,
+          "sampleSize": 4,
+          "unsampled": true,
+          "confidence95": {
+            "cpuTimeUs": {
+              "estimate": 213833,
+              "isValid": false,
+              "lower": 213833,
+              "sampleSize": 4,
+              "upper": 213833
+            },
+            "requests": {
+              "estimate": 4,
+              "isValid": false,
+              "lower": 4,
+              "sampleSize": 4,
+              "upper": 4
+            }
+          },
+          "usableForMatchedUnsampledEstimate": true,
+          "receipt": "platform-cpu-bundle.json",
+          "meanInvocationCpuMs": 53.45825,
+          "meanAttributedStartupMs": 0.0
+        },
+        "marginalCost": {
+          "unit": "USD per million HTTP requests in this cohort, before allowances, fixed fees, storage, logs and rounding",
+          "kind": "matched unsampled observed component estimate",
+          "matchedUnsampled": true,
+          "knownComponents": {
+            "workerRequests": 0.3,
+            "r2Reads": 0.36,
+            "authKvReads": 0.0
+          },
+          "knownTotalBeforeCpu": 0.66,
+          "totalExcludingLogs": 1.729165,
+          "includingAttributedStartupExcludingLogs": 1.729165,
+          "withExpectedOnePercentInvocationLogEvents": 1.735165,
+          "includingStartupAndExpectedLogs": 1.735165,
+          "observedBatchExcludingLogsUsd": 6.91666e-06
+        }
+      },
+      "full_cold_binary": {
+        "target": "bundle",
+        "phase": "full_cold_binary",
+        "requests": 8,
+        "sampleIndices": [
+          55,
+          57,
+          59,
+          61,
+          64,
+          66,
+          68,
+          70
+        ],
+        "representation": "bin",
+        "firstRequestAt": "2026-11-22T11:05:47.641Z",
+        "lastRequestCompletedAt": "2026-11-22T11:05:50.568Z",
+        "allOk": true,
+        "responseCacheCounts": {
+          "BYPASS": 8
+        },
+        "authTierCounts": {
+          "BYPASS": 8
+        },
+        "operations": {
+          "ownerR2Gets": 8,
+          "ownerR2Heads": 0,
+          "authKvReads": 8,
+          "directS3Reads": 0,
+          "readerHttpRequests": 0,
+          "bufferedOriginBytesInHeaders": 0,
+          "streamedExpectedOriginBytes": 2025918
+        },
+        "cpu": {
+          "selectedQuery": "FullColdBinary",
+          "observedRequests": 8,
+          "countMatchesPlan": true,
+          "errors": 0,
+          "cpuTimeUs": 147146,
+          "startupCpuTimeUs": 29960,
+          "meanCpuMs": 18.39325,
+          "meanCpuIncludingAttributedStartupMs": 22.13825,
+          "cpuP50Ms": 9.972,
+          "cpuP95Ms": 77.637,
+          "cpuUsdPerMillionRequestsBeforeAllowances": 0.367865,
+          "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.44276499999999996,
+          "adaptiveSampleInterval": 1,
+          "sampleSize": 8,
+          "unsampled": true,
+          "confidence95": {
+            "cpuTimeUs": {
+              "estimate": 147146,
+              "isValid": false,
+              "lower": 147146,
+              "sampleSize": 8,
+              "upper": 147146
+            },
+            "requests": {
+              "estimate": 8,
+              "isValid": false,
+              "lower": 8,
+              "sampleSize": 8,
+              "upper": 8
+            }
+          },
+          "usableForMatchedUnsampledEstimate": true,
+          "receipt": "platform-cpu-bundle.json",
+          "meanInvocationCpuMs": 18.39325,
+          "meanAttributedStartupMs": 3.745
+        },
+        "marginalCost": {
+          "unit": "USD per million HTTP requests in this cohort, before allowances, fixed fees, storage, logs and rounding",
+          "kind": "matched unsampled observed component estimate",
+          "matchedUnsampled": true,
+          "knownComponents": {
+            "workerRequests": 0.3,
+            "r2Reads": 0.36,
+            "authKvReads": 0.5
+          },
+          "knownTotalBeforeCpu": 1.16,
+          "totalExcludingLogs": 1.527865,
+          "includingAttributedStartupExcludingLogs": 1.602765,
+          "withExpectedOnePercentInvocationLogEvents": 1.533865,
+          "includingStartupAndExpectedLogs": 1.608765,
+          "observedBatchExcludingLogsUsd": 1.222292e-05
+        }
+      },
+      "normal_warm_json": {
+        "target": "bundle",
+        "phase": "normal_warm_json",
+        "requests": 4,
+        "sampleIndices": [
+          71,
+          73,
+          75,
+          77
+        ],
+        "representation": "json",
+        "firstRequestAt": "2026-11-22T11:05:52.773Z",
+        "lastRequestCompletedAt": "2026-11-22T11:05:54.880Z",
+        "allOk": true,
+        "responseCacheCounts": {
+          "HIT": 1,
+          "MISS": 3
+        },
+        "authTierCounts": {
+          "KV": 1,
+          "MEMORY": 3
+        },
+        "operations": {
+          "ownerR2Gets": 3,
+          "ownerR2Heads": 0,
+          "authKvReads": 1,
+          "directS3Reads": 0,
+          "readerHttpRequests": 0,
+          "bufferedOriginBytesInHeaders": 765365,
+          "streamedExpectedOriginBytes": 0
+        },
+        "cpu": {
+          "selectedQuery": "NormalWarmJson",
+          "observedRequests": 3,
+          "countMatchesPlan": false,
+          "errors": 0,
+          "cpuTimeUs": 257453,
+          "startupCpuTimeUs": 0,
+          "meanCpuMs": 85.81766666666667,
+          "meanCpuIncludingAttributedStartupMs": 85.81766666666667,
+          "cpuP50Ms": 75.387,
+          "cpuP95Ms": 172.817,
+          "cpuUsdPerMillionRequestsBeforeAllowances": 1.7163533333333334,
+          "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 1.7163533333333334,
+          "adaptiveSampleInterval": 1,
+          "sampleSize": 3,
+          "unsampled": false,
+          "confidence95": {
+            "cpuTimeUs": {
+              "estimate": 257453,
+              "isValid": false,
+              "lower": 257453,
+              "sampleSize": 3,
+              "upper": 257453
+            },
+            "requests": {
+              "estimate": 3,
+              "isValid": false,
+              "lower": 3,
+              "sampleSize": 3,
+              "upper": 3
+            }
+          },
+          "usableForMatchedUnsampledEstimate": false,
+          "receipt": "platform-cpu-bundle.json",
+          "meanInvocationCpuMs": 85.81766666666667,
+          "meanAttributedStartupMs": 0.0
+        },
+        "marginalCost": {
+          "unit": "USD per million HTTP requests in this cohort, before allowances, fixed fees, storage, logs and rounding",
+          "kind": "CPU count does not match this request cohort",
+          "matchedUnsampled": false,
+          "knownComponents": {
+            "workerRequests": 0.3,
+            "r2Reads": 0.27,
+            "authKvReads": 0.125
+          },
+          "knownTotalBeforeCpu": 0.695,
+          "totalExcludingLogs": null,
+          "includingAttributedStartupExcludingLogs": null,
+          "illustrationUsingUnmatchedCpuMean": {
+            "totalExcludingLogs": 2.411353333333,
+            "includingAttributedStartupExcludingLogs": 2.411353333333,
+            "warning": "Uses the observed CPU subset or weighted mean with full-cohort operation counters. This is not a matched full-cohort measurement and cannot prove a cost target."
+          }
+        }
+      },
+      "normal_warm_bin": {
+        "target": "bundle",
+        "phase": "normal_warm_bin",
+        "requests": 4,
+        "sampleIndices": [
+          79,
+          81,
+          83,
+          85
+        ],
+        "representation": "bin",
+        "firstRequestAt": "2026-11-22T11:05:57.200Z",
+        "lastRequestCompletedAt": "2026-11-22T11:05:57.643Z",
+        "allOk": true,
+        "responseCacheCounts": {
+          "MISS": 4
+        },
+        "authTierCounts": {
+          "MEMORY": 4
+        },
+        "operations": {
+          "ownerR2Gets": 0,
+          "ownerR2Heads": 0,
+          "authKvReads": 0,
+          "directS3Reads": 0,
+          "readerHttpRequests": 0,
+          "bufferedOriginBytesInHeaders": 0,
+          "streamedExpectedOriginBytes": 0
+        },
+        "cpu": {
+          "selectedQuery": "NormalWarmBin",
+          "observedRequests": 4,
+          "countMatchesPlan": true,
+          "errors": 0,
+          "cpuTimeUs": 18319,
+          "startupCpuTimeUs": 0,
+          "meanCpuMs": 4.57975,
+          "meanCpuIncludingAttributedStartupMs": 4.57975,
+          "cpuP50Ms": 4.159,
+          "cpuP95Ms": 5.552,
+          "cpuUsdPerMillionRequestsBeforeAllowances": 0.091595,
+          "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.091595,
+          "adaptiveSampleInterval": 1,
+          "sampleSize": 4,
+          "unsampled": true,
+          "confidence95": {
+            "cpuTimeUs": {
+              "estimate": 18319,
+              "isValid": false,
+              "lower": 18319,
+              "sampleSize": 4,
+              "upper": 18319
+            },
+            "requests": {
+              "estimate": 4,
+              "isValid": false,
+              "lower": 4,
+              "sampleSize": 4,
+              "upper": 4
+            }
+          },
+          "usableForMatchedUnsampledEstimate": true,
+          "receipt": "platform-cpu-bundle.json",
+          "meanInvocationCpuMs": 4.57975,
+          "meanAttributedStartupMs": 0.0
+        },
+        "marginalCost": {
+          "unit": "USD per million HTTP requests in this cohort, before allowances, fixed fees, storage, logs and rounding",
+          "kind": "matched unsampled observed component estimate",
+          "matchedUnsampled": true,
+          "knownComponents": {
+            "workerRequests": 0.3,
+            "r2Reads": 0.0,
+            "authKvReads": 0.0
+          },
+          "knownTotalBeforeCpu": 0.3,
+          "totalExcludingLogs": 0.391595,
+          "includingAttributedStartupExcludingLogs": 0.391595,
+          "withExpectedOnePercentInvocationLogEvents": 0.397595,
+          "includingStartupAndExpectedLogs": 0.397595,
+          "observedBatchExcludingLogsUsd": 1.56638e-06
+        }
+      },
+      "response_hits_json": {
+        "target": "bundle",
+        "phase": "response_hits_json",
+        "requests": 8,
+        "sampleIndices": [
+          87,
+          90,
+          93,
+          96,
+          101,
+          104,
+          107,
+          110
+        ],
+        "representation": "json",
+        "firstRequestAt": "2026-11-22T11:05:59.944Z",
+        "lastRequestCompletedAt": "2026-11-22T11:06:04.744Z",
+        "allOk": true,
+        "responseCacheCounts": {
+          "HIT": 8
+        },
+        "authTierCounts": {
+          "KV": 1,
+          "MEMORY": 7
+        },
+        "operations": {
+          "ownerR2Gets": 0,
+          "ownerR2Heads": 0,
+          "authKvReads": 1,
+          "directS3Reads": 0,
+          "readerHttpRequests": 0,
+          "bufferedOriginBytesInHeaders": 0,
+          "streamedExpectedOriginBytes": 0
+        },
+        "cpu": {
+          "selectedQuery": "ResponseHitsJson",
+          "observedRequests": 7,
+          "countMatchesPlan": false,
+          "errors": 0,
+          "cpuTimeUs": 17245,
+          "startupCpuTimeUs": 0,
+          "meanCpuMs": 2.4635714285714285,
+          "meanCpuIncludingAttributedStartupMs": 2.4635714285714285,
+          "cpuP50Ms": 2.281,
+          "cpuP95Ms": 3.851,
+          "cpuUsdPerMillionRequestsBeforeAllowances": 0.04927142857142858,
+          "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.04927142857142858,
+          "adaptiveSampleInterval": 1,
+          "sampleSize": 7,
+          "unsampled": false,
+          "confidence95": {
+            "cpuTimeUs": {
+              "estimate": 17245,
+              "isValid": false,
+              "lower": 17245,
+              "sampleSize": 7,
+              "upper": 17245
+            },
+            "requests": {
+              "estimate": 7,
+              "isValid": false,
+              "lower": 7,
+              "sampleSize": 7,
+              "upper": 7
+            }
+          },
+          "usableForMatchedUnsampledEstimate": false,
+          "receipt": "platform-cpu-bundle.json",
+          "meanInvocationCpuMs": 2.4635714285714285,
+          "meanAttributedStartupMs": 0.0
+        },
+        "marginalCost": {
+          "unit": "USD per million HTTP requests in this cohort, before allowances, fixed fees, storage, logs and rounding",
+          "kind": "CPU count does not match this request cohort",
+          "matchedUnsampled": false,
+          "knownComponents": {
+            "workerRequests": 0.3,
+            "r2Reads": 0.0,
+            "authKvReads": 0.0625
+          },
+          "knownTotalBeforeCpu": 0.3625,
+          "totalExcludingLogs": null,
+          "includingAttributedStartupExcludingLogs": null,
+          "illustrationUsingUnmatchedCpuMean": {
+            "totalExcludingLogs": 0.411771428571,
+            "includingAttributedStartupExcludingLogs": 0.411771428571,
+            "warning": "Uses the observed CPU subset or weighted mean with full-cohort operation counters. This is not a matched full-cohort measurement and cannot prove a cost target."
+          }
+        }
+      },
+      "response_hits_binary": {
+        "target": "bundle",
+        "phase": "response_hits_binary",
+        "requests": 4,
+        "sampleIndices": [
+          112,
+          114,
+          116,
+          118
+        ],
+        "representation": "bin",
+        "firstRequestAt": "2026-11-22T11:06:06.995Z",
+        "lastRequestCompletedAt": "2026-11-22T11:06:07.419Z",
+        "allOk": true,
+        "responseCacheCounts": {
+          "HIT": 4
+        },
+        "authTierCounts": {
+          "KV": 1,
+          "MEMORY": 3
+        },
+        "operations": {
+          "ownerR2Gets": 0,
+          "ownerR2Heads": 0,
+          "authKvReads": 1,
+          "directS3Reads": 0,
+          "readerHttpRequests": 0,
+          "bufferedOriginBytesInHeaders": 0,
+          "streamedExpectedOriginBytes": 0
+        },
+        "cpu": {
+          "selectedQuery": "ResponseHitsBinary",
+          "observedRequests": 2,
+          "countMatchesPlan": false,
+          "errors": 0,
+          "cpuTimeUs": 6069,
+          "startupCpuTimeUs": 0,
+          "meanCpuMs": 3.0345,
+          "meanCpuIncludingAttributedStartupMs": 3.0345,
+          "cpuP50Ms": 1.942,
+          "cpuP95Ms": 4.127,
+          "cpuUsdPerMillionRequestsBeforeAllowances": 0.06069,
+          "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.06069,
+          "adaptiveSampleInterval": 1,
+          "sampleSize": 2,
+          "unsampled": false,
+          "confidence95": {
+            "cpuTimeUs": {
+              "estimate": 6069,
+              "isValid": false,
+              "lower": 6069,
+              "sampleSize": 2,
+              "upper": 6069
+            },
+            "requests": {
+              "estimate": 2,
+              "isValid": false,
+              "lower": 2,
+              "sampleSize": 2,
+              "upper": 2
+            }
+          },
+          "usableForMatchedUnsampledEstimate": false,
+          "receipt": "platform-cpu-bundle.json",
+          "meanInvocationCpuMs": 3.0345,
+          "meanAttributedStartupMs": 0.0
+        },
+        "marginalCost": {
+          "unit": "USD per million HTTP requests in this cohort, before allowances, fixed fees, storage, logs and rounding",
+          "kind": "CPU count does not match this request cohort",
+          "matchedUnsampled": false,
+          "knownComponents": {
+            "workerRequests": 0.3,
+            "r2Reads": 0.0,
+            "authKvReads": 0.125
+          },
+          "knownTotalBeforeCpu": 0.425,
+          "totalExcludingLogs": null,
+          "includingAttributedStartupExcludingLogs": null,
+          "illustrationUsingUnmatchedCpuMean": {
+            "totalExcludingLogs": 0.48569,
+            "includingAttributedStartupExcludingLogs": 0.48569,
+            "warning": "Uses the observed CPU subset or weighted mean with full-cohort operation counters. This is not a matched full-cohort measurement and cannot prove a cost target."
+          }
+        }
+      },
+      "source_rounds_pooled": {
+        "target": "bundle",
+        "phase": "source_rounds_pooled",
+        "requests": 8,
+        "sampleIndices": [
+          28,
+          29,
+          30,
+          31,
+          47,
+          48,
+          49,
+          50
+        ],
+        "representation": "json",
+        "firstRequestAt": "2026-11-22T11:05:12.232Z",
+        "lastRequestCompletedAt": "2026-11-22T11:05:42.339Z",
+        "allOk": true,
+        "responseCacheCounts": {
+          "BYPASS": 8
+        },
+        "authTierCounts": {
+          "MEMORY": 8
+        },
+        "operations": {
+          "ownerR2Gets": 8,
+          "ownerR2Heads": 0,
+          "authKvReads": 0,
+          "directS3Reads": 0,
+          "readerHttpRequests": 0,
+          "bufferedOriginBytesInHeaders": 2025918,
+          "streamedExpectedOriginBytes": 0
+        },
+        "cpu": {
+          "observedRequests": 8,
+          "cpuTimeUs": 327565,
+          "startupCpuTimeUs": 0,
+          "sampleSize": 8,
+          "adaptiveSampleInterval": 1,
+          "usableForMatchedUnsampledEstimate": true,
+          "receipt": "platform-cpu-bundle.json",
+          "aggregation": "Sum of the two disjoint source-only rounds. Charged auth warmups remain separate.",
+          "meanInvocationCpuMs": 40.945625,
+          "meanAttributedStartupMs": 0.0
+        },
+        "marginalCost": {
+          "unit": "USD per million HTTP requests in this cohort, before allowances, fixed fees, storage, logs and rounding",
+          "kind": "matched unsampled observed component estimate",
+          "matchedUnsampled": true,
+          "knownComponents": {
+            "workerRequests": 0.3,
+            "r2Reads": 0.36,
+            "authKvReads": 0.0
+          },
+          "knownTotalBeforeCpu": 0.66,
+          "totalExcludingLogs": 1.4789125,
+          "includingAttributedStartupExcludingLogs": 1.4789125,
+          "withExpectedOnePercentInvocationLogEvents": 1.4849125,
+          "includingStartupAndExpectedLogs": 1.4849125,
+          "observedBatchExcludingLogsUsd": 1.18313e-05
+        }
+      }
+    },
+    "baseline": {
+      "runtime_warm": {
+        "target": "baseline",
+        "phase": "runtime_warm",
+        "requests": 1,
+        "sampleIndices": [
+          1
+        ],
+        "representation": "json",
+        "firstRequestAt": "2026-11-22T11:04:54.123Z",
+        "lastRequestCompletedAt": "2026-11-22T11:04:54.629Z",
+        "allOk": true,
+        "responseCacheCounts": {
+          "BYPASS": 1
+        },
+        "authTierCounts": {
+          "BYPASS": 1
+        },
+        "operations": {
+          "ownerR2Gets": 3,
+          "ownerR2Heads": 0,
+          "authKvReads": 1,
+          "directS3Reads": 0,
+          "readerHttpRequests": 0,
+          "bufferedOriginBytesInHeaders": 248467,
+          "streamedExpectedOriginBytes": 0
+        },
+        "cpu": {
+          "selectedQuery": "RuntimeWarm",
+          "observedRequests": 1,
+          "countMatchesPlan": true,
+          "errors": 0,
+          "cpuTimeUs": 78970,
+          "startupCpuTimeUs": 21045,
+          "meanCpuMs": 78.97,
+          "meanCpuIncludingAttributedStartupMs": 100.015,
+          "cpuP50Ms": 78.97,
+          "cpuP95Ms": 78.97,
+          "cpuUsdPerMillionRequestsBeforeAllowances": 1.5794000000000001,
+          "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 2.0002999999999997,
+          "adaptiveSampleInterval": 1,
+          "sampleSize": 1,
+          "unsampled": true,
+          "confidence95": {
+            "cpuTimeUs": {
+              "estimate": 78970,
+              "isValid": false,
+              "lower": 78970,
+              "sampleSize": 1,
+              "upper": 78970
+            },
+            "requests": {
+              "estimate": 1,
+              "isValid": false,
+              "lower": 1,
+              "sampleSize": 1,
+              "upper": 1
+            }
+          },
+          "usableForMatchedUnsampledEstimate": true,
+          "receipt": "platform-cpu-baseline.json",
+          "meanInvocationCpuMs": 78.97,
+          "meanAttributedStartupMs": 21.045
+        },
+        "marginalCost": {
+          "unit": "USD per million HTTP requests in this cohort, before allowances, fixed fees, storage, logs and rounding",
+          "kind": "matched unsampled observed component estimate",
+          "matchedUnsampled": true,
+          "knownComponents": {
+            "workerRequests": 0.3,
+            "r2Reads": 1.08,
+            "authKvReads": 0.5
+          },
+          "knownTotalBeforeCpu": 1.88,
+          "totalExcludingLogs": 3.4594,
+          "includingAttributedStartupExcludingLogs": 3.8803,
+          "withExpectedOnePercentInvocationLogEvents": 3.4654,
+          "includingStartupAndExpectedLogs": 3.8863,
+          "observedBatchExcludingLogsUsd": 3.4594e-06
+        }
+      },
+      "full_cold_json": {
+        "target": "baseline",
+        "phase": "full_cold_json",
+        "requests": 8,
+        "sampleIndices": [
+          3,
+          6,
+          9,
+          12,
+          16,
+          19,
+          22,
+          25
+        ],
+        "representation": "json",
+        "firstRequestAt": "2026-11-22T11:04:57.017Z",
+        "lastRequestCompletedAt": "2026-11-22T11:05:04.351Z",
+        "allOk": true,
+        "responseCacheCounts": {
+          "BYPASS": 8
+        },
+        "authTierCounts": {
+          "BYPASS": 8
+        },
+        "operations": {
+          "ownerR2Gets": 24,
+          "ownerR2Heads": 0,
+          "authKvReads": 8,
+          "directS3Reads": 0,
+          "readerHttpRequests": 0,
+          "bufferedOriginBytesInHeaders": 2032818,
+          "streamedExpectedOriginBytes": 0
+        },
+        "cpu": {
+          "selectedQuery": "FullColdJson",
+          "observedRequests": 8,
+          "countMatchesPlan": true,
+          "errors": 0,
+          "cpuTimeUs": 253066,
+          "startupCpuTimeUs": 0,
+          "meanCpuMs": 31.63325,
+          "meanCpuIncludingAttributedStartupMs": 31.63325,
+          "cpuP50Ms": 32.606,
+          "cpuP95Ms": 50.267,
+          "cpuUsdPerMillionRequestsBeforeAllowances": 0.6326649999999999,
+          "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.6326649999999999,
+          "adaptiveSampleInterval": 1,
+          "sampleSize": 8,
+          "unsampled": true,
+          "confidence95": {
+            "cpuTimeUs": {
+              "estimate": 253066,
+              "isValid": false,
+              "lower": 253066,
+              "sampleSize": 8,
+              "upper": 253066
+            },
+            "requests": {
+              "estimate": 8,
+              "isValid": false,
+              "lower": 8,
+              "sampleSize": 8,
+              "upper": 8
+            }
+          },
+          "usableForMatchedUnsampledEstimate": true,
+          "receipt": "platform-cpu-baseline.json",
+          "meanInvocationCpuMs": 31.63325,
+          "meanAttributedStartupMs": 0.0
+        },
+        "marginalCost": {
+          "unit": "USD per million HTTP requests in this cohort, before allowances, fixed fees, storage, logs and rounding",
+          "kind": "matched unsampled observed component estimate",
+          "matchedUnsampled": true,
+          "knownComponents": {
+            "workerRequests": 0.3,
+            "r2Reads": 1.08,
+            "authKvReads": 0.5
+          },
+          "knownTotalBeforeCpu": 1.88,
+          "totalExcludingLogs": 2.512665,
+          "includingAttributedStartupExcludingLogs": 2.512665,
+          "withExpectedOnePercentInvocationLogEvents": 2.518665,
+          "includingStartupAndExpectedLogs": 2.518665,
+          "observedBatchExcludingLogsUsd": 2.010132e-05
+        }
+      },
+      "auth_warm_baseline_0": {
+        "target": "baseline",
+        "phase": "auth_warm_baseline_0",
+        "requests": 1,
+        "sampleIndices": [
+          32
+        ],
+        "representation": "resolution",
+        "firstRequestAt": "2026-11-22T11:05:18.261Z",
+        "lastRequestCompletedAt": "2026-11-22T11:05:18.484Z",
+        "allOk": true,
+        "responseCacheCounts": {
+          "HIT": 1
+        },
+        "authTierCounts": {
+          "KV": 1
+        },
+        "operations": {
+          "ownerR2Gets": 0,
+          "ownerR2Heads": 0,
+          "authKvReads": 1,
+          "directS3Reads": 0,
+          "readerHttpRequests": 0,
+          "bufferedOriginBytesInHeaders": 0,
+          "streamedExpectedOriginBytes": 0
+        },
+        "cpu": {
+          "selectedQuery": "AuthWarmBaseline0",
+          "observedRequests": 1,
+          "countMatchesPlan": true,
+          "errors": 0,
+          "cpuTimeUs": 45449,
+          "startupCpuTimeUs": 29285,
+          "meanCpuMs": 45.449,
+          "meanCpuIncludingAttributedStartupMs": 74.734,
+          "cpuP50Ms": 45.449,
+          "cpuP95Ms": 45.449,
+          "cpuUsdPerMillionRequestsBeforeAllowances": 0.90898,
+          "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 1.49468,
+          "adaptiveSampleInterval": 1,
+          "sampleSize": 1,
+          "unsampled": true,
+          "confidence95": {
+            "cpuTimeUs": {
+              "estimate": 45449,
+              "isValid": false,
+              "lower": 45449,
+              "sampleSize": 1,
+              "upper": 45449
+            },
+            "requests": {
+              "estimate": 1,
+              "isValid": false,
+              "lower": 1,
+              "sampleSize": 1,
+              "upper": 1
+            }
+          },
+          "usableForMatchedUnsampledEstimate": true,
+          "receipt": "platform-cpu-baseline.json",
+          "meanInvocationCpuMs": 45.449,
+          "meanAttributedStartupMs": 29.285
+        },
+        "marginalCost": {
+          "unit": "USD per million HTTP requests in this cohort, before allowances, fixed fees, storage, logs and rounding",
+          "kind": "matched unsampled observed component estimate",
+          "matchedUnsampled": true,
+          "knownComponents": {
+            "workerRequests": 0.3,
+            "r2Reads": 0.0,
+            "authKvReads": 0.5
+          },
+          "knownTotalBeforeCpu": 0.8,
+          "totalExcludingLogs": 1.70898,
+          "includingAttributedStartupExcludingLogs": 2.29468,
+          "withExpectedOnePercentInvocationLogEvents": 1.71498,
+          "includingStartupAndExpectedLogs": 2.30068,
+          "observedBatchExcludingLogsUsd": 1.70898e-06
+        }
+      },
+      "source_baseline_0": {
+        "target": "baseline",
+        "phase": "source_baseline_0",
+        "requests": 4,
+        "sampleIndices": [
+          33,
+          34,
+          35,
+          36
+        ],
+        "representation": "json",
+        "firstRequestAt": "2026-11-22T11:05:20.686Z",
+        "lastRequestCompletedAt": "2026-11-22T11:05:22.158Z",
+        "allOk": true,
+        "responseCacheCounts": {
+          "BYPASS": 4
+        },
+        "authTierCounts": {
+          "MEMORY": 4
+        },
+        "operations": {
+          "ownerR2Gets": 8,
+          "ownerR2Heads": 0,
+          "authKvReads": 0,
+          "directS3Reads": 0,
+          "readerHttpRequests": 0,
+          "bufferedOriginBytesInHeaders": 701292,
+          "streamedExpectedOriginBytes": 0
+        },
+        "cpu": {
+          "selectedQuery": "SourceBaseline0",
+          "observedRequests": 4,
+          "countMatchesPlan": true,
+          "errors": 0,
+          "cpuTimeUs": 454075,
+          "startupCpuTimeUs": 0,
+          "meanCpuMs": 113.51875,
+          "meanCpuIncludingAttributedStartupMs": 113.51875,
+          "cpuP50Ms": 100.471,
+          "cpuP95Ms": 173.576,
+          "cpuUsdPerMillionRequestsBeforeAllowances": 2.270375,
+          "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 2.270375,
+          "adaptiveSampleInterval": 1,
+          "sampleSize": 4,
+          "unsampled": true,
+          "confidence95": {
+            "cpuTimeUs": {
+              "estimate": 454075,
+              "isValid": false,
+              "lower": 454075,
+              "sampleSize": 4,
+              "upper": 454075
+            },
+            "requests": {
+              "estimate": 4,
+              "isValid": false,
+              "lower": 4,
+              "sampleSize": 4,
+              "upper": 4
+            }
+          },
+          "usableForMatchedUnsampledEstimate": true,
+          "receipt": "platform-cpu-baseline.json",
+          "meanInvocationCpuMs": 113.51875,
+          "meanAttributedStartupMs": 0.0
+        },
+        "marginalCost": {
+          "unit": "USD per million HTTP requests in this cohort, before allowances, fixed fees, storage, logs and rounding",
+          "kind": "matched unsampled observed component estimate",
+          "matchedUnsampled": true,
+          "knownComponents": {
+            "workerRequests": 0.3,
+            "r2Reads": 0.72,
+            "authKvReads": 0.0
+          },
+          "knownTotalBeforeCpu": 1.02,
+          "totalExcludingLogs": 3.290375,
+          "includingAttributedStartupExcludingLogs": 3.290375,
+          "withExpectedOnePercentInvocationLogEvents": 3.296375,
+          "includingStartupAndExpectedLogs": 3.296375,
+          "observedBatchExcludingLogsUsd": 1.31615e-05
+        }
+      },
+      "auth_warm_baseline_1": {
+        "target": "baseline",
+        "phase": "auth_warm_baseline_1",
+        "requests": 1,
+        "sampleIndices": [
+          41
+        ],
+        "representation": "resolution",
+        "firstRequestAt": "2026-11-22T11:05:30.280Z",
+        "lastRequestCompletedAt": "2026-11-22T11:05:30.421Z",
+        "allOk": true,
+        "responseCacheCounts": {
+          "HIT": 1
+        },
+        "authTierCounts": {
+          "KV": 1
+        },
+        "operations": {
+          "ownerR2Gets": 0,
+          "ownerR2Heads": 0,
+          "authKvReads": 1,
+          "directS3Reads": 0,
+          "readerHttpRequests": 0,
+          "bufferedOriginBytesInHeaders": 0,
+          "streamedExpectedOriginBytes": 0
+        },
+        "cpu": {
+          "selectedQuery": "AuthWarmBaseline1",
+          "observedRequests": 1,
+          "countMatchesPlan": true,
+          "errors": 0,
+          "cpuTimeUs": 20071,
+          "startupCpuTimeUs": 16149,
+          "meanCpuMs": 20.071,
+          "meanCpuIncludingAttributedStartupMs": 36.22,
+          "cpuP50Ms": 20.071,
+          "cpuP95Ms": 20.071,
+          "cpuUsdPerMillionRequestsBeforeAllowances": 0.40142,
+          "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.7243999999999999,
+          "adaptiveSampleInterval": 1,
+          "sampleSize": 1,
+          "unsampled": true,
+          "confidence95": {
+            "cpuTimeUs": {
+              "estimate": 20071,
+              "isValid": false,
+              "lower": 20071,
+              "sampleSize": 1,
+              "upper": 20071
+            },
+            "requests": {
+              "estimate": 1,
+              "isValid": false,
+              "lower": 1,
+              "sampleSize": 1,
+              "upper": 1
+            }
+          },
+          "usableForMatchedUnsampledEstimate": true,
+          "receipt": "platform-cpu-baseline.json",
+          "meanInvocationCpuMs": 20.071,
+          "meanAttributedStartupMs": 16.149
+        },
+        "marginalCost": {
+          "unit": "USD per million HTTP requests in this cohort, before allowances, fixed fees, storage, logs and rounding",
+          "kind": "matched unsampled observed component estimate",
+          "matchedUnsampled": true,
+          "knownComponents": {
+            "workerRequests": 0.3,
+            "r2Reads": 0.0,
+            "authKvReads": 0.5
+          },
+          "knownTotalBeforeCpu": 0.8,
+          "totalExcludingLogs": 1.20142,
+          "includingAttributedStartupExcludingLogs": 1.5244,
+          "withExpectedOnePercentInvocationLogEvents": 1.20742,
+          "includingStartupAndExpectedLogs": 1.5304,
+          "observedBatchExcludingLogsUsd": 1.20142e-06
+        }
+      },
+      "source_baseline_1": {
+        "target": "baseline",
+        "phase": "source_baseline_1",
+        "requests": 4,
+        "sampleIndices": [
+          42,
+          43,
+          44,
+          45
+        ],
+        "representation": "json",
+        "firstRequestAt": "2026-11-22T11:05:32.622Z",
+        "lastRequestCompletedAt": "2026-11-22T11:05:33.664Z",
+        "allOk": true,
+        "responseCacheCounts": {
+          "BYPASS": 4
+        },
+        "authTierCounts": {
+          "MEMORY": 4
+        },
+        "operations": {
+          "ownerR2Gets": 8,
+          "ownerR2Heads": 0,
+          "authKvReads": 0,
+          "directS3Reads": 0,
+          "readerHttpRequests": 0,
+          "bufferedOriginBytesInHeaders": 701292,
+          "streamedExpectedOriginBytes": 0
+        },
+        "cpu": {
+          "selectedQuery": "SourceBaseline1",
+          "observedRequests": 4,
+          "countMatchesPlan": true,
+          "errors": 0,
+          "cpuTimeUs": 183558,
+          "startupCpuTimeUs": 0,
+          "meanCpuMs": 45.8895,
+          "meanCpuIncludingAttributedStartupMs": 45.8895,
+          "cpuP50Ms": 32.906,
+          "cpuP95Ms": 68.555,
+          "cpuUsdPerMillionRequestsBeforeAllowances": 0.91779,
+          "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.91779,
+          "adaptiveSampleInterval": 1,
+          "sampleSize": 4,
+          "unsampled": true,
+          "confidence95": {
+            "cpuTimeUs": {
+              "estimate": 183558,
+              "isValid": false,
+              "lower": 183558,
+              "sampleSize": 4,
+              "upper": 183558
+            },
+            "requests": {
+              "estimate": 4,
+              "isValid": false,
+              "lower": 4,
+              "sampleSize": 4,
+              "upper": 4
+            }
+          },
+          "usableForMatchedUnsampledEstimate": true,
+          "receipt": "platform-cpu-baseline.json",
+          "meanInvocationCpuMs": 45.8895,
+          "meanAttributedStartupMs": 0.0
+        },
+        "marginalCost": {
+          "unit": "USD per million HTTP requests in this cohort, before allowances, fixed fees, storage, logs and rounding",
+          "kind": "matched unsampled observed component estimate",
+          "matchedUnsampled": true,
+          "knownComponents": {
+            "workerRequests": 0.3,
+            "r2Reads": 0.72,
+            "authKvReads": 0.0
+          },
+          "knownTotalBeforeCpu": 1.02,
+          "totalExcludingLogs": 1.93779,
+          "includingAttributedStartupExcludingLogs": 1.93779,
+          "withExpectedOnePercentInvocationLogEvents": 1.94379,
+          "includingStartupAndExpectedLogs": 1.94379,
+          "observedBatchExcludingLogsUsd": 7.75116e-06
+        }
+      },
+      "full_cold_binary": {
+        "target": "baseline",
+        "phase": "full_cold_binary",
+        "requests": 8,
+        "sampleIndices": [
+          56,
+          58,
+          60,
+          62,
+          63,
+          65,
+          67,
+          69
+        ],
+        "representation": "bin",
+        "firstRequestAt": "2026-11-22T11:05:47.948Z",
+        "lastRequestCompletedAt": "2026-11-22T11:05:50.453Z",
+        "allOk": true,
+        "responseCacheCounts": {
+          "BYPASS": 8
+        },
+        "authTierCounts": {
+          "BYPASS": 8
+        },
+        "operations": {
+          "ownerR2Gets": 24,
+          "ownerR2Heads": 0,
+          "authKvReads": 8,
+          "directS3Reads": 0,
+          "readerHttpRequests": 0,
+          "bufferedOriginBytesInHeaders": 630234,
+          "streamedExpectedOriginBytes": 1402584
+        },
+        "cpu": {
+          "selectedQuery": "FullColdBinary",
+          "observedRequests": 8,
+          "countMatchesPlan": true,
+          "errors": 0,
+          "cpuTimeUs": 140931,
+          "startupCpuTimeUs": 25548,
+          "meanCpuMs": 17.616375,
+          "meanCpuIncludingAttributedStartupMs": 20.809875,
+          "cpuP50Ms": 11.779,
+          "cpuP95Ms": 58.908,
+          "cpuUsdPerMillionRequestsBeforeAllowances": 0.35232749999999996,
+          "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.4161975,
+          "adaptiveSampleInterval": 1,
+          "sampleSize": 8,
+          "unsampled": true,
+          "confidence95": {
+            "cpuTimeUs": {
+              "estimate": 140931,
+              "isValid": false,
+              "lower": 140931,
+              "sampleSize": 8,
+              "upper": 140931
+            },
+            "requests": {
+              "estimate": 8,
+              "isValid": false,
+              "lower": 8,
+              "sampleSize": 8,
+              "upper": 8
+            }
+          },
+          "usableForMatchedUnsampledEstimate": true,
+          "receipt": "platform-cpu-baseline.json",
+          "meanInvocationCpuMs": 17.616375,
+          "meanAttributedStartupMs": 3.1935
+        },
+        "marginalCost": {
+          "unit": "USD per million HTTP requests in this cohort, before allowances, fixed fees, storage, logs and rounding",
+          "kind": "matched unsampled observed component estimate",
+          "matchedUnsampled": true,
+          "knownComponents": {
+            "workerRequests": 0.3,
+            "r2Reads": 1.08,
+            "authKvReads": 0.5
+          },
+          "knownTotalBeforeCpu": 1.88,
+          "totalExcludingLogs": 2.2323275,
+          "includingAttributedStartupExcludingLogs": 2.2961975,
+          "withExpectedOnePercentInvocationLogEvents": 2.2383275,
+          "includingStartupAndExpectedLogs": 2.3021975,
+          "observedBatchExcludingLogsUsd": 1.785862e-05
+        }
+      },
+      "normal_warm_json": {
+        "target": "baseline",
+        "phase": "normal_warm_json",
+        "requests": 4,
+        "sampleIndices": [
+          72,
+          74,
+          76,
+          78
+        ],
+        "representation": "json",
+        "firstRequestAt": "2026-11-22T11:05:52.985Z",
+        "lastRequestCompletedAt": "2026-11-22T11:05:54.998Z",
+        "allOk": true,
+        "responseCacheCounts": {
+          "HIT": 4
+        },
+        "authTierCounts": {
+          "KV": 1,
+          "MEMORY": 3
+        },
+        "operations": {
+          "ownerR2Gets": 0,
+          "ownerR2Heads": 0,
+          "authKvReads": 1,
+          "directS3Reads": 0,
+          "readerHttpRequests": 0,
+          "bufferedOriginBytesInHeaders": 0,
+          "streamedExpectedOriginBytes": 0
+        },
+        "cpu": {
+          "selectedQuery": "NormalWarmJson",
+          "observedRequests": 4,
+          "countMatchesPlan": true,
+          "errors": 0,
+          "cpuTimeUs": 12802,
+          "startupCpuTimeUs": 0,
+          "meanCpuMs": 3.2005,
+          "meanCpuIncludingAttributedStartupMs": 3.2005,
+          "cpuP50Ms": 1.797,
+          "cpuP95Ms": 7.458,
+          "cpuUsdPerMillionRequestsBeforeAllowances": 0.06401000000000001,
+          "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.06401000000000001,
+          "adaptiveSampleInterval": 1,
+          "sampleSize": 4,
+          "unsampled": true,
+          "confidence95": {
+            "cpuTimeUs": {
+              "estimate": 12802,
+              "isValid": false,
+              "lower": 12802,
+              "sampleSize": 4,
+              "upper": 12802
+            },
+            "requests": {
+              "estimate": 4,
+              "isValid": false,
+              "lower": 4,
+              "sampleSize": 4,
+              "upper": 4
+            }
+          },
+          "usableForMatchedUnsampledEstimate": true,
+          "receipt": "platform-cpu-baseline.json",
+          "meanInvocationCpuMs": 3.2005,
+          "meanAttributedStartupMs": 0.0
+        },
+        "marginalCost": {
+          "unit": "USD per million HTTP requests in this cohort, before allowances, fixed fees, storage, logs and rounding",
+          "kind": "matched unsampled observed component estimate",
+          "matchedUnsampled": true,
+          "knownComponents": {
+            "workerRequests": 0.3,
+            "r2Reads": 0.0,
+            "authKvReads": 0.125
+          },
+          "knownTotalBeforeCpu": 0.425,
+          "totalExcludingLogs": 0.48901,
+          "includingAttributedStartupExcludingLogs": 0.48901,
+          "withExpectedOnePercentInvocationLogEvents": 0.49501,
+          "includingStartupAndExpectedLogs": 0.49501,
+          "observedBatchExcludingLogsUsd": 1.95604e-06
+        }
+      },
+      "normal_warm_bin": {
+        "target": "baseline",
+        "phase": "normal_warm_bin",
+        "requests": 4,
+        "sampleIndices": [
+          80,
+          82,
+          84,
+          86
+        ],
+        "representation": "bin",
+        "firstRequestAt": "2026-11-22T11:05:57.247Z",
+        "lastRequestCompletedAt": "2026-11-22T11:05:57.742Z",
+        "allOk": true,
+        "responseCacheCounts": {
+          "MISS": 4
+        },
+        "authTierCounts": {
+          "MEMORY": 4
+        },
+        "operations": {
+          "ownerR2Gets": 0,
+          "ownerR2Heads": 0,
+          "authKvReads": 0,
+          "directS3Reads": 0,
+          "readerHttpRequests": 0,
+          "bufferedOriginBytesInHeaders": 0,
+          "streamedExpectedOriginBytes": 0
+        },
+        "cpu": {
+          "selectedQuery": "NormalWarmBin",
+          "observedRequests": 4,
+          "countMatchesPlan": true,
+          "errors": 0,
+          "cpuTimeUs": 44363,
+          "startupCpuTimeUs": 0,
+          "meanCpuMs": 11.09075,
+          "meanCpuIncludingAttributedStartupMs": 11.09075,
+          "cpuP50Ms": 9.732,
+          "cpuP95Ms": 12.78,
+          "cpuUsdPerMillionRequestsBeforeAllowances": 0.22181499999999998,
+          "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.22181499999999998,
+          "adaptiveSampleInterval": 1,
+          "sampleSize": 4,
+          "unsampled": true,
+          "confidence95": {
+            "cpuTimeUs": {
+              "estimate": 44363,
+              "isValid": false,
+              "lower": 44363,
+              "sampleSize": 4,
+              "upper": 44363
+            },
+            "requests": {
+              "estimate": 4,
+              "isValid": false,
+              "lower": 4,
+              "sampleSize": 4,
+              "upper": 4
+            }
+          },
+          "usableForMatchedUnsampledEstimate": true,
+          "receipt": "platform-cpu-baseline.json",
+          "meanInvocationCpuMs": 11.09075,
+          "meanAttributedStartupMs": 0.0
+        },
+        "marginalCost": {
+          "unit": "USD per million HTTP requests in this cohort, before allowances, fixed fees, storage, logs and rounding",
+          "kind": "matched unsampled observed component estimate",
+          "matchedUnsampled": true,
+          "knownComponents": {
+            "workerRequests": 0.3,
+            "r2Reads": 0.0,
+            "authKvReads": 0.0
+          },
+          "knownTotalBeforeCpu": 0.3,
+          "totalExcludingLogs": 0.521815,
+          "includingAttributedStartupExcludingLogs": 0.521815,
+          "withExpectedOnePercentInvocationLogEvents": 0.527815,
+          "includingStartupAndExpectedLogs": 0.527815,
+          "observedBatchExcludingLogsUsd": 2.08726e-06
+        }
+      },
+      "response_hits_json": {
+        "target": "baseline",
+        "phase": "response_hits_json",
+        "requests": 8,
+        "sampleIndices": [
+          88,
+          91,
+          94,
+          97,
+          100,
+          103,
+          106,
+          109
+        ],
+        "representation": "json",
+        "firstRequestAt": "2026-11-22T11:06:00.160Z",
+        "lastRequestCompletedAt": "2026-11-22T11:06:04.676Z",
+        "allOk": true,
+        "responseCacheCounts": {
+          "HIT": 8
+        },
+        "authTierCounts": {
+          "KV": 1,
+          "MEMORY": 7
+        },
+        "operations": {
+          "ownerR2Gets": 0,
+          "ownerR2Heads": 0,
+          "authKvReads": 1,
+          "directS3Reads": 0,
+          "readerHttpRequests": 0,
+          "bufferedOriginBytesInHeaders": 0,
+          "streamedExpectedOriginBytes": 0
+        },
+        "cpu": {
+          "selectedQuery": "ResponseHitsJson",
+          "observedRequests": 7,
+          "countMatchesPlan": false,
+          "errors": 0,
+          "cpuTimeUs": 11988,
+          "startupCpuTimeUs": 0,
+          "meanCpuMs": 1.7125714285714286,
+          "meanCpuIncludingAttributedStartupMs": 1.7125714285714286,
+          "cpuP50Ms": 1.744,
+          "cpuP95Ms": 2.359,
+          "cpuUsdPerMillionRequestsBeforeAllowances": 0.03425142857142857,
+          "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.03425142857142857,
+          "adaptiveSampleInterval": 1,
+          "sampleSize": 7,
+          "unsampled": false,
+          "confidence95": {
+            "cpuTimeUs": {
+              "estimate": 11988,
+              "isValid": false,
+              "lower": 11988,
+              "sampleSize": 7,
+              "upper": 11988
+            },
+            "requests": {
+              "estimate": 7,
+              "isValid": false,
+              "lower": 7,
+              "sampleSize": 7,
+              "upper": 7
+            }
+          },
+          "usableForMatchedUnsampledEstimate": false,
+          "receipt": "platform-cpu-baseline.json",
+          "meanInvocationCpuMs": 1.7125714285714286,
+          "meanAttributedStartupMs": 0.0
+        },
+        "marginalCost": {
+          "unit": "USD per million HTTP requests in this cohort, before allowances, fixed fees, storage, logs and rounding",
+          "kind": "CPU count does not match this request cohort",
+          "matchedUnsampled": false,
+          "knownComponents": {
+            "workerRequests": 0.3,
+            "r2Reads": 0.0,
+            "authKvReads": 0.0625
+          },
+          "knownTotalBeforeCpu": 0.3625,
+          "totalExcludingLogs": null,
+          "includingAttributedStartupExcludingLogs": null,
+          "illustrationUsingUnmatchedCpuMean": {
+            "totalExcludingLogs": 0.396751428571,
+            "includingAttributedStartupExcludingLogs": 0.396751428571,
+            "warning": "Uses the observed CPU subset or weighted mean with full-cohort operation counters. This is not a matched full-cohort measurement and cannot prove a cost target."
+          }
+        }
+      },
+      "response_hits_binary": {
+        "target": "baseline",
+        "phase": "response_hits_binary",
+        "requests": 4,
+        "sampleIndices": [
+          111,
+          113,
+          115,
+          117
+        ],
+        "representation": "bin",
+        "firstRequestAt": "2026-11-22T11:06:06.946Z",
+        "lastRequestCompletedAt": "2026-11-22T11:06:07.368Z",
+        "allOk": true,
+        "responseCacheCounts": {
+          "HIT": 4
+        },
+        "authTierCounts": {
+          "KV": 1,
+          "MEMORY": 3
+        },
+        "operations": {
+          "ownerR2Gets": 0,
+          "ownerR2Heads": 0,
+          "authKvReads": 1,
+          "directS3Reads": 0,
+          "readerHttpRequests": 0,
+          "bufferedOriginBytesInHeaders": 0,
+          "streamedExpectedOriginBytes": 0
+        },
+        "cpu": {
+          "selectedQuery": "ResponseHitsBinary",
+          "observedRequests": 5,
+          "countMatchesPlan": false,
+          "errors": 0,
+          "cpuTimeUs": 9397,
+          "startupCpuTimeUs": 0,
+          "meanCpuMs": 1.8794000000000002,
+          "meanCpuIncludingAttributedStartupMs": 1.8794000000000002,
+          "cpuP50Ms": 1.552,
+          "cpuP95Ms": 3.445,
+          "cpuUsdPerMillionRequestsBeforeAllowances": 0.037588,
+          "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.037588,
+          "adaptiveSampleInterval": 1.6666666666666667,
+          "sampleSize": 3,
+          "unsampled": false,
+          "confidence95": {
+            "cpuTimeUs": {
+              "estimate": 9397,
+              "isValid": false,
+              "lower": 3558.754505190269,
+              "sampleSize": 3,
+              "upper": 15235.245494809731
+            },
+            "requests": {
+              "estimate": 5,
+              "isValid": false,
+              "lower": 1.0800720309198932,
+              "sampleSize": 3,
+              "upper": 8.919927969080106
+            }
+          },
+          "usableForMatchedUnsampledEstimate": false,
+          "receipt": "platform-cpu-baseline.json",
+          "meanInvocationCpuMs": 1.8794000000000002,
+          "meanAttributedStartupMs": 0.0
+        },
+        "marginalCost": {
+          "unit": "USD per million HTTP requests in this cohort, before allowances, fixed fees, storage, logs and rounding",
+          "kind": "CPU count does not match this request cohort",
+          "matchedUnsampled": false,
+          "knownComponents": {
+            "workerRequests": 0.3,
+            "r2Reads": 0.0,
+            "authKvReads": 0.125
+          },
+          "knownTotalBeforeCpu": 0.425,
+          "totalExcludingLogs": null,
+          "includingAttributedStartupExcludingLogs": null,
+          "illustrationUsingUnmatchedCpuMean": {
+            "totalExcludingLogs": 0.462588,
+            "includingAttributedStartupExcludingLogs": 0.462588,
+            "warning": "Uses the observed CPU subset or weighted mean with full-cohort operation counters. This is not a matched full-cohort measurement and cannot prove a cost target."
+          }
+        }
+      },
+      "source_rounds_pooled": {
+        "target": "baseline",
+        "phase": "source_rounds_pooled",
+        "requests": 8,
+        "sampleIndices": [
+          33,
+          34,
+          35,
+          36,
+          42,
+          43,
+          44,
+          45
+        ],
+        "representation": "json",
+        "firstRequestAt": "2026-11-22T11:05:20.686Z",
+        "lastRequestCompletedAt": "2026-11-22T11:05:33.664Z",
+        "allOk": true,
+        "responseCacheCounts": {
+          "BYPASS": 8
+        },
+        "authTierCounts": {
+          "MEMORY": 8
+        },
+        "operations": {
+          "ownerR2Gets": 16,
+          "ownerR2Heads": 0,
+          "authKvReads": 0,
+          "directS3Reads": 0,
+          "readerHttpRequests": 0,
+          "bufferedOriginBytesInHeaders": 1402584,
+          "streamedExpectedOriginBytes": 0
+        },
+        "cpu": {
+          "observedRequests": 8,
+          "cpuTimeUs": 637633,
+          "startupCpuTimeUs": 0,
+          "sampleSize": 8,
+          "adaptiveSampleInterval": 1,
+          "usableForMatchedUnsampledEstimate": true,
+          "receipt": "platform-cpu-baseline.json",
+          "aggregation": "Sum of the two disjoint source-only rounds. Charged auth warmups remain separate.",
+          "meanInvocationCpuMs": 79.704125,
+          "meanAttributedStartupMs": 0.0
+        },
+        "marginalCost": {
+          "unit": "USD per million HTTP requests in this cohort, before allowances, fixed fees, storage, logs and rounding",
+          "kind": "matched unsampled observed component estimate",
+          "matchedUnsampled": true,
+          "knownComponents": {
+            "workerRequests": 0.3,
+            "r2Reads": 0.72,
+            "authKvReads": 0.0
+          },
+          "knownTotalBeforeCpu": 1.02,
+          "totalExcludingLogs": 2.6140825,
+          "includingAttributedStartupExcludingLogs": 2.6140825,
+          "withExpectedOnePercentInvocationLogEvents": 2.6200825,
+          "includingStartupAndExpectedLogs": 2.6200825,
+          "observedBatchExcludingLogsUsd": 2.091266e-05
+        }
+      }
+    }
+  },
+  "conditionalProjections": {
+    "binaryOneGetCachedAuthUsingColdBinaryCpu": {
+      "measuredAuthHotBinaryPhase": false,
+      "sourcePhase": "bundle/full_cold_binary",
+      "sourcePhaseMatchedUnsampled": true,
+      "assumedObjectGetsPerRequest": 1,
+      "assumedKvReadsPerRequest": 0,
+      "meanCpuMsTakenFromColdBinaryPhase": 18.39325,
+      "totalExcludingLogsUsdPerMillion": 1.027865,
+      "includingAttributedStartupExcludingLogsUsdPerMillion": 1.102765,
+      "warning": "The run has no source-only binary cohort. This removes the measured cold KV charge but does not measure how cached auth changes CPU. It is a projection, not an auth-hot binary result.",
+      "supersededByMeasuredSupplement": "binary-source-cost-estimate.json"
+    }
+  },
+  "limits": [
+    "The test covers four selected blocks only. No full-epoch migration or serving-coverage claim.",
+    "Object counts and KV counts come from actual response receipts. Streamed expected byte counts are separate from buffered completed-byte headers.",
+    "R2 GETs are API operations, not physical disk-read measurements. Physical R2 and provider caches are uncontrolled.",
+    "Only count-matched unsampled phases support a matched observed component estimate. Incomplete or sampled HIT groups are labelled separately.",
+    "Invocation CPU and attributed startup CPU are separate. Startup is an observed attribution in this small run, not a predicted startup rate at scale.",
+    "The one-percent log allowance shown is an expectation of one invocation event per sampled request, not measured log usage. Current Analytics Engine billing is zero.",
+    "Published marginal rates exclude shared account allowances, monthly billing rounding, minimum subscription, fixed storage and future pricing changes.",
+    "Small sample confidence intervals are marked invalid by the platform. No statistical confidence claim is made."
+  ],
+  "measuredBinarySourceSupplement": {
+    "costReceipt": "binary-source-cost-estimate.json",
+    "requestReceipt": "binary-source-supplement.json",
+    "platformCpu": "platform-cpu-binary-source.json",
+    "separateFromOriginal119Requests": true,
+    "pooledBinaryRequests": 8,
+    "matchedUnsampled": true,
+    "meanCpuMs": 6.529,
+    "costUsdPerMillionHttpRequests": 0.79058,
+    "authKvReadsPerRequest": 0,
+    "objectGetsPerRequest": 1
+  }
+}

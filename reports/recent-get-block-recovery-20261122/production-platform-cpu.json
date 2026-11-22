@@ -1,0 +1,1685 @@
+{
+  "schema": "blockzilla-one-read-platform-cpu-v1",
+  "fetchedAt": "2026-11-22T15:01:05.977072Z",
+  "worker": "blockzilla-get-block",
+  "version": "50aaba11-468b-4c57-b1ad-ddc999ea9152",
+  "windows": {
+    "UnrootedFinalized": {
+      "start": "2026-11-22T14:56:27.653000Z",
+      "end": "2026-11-22T14:56:27.964000Z",
+      "expectedWorkerRequests": 1,
+      "traffic": {
+        "condition": "UnrootedFinalized",
+        "representation": "compact",
+        "measured": true,
+        "workerRequests": 1,
+        "heliusRequests": 0
+      },
+      "boundaryVariant": false
+    },
+    "UnrootedFinalizedWholeSeconds": {
+      "start": "2026-11-22T14:56:27Z",
+      "end": "2026-11-22T14:56:28Z",
+      "expectedWorkerRequests": 1,
+      "traffic": {
+        "condition": "UnrootedFinalized",
+        "representation": "compact",
+        "measured": true,
+        "workerRequests": 1,
+        "heliusRequests": 0
+      },
+      "boundaryVariant": true
+    },
+    "RuntimeWarm": {
+      "start": "2026-11-22T14:56:30.164000Z",
+      "end": "2026-11-22T14:56:30.332000Z",
+      "expectedWorkerRequests": 1,
+      "traffic": {
+        "condition": "RuntimeWarm",
+        "representation": "compact",
+        "measured": false,
+        "workerRequests": 1,
+        "heliusRequests": 0
+      },
+      "boundaryVariant": false
+    },
+    "RuntimeWarmWholeSeconds": {
+      "start": "2026-11-22T14:56:30Z",
+      "end": "2026-11-22T14:56:31Z",
+      "expectedWorkerRequests": 1,
+      "traffic": {
+        "condition": "RuntimeWarm",
+        "representation": "compact",
+        "measured": false,
+        "workerRequests": 1,
+        "heliusRequests": 0
+      },
+      "boundaryVariant": true
+    },
+    "RecentCold": {
+      "start": "2026-11-22T14:56:32.532000Z",
+      "end": "2026-11-22T14:56:32.860000Z",
+      "expectedWorkerRequests": 4,
+      "traffic": {
+        "condition": "RecentCold",
+        "representation": "compact",
+        "measured": true,
+        "workerRequests": 4,
+        "heliusRequests": 0
+      },
+      "boundaryVariant": false
+    },
+    "RecentColdWholeSeconds": {
+      "start": "2026-11-22T14:56:32Z",
+      "end": "2026-11-22T14:56:33Z",
+      "expectedWorkerRequests": 4,
+      "traffic": {
+        "condition": "RecentCold",
+        "representation": "compact",
+        "measured": true,
+        "workerRequests": 4,
+        "heliusRequests": 0
+      },
+      "boundaryVariant": true
+    },
+    "AuthPrime": {
+      "start": "2026-11-22T14:56:35.060000Z",
+      "end": "2026-11-22T14:56:35.122000Z",
+      "expectedWorkerRequests": 1,
+      "traffic": {
+        "condition": "AuthPrime",
+        "representation": "compact",
+        "measured": false,
+        "workerRequests": 1,
+        "heliusRequests": 0
+      },
+      "boundaryVariant": false
+    },
+    "AuthPrimeWholeSeconds": {
+      "start": "2026-11-22T14:56:35Z",
+      "end": "2026-11-22T14:56:36Z",
+      "expectedWorkerRequests": 1,
+      "traffic": {
+        "condition": "AuthPrime",
+        "representation": "compact",
+        "measured": false,
+        "workerRequests": 1,
+        "heliusRequests": 0
+      },
+      "boundaryVariant": true
+    },
+    "RecentAuthWarm": {
+      "start": "2026-11-22T14:56:37.322000Z",
+      "end": "2026-11-22T14:56:37.692000Z",
+      "expectedWorkerRequests": 8,
+      "traffic": {
+        "condition": "RecentAuthWarm",
+        "representation": "compact",
+        "measured": true,
+        "workerRequests": 8,
+        "heliusRequests": 0
+      },
+      "boundaryVariant": false
+    },
+    "RecentAuthWarmWholeSeconds": {
+      "start": "2026-11-22T14:56:37Z",
+      "end": "2026-11-22T14:56:38Z",
+      "expectedWorkerRequests": 8,
+      "traffic": {
+        "condition": "RecentAuthWarm",
+        "representation": "compact",
+        "measured": true,
+        "workerRequests": 8,
+        "heliusRequests": 0
+      },
+      "boundaryVariant": true
+    },
+    "RecentFinalized": {
+      "start": "2026-11-22T14:56:39.901000Z",
+      "end": "2026-11-22T14:56:40.129000Z",
+      "expectedWorkerRequests": 4,
+      "traffic": {
+        "condition": "RecentFinalized",
+        "representation": "compact",
+        "measured": true,
+        "workerRequests": 4,
+        "heliusRequests": 0
+      },
+      "boundaryVariant": false
+    },
+    "RecentFinalizedWholeSeconds": {
+      "start": "2026-11-22T14:56:39Z",
+      "end": "2026-11-22T14:56:41Z",
+      "expectedWorkerRequests": 4,
+      "traffic": {
+        "condition": "RecentFinalized",
+        "representation": "compact",
+        "measured": true,
+        "workerRequests": 4,
+        "heliusRequests": 0
+      },
+      "boundaryVariant": true
+    },
+    "ArchiveFallback": {
+      "start": "2026-11-22T14:56:42.329000Z",
+      "end": "2026-11-22T14:56:44.553000Z",
+      "expectedWorkerRequests": 4,
+      "traffic": {
+        "condition": "ArchiveFallback",
+        "representation": "compact",
+        "measured": true,
+        "workerRequests": 4,
+        "heliusRequests": 0
+      },
+      "boundaryVariant": false
+    },
+    "ArchiveFallbackWholeSeconds": {
+      "start": "2026-11-22T14:56:42Z",
+      "end": "2026-11-22T14:56:45Z",
+      "expectedWorkerRequests": 4,
+      "traffic": {
+        "condition": "ArchiveFallback",
+        "representation": "compact",
+        "measured": true,
+        "workerRequests": 4,
+        "heliusRequests": 0
+      },
+      "boundaryVariant": true
+    },
+    "IdentityReject": {
+      "start": "2026-11-22T14:56:46.753000Z",
+      "end": "2026-11-22T14:56:46.896000Z",
+      "expectedWorkerRequests": 4,
+      "traffic": {
+        "condition": "IdentityReject",
+        "representation": "compact",
+        "measured": true,
+        "workerRequests": 4,
+        "heliusRequests": 0
+      },
+      "boundaryVariant": false
+    },
+    "IdentityRejectWholeSeconds": {
+      "start": "2026-11-22T14:56:46Z",
+      "end": "2026-11-22T14:56:47Z",
+      "expectedWorkerRequests": 4,
+      "traffic": {
+        "condition": "IdentityReject",
+        "representation": "compact",
+        "measured": true,
+        "workerRequests": 4,
+        "heliusRequests": 0
+      },
+      "boundaryVariant": true
+    }
+  },
+  "response": {
+    "data": {
+      "viewer": {
+        "accounts": [
+          {
+            "ArchiveFallback": [
+              {
+                "avg": {
+                  "sampleInterval": 1
+                },
+                "confidence": {
+                  "sum": {
+                    "cpuTimeUs": {
+                      "estimate": 75618,
+                      "isValid": false,
+                      "lower": 75618,
+                      "sampleSize": 4,
+                      "upper": 75618
+                    },
+                    "requests": {
+                      "estimate": 4,
+                      "isValid": false,
+                      "lower": 4,
+                      "sampleSize": 4,
+                      "upper": 4
+                    }
+                  }
+                },
+                "quantiles": {
+                  "cpuTimeP50": 17313,
+                  "cpuTimeP95": 23727,
+                  "cpuTimeP99": 23727,
+                  "memoryUsageBytesP99": 15085450,
+                  "wasmMemoryBytesP99": 1966080
+                },
+                "sum": {
+                  "cpuTimeUs": 75618,
+                  "errors": 0,
+                  "requests": 4,
+                  "startupCpuTimeUs": 0,
+                  "subrequests": 16
+                }
+              }
+            ],
+            "ArchiveFallbackWholeSeconds": [
+              {
+                "avg": {
+                  "sampleInterval": 1
+                },
+                "confidence": {
+                  "sum": {
+                    "cpuTimeUs": {
+                      "estimate": 75618,
+                      "isValid": false,
+                      "lower": 75618,
+                      "sampleSize": 4,
+                      "upper": 75618
+                    },
+                    "requests": {
+                      "estimate": 4,
+                      "isValid": false,
+                      "lower": 4,
+                      "sampleSize": 4,
+                      "upper": 4
+                    }
+                  }
+                },
+                "quantiles": {
+                  "cpuTimeP50": 17313,
+                  "cpuTimeP95": 23727,
+                  "cpuTimeP99": 23727,
+                  "memoryUsageBytesP99": 15085450,
+                  "wasmMemoryBytesP99": 1966080
+                },
+                "sum": {
+                  "cpuTimeUs": 75618,
+                  "errors": 0,
+                  "requests": 4,
+                  "startupCpuTimeUs": 0,
+                  "subrequests": 16
+                }
+              }
+            ],
+            "AuthPrime": [
+              {
+                "avg": {
+                  "sampleInterval": 1
+                },
+                "confidence": {
+                  "sum": {
+                    "cpuTimeUs": {
+                      "estimate": 7854,
+                      "isValid": false,
+                      "lower": 7854,
+                      "sampleSize": 1,
+                      "upper": 7854
+                    },
+                    "requests": {
+                      "estimate": 1,
+                      "isValid": false,
+                      "lower": 1,
+                      "sampleSize": 1,
+                      "upper": 1
+                    }
+                  }
+                },
+                "quantiles": {
+                  "cpuTimeP50": 7854,
+                  "cpuTimeP95": 7854,
+                  "cpuTimeP99": 7854,
+                  "memoryUsageBytesP99": 6190347,
+                  "wasmMemoryBytesP99": 1441792
+                },
+                "sum": {
+                  "cpuTimeUs": 7854,
+                  "errors": 0,
+                  "requests": 1,
+                  "startupCpuTimeUs": 0,
+                  "subrequests": 1
+                }
+              }
+            ],
+            "AuthPrimeWholeSeconds": [
+              {
+                "avg": {
+                  "sampleInterval": 1
+                },
+                "confidence": {
+                  "sum": {
+                    "cpuTimeUs": {
+                      "estimate": 7854,
+                      "isValid": false,
+                      "lower": 7854,
+                      "sampleSize": 1,
+                      "upper": 7854
+                    },
+                    "requests": {
+                      "estimate": 1,
+                      "isValid": false,
+                      "lower": 1,
+                      "sampleSize": 1,
+                      "upper": 1
+                    }
+                  }
+                },
+                "quantiles": {
+                  "cpuTimeP50": 7854,
+                  "cpuTimeP95": 7854,
+                  "cpuTimeP99": 7854,
+                  "memoryUsageBytesP99": 6190347,
+                  "wasmMemoryBytesP99": 1441792
+                },
+                "sum": {
+                  "cpuTimeUs": 7854,
+                  "errors": 0,
+                  "requests": 1,
+                  "startupCpuTimeUs": 0,
+                  "subrequests": 1
+                }
+              }
+            ],
+            "IdentityReject": [
+              {
+                "avg": {
+                  "sampleInterval": 1
+                },
+                "confidence": {
+                  "sum": {
+                    "cpuTimeUs": {
+                      "estimate": 6324,
+                      "isValid": false,
+                      "lower": 6324,
+                      "sampleSize": 3,
+                      "upper": 6324
+                    },
+                    "requests": {
+                      "estimate": 3,
+                      "isValid": false,
+                      "lower": 3,
+                      "sampleSize": 3,
+                      "upper": 3
+                    }
+                  }
+                },
+                "quantiles": {
+                  "cpuTimeP50": 2421,
+                  "cpuTimeP95": 2672,
+                  "cpuTimeP99": 2672,
+                  "memoryUsageBytesP99": 9269237,
+                  "wasmMemoryBytesP99": 1966080
+                },
+                "sum": {
+                  "cpuTimeUs": 6324,
+                  "errors": 0,
+                  "requests": 3,
+                  "startupCpuTimeUs": 0,
+                  "subrequests": 2
+                }
+              }
+            ],
+            "IdentityRejectWholeSeconds": [
+              {
+                "avg": {
+                  "sampleInterval": 1
+                },
+                "confidence": {
+                  "sum": {
+                    "cpuTimeUs": {
+                      "estimate": 6324,
+                      "isValid": false,
+                      "lower": 6324,
+                      "sampleSize": 3,
+                      "upper": 6324
+                    },
+                    "requests": {
+                      "estimate": 3,
+                      "isValid": false,
+                      "lower": 3,
+                      "sampleSize": 3,
+                      "upper": 3
+                    }
+                  }
+                },
+                "quantiles": {
+                  "cpuTimeP50": 2421,
+                  "cpuTimeP95": 2672,
+                  "cpuTimeP99": 2672,
+                  "memoryUsageBytesP99": 9269237,
+                  "wasmMemoryBytesP99": 1966080
+                },
+                "sum": {
+                  "cpuTimeUs": 6324,
+                  "errors": 0,
+                  "requests": 3,
+                  "startupCpuTimeUs": 0,
+                  "subrequests": 2
+                }
+              }
+            ],
+            "RecentAuthWarm": [
+              {
+                "avg": {
+                  "sampleInterval": 1.3333333333333333
+                },
+                "confidence": {
+                  "sum": {
+                    "cpuTimeUs": {
+                      "estimate": 50728,
+                      "isValid": false,
+                      "lower": 29447.43544979819,
+                      "sampleSize": 6,
+                      "upper": 72008.56455020182
+                    },
+                    "requests": {
+                      "estimate": 8,
+                      "isValid": false,
+                      "lower": 4.080072030919894,
+                      "sampleSize": 6,
+                      "upper": 11.919927969080106
+                    }
+                  }
+                },
+                "quantiles": {
+                  "cpuTimeP50": 5487,
+                  "cpuTimeP95": 8586,
+                  "cpuTimeP99": 8586,
+                  "memoryUsageBytesP99": 7631712,
+                  "wasmMemoryBytesP99": 1441792
+                },
+                "sum": {
+                  "cpuTimeUs": 50728,
+                  "errors": 0,
+                  "requests": 8,
+                  "startupCpuTimeUs": 0,
+                  "subrequests": 8
+                }
+              }
+            ],
+            "RecentAuthWarmWholeSeconds": [
+              {
+                "avg": {
+                  "sampleInterval": 1.3333333333333333
+                },
+                "confidence": {
+                  "sum": {
+                    "cpuTimeUs": {
+                      "estimate": 50728,
+                      "isValid": false,
+                      "lower": 29447.43544979819,
+                      "sampleSize": 6,
+                      "upper": 72008.56455020182
+                    },
+                    "requests": {
+                      "estimate": 8,
+                      "isValid": false,
+                      "lower": 4.080072030919894,
+                      "sampleSize": 6,
+                      "upper": 11.919927969080106
+                    }
+                  }
+                },
+                "quantiles": {
+                  "cpuTimeP50": 5487,
+                  "cpuTimeP95": 8586,
+                  "cpuTimeP99": 8586,
+                  "memoryUsageBytesP99": 7631712,
+                  "wasmMemoryBytesP99": 1441792
+                },
+                "sum": {
+                  "cpuTimeUs": 50728,
+                  "errors": 0,
+                  "requests": 8,
+                  "startupCpuTimeUs": 0,
+                  "subrequests": 8
+                }
+              }
+            ],
+            "RecentCold": [
+              {
+                "avg": {
+                  "sampleInterval": 1
+                },
+                "confidence": {
+                  "sum": {
+                    "cpuTimeUs": {
+                      "estimate": 31168,
+                      "isValid": false,
+                      "lower": 31168,
+                      "sampleSize": 4,
+                      "upper": 31168
+                    },
+                    "requests": {
+                      "estimate": 4,
+                      "isValid": false,
+                      "lower": 4,
+                      "sampleSize": 4,
+                      "upper": 4
+                    }
+                  }
+                },
+                "quantiles": {
+                  "cpuTimeP50": 5941,
+                  "cpuTimeP95": 10852,
+                  "cpuTimeP99": 10852,
+                  "memoryUsageBytesP99": 6034272,
+                  "wasmMemoryBytesP99": 1441792
+                },
+                "sum": {
+                  "cpuTimeUs": 31168,
+                  "errors": 0,
+                  "requests": 4,
+                  "startupCpuTimeUs": 0,
+                  "subrequests": 4
+                }
+              }
+            ],
+            "RecentColdWholeSeconds": [
+              {
+                "avg": {
+                  "sampleInterval": 1
+                },
+                "confidence": {
+                  "sum": {
+                    "cpuTimeUs": {
+                      "estimate": 31168,
+                      "isValid": false,
+                      "lower": 31168,
+                      "sampleSize": 4,
+                      "upper": 31168
+                    },
+                    "requests": {
+                      "estimate": 4,
+                      "isValid": false,
+                      "lower": 4,
+                      "sampleSize": 4,
+                      "upper": 4
+                    }
+                  }
+                },
+                "quantiles": {
+                  "cpuTimeP50": 5941,
+                  "cpuTimeP95": 10852,
+                  "cpuTimeP99": 10852,
+                  "memoryUsageBytesP99": 6034272,
+                  "wasmMemoryBytesP99": 1441792
+                },
+                "sum": {
+                  "cpuTimeUs": 31168,
+                  "errors": 0,
+                  "requests": 4,
+                  "startupCpuTimeUs": 0,
+                  "subrequests": 4
+                }
+              }
+            ],
+            "RecentFinalized": [
+              {
+                "avg": {
+                  "sampleInterval": 1
+                },
+                "confidence": {
+                  "sum": {
+                    "cpuTimeUs": {
+                      "estimate": 27359,
+                      "isValid": false,
+                      "lower": 27359,
+                      "sampleSize": 4,
+                      "upper": 27359
+                    },
+                    "requests": {
+                      "estimate": 4,
+                      "isValid": false,
+                      "lower": 4,
+                      "sampleSize": 4,
+                      "upper": 4
+                    }
+                  }
+                },
+                "quantiles": {
+                  "cpuTimeP50": 4830,
+                  "cpuTimeP95": 12218,
+                  "cpuTimeP99": 12218,
+                  "memoryUsageBytesP99": 8950624,
+                  "wasmMemoryBytesP99": 1441792
+                },
+                "sum": {
+                  "cpuTimeUs": 27359,
+                  "errors": 0,
+                  "requests": 4,
+                  "startupCpuTimeUs": 0,
+                  "subrequests": 4
+                }
+              }
+            ],
+            "RecentFinalizedWholeSeconds": [
+              {
+                "avg": {
+                  "sampleInterval": 1
+                },
+                "confidence": {
+                  "sum": {
+                    "cpuTimeUs": {
+                      "estimate": 27359,
+                      "isValid": false,
+                      "lower": 27359,
+                      "sampleSize": 4,
+                      "upper": 27359
+                    },
+                    "requests": {
+                      "estimate": 4,
+                      "isValid": false,
+                      "lower": 4,
+                      "sampleSize": 4,
+                      "upper": 4
+                    }
+                  }
+                },
+                "quantiles": {
+                  "cpuTimeP50": 4830,
+                  "cpuTimeP95": 12218,
+                  "cpuTimeP99": 12218,
+                  "memoryUsageBytesP99": 8950624,
+                  "wasmMemoryBytesP99": 1441792
+                },
+                "sum": {
+                  "cpuTimeUs": 27359,
+                  "errors": 0,
+                  "requests": 4,
+                  "startupCpuTimeUs": 0,
+                  "subrequests": 4
+                }
+              }
+            ],
+            "RuntimeWarm": [
+              {
+                "avg": {
+                  "sampleInterval": 1
+                },
+                "confidence": {
+                  "sum": {
+                    "cpuTimeUs": {
+                      "estimate": 6229,
+                      "isValid": false,
+                      "lower": 6229,
+                      "sampleSize": 1,
+                      "upper": 6229
+                    },
+                    "requests": {
+                      "estimate": 1,
+                      "isValid": false,
+                      "lower": 1,
+                      "sampleSize": 1,
+                      "upper": 1
+                    }
+                  }
+                },
+                "quantiles": {
+                  "cpuTimeP50": 6229,
+                  "cpuTimeP95": 6229,
+                  "cpuTimeP99": 6229,
+                  "memoryUsageBytesP99": 5247840,
+                  "wasmMemoryBytesP99": 1441792
+                },
+                "sum": {
+                  "cpuTimeUs": 6229,
+                  "errors": 0,
+                  "requests": 1,
+                  "startupCpuTimeUs": 0,
+                  "subrequests": 1
+                }
+              }
+            ],
+            "RuntimeWarmWholeSeconds": [
+              {
+                "avg": {
+                  "sampleInterval": 1
+                },
+                "confidence": {
+                  "sum": {
+                    "cpuTimeUs": {
+                      "estimate": 6229,
+                      "isValid": false,
+                      "lower": 6229,
+                      "sampleSize": 1,
+                      "upper": 6229
+                    },
+                    "requests": {
+                      "estimate": 1,
+                      "isValid": false,
+                      "lower": 1,
+                      "sampleSize": 1,
+                      "upper": 1
+                    }
+                  }
+                },
+                "quantiles": {
+                  "cpuTimeP50": 6229,
+                  "cpuTimeP95": 6229,
+                  "cpuTimeP99": 6229,
+                  "memoryUsageBytesP99": 5247840,
+                  "wasmMemoryBytesP99": 1441792
+                },
+                "sum": {
+                  "cpuTimeUs": 6229,
+                  "errors": 0,
+                  "requests": 1,
+                  "startupCpuTimeUs": 0,
+                  "subrequests": 1
+                }
+              }
+            ],
+            "UnrootedFinalized": [
+              {
+                "avg": {
+                  "sampleInterval": 1
+                },
+                "confidence": {
+                  "sum": {
+                    "cpuTimeUs": {
+                      "estimate": 63737,
+                      "isValid": false,
+                      "lower": 63737,
+                      "sampleSize": 1,
+                      "upper": 63737
+                    },
+                    "requests": {
+                      "estimate": 1,
+                      "isValid": false,
+                      "lower": 1,
+                      "sampleSize": 1,
+                      "upper": 1
+                    }
+                  }
+                },
+                "quantiles": {
+                  "cpuTimeP50": 63737,
+                  "cpuTimeP95": 63737,
+                  "cpuTimeP99": 63737,
+                  "memoryUsageBytesP99": 4834144,
+                  "wasmMemoryBytesP99": 1441792
+                },
+                "sum": {
+                  "cpuTimeUs": 63737,
+                  "errors": 0,
+                  "requests": 1,
+                  "startupCpuTimeUs": 24564,
+                  "subrequests": 1
+                }
+              }
+            ],
+            "UnrootedFinalizedWholeSeconds": [
+              {
+                "avg": {
+                  "sampleInterval": 1
+                },
+                "confidence": {
+                  "sum": {
+                    "cpuTimeUs": {
+                      "estimate": 63737,
+                      "isValid": false,
+                      "lower": 63737,
+                      "sampleSize": 1,
+                      "upper": 63737
+                    },
+                    "requests": {
+                      "estimate": 1,
+                      "isValid": false,
+                      "lower": 1,
+                      "sampleSize": 1,
+                      "upper": 1
+                    }
+                  }
+                },
+                "quantiles": {
+                  "cpuTimeP50": 63737,
+                  "cpuTimeP95": 63737,
+                  "cpuTimeP99": 63737,
+                  "memoryUsageBytesP99": 4834144,
+                  "wasmMemoryBytesP99": 1441792
+                },
+                "sum": {
+                  "cpuTimeUs": 63737,
+                  "errors": 0,
+                  "requests": 1,
+                  "startupCpuTimeUs": 24564,
+                  "subrequests": 1
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "errors": null
+  },
+  "rates": {
+    "workersCpuUsdPerMillionMs": 0.02,
+    "workersRequestsUsdPerMillion": 0.3,
+    "kvReadUsdPerMillion": 0.5,
+    "r2StandardClassBUsdPerMillion": 0.36,
+    "sources": [
+      "https://developers.cloudflare.com/workers/platform/pricing/",
+      "https://developers.cloudflare.com/kv/platform/pricing/",
+      "https://developers.cloudflare.com/r2/pricing/"
+    ],
+    "verifiedAt": "2026-11-22"
+  },
+  "notes": [
+    "Each phase is filtered by Worker name, deployed version and its own time window.",
+    "Means use summed invocation CPU divided by observed requests; percentiles are not substituted for a mean.",
+    "API schema says startupCpuTimeUs is not included in cpuTimeUs and is attributed once to the first completed invocation on an isolate. A conservative including-startup estimate is separate.",
+    "Exact and whole-second windows are alternative boundary checks, not extra requests or independent observations.",
+    "Adaptive metrics can lag or be sampled; exact request-plan matching is reported. These estimates are not invoice totals.",
+    "Source-only profiling keeps auth/index caches and forces source range reads. Fully cold profiling bypasses all application caches; neither controls physical R2 internal caches.",
+    "This collector sent no data requests to the Worker.",
+    "A matching weighted request estimate alone does not prove unsampled data. Sample interval and sample size are checked separately.",
+    "Small phase confidence intervals can have isValid=false. This report makes no statistical confidence claim.",
+    "JSON, binary, response-hit and warmup CPU must not be merged for a per-format cost claim."
+  ],
+  "derived": {
+    "UnrootedFinalized": {
+      "observedRequests": 1,
+      "countMatchesPlan": true,
+      "errors": 0,
+      "cpuTimeUs": 63737,
+      "startupCpuTimeUs": 24564,
+      "meanCpuMs": 63.737,
+      "meanCpuIncludingAttributedStartupMs": 88.301,
+      "cpuP50Ms": 63.737,
+      "cpuP95Ms": 63.737,
+      "cpuUsdPerMillionRequestsBeforeAllowances": 1.27474,
+      "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 1.76602,
+      "adaptiveSampleInterval": 1,
+      "sampleSize": 1,
+      "unsampled": true,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 63737,
+          "isValid": false,
+          "lower": 63737,
+          "sampleSize": 1,
+          "upper": 63737
+        },
+        "requests": {
+          "estimate": 1,
+          "isValid": false,
+          "lower": 1,
+          "sampleSize": 1,
+          "upper": 1
+        }
+      },
+      "usableForMatchedUnsampledEstimate": true
+    },
+    "UnrootedFinalizedWholeSeconds": {
+      "observedRequests": 1,
+      "countMatchesPlan": true,
+      "errors": 0,
+      "cpuTimeUs": 63737,
+      "startupCpuTimeUs": 24564,
+      "meanCpuMs": 63.737,
+      "meanCpuIncludingAttributedStartupMs": 88.301,
+      "cpuP50Ms": 63.737,
+      "cpuP95Ms": 63.737,
+      "cpuUsdPerMillionRequestsBeforeAllowances": 1.27474,
+      "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 1.76602,
+      "adaptiveSampleInterval": 1,
+      "sampleSize": 1,
+      "unsampled": true,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 63737,
+          "isValid": false,
+          "lower": 63737,
+          "sampleSize": 1,
+          "upper": 63737
+        },
+        "requests": {
+          "estimate": 1,
+          "isValid": false,
+          "lower": 1,
+          "sampleSize": 1,
+          "upper": 1
+        }
+      },
+      "usableForMatchedUnsampledEstimate": true
+    },
+    "RuntimeWarm": {
+      "observedRequests": 1,
+      "countMatchesPlan": true,
+      "errors": 0,
+      "cpuTimeUs": 6229,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": 6.229,
+      "meanCpuIncludingAttributedStartupMs": 6.229,
+      "cpuP50Ms": 6.229,
+      "cpuP95Ms": 6.229,
+      "cpuUsdPerMillionRequestsBeforeAllowances": 0.12458,
+      "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.12458,
+      "adaptiveSampleInterval": 1,
+      "sampleSize": 1,
+      "unsampled": true,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 6229,
+          "isValid": false,
+          "lower": 6229,
+          "sampleSize": 1,
+          "upper": 6229
+        },
+        "requests": {
+          "estimate": 1,
+          "isValid": false,
+          "lower": 1,
+          "sampleSize": 1,
+          "upper": 1
+        }
+      },
+      "usableForMatchedUnsampledEstimate": true
+    },
+    "RuntimeWarmWholeSeconds": {
+      "observedRequests": 1,
+      "countMatchesPlan": true,
+      "errors": 0,
+      "cpuTimeUs": 6229,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": 6.229,
+      "meanCpuIncludingAttributedStartupMs": 6.229,
+      "cpuP50Ms": 6.229,
+      "cpuP95Ms": 6.229,
+      "cpuUsdPerMillionRequestsBeforeAllowances": 0.12458,
+      "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.12458,
+      "adaptiveSampleInterval": 1,
+      "sampleSize": 1,
+      "unsampled": true,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 6229,
+          "isValid": false,
+          "lower": 6229,
+          "sampleSize": 1,
+          "upper": 6229
+        },
+        "requests": {
+          "estimate": 1,
+          "isValid": false,
+          "lower": 1,
+          "sampleSize": 1,
+          "upper": 1
+        }
+      },
+      "usableForMatchedUnsampledEstimate": true
+    },
+    "RecentCold": {
+      "observedRequests": 4,
+      "countMatchesPlan": true,
+      "errors": 0,
+      "cpuTimeUs": 31168,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": 7.792,
+      "meanCpuIncludingAttributedStartupMs": 7.792,
+      "cpuP50Ms": 5.941,
+      "cpuP95Ms": 10.852,
+      "cpuUsdPerMillionRequestsBeforeAllowances": 0.15584,
+      "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.15584,
+      "adaptiveSampleInterval": 1,
+      "sampleSize": 4,
+      "unsampled": true,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 31168,
+          "isValid": false,
+          "lower": 31168,
+          "sampleSize": 4,
+          "upper": 31168
+        },
+        "requests": {
+          "estimate": 4,
+          "isValid": false,
+          "lower": 4,
+          "sampleSize": 4,
+          "upper": 4
+        }
+      },
+      "usableForMatchedUnsampledEstimate": true
+    },
+    "RecentColdWholeSeconds": {
+      "observedRequests": 4,
+      "countMatchesPlan": true,
+      "errors": 0,
+      "cpuTimeUs": 31168,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": 7.792,
+      "meanCpuIncludingAttributedStartupMs": 7.792,
+      "cpuP50Ms": 5.941,
+      "cpuP95Ms": 10.852,
+      "cpuUsdPerMillionRequestsBeforeAllowances": 0.15584,
+      "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.15584,
+      "adaptiveSampleInterval": 1,
+      "sampleSize": 4,
+      "unsampled": true,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 31168,
+          "isValid": false,
+          "lower": 31168,
+          "sampleSize": 4,
+          "upper": 31168
+        },
+        "requests": {
+          "estimate": 4,
+          "isValid": false,
+          "lower": 4,
+          "sampleSize": 4,
+          "upper": 4
+        }
+      },
+      "usableForMatchedUnsampledEstimate": true
+    },
+    "AuthPrime": {
+      "observedRequests": 1,
+      "countMatchesPlan": true,
+      "errors": 0,
+      "cpuTimeUs": 7854,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": 7.854,
+      "meanCpuIncludingAttributedStartupMs": 7.854,
+      "cpuP50Ms": 7.854,
+      "cpuP95Ms": 7.854,
+      "cpuUsdPerMillionRequestsBeforeAllowances": 0.15708000000000003,
+      "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.15708000000000003,
+      "adaptiveSampleInterval": 1,
+      "sampleSize": 1,
+      "unsampled": true,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 7854,
+          "isValid": false,
+          "lower": 7854,
+          "sampleSize": 1,
+          "upper": 7854
+        },
+        "requests": {
+          "estimate": 1,
+          "isValid": false,
+          "lower": 1,
+          "sampleSize": 1,
+          "upper": 1
+        }
+      },
+      "usableForMatchedUnsampledEstimate": true
+    },
+    "AuthPrimeWholeSeconds": {
+      "observedRequests": 1,
+      "countMatchesPlan": true,
+      "errors": 0,
+      "cpuTimeUs": 7854,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": 7.854,
+      "meanCpuIncludingAttributedStartupMs": 7.854,
+      "cpuP50Ms": 7.854,
+      "cpuP95Ms": 7.854,
+      "cpuUsdPerMillionRequestsBeforeAllowances": 0.15708000000000003,
+      "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.15708000000000003,
+      "adaptiveSampleInterval": 1,
+      "sampleSize": 1,
+      "unsampled": true,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 7854,
+          "isValid": false,
+          "lower": 7854,
+          "sampleSize": 1,
+          "upper": 7854
+        },
+        "requests": {
+          "estimate": 1,
+          "isValid": false,
+          "lower": 1,
+          "sampleSize": 1,
+          "upper": 1
+        }
+      },
+      "usableForMatchedUnsampledEstimate": true
+    },
+    "RecentAuthWarm": {
+      "observedRequests": 8,
+      "countMatchesPlan": true,
+      "errors": 0,
+      "cpuTimeUs": 50728,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": 6.341,
+      "meanCpuIncludingAttributedStartupMs": 6.341,
+      "cpuP50Ms": 5.487,
+      "cpuP95Ms": 8.586,
+      "cpuUsdPerMillionRequestsBeforeAllowances": 0.12682000000000002,
+      "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.12682000000000002,
+      "adaptiveSampleInterval": 1.3333333333333333,
+      "sampleSize": 6,
+      "unsampled": false,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 50728,
+          "isValid": false,
+          "lower": 29447.43544979819,
+          "sampleSize": 6,
+          "upper": 72008.56455020182
+        },
+        "requests": {
+          "estimate": 8,
+          "isValid": false,
+          "lower": 4.080072030919894,
+          "sampleSize": 6,
+          "upper": 11.919927969080106
+        }
+      },
+      "usableForMatchedUnsampledEstimate": false
+    },
+    "RecentAuthWarmWholeSeconds": {
+      "observedRequests": 8,
+      "countMatchesPlan": true,
+      "errors": 0,
+      "cpuTimeUs": 50728,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": 6.341,
+      "meanCpuIncludingAttributedStartupMs": 6.341,
+      "cpuP50Ms": 5.487,
+      "cpuP95Ms": 8.586,
+      "cpuUsdPerMillionRequestsBeforeAllowances": 0.12682000000000002,
+      "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.12682000000000002,
+      "adaptiveSampleInterval": 1.3333333333333333,
+      "sampleSize": 6,
+      "unsampled": false,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 50728,
+          "isValid": false,
+          "lower": 29447.43544979819,
+          "sampleSize": 6,
+          "upper": 72008.56455020182
+        },
+        "requests": {
+          "estimate": 8,
+          "isValid": false,
+          "lower": 4.080072030919894,
+          "sampleSize": 6,
+          "upper": 11.919927969080106
+        }
+      },
+      "usableForMatchedUnsampledEstimate": false
+    },
+    "RecentFinalized": {
+      "observedRequests": 4,
+      "countMatchesPlan": true,
+      "errors": 0,
+      "cpuTimeUs": 27359,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": 6.83975,
+      "meanCpuIncludingAttributedStartupMs": 6.83975,
+      "cpuP50Ms": 4.83,
+      "cpuP95Ms": 12.218,
+      "cpuUsdPerMillionRequestsBeforeAllowances": 0.13679500000000003,
+      "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.13679500000000003,
+      "adaptiveSampleInterval": 1,
+      "sampleSize": 4,
+      "unsampled": true,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 27359,
+          "isValid": false,
+          "lower": 27359,
+          "sampleSize": 4,
+          "upper": 27359
+        },
+        "requests": {
+          "estimate": 4,
+          "isValid": false,
+          "lower": 4,
+          "sampleSize": 4,
+          "upper": 4
+        }
+      },
+      "usableForMatchedUnsampledEstimate": true
+    },
+    "RecentFinalizedWholeSeconds": {
+      "observedRequests": 4,
+      "countMatchesPlan": true,
+      "errors": 0,
+      "cpuTimeUs": 27359,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": 6.83975,
+      "meanCpuIncludingAttributedStartupMs": 6.83975,
+      "cpuP50Ms": 4.83,
+      "cpuP95Ms": 12.218,
+      "cpuUsdPerMillionRequestsBeforeAllowances": 0.13679500000000003,
+      "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.13679500000000003,
+      "adaptiveSampleInterval": 1,
+      "sampleSize": 4,
+      "unsampled": true,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 27359,
+          "isValid": false,
+          "lower": 27359,
+          "sampleSize": 4,
+          "upper": 27359
+        },
+        "requests": {
+          "estimate": 4,
+          "isValid": false,
+          "lower": 4,
+          "sampleSize": 4,
+          "upper": 4
+        }
+      },
+      "usableForMatchedUnsampledEstimate": true
+    },
+    "ArchiveFallback": {
+      "observedRequests": 4,
+      "countMatchesPlan": true,
+      "errors": 0,
+      "cpuTimeUs": 75618,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": 18.9045,
+      "meanCpuIncludingAttributedStartupMs": 18.9045,
+      "cpuP50Ms": 17.313,
+      "cpuP95Ms": 23.727,
+      "cpuUsdPerMillionRequestsBeforeAllowances": 0.37809000000000004,
+      "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.37809000000000004,
+      "adaptiveSampleInterval": 1,
+      "sampleSize": 4,
+      "unsampled": true,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 75618,
+          "isValid": false,
+          "lower": 75618,
+          "sampleSize": 4,
+          "upper": 75618
+        },
+        "requests": {
+          "estimate": 4,
+          "isValid": false,
+          "lower": 4,
+          "sampleSize": 4,
+          "upper": 4
+        }
+      },
+      "usableForMatchedUnsampledEstimate": true
+    },
+    "ArchiveFallbackWholeSeconds": {
+      "observedRequests": 4,
+      "countMatchesPlan": true,
+      "errors": 0,
+      "cpuTimeUs": 75618,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": 18.9045,
+      "meanCpuIncludingAttributedStartupMs": 18.9045,
+      "cpuP50Ms": 17.313,
+      "cpuP95Ms": 23.727,
+      "cpuUsdPerMillionRequestsBeforeAllowances": 0.37809000000000004,
+      "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.37809000000000004,
+      "adaptiveSampleInterval": 1,
+      "sampleSize": 4,
+      "unsampled": true,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 75618,
+          "isValid": false,
+          "lower": 75618,
+          "sampleSize": 4,
+          "upper": 75618
+        },
+        "requests": {
+          "estimate": 4,
+          "isValid": false,
+          "lower": 4,
+          "sampleSize": 4,
+          "upper": 4
+        }
+      },
+      "usableForMatchedUnsampledEstimate": true
+    },
+    "IdentityReject": {
+      "observedRequests": 3,
+      "countMatchesPlan": false,
+      "errors": 0,
+      "cpuTimeUs": 6324,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": 2.108,
+      "meanCpuIncludingAttributedStartupMs": 2.108,
+      "cpuP50Ms": 2.421,
+      "cpuP95Ms": 2.672,
+      "cpuUsdPerMillionRequestsBeforeAllowances": 0.04216,
+      "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.04216,
+      "adaptiveSampleInterval": 1,
+      "sampleSize": 3,
+      "unsampled": false,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 6324,
+          "isValid": false,
+          "lower": 6324,
+          "sampleSize": 3,
+          "upper": 6324
+        },
+        "requests": {
+          "estimate": 3,
+          "isValid": false,
+          "lower": 3,
+          "sampleSize": 3,
+          "upper": 3
+        }
+      },
+      "usableForMatchedUnsampledEstimate": false
+    },
+    "IdentityRejectWholeSeconds": {
+      "observedRequests": 3,
+      "countMatchesPlan": false,
+      "errors": 0,
+      "cpuTimeUs": 6324,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": 2.108,
+      "meanCpuIncludingAttributedStartupMs": 2.108,
+      "cpuP50Ms": 2.421,
+      "cpuP95Ms": 2.672,
+      "cpuUsdPerMillionRequestsBeforeAllowances": 0.04216,
+      "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.04216,
+      "adaptiveSampleInterval": 1,
+      "sampleSize": 3,
+      "unsampled": false,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 6324,
+          "isValid": false,
+          "lower": 6324,
+          "sampleSize": 3,
+          "upper": 6324
+        },
+        "requests": {
+          "estimate": 3,
+          "isValid": false,
+          "lower": 3,
+          "sampleSize": 3,
+          "upper": 3
+        }
+      },
+      "usableForMatchedUnsampledEstimate": false
+    }
+  },
+  "selectedPhases": {
+    "UnrootedFinalized": {
+      "selectedQuery": "UnrootedFinalized",
+      "observedRequests": 1,
+      "countMatchesPlan": true,
+      "errors": 0,
+      "cpuTimeUs": 63737,
+      "startupCpuTimeUs": 24564,
+      "meanCpuMs": 63.737,
+      "meanCpuIncludingAttributedStartupMs": 88.301,
+      "cpuP50Ms": 63.737,
+      "cpuP95Ms": 63.737,
+      "cpuUsdPerMillionRequestsBeforeAllowances": 1.27474,
+      "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 1.76602,
+      "adaptiveSampleInterval": 1,
+      "sampleSize": 1,
+      "unsampled": true,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 63737,
+          "isValid": false,
+          "lower": 63737,
+          "sampleSize": 1,
+          "upper": 63737
+        },
+        "requests": {
+          "estimate": 1,
+          "isValid": false,
+          "lower": 1,
+          "sampleSize": 1,
+          "upper": 1
+        }
+      },
+      "usableForMatchedUnsampledEstimate": true
+    },
+    "RuntimeWarm": {
+      "selectedQuery": "RuntimeWarm",
+      "observedRequests": 1,
+      "countMatchesPlan": true,
+      "errors": 0,
+      "cpuTimeUs": 6229,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": 6.229,
+      "meanCpuIncludingAttributedStartupMs": 6.229,
+      "cpuP50Ms": 6.229,
+      "cpuP95Ms": 6.229,
+      "cpuUsdPerMillionRequestsBeforeAllowances": 0.12458,
+      "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.12458,
+      "adaptiveSampleInterval": 1,
+      "sampleSize": 1,
+      "unsampled": true,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 6229,
+          "isValid": false,
+          "lower": 6229,
+          "sampleSize": 1,
+          "upper": 6229
+        },
+        "requests": {
+          "estimate": 1,
+          "isValid": false,
+          "lower": 1,
+          "sampleSize": 1,
+          "upper": 1
+        }
+      },
+      "usableForMatchedUnsampledEstimate": true
+    },
+    "RecentCold": {
+      "selectedQuery": "RecentCold",
+      "observedRequests": 4,
+      "countMatchesPlan": true,
+      "errors": 0,
+      "cpuTimeUs": 31168,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": 7.792,
+      "meanCpuIncludingAttributedStartupMs": 7.792,
+      "cpuP50Ms": 5.941,
+      "cpuP95Ms": 10.852,
+      "cpuUsdPerMillionRequestsBeforeAllowances": 0.15584,
+      "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.15584,
+      "adaptiveSampleInterval": 1,
+      "sampleSize": 4,
+      "unsampled": true,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 31168,
+          "isValid": false,
+          "lower": 31168,
+          "sampleSize": 4,
+          "upper": 31168
+        },
+        "requests": {
+          "estimate": 4,
+          "isValid": false,
+          "lower": 4,
+          "sampleSize": 4,
+          "upper": 4
+        }
+      },
+      "usableForMatchedUnsampledEstimate": true
+    },
+    "AuthPrime": {
+      "selectedQuery": "AuthPrime",
+      "observedRequests": 1,
+      "countMatchesPlan": true,
+      "errors": 0,
+      "cpuTimeUs": 7854,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": 7.854,
+      "meanCpuIncludingAttributedStartupMs": 7.854,
+      "cpuP50Ms": 7.854,
+      "cpuP95Ms": 7.854,
+      "cpuUsdPerMillionRequestsBeforeAllowances": 0.15708000000000003,
+      "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.15708000000000003,
+      "adaptiveSampleInterval": 1,
+      "sampleSize": 1,
+      "unsampled": true,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 7854,
+          "isValid": false,
+          "lower": 7854,
+          "sampleSize": 1,
+          "upper": 7854
+        },
+        "requests": {
+          "estimate": 1,
+          "isValid": false,
+          "lower": 1,
+          "sampleSize": 1,
+          "upper": 1
+        }
+      },
+      "usableForMatchedUnsampledEstimate": true
+    },
+    "RecentAuthWarm": {
+      "selectedQuery": "RecentAuthWarm",
+      "observedRequests": 8,
+      "countMatchesPlan": true,
+      "errors": 0,
+      "cpuTimeUs": 50728,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": 6.341,
+      "meanCpuIncludingAttributedStartupMs": 6.341,
+      "cpuP50Ms": 5.487,
+      "cpuP95Ms": 8.586,
+      "cpuUsdPerMillionRequestsBeforeAllowances": 0.12682000000000002,
+      "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.12682000000000002,
+      "adaptiveSampleInterval": 1.3333333333333333,
+      "sampleSize": 6,
+      "unsampled": false,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 50728,
+          "isValid": false,
+          "lower": 29447.43544979819,
+          "sampleSize": 6,
+          "upper": 72008.56455020182
+        },
+        "requests": {
+          "estimate": 8,
+          "isValid": false,
+          "lower": 4.080072030919894,
+          "sampleSize": 6,
+          "upper": 11.919927969080106
+        }
+      },
+      "usableForMatchedUnsampledEstimate": false
+    },
+    "RecentFinalized": {
+      "selectedQuery": "RecentFinalized",
+      "observedRequests": 4,
+      "countMatchesPlan": true,
+      "errors": 0,
+      "cpuTimeUs": 27359,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": 6.83975,
+      "meanCpuIncludingAttributedStartupMs": 6.83975,
+      "cpuP50Ms": 4.83,
+      "cpuP95Ms": 12.218,
+      "cpuUsdPerMillionRequestsBeforeAllowances": 0.13679500000000003,
+      "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.13679500000000003,
+      "adaptiveSampleInterval": 1,
+      "sampleSize": 4,
+      "unsampled": true,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 27359,
+          "isValid": false,
+          "lower": 27359,
+          "sampleSize": 4,
+          "upper": 27359
+        },
+        "requests": {
+          "estimate": 4,
+          "isValid": false,
+          "lower": 4,
+          "sampleSize": 4,
+          "upper": 4
+        }
+      },
+      "usableForMatchedUnsampledEstimate": true
+    },
+    "ArchiveFallback": {
+      "selectedQuery": "ArchiveFallback",
+      "observedRequests": 4,
+      "countMatchesPlan": true,
+      "errors": 0,
+      "cpuTimeUs": 75618,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": 18.9045,
+      "meanCpuIncludingAttributedStartupMs": 18.9045,
+      "cpuP50Ms": 17.313,
+      "cpuP95Ms": 23.727,
+      "cpuUsdPerMillionRequestsBeforeAllowances": 0.37809000000000004,
+      "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.37809000000000004,
+      "adaptiveSampleInterval": 1,
+      "sampleSize": 4,
+      "unsampled": true,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 75618,
+          "isValid": false,
+          "lower": 75618,
+          "sampleSize": 4,
+          "upper": 75618
+        },
+        "requests": {
+          "estimate": 4,
+          "isValid": false,
+          "lower": 4,
+          "sampleSize": 4,
+          "upper": 4
+        }
+      },
+      "usableForMatchedUnsampledEstimate": true
+    },
+    "IdentityReject": {
+      "selectedQuery": "IdentityReject",
+      "observedRequests": 3,
+      "countMatchesPlan": false,
+      "errors": 0,
+      "cpuTimeUs": 6324,
+      "startupCpuTimeUs": 0,
+      "meanCpuMs": 2.108,
+      "meanCpuIncludingAttributedStartupMs": 2.108,
+      "cpuP50Ms": 2.421,
+      "cpuP95Ms": 2.672,
+      "cpuUsdPerMillionRequestsBeforeAllowances": 0.04216,
+      "cpuPlusAttributedStartupUsdPerMillionRequestsBeforeAllowances": 0.04216,
+      "adaptiveSampleInterval": 1,
+      "sampleSize": 3,
+      "unsampled": false,
+      "confidence95": {
+        "cpuTimeUs": {
+          "estimate": 6324,
+          "isValid": false,
+          "lower": 6324,
+          "sampleSize": 3,
+          "upper": 6324
+        },
+        "requests": {
+          "estimate": 3,
+          "isValid": false,
+          "lower": 3,
+          "sampleSize": 3,
+          "upper": 3
+        }
+      },
+      "usableForMatchedUnsampledEstimate": false
+    }
+  },
+  "allSelectedCountsMatch": false,
+  "allSelectedUnsampled": false,
+  "queryFields": "sum { requests errors cpuTimeUs startupCpuTimeUs subrequests } quantiles { cpuTimeP50 cpuTimeP95 cpuTimeP99 memoryUsageBytesP99 wasmMemoryBytesP99 } avg { sampleInterval } confidence(level:0.95) { sum { requests { estimate lower upper sampleSize isValid } cpuTimeUs { estimate lower upper sampleSize isValid } } }",
+  "wasmSha256": "abdf6f5a4a57e44fb0c9b343ced6c980f4a61e92eb20d597ef8453a4e6fc323b",
+  "requestReceipt": "/Users/augustin/Developement/ferno/blockzilla-v1/reports/recent-get-block-recovery-20261122/production-recovery.json",
+  "observabilityHeadSamplingRate": 0.01
+}

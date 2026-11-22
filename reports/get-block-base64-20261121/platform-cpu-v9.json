@@ -1,0 +1,163 @@
+{
+  "schema": "blockzilla-base64-platform-cpu-v2",
+  "fetchedAt": "2026-11-21T20:56:52.588780+00:00",
+  "worker": "blockzilla-get-block",
+  "version": "074812ac-a908-4eba-bec5-02752230eae6",
+  "windows": {
+    "mainExact": {
+      "start": "2026-11-21T20:53:40.813Z",
+      "end": "2026-11-21T20:54:25.877437Z",
+      "expectedWorkerRequests": 144,
+      "traffic": "mixed-cache-states-and-formats"
+    },
+    "mainWholeSeconds": {
+      "start": "2026-11-21T20:53:40Z",
+      "end": "2026-11-21T20:54:26Z",
+      "expectedWorkerRequests": 144,
+      "traffic": "mixed-cache-states-and-formats-one-second-boundary-check"
+    },
+    "coldJson": {
+      "start": "2026-11-21T20:54:39.507Z",
+      "end": "2026-11-21T20:54:45.796Z",
+      "expectedWorkerRequests": 8,
+      "traffic": "eight-forced-origin-base64-json"
+    },
+    "coldBinary": {
+      "start": "2026-11-21T20:55:00.870Z",
+      "end": "2026-11-21T20:55:02.477Z",
+      "expectedWorkerRequests": 2,
+      "traffic": "two-forced-origin-binary"
+    }
+  },
+  "response": {
+    "data": {
+      "viewer": {
+        "accounts": [
+          {
+            "coldBinary": [
+              {
+                "quantiles": {
+                  "cpuTimeP50": 8025,
+                  "cpuTimeP95": 37223,
+                  "cpuTimeP99": 37223,
+                  "memoryUsageBytesP99": 5946577,
+                  "wasmMemoryBytesP99": 1769472
+                },
+                "sum": {
+                  "cpuTimeUs": 45248,
+                  "errors": 0,
+                  "requests": 2,
+                  "startupCpuTimeUs": 14121,
+                  "subrequests": 4
+                }
+              }
+            ],
+            "coldJson": [
+              {
+                "quantiles": {
+                  "cpuTimeP50": 52317,
+                  "cpuTimeP95": 138896,
+                  "cpuTimeP99": 138896,
+                  "memoryUsageBytesP99": 22285248,
+                  "wasmMemoryBytesP99": 5177344
+                },
+                "sum": {
+                  "cpuTimeUs": 508104,
+                  "errors": 0,
+                  "requests": 8,
+                  "startupCpuTimeUs": 19220,
+                  "subrequests": 16
+                }
+              }
+            ],
+            "mainExact": [
+              {
+                "quantiles": {
+                  "cpuTimeP50": 1855,
+                  "cpuTimeP95": 56925,
+                  "cpuTimeP99": 99185,
+                  "memoryUsageBytesP99": 22987116,
+                  "wasmMemoryBytesP99": 6291456
+                },
+                "sum": {
+                  "cpuTimeUs": 1474584,
+                  "errors": 0,
+                  "requests": 143,
+                  "startupCpuTimeUs": 22792,
+                  "subrequests": 78
+                }
+              }
+            ],
+            "mainWholeSeconds": [
+              {
+                "quantiles": {
+                  "cpuTimeP50": 1855,
+                  "cpuTimeP95": 56925,
+                  "cpuTimeP99": 99185,
+                  "memoryUsageBytesP99": 22987116,
+                  "wasmMemoryBytesP99": 6291456
+                },
+                "sum": {
+                  "cpuTimeUs": 1474584,
+                  "errors": 0,
+                  "requests": 143,
+                  "startupCpuTimeUs": 22792,
+                  "subrequests": 78
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "errors": null
+  },
+  "notes": [
+    "Version and time windows filter each query.",
+    "The main benchmark mixes cache states and formats. Only the stage request plan separates JSON and binary.",
+    "Main exact and whole-second queries check timestamp boundaries; they are separate observations, not extra Worker requests.",
+    "Adaptive metrics can lag or be sampled. Compare observed counts with the request plan. These are not invoice totals.",
+    "No production CPU stack profile was obtained. Two documented profiler requests returned HTTP404/code10393; their receipts are stored separately."
+  ],
+  "derived": {
+    "coldBinary": {
+      "observedRequests": 2,
+      "countMatchesPlan": true,
+      "observedMeanCpuMs": 22.624,
+      "cpuP50Ms": 8.025,
+      "cpuP95Ms": 37.223,
+      "observedCpuUsdBeforeAllowances": 9.0496e-07
+    },
+    "coldJson": {
+      "observedRequests": 8,
+      "countMatchesPlan": true,
+      "observedMeanCpuMs": 63.513,
+      "cpuP50Ms": 52.317,
+      "cpuP95Ms": 138.896,
+      "observedCpuUsdBeforeAllowances": 1.0162079999999999e-05
+    },
+    "mainExact": {
+      "observedRequests": 143,
+      "countMatchesPlan": false,
+      "observedMeanCpuMs": 10.311776223776224,
+      "cpuP50Ms": 1.855,
+      "cpuP95Ms": 56.925,
+      "observedCpuUsdBeforeAllowances": 2.9491680000000003e-05
+    },
+    "mainWholeSeconds": {
+      "observedRequests": 143,
+      "countMatchesPlan": false,
+      "observedMeanCpuMs": 10.311776223776224,
+      "cpuP50Ms": 1.855,
+      "cpuP95Ms": 56.925,
+      "observedCpuUsdBeforeAllowances": 2.9491680000000003e-05
+    }
+  },
+  "rates": {
+    "workersCpuUsdPerMillionMs": 0.02,
+    "includedAccountCpuMsPerMonth": 30000000,
+    "source": "https://developers.cloudflare.com/workers/platform/pricing/",
+    "verifiedAt": "2026-11-21",
+    "scope": "CPU usage only; account allowances, subscription, Worker request charges, KV, R2, and index storage are separate."
+  }
+}

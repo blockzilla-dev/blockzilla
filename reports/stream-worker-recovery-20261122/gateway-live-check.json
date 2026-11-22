@@ -1,0 +1,68 @@
+{
+  "after": "000000000000000018ea5078fdda19df-13e843:p356358:f6a5c38eeb49da6765e93a0a317bb6bea7e978dda809e3c1c3498374a2f30745",
+  "block_files_written": 0,
+  "block_metadata_entries": 8,
+  "block_payload_fields_absent": true,
+  "control_sha_event_source_checked": true,
+  "fixed_target_empty_page_checked": true,
+  "generation": "c1739ce6fcee61291f41548b1960aa27",
+  "metadata_entries": 23,
+  "old_helper_head_before_and_after": true,
+  "ordered_without_gaps_or_duplicates": true,
+  "original_control_frames": 15,
+  "pages": [
+    {
+      "end_cursor": "000000000000000018ea5078fdda19df-13e843:p356361:5b1563318e062cab442b49d88f4600bea31c047bc7956512a70bfa452ed41a0a",
+      "entry_count": 3,
+      "response_bytes": 9244
+    },
+    {
+      "end_cursor": "000000000000000018ea5078fdda19df-13e843:p356364:cceaa4ced9b4efe6b7e2c827f423dce30bedef242c55f2f6fefe6ae75275a114",
+      "entry_count": 3,
+      "response_bytes": 9236
+    },
+    {
+      "end_cursor": "000000000000000018ea5078fdda19df-13e843:p356367:1f78ee532a76bf1a73f29741e9679eb113a65c5104000d4ce85039267a930f7f",
+      "entry_count": 3,
+      "response_bytes": 9238
+    },
+    {
+      "end_cursor": "000000000000000018ea5078fdda19df-13e843:p356370:a80e75f07c4f4c1bd3d8da3d1702f86321b31d026513779b7c6c66393b5b749c",
+      "entry_count": 3,
+      "response_bytes": 9266
+    },
+    {
+      "end_cursor": "000000000000000018ea5078fdda19df-13e843:p356373:1365a4cfefea63227e03a1069ddd1599fe2169a2a0a54079212514e05fca9d82",
+      "entry_count": 3,
+      "response_bytes": 9281
+    },
+    {
+      "end_cursor": "000000000000000018ea5078fdda19df-13e843:p356376:d63a81952de4c00d20fe625b14798ef396126e119b27cdc4a3c1fb678677d08f",
+      "entry_count": 3,
+      "response_bytes": 9257
+    },
+    {
+      "end_cursor": "000000000000000018ea5078fdda19df-13e843:p356379:4f75f3ad0da9454f31535ef3029f707497ead2e607dbaec3676c8e97ab2b8e55",
+      "entry_count": 3,
+      "response_bytes": 6939
+    },
+    {
+      "end_cursor": "000000000000000018ea5078fdda19df-13e843:p356381:617defa7e83b4f6e8a81d492f7093a4b10ee3a2b18730fd4813cfc6b919bc134",
+      "entry_count": 2,
+      "response_bytes": 8026
+    }
+  ],
+  "producer_generation": "4aaf2462131201579e55e0679f31f4a992d2c85d4e3c4891f682537625e88900",
+  "restricted_service_user": "blockzilla-pipe",
+  "running_pipe_touched": false,
+  "schema": "blockzilla-recovery-gateway-live-check-v1",
+  "seconds": 7.562,
+  "source": {
+    "agave_revision": "agave-4.4.0-source-251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+    "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+    "node_identity": "J7qpvCEWhdBgPdYRV3s3btWPrRVXa2qnAzgvxWTvtbrQ",
+    "session_id": "000000000000000018ea5078fdda19df-13e843"
+  },
+  "status": "PASS",
+  "until": "000000000000000018ea5078fdda19df-13e843:p356381:617defa7e83b4f6e8a81d492f7093a4b10ee3a2b18730fd4813cfc6b919bc134"
+}

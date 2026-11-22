@@ -1,0 +1,93 @@
+{
+  "status": "PASS",
+  "startedAt": "2026-11-22T08:32:35.167Z",
+  "wasmSha256": "f5b9675e07138c899fcde1752ab7ceafc67ca4b7bc66a8e7da044f7a91f0b973",
+  "checks": [
+    "a fresh app instance authorizes from the shared positive cache with zero KV reads",
+    "stale shared record falls through to KV without authorizing",
+    "future shared record falls through to KV without authorizing",
+    "disabled shared record falls through to KV without authorizing",
+    "invalid record shared record falls through to KV without authorizing",
+    "wrong scope shared record falls through to KV without authorizing",
+    "wrong key digest shared record falls through to KV without authorizing",
+    "wrong origin shared record falls through to KV without authorizing",
+    "wrong version shared record falls through to KV without authorizing",
+    "unknown field shared record falls through to KV without authorizing",
+    "malformed shared record falls through to KV without authorizing",
+    "oversized shared record falls through to KV without authorizing",
+    "missing KV results never enter either positive auth cache",
+    "disabled KV results never enter either positive auth cache",
+    "malformed KV results never enter either positive auth cache",
+    "Cache API failGet failure preserves valid KV authorization",
+    "Cache API failPut failure preserves valid KV authorization",
+    "L2-to-L1 promotion keeps only the original remaining TTL and never republishes",
+    "shared expiry starts at KV read start and slow reads reduce its Cache-Control TTL",
+    "full profile bypasses both auth caches and still performs exactly one KV read"
+  ],
+  "cases": [
+    {
+      "name": "a fresh app instance authorizes from the shared positive cache with zero KV reads"
+    },
+    {
+      "name": "stale shared record falls through to KV without authorizing"
+    },
+    {
+      "name": "future shared record falls through to KV without authorizing"
+    },
+    {
+      "name": "disabled shared record falls through to KV without authorizing"
+    },
+    {
+      "name": "invalid record shared record falls through to KV without authorizing"
+    },
+    {
+      "name": "wrong scope shared record falls through to KV without authorizing"
+    },
+    {
+      "name": "wrong key digest shared record falls through to KV without authorizing"
+    },
+    {
+      "name": "wrong origin shared record falls through to KV without authorizing"
+    },
+    {
+      "name": "wrong version shared record falls through to KV without authorizing"
+    },
+    {
+      "name": "unknown field shared record falls through to KV without authorizing"
+    },
+    {
+      "name": "malformed shared record falls through to KV without authorizing"
+    },
+    {
+      "name": "oversized shared record falls through to KV without authorizing"
+    },
+    {
+      "name": "missing KV results never enter either positive auth cache"
+    },
+    {
+      "name": "disabled KV results never enter either positive auth cache"
+    },
+    {
+      "name": "malformed KV results never enter either positive auth cache"
+    },
+    {
+      "name": "Cache API failGet failure preserves valid KV authorization"
+    },
+    {
+      "name": "Cache API failPut failure preserves valid KV authorization"
+    },
+    {
+      "name": "L2-to-L1 promotion keeps only the original remaining TTL and never republishes"
+    },
+    {
+      "name": "shared expiry starts at KV read start and slow reads reduce its Cache-Control TTL",
+      "delayMs": 1100,
+      "cacheControl": "public, max-age=4"
+    },
+    {
+      "name": "full profile bypasses both auth caches and still performs exactly one KV read"
+    }
+  ],
+  "scope": "Local actual-WASM auth tests only. Invalid-slot GETs exercise authorization without any block/index reads. No cloud calls.",
+  "completedAt": "2026-11-22T08:32:40.056Z"
+}

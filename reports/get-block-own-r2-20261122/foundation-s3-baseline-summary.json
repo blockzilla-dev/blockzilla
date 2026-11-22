@@ -1,0 +1,52 @@
+{
+  "schema": "blockzilla-own-r2-s3-baseline-summary-v1",
+  "workerVersion": "2359b1b3-d95b-4e3b-bffc-b4161aac406f",
+  "configuredBackend": "Foundation signed S3; unchanged public v11",
+  "startedAt": "2026-11-21T23:40:01.978Z",
+  "endedAt": "2026-11-21T23:40:11.577180Z",
+  "durationMs": 9599.18,
+  "requests": 16,
+  "errors": 0,
+  "canonicalMatchesSavedReference": 16,
+  "liveMatchedSlots": 8,
+  "fullyColdVerified": 8,
+  "ownerR2Gets": 8,
+  "foundationS3Gets": 16,
+  "heads": 0,
+  "authKvReads": 8,
+  "groups": [
+    {
+      "label": "blockzilla",
+      "requests": 8,
+      "ttfbMs": {
+        "p50": 805.994,
+        "p95": 1279.764,
+        "p99": 1279.764
+      },
+      "totalMs": {
+        "p50": 811.458,
+        "p95": 1373.364,
+        "p99": 1373.364
+      }
+    },
+    {
+      "label": "helius",
+      "requests": 8,
+      "ttfbMs": {
+        "p50": 52.774,
+        "p95": 105.887,
+        "p99": 105.887
+      },
+      "totalMs": {
+        "p50": 111.511,
+        "p95": 171.131,
+        "p99": 171.131
+      }
+    }
+  ],
+  "notes": [
+    "Same eight historical blocks with base64 transactions and full metadata. All Worker calls use profile=1.",
+    "The native canary later changes source layout, account, requested location, and API path together. This baseline cannot isolate one cause.",
+    "Physical R2 and provider cache states remain unknown. Fully cold covers the stated Worker application caches."
+  ]
+}

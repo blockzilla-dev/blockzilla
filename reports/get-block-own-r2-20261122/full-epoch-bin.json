@@ -1,0 +1,1179 @@
+{
+  "schema": "blockzilla-get-block-http-benchmark-v2",
+  "startedAt": "2026-11-21T23:58:47.254Z",
+  "durationMs": 713.577,
+  "plan": {
+    "slots": [
+      470555971,
+      470663944,
+      470771932,
+      470879999
+    ],
+    "rounds": 0,
+    "concurrency": 1,
+    "timeoutMs": 90000,
+    "uncachedRounds": 1,
+    "maxRequests": 4,
+    "requests": 4,
+    "sourceUncachedRounds": 0,
+    "sourceWarmupRequests": 0,
+    "binaryReferenceIncluded": true,
+    "representations": [
+      "bin"
+    ],
+    "providerIncluded": false,
+    "providerLabels": [],
+    "jsonOptions": {
+      "commitment": "finalized",
+      "encoding": "base64",
+      "transactionDetails": "full",
+      "rewards": false,
+      "maxSupportedTransactionVersion": 1
+    }
+  },
+  "notes": [
+    "First means the first pass in this run. It does not prove a cold cache.",
+    "Repeat means a later pass. Use cache=HIT to select proven response cache hits.",
+    "Origin-uncached passes use profile=1 on Blockzilla, which bypasses response and archive caches but adds timing work.",
+    "Only origin_uncached_verified means BYPASS, positive origin reads, and zero reported archive cache hits.",
+    "A separate fullyColdVerified flag additionally requires auth BYPASS and one reported KV read.",
+    "Source-uncached passes use profile=source: response/range caches are bypassed, while index and API key caches remain enabled.",
+    "Source-index proof depends on the explicit backend: owner-native R2 requires two R2 GETs (one with access=0), zero S3/reader operations, and positive retained-index cache hits. Direct S3 or Foundation-reader mode requires zero owner R2 reads and two source GETs (one with access=0).",
+    "Source auth-cache proof is separate: auth HIT and zero KV reads. A legitimate short-TTL auth MISS remains a successful sample and is charged in the actual counters.",
+    "Index/auth warmup GETs run once per slot before the source-uncached passes. Their requests, bytes, storage operations, and auth KV reads are reported separately.",
+    "Provider caches and R2 internal caches cannot be purged or proved cold by this client.",
+    "A storage-backed MISS can reuse archive pages. R2 and S3 counters count object API operations, not physical disk reads.",
+    "S3 operation receipts must be included when an R2 bucket is accessed through its S3 endpoint.",
+    "Foundation native R2 GET proofs and reader HTTP attempts are separate. Aggregate object reads add confirmed Foundation operations once; missing reader proofs leave unknown backend work visible.",
+    "For streamed-completion bodies, receipt bytes count only buffered inputs. Origin-Expected-Bytes is a separate declared source window; it is not measured S3 bytes.",
+    "TTFB is time to the first body byte. Total time ends after the last body byte.",
+    "Client timings include DNS, connection setup, and connection reuse from this one benchmark host.",
+    "Fetch reports decoded body bytes. Wire compression and network conditions can differ.",
+    "Content-Encoding, Content-Length, and Transfer-Encoding headers are recorded separately from decoded body bytes.",
+    "Binary and JSON are separate formats. Compare providers only in the JSON groups.",
+    "Identity checks compare requested slot, blockhash, previous blockhash, parent slot, and transaction count.",
+    "Content checks hash the complete result with sorted object keys and exact JSON decimal numbers. Arrays and absent/null fields remain distinct.",
+    "Content mismatches remain visible; speed samples do not become correctness evidence because their block identity matches.",
+    "When binary references are supplied, complete V1 bundle and derived access=0 hashes are checked after the body timer. Original stored frames are reused; no extra HTTP read is made.",
+    "Percentiles use successful samples only and the nearest-rank method. No retries are used.",
+    "URLs, bearer keys, response error messages, and JSON block bodies are not stored."
+  ],
+  "groups": [
+    {
+      "source": "blockzilla",
+      "label": "blockzilla",
+      "representation": "bin",
+      "phase": "origin_uncached",
+      "cache": "ALL",
+      "requests": 4,
+      "successful": 4,
+      "successRate": 1,
+      "errors": {},
+      "cacheCounts": {
+        "BYPASS": 4
+      },
+      "storageClassCounts": {
+        "origin_uncached_verified": 4
+      },
+      "storageBytesModes": {
+        "streamed-completion": 4
+      },
+      "readerKinds": {
+        "none": 4
+      },
+      "archiveBackends": {
+        "r2": 4
+      },
+      "verifiedOriginUncached": 4,
+      "verifiedFullyColdWithAuthBypass": 4,
+      "verifiedSourceIndexCached": 0,
+      "verifiedSourceIndexAndAuthCached": 0,
+      "auth": {
+        "cacheCounts": {
+          "BYPASS": 4
+        },
+        "kvReads": {
+          "reportedRequests": 4,
+          "total": 4,
+          "mean": 1,
+          "p50": 1,
+          "p95": 1,
+          "p99": 1
+        }
+      },
+      "edgeLocations": {
+        "CDG": 4
+      },
+      "ttfbMs": {
+        "p50": 134.139,
+        "p95": 252.967,
+        "p99": 252.967
+      },
+      "totalMs": {
+        "p50": 135.687,
+        "p95": 271.421,
+        "p99": 271.421
+      },
+      "bytes": {
+        "p50": 247594,
+        "p95": 364638,
+        "p99": 364638
+      },
+      "storage": {
+        "originReads": {
+          "reportedRequests": 4,
+          "total": 12,
+          "mean": 3,
+          "p50": 3,
+          "p95": 3,
+          "p99": 3
+        },
+        "originGets": {
+          "reportedRequests": 4,
+          "total": 12,
+          "mean": 3,
+          "p50": 3,
+          "p95": 3,
+          "p99": 3
+        },
+        "originHeads": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originBytes": {
+          "reportedRequests": 4,
+          "total": 315117,
+          "mean": 78779.25,
+          "p50": 75677,
+          "p95": 103689,
+          "p99": 103689
+        },
+        "originGetSuccesses": {
+          "reportedRequests": 4,
+          "total": 4,
+          "mean": 1,
+          "p50": 1,
+          "p95": 1,
+          "p99": 1
+        },
+        "originHeadSuccesses": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "archiveMemoryHits": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "archiveEdgeHits": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originExpectedBytes": {
+          "reportedRequests": 4,
+          "total": 701292,
+          "mean": 175323,
+          "p50": 172790,
+          "p95": 261898,
+          "p99": 261898
+        },
+        "readerHttpRequests": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "unconfirmedReaderRequests": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        }
+      },
+      "backendOperations": {
+        "ownerR2": {
+          "reads": {
+            "reportedRequests": 4,
+            "total": 12,
+            "mean": 3,
+            "p50": 3,
+            "p95": 3,
+            "p99": 3
+          },
+          "gets": {
+            "reportedRequests": 4,
+            "total": 12,
+            "mean": 3,
+            "p50": 3,
+            "p95": 3,
+            "p99": 3
+          },
+          "heads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 4,
+            "total": 315117,
+            "mean": 78779.25,
+            "p50": 75677,
+            "p95": 103689,
+            "p99": 103689
+          },
+          "getSuccesses": {
+            "reportedRequests": 4,
+            "total": 4,
+            "mean": 1,
+            "p50": 1,
+            "p95": 1,
+            "p99": 1
+          }
+        },
+        "directS3": {
+          "reads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "gets": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "heads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        },
+        "foundationR2": {
+          "reads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "gets": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "heads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        }
+      }
+    },
+    {
+      "source": "blockzilla",
+      "label": "blockzilla",
+      "representation": "bin",
+      "phase": "origin_uncached",
+      "cache": "BYPASS",
+      "requests": 4,
+      "successful": 4,
+      "successRate": 1,
+      "errors": {},
+      "cacheCounts": {
+        "BYPASS": 4
+      },
+      "storageClassCounts": {
+        "origin_uncached_verified": 4
+      },
+      "storageBytesModes": {
+        "streamed-completion": 4
+      },
+      "readerKinds": {
+        "none": 4
+      },
+      "archiveBackends": {
+        "r2": 4
+      },
+      "verifiedOriginUncached": 4,
+      "verifiedFullyColdWithAuthBypass": 4,
+      "verifiedSourceIndexCached": 0,
+      "verifiedSourceIndexAndAuthCached": 0,
+      "auth": {
+        "cacheCounts": {
+          "BYPASS": 4
+        },
+        "kvReads": {
+          "reportedRequests": 4,
+          "total": 4,
+          "mean": 1,
+          "p50": 1,
+          "p95": 1,
+          "p99": 1
+        }
+      },
+      "edgeLocations": {
+        "CDG": 4
+      },
+      "ttfbMs": {
+        "p50": 134.139,
+        "p95": 252.967,
+        "p99": 252.967
+      },
+      "totalMs": {
+        "p50": 135.687,
+        "p95": 271.421,
+        "p99": 271.421
+      },
+      "bytes": {
+        "p50": 247594,
+        "p95": 364638,
+        "p99": 364638
+      },
+      "storage": {
+        "originReads": {
+          "reportedRequests": 4,
+          "total": 12,
+          "mean": 3,
+          "p50": 3,
+          "p95": 3,
+          "p99": 3
+        },
+        "originGets": {
+          "reportedRequests": 4,
+          "total": 12,
+          "mean": 3,
+          "p50": 3,
+          "p95": 3,
+          "p99": 3
+        },
+        "originHeads": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originBytes": {
+          "reportedRequests": 4,
+          "total": 315117,
+          "mean": 78779.25,
+          "p50": 75677,
+          "p95": 103689,
+          "p99": 103689
+        },
+        "originGetSuccesses": {
+          "reportedRequests": 4,
+          "total": 4,
+          "mean": 1,
+          "p50": 1,
+          "p95": 1,
+          "p99": 1
+        },
+        "originHeadSuccesses": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "archiveMemoryHits": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "archiveEdgeHits": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originExpectedBytes": {
+          "reportedRequests": 4,
+          "total": 701292,
+          "mean": 175323,
+          "p50": 172790,
+          "p95": 261898,
+          "p99": 261898
+        },
+        "readerHttpRequests": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "unconfirmedReaderRequests": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        }
+      },
+      "backendOperations": {
+        "ownerR2": {
+          "reads": {
+            "reportedRequests": 4,
+            "total": 12,
+            "mean": 3,
+            "p50": 3,
+            "p95": 3,
+            "p99": 3
+          },
+          "gets": {
+            "reportedRequests": 4,
+            "total": 12,
+            "mean": 3,
+            "p50": 3,
+            "p95": 3,
+            "p99": 3
+          },
+          "heads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 4,
+            "total": 315117,
+            "mean": 78779.25,
+            "p50": 75677,
+            "p95": 103689,
+            "p99": 103689
+          },
+          "getSuccesses": {
+            "reportedRequests": 4,
+            "total": 4,
+            "mean": 1,
+            "p50": 1,
+            "p95": 1,
+            "p99": 1
+          }
+        },
+        "directS3": {
+          "reads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "gets": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "heads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        },
+        "foundationR2": {
+          "reads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "gets": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "heads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        }
+      }
+    }
+  ],
+  "identityChecks": [],
+  "contentChecks": [],
+  "binaryChecks": [
+    {
+      "slot": 470555971,
+      "representation": "bin",
+      "samples": 1,
+      "matched": 1,
+      "status": "matched"
+    },
+    {
+      "slot": 470663944,
+      "representation": "bin",
+      "samples": 1,
+      "matched": 1,
+      "status": "matched"
+    },
+    {
+      "slot": 470771932,
+      "representation": "bin",
+      "samples": 1,
+      "matched": 1,
+      "status": "matched"
+    },
+    {
+      "slot": 470879999,
+      "representation": "bin",
+      "samples": 1,
+      "matched": 1,
+      "status": "matched"
+    }
+  ],
+  "samples": [
+    {
+      "startedAt": "2026-11-21T23:58:47.255Z",
+      "source": "blockzilla",
+      "label": "blockzilla",
+      "representation": "bin",
+      "slot": 470555971,
+      "round": 0,
+      "phase": "origin_uncached",
+      "uncached": true,
+      "sourceUncached": false,
+      "status": 200,
+      "cache": "BYPASS",
+      "bytes": 247594,
+      "headersMs": 248.887,
+      "ttfbMs": 252.96725000000004,
+      "totalMs": 271.4205,
+      "decodeMs": null,
+      "ok": true,
+      "contentEncoding": null,
+      "contentLength": 247594,
+      "transferEncoding": null,
+      "storage": {
+        "r2": {
+          "reads": 3,
+          "gets": 3,
+          "heads": 0,
+          "bytes": 75677,
+          "getSuccesses": 1,
+          "headSuccesses": 0
+        },
+        "s3": {
+          "reads": 0,
+          "gets": 0,
+          "heads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "foundationR2": {
+          "gets": 0,
+          "heads": 0,
+          "reads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "archiveBackend": "r2",
+        "reader": null,
+        "readerHttpRequests": 0,
+        "unconfirmedReaderRequests": 0,
+        "readerAccountingComplete": true,
+        "originReads": 3,
+        "originGets": 3,
+        "originHeads": 0,
+        "originBytes": 75677,
+        "originGetSuccesses": 1,
+        "originHeadSuccesses": 0,
+        "archiveMemoryHits": 0,
+        "archiveEdgeHits": 0,
+        "originExpectedBytes": 172790,
+        "bytesMode": "streamed-completion"
+      },
+      "auth": {
+        "cache": "BYPASS",
+        "kvReads": 1
+      },
+      "profileMode": "full",
+      "storageClass": "origin_uncached_verified",
+      "coldVerified": true,
+      "fullyColdVerified": true,
+      "sourceIndexCachedVerified": false,
+      "sourceAuthCachedVerified": false,
+      "edgeLocation": "CDG",
+      "workerProfile": {
+        "totalMs": 119,
+        "summary": [
+          {
+            "name": "authentication",
+            "totalMs": 2,
+            "count": 1,
+            "bytes": 0
+          },
+          {
+            "name": "block_headers",
+            "totalMs": 59,
+            "count": 1,
+            "bytes": 145910
+          },
+          {
+            "name": "resolution_body",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 75677
+          },
+          {
+            "name": "resolution_decode",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 75677
+          },
+          {
+            "name": "resolution_headers",
+            "totalMs": 47,
+            "count": 1,
+            "bytes": 75677
+          },
+          {
+            "name": "resolution_total",
+            "totalMs": 47,
+            "count": 1,
+            "bytes": 75677
+          },
+          {
+            "name": "signature_headers",
+            "totalMs": 70,
+            "count": 1,
+            "bytes": 26880
+          },
+          {
+            "name": "worker_placement",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 0
+          }
+        ]
+      },
+      "bodySha256": "c0fc8383e217705dde28612195cc165e95b2163c73743e5cb1586aab220c8415",
+      "binaryMatchesReference": true,
+      "contentValidationMs": 0.4129579999999464,
+      "completedAt": "2026-11-21T23:58:47.526Z"
+    },
+    {
+      "startedAt": "2026-11-21T23:58:47.527Z",
+      "source": "blockzilla",
+      "label": "blockzilla",
+      "representation": "bin",
+      "slot": 470663944,
+      "round": 0,
+      "phase": "origin_uncached",
+      "uncached": true,
+      "sourceUncached": false,
+      "status": 200,
+      "cache": "BYPASS",
+      "bytes": 364638,
+      "headersMs": 154.12670799999995,
+      "ttfbMs": 154.71304199999997,
+      "totalMs": 169.758583,
+      "decodeMs": null,
+      "ok": true,
+      "contentEncoding": null,
+      "contentLength": 364638,
+      "transferEncoding": null,
+      "storage": {
+        "r2": {
+          "reads": 3,
+          "gets": 3,
+          "heads": 0,
+          "bytes": 103689,
+          "getSuccesses": 1,
+          "headSuccesses": 0
+        },
+        "s3": {
+          "reads": 0,
+          "gets": 0,
+          "heads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "foundationR2": {
+          "gets": 0,
+          "heads": 0,
+          "reads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "archiveBackend": "r2",
+        "reader": null,
+        "readerHttpRequests": 0,
+        "unconfirmedReaderRequests": 0,
+        "readerAccountingComplete": true,
+        "originReads": 3,
+        "originGets": 3,
+        "originHeads": 0,
+        "originBytes": 103689,
+        "originGetSuccesses": 1,
+        "originHeadSuccesses": 0,
+        "archiveMemoryHits": 0,
+        "archiveEdgeHits": 0,
+        "originExpectedBytes": 261898,
+        "bytesMode": "streamed-completion"
+      },
+      "auth": {
+        "cache": "BYPASS",
+        "kvReads": 1
+      },
+      "profileMode": "full",
+      "storageClass": "origin_uncached_verified",
+      "coldVerified": true,
+      "fullyColdVerified": true,
+      "sourceIndexCachedVerified": false,
+      "sourceAuthCachedVerified": false,
+      "edgeLocation": "CDG",
+      "workerProfile": {
+        "totalMs": 96,
+        "summary": [
+          {
+            "name": "authentication",
+            "totalMs": 2,
+            "count": 1,
+            "bytes": 0
+          },
+          {
+            "name": "block_headers",
+            "totalMs": 48,
+            "count": 1,
+            "bytes": 229322
+          },
+          {
+            "name": "resolution_body",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 103689
+          },
+          {
+            "name": "resolution_decode",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 103689
+          },
+          {
+            "name": "resolution_headers",
+            "totalMs": 43,
+            "count": 1,
+            "bytes": 103689
+          },
+          {
+            "name": "resolution_total",
+            "totalMs": 43,
+            "count": 1,
+            "bytes": 103689
+          },
+          {
+            "name": "signature_headers",
+            "totalMs": 51,
+            "count": 1,
+            "bytes": 32576
+          },
+          {
+            "name": "worker_placement",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 0
+          }
+        ]
+      },
+      "bodySha256": "64ac916826fef959e8786beea3723836e22c7bbc40f3431617ff58be175a4775",
+      "binaryMatchesReference": true,
+      "contentValidationMs": 0.5625830000000178,
+      "completedAt": "2026-11-21T23:58:47.697Z"
+    },
+    {
+      "startedAt": "2026-11-21T23:58:47.697Z",
+      "source": "blockzilla",
+      "label": "blockzilla",
+      "representation": "bin",
+      "slot": 470771932,
+      "round": 0,
+      "phase": "origin_uncached",
+      "uncached": true,
+      "sourceUncached": false,
+      "status": 200,
+      "cache": "BYPASS",
+      "bytes": 275803,
+      "headersMs": 119.01383399999997,
+      "ttfbMs": 119.58166700000004,
+      "totalMs": 133.78858400000001,
+      "decodeMs": null,
+      "ok": true,
+      "contentEncoding": null,
+      "contentLength": 275803,
+      "transferEncoding": null,
+      "storage": {
+        "r2": {
+          "reads": 3,
+          "gets": 3,
+          "heads": 0,
+          "bytes": 91326,
+          "getSuccesses": 1,
+          "headSuccesses": 0
+        },
+        "s3": {
+          "reads": 0,
+          "gets": 0,
+          "heads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "foundationR2": {
+          "gets": 0,
+          "heads": 0,
+          "reads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "archiveBackend": "r2",
+        "reader": null,
+        "readerHttpRequests": 0,
+        "unconfirmedReaderRequests": 0,
+        "readerAccountingComplete": true,
+        "originReads": 3,
+        "originGets": 3,
+        "originHeads": 0,
+        "originBytes": 91326,
+        "originGetSuccesses": 1,
+        "originHeadSuccesses": 0,
+        "archiveMemoryHits": 0,
+        "archiveEdgeHits": 0,
+        "originExpectedBytes": 185407,
+        "bytesMode": "streamed-completion"
+      },
+      "auth": {
+        "cache": "BYPASS",
+        "kvReads": 1
+      },
+      "profileMode": "full",
+      "storageClass": "origin_uncached_verified",
+      "coldVerified": true,
+      "fullyColdVerified": true,
+      "sourceIndexCachedVerified": false,
+      "sourceAuthCachedVerified": false,
+      "edgeLocation": "CDG",
+      "workerProfile": {
+        "totalMs": 85,
+        "summary": [
+          {
+            "name": "authentication",
+            "totalMs": 2,
+            "count": 1,
+            "bytes": 0
+          },
+          {
+            "name": "block_headers",
+            "totalMs": 46,
+            "count": 1,
+            "bytes": 153791
+          },
+          {
+            "name": "resolution_body",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 91326
+          },
+          {
+            "name": "resolution_decode",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 91326
+          },
+          {
+            "name": "resolution_headers",
+            "totalMs": 31,
+            "count": 1,
+            "bytes": 91326
+          },
+          {
+            "name": "resolution_total",
+            "totalMs": 31,
+            "count": 1,
+            "bytes": 91326
+          },
+          {
+            "name": "signature_headers",
+            "totalMs": 52,
+            "count": 1,
+            "bytes": 31616
+          },
+          {
+            "name": "worker_placement",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 0
+          }
+        ]
+      },
+      "bodySha256": "dab59abd834b055e114e76eb34245f5b1506ec9518c4496f89a29e4b34db764b",
+      "binaryMatchesReference": true,
+      "contentValidationMs": 0.49900000000002365,
+      "completedAt": "2026-11-21T23:58:47.831Z"
+    },
+    {
+      "startedAt": "2026-11-21T23:58:47.831Z",
+      "source": "blockzilla",
+      "label": "blockzilla",
+      "representation": "bin",
+      "slot": 470879999,
+      "round": 0,
+      "phase": "origin_uncached",
+      "uncached": true,
+      "sourceUncached": false,
+      "status": 200,
+      "cache": "BYPASS",
+      "bytes": 124924,
+      "headersMs": 133.26820899999996,
+      "ttfbMs": 134.13887499999998,
+      "totalMs": 135.68666699999994,
+      "decodeMs": null,
+      "ok": true,
+      "contentEncoding": null,
+      "contentLength": 124924,
+      "transferEncoding": null,
+      "storage": {
+        "r2": {
+          "reads": 3,
+          "gets": 3,
+          "heads": 0,
+          "bytes": 44425,
+          "getSuccesses": 1,
+          "headSuccesses": 0
+        },
+        "s3": {
+          "reads": 0,
+          "gets": 0,
+          "heads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "foundationR2": {
+          "gets": 0,
+          "heads": 0,
+          "reads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "archiveBackend": "r2",
+        "reader": null,
+        "readerHttpRequests": 0,
+        "unconfirmedReaderRequests": 0,
+        "readerAccountingComplete": true,
+        "originReads": 3,
+        "originGets": 3,
+        "originHeads": 0,
+        "originBytes": 44425,
+        "originGetSuccesses": 1,
+        "originHeadSuccesses": 0,
+        "archiveMemoryHits": 0,
+        "archiveEdgeHits": 0,
+        "originExpectedBytes": 81197,
+        "bytesMode": "streamed-completion"
+      },
+      "auth": {
+        "cache": "BYPASS",
+        "kvReads": 1
+      },
+      "profileMode": "full",
+      "storageClass": "origin_uncached_verified",
+      "coldVerified": true,
+      "fullyColdVerified": true,
+      "sourceIndexCachedVerified": false,
+      "sourceAuthCachedVerified": false,
+      "edgeLocation": "CDG",
+      "workerProfile": {
+        "totalMs": 87,
+        "summary": [
+          {
+            "name": "authentication",
+            "totalMs": 2,
+            "count": 1,
+            "bytes": 0
+          },
+          {
+            "name": "block_headers",
+            "totalMs": 47,
+            "count": 1,
+            "bytes": 66157
+          },
+          {
+            "name": "resolution_body",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 44425
+          },
+          {
+            "name": "resolution_decode",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 44425
+          },
+          {
+            "name": "resolution_headers",
+            "totalMs": 36,
+            "count": 1,
+            "bytes": 44425
+          },
+          {
+            "name": "resolution_total",
+            "totalMs": 36,
+            "count": 1,
+            "bytes": 44425
+          },
+          {
+            "name": "signature_headers",
+            "totalMs": 49,
+            "count": 1,
+            "bytes": 15040
+          },
+          {
+            "name": "worker_placement",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 0
+          }
+        ]
+      },
+      "bodySha256": "977d110e3d2328889faee91eda72703b9dee3ee4e7cb7edc3a12ce58f429296a",
+      "binaryMatchesReference": true,
+      "contentValidationMs": 0.28933299999994233,
+      "completedAt": "2026-11-21T23:58:47.967Z"
+    }
+  ]
+}

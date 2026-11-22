@@ -25,6 +25,26 @@ name = "rpc-correctness-check"
 path = "src/bin/rpc_correctness_check.rs"
 required-features = ["cli"]
 
+[[bin]]
+name = "build-slot-index"
+path = "src/bin/build_slot_index.rs"
+required-features = ["cli"]
+
+[[bin]]
+name = "build-slot-resolution"
+path = "src/bin/build_slot_resolution.rs"
+required-features = ["cli"]
+
+[[bin]]
+name = "inspect_hot_rewards"
+path = "src/bin/inspect_hot_rewards.rs"
+required-features = ["cli"]
+
+[[bin]]
+name = "render-resolution-client"
+path = "src/bin/render_resolution_client.rs"
+required-features = ["cli", "worker"]
+
 [features]
 default = ["cli"]
 cli = [
@@ -44,13 +64,17 @@ worker = [
     "dep:wasm-bindgen",
     "dep:wasm-bindgen-futures",
     "dep:worker",
+    "dep:solana-signature",
+    "dep:thiserror",
 ]
 
 [dependencies]
-blockzilla-archive-v2 = { path = "../../crates/compact-v2/blockzilla-archive-v2", default-features = false }
-blockzilla-compact = { path = "../../crates/compact-v2/blockzilla-compact", default-features = false }
+# These features define stored log enum tags. Keep the full archive grammar
+# available in an isolated Worker build, as in the native Compact V2 reader.
+blockzilla-archive-v2 = { path = "../../crates/compact-v2/blockzilla-archive-v2", default-features = false, features = ["known-program-logs"] }
+blockzilla-compact = { path = "../../crates/compact-v2/blockzilla-compact", default-features = false, features = ["known-program-logs"] }
 blockzilla-primitives = { path = "../../crates/blockzilla-primitives", default-features = false }
-blockzilla-program-logs = { path = "../../crates/parser/blockzilla-program-logs", default-features = false }
+blockzilla-program-logs = { path = "../../crates/parser/blockzilla-program-logs", default-features = false, features = ["known-program-logs"] }
 blockzilla-registry = { path = "../../crates/compact-v2/blockzilla-registry", default-features = false }
 anyhow = { version = "1.0.104", optional = true }
 base64 = "0.23.1"
@@ -72,8 +96,13 @@ tracing-subscriber = { version = "0.3.23", optional = true }
 wasm-bindgen = { version = "0.2.128", optional = true }
 wasm-bindgen-futures = { version = "0.4.78", optional = true }
 worker = { version = "0.8.5", features = ["http"], optional = true }
+solana-signature = { version = "3.4.1", features = ["verify"], optional = true }
+thiserror = { version = "2.0.20", optional = true }
 wincode = "=0.6.1"
 zstd = { version = "0.14.0", optional = true }
+
+[dev-dependencies]
+ed25519-dalek = "3.0.0"
 
 [lints]
 workspace = true

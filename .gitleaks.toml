@@ -24,3 +24,88 @@ paths = [
   '''^docs/benchmarks/artifacts/v3-reader-window-20260909\.json$''',
 ]
 regexes = ['''^\s*"(?:/[^\"]+/)?crates/compact-v2/blockzilla-compact-v2-reader/src/(?:query_keys\.rs|compact_query/indexed_tokens\.rs)"\s*:\s*"[0-9a-f]{64}"\s*,?\s*$''']
+
+# These reviewed metadata exceptions keep default credential rules active.
+# Match-scoped rules do not exempt adjacent fields on minified JSON lines.
+# scripts/test_gitleaks_policy.py checks both metadata and synthetic leaks.
+
+[[allowlists]]
+description = "Reviewed source-file SHA-256 inventory values, not API credentials"
+targetRules = ["generic-api-key"]
+condition = "AND"
+regexTarget = "match"
+paths = [
+  '''^hivezilla/deploy/foundation-watch/evidence/incident-20261018-recurrence/connection-idle/SOURCE-BEFORE\.json$''',
+  '''^hivezilla/deploy/foundation-watch/evidence/incident-20261018-recurrence/connection-idle/SOURCE\.json$''',
+  '''^hivezilla/deploy/foundation-watch/evidence/incident-20261018-recurrence/evening-20261018/publisher-status/SOURCE-BEFORE\.json$''',
+  '''^hivezilla/deploy/foundation-watch/evidence/incident-20261018-recurrence/evening-20261018/publisher-status/SOURCE\.json$''',
+  '''^hivezilla/deploy/foundation-watch/evidence/incident-20261020-storage/PRESERVED-WORKSPACE\.json$''',
+]
+regexes = [
+  '''^(?:access-application\.json|api\.rs|associated_token_account\.rs|compact_v2_public_api\.rs|compare_archive_v2_access\.rs|demo_access\.py|dump_tokens\.rs|generate-rpc-key\.mjs|index_tokens\.rs|index_tokens_schema\.sql|indexed_tokens\.rs|public_api\.rs|query_keys\.rs|rpc_access\.rs|token-indexer\.md|token\.rs|token_2022\.rs|token_balances\.rs|token_event_database\.rs|token_event_scan\.rs|token_events\.rs|token_report\.rs|verify_access_vote_hashes\.rs)"\s*:\s*"[0-9a-f]{64}"$''',
+]
+
+[[allowlists]]
+description = "Deterministic SHA-256 storage job identities from storage_jobs.job_key"
+targetRules = ["generic-api-key"]
+condition = "AND"
+regexTarget = "match"
+paths = [
+  '''^hivezilla/deploy/foundation-watch/evidence/incident-20261018-recurrence/evening-20261018/HOST-SAMPLE-1\.json$''',
+  '''^hivezilla/deploy/foundation-watch/evidence/incident-20261020-storage/HOST-SAMPLE-1\.json$''',
+  '''^hivezilla/deploy/foundation-watch/evidence/incident-20261020-storage/PREPATCH-RECURRENCES\.json$''',
+]
+regexes = [
+  '''^(?:job_key|old_live_job_key)"\s*:\s*"[0-9a-f]{64}"$''',
+]
+
+[[allowlists]]
+description = "Publisher evidence hashes of object names, not bucket credentials"
+targetRules = ["generic-api-key"]
+condition = "AND"
+regexTarget = "match"
+paths = [
+  '''^hivezilla/deploy/foundation-watch/evidence/incident-20261018-recurrence/evening-20261018/PUBLISHER-RETRY-TYPE\.json$''',
+  '''^hivezilla/deploy/foundation-watch/evidence/incident-20261018-recurrence/evening-20261018/RECEIPT-FINAL\.json$''',
+  '''^hivezilla/deploy/foundation-watch/evidence/incident-20261018-recurrence/evening-20261018/publisher-status/BEFORE\.json$''',
+  '''^hivezilla/deploy/foundation-watch/evidence/incident-20261018-recurrence/evening-20261018/publisher-status/INSTALLATION\.json$''',
+]
+regexes = [
+  '''^(?:commit_key_sha256|head_key_sha256|object_key_sha256)"\s*:\s*"[0-9a-f]{64}"$''',
+]
+
+[[allowlists]]
+description = "Public Cloudflare Worker deployment version identifier"
+targetRules = ["generic-api-key"]
+condition = "AND"
+regexTarget = "match"
+paths = [
+  '''^reports/get-block-native-fast-20261122/deployment\.json$''',
+]
+regexes = [
+  '''^preEdgeAuthPerformanceVersion"\s*:\s*"[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}"$''',
+]
+
+[[allowlists]]
+description = "Public unchanged Worker version identifier in an access preparation receipt"
+targetRules = ["generic-api-key"]
+condition = "AND"
+regexTarget = "match"
+paths = [
+  '''^reports/get-block-native-r2-20261122/preparation\.json$''',
+]
+regexes = [
+  '''^public_api_unchanged_version"\s*:\s*"[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}"$''',
+]
+
+[[allowlists]]
+description = "Literal JSON property name captured across a preceding receipt filename"
+targetRules = ["generic-api-key"]
+condition = "AND"
+regexTarget = "secret"
+paths = [
+  '''^reports/get-block-native-fast-20261122/platform-cpu-auth-edge\.json$''',
+]
+regexes = [
+  '''^preL2EvidenceExcluded$''',
+]

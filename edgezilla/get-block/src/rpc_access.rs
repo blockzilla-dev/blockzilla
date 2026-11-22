@@ -127,6 +127,7 @@ pub(crate) fn rpc_method_for_metrics(value: &Value) -> &'static str {
     match value.get("method").and_then(Value::as_str) {
         Some("getBlock") => "getBlock",
         Some("getBlockTime") => "getBlockTime",
+        Some("getTransaction") => "getTransaction",
         Some("getVersion") => "getVersion",
         Some(_) => "other",
         None => "invalid",

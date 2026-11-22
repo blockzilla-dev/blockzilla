@@ -1,0 +1,66 @@
+{
+  "schema": "blockzilla-getblock-package-validation-v1",
+  "status": "PASS",
+  "checked_at": "2026-11-22T16:03:38.719503+00:00",
+  "branch": "codex/getblock-stream-recovery-20261122",
+  "upstream_base": "21a230bccdc18632b25a8372b1fd3e244c2f2072",
+  "source_parent_commit": "17f9450e245b6cea5cd2ef78ae60f7af08750aaa",
+  "rust_suites": {
+    "sdk": {
+      "passed": 53,
+      "failed": 0,
+      "ignored": 0
+    },
+    "consumer": {
+      "passed": 54,
+      "failed": 0,
+      "ignored": 3
+    },
+    "protocol": {
+      "passed": 40,
+      "failed": 0,
+      "ignored": 0
+    },
+    "decoder": {
+      "passed": 15,
+      "failed": 0,
+      "ignored": 1
+    },
+    "worker": {
+      "passed": 130,
+      "failed": 0,
+      "ignored": 0
+    },
+    "resolution": {
+      "passed": 30,
+      "failed": 0,
+      "ignored": 0
+    },
+    "relay": {
+      "passed": 72,
+      "failed": 0,
+      "ignored": 3
+    },
+    "memo": {
+      "passed": 3,
+      "failed": 0,
+      "ignored": 0
+    }
+  },
+  "python_gateway_tests_passed": 41,
+  "python_activation_tests_passed": 7,
+  "actual_wasm_checks": 162,
+  "native_body_checks": 10,
+  "foundation_reader_checks": 12,
+  "worker_all_targets_all_features_check": "PASS",
+  "fresh_wasm_sha256": "c9e7539a9935840dae0b99cfb7bb50a3e5611a8684fbe0946812e4181d018fb5",
+  "cloud_deployment_performed": false,
+  "production_services_changed": false,
+  "retained_upstream_archive_and_consensus_changes": true,
+  "fixture_compatibility_changes": [
+    "Empty optional Alpenglow fields in ten legacy constructors",
+    "Canonical Unix socket test directories with explicit owner-only0700 permissions"
+  ],
+  "initial_relay_test_failures": "macOS /tmp symlink and default temp-directory permissions; one parallel timing timeout; final serial suite passed72tests without weakening production guards",
+  "dated_live_deployment_evidence": "validation.json and README.md in same directory; separate from these fresh branch checks"
+}

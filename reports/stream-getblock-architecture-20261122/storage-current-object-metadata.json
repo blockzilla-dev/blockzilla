@@ -1,0 +1,732 @@
+{
+  "schema": "blockzilla-resolution-index-metadata-v1",
+  "measuredAtUtc": "2026-11-22T11:36:02.181775+00:00",
+  "sourcePrefix": "compact-v2/blockzilla-20261004",
+  "scope": "Only HEAD metadata, two 36-byte index headers and two bounded query-manifest probes. No payload copy, write or host change.",
+  "headRequests": 42,
+  "rangeGetRequests": 2,
+  "manifestGetRequests": 2,
+  "heads": [
+    {
+      "epoch": 1089,
+      "file": "archive-v2-blocks.index",
+      "status": 200,
+      "size": 22454208,
+      "etag": "\"10aed0ed5df5c1e4ab96129efbb9c3c4\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1089,
+      "file": "archive-v2-blocks.zstd",
+      "status": 200,
+      "size": 52177905206,
+      "etag": "\"a27d4990dcb9ff26589f1b4404bf6048-778\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1089,
+      "file": "signatures.bin",
+      "status": 200,
+      "size": 10799377984,
+      "etag": "\"83324114ba7b311be228f17f3ba1e909-81\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1089,
+      "file": "registry.bin",
+      "status": 200,
+      "size": 993910560,
+      "etag": "\"16fdc01afee82f2c8b3799fbd117ed5d-15\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1089,
+      "file": "registry.mphf",
+      "status": 200,
+      "size": 381097118,
+      "etag": "\"2dac5eb289a4a2000295cffdf6680eaa-6\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1089,
+      "file": "registry_counts.bin",
+      "status": 200,
+      "size": 32195486,
+      "etag": "\"345598e8a61298527dc1ac9bc05baf3f\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1089,
+      "file": "blockhash_registry.bin",
+      "status": 200,
+      "size": 13817952,
+      "etag": "\"aeb7327d4dfa55ff3c94bdc5e2b01a24-1\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1089,
+      "file": "vote_hash_registry.bin",
+      "status": 200,
+      "size": 28067715,
+      "etag": "\"3068caf72024a1116f182e53a65b69ec-1\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1089,
+      "file": "prev_blockhash_tail.bin",
+      "status": 200,
+      "size": 12000,
+      "etag": "\"b974aea96e50a1d35c38d28d5050c95c-1\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1089,
+      "file": "blockhash_index_v3.bin",
+      "status": 200,
+      "size": 20726948,
+      "etag": "\"74d3adbcc6a892dad9a48fa9489c5218\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1089,
+      "file": "archive-v2-meta.wincode",
+      "status": 200,
+      "size": 64,
+      "etag": "\"0d097043a7e6fd29cd83b98430bed3da\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1089,
+      "file": "skipped_slots.bin",
+      "status": 404
+    },
+    {
+      "epoch": 1089,
+      "file": "registry-first-seen.manifest",
+      "status": 200,
+      "size": 756,
+      "etag": "\"b28b9bc554ddbcf5147c0a0d7e605259\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1089,
+      "file": "registry-hot-seed.bin",
+      "status": 200,
+      "size": 2097152,
+      "etag": "\"832321a887af1f080710bae41ff6e3f4\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1089,
+      "file": "block-time-gaps.bin",
+      "status": 200,
+      "size": 2160,
+      "etag": "\"f782bdc30db7dd5fc67aebbe6b89f64c\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1089,
+      "file": "car-slot-meta.v1.bin",
+      "status": 200,
+      "size": 294804724,
+      "etag": "\"6c049a4a5f4f0115c25186a1f6f31955-5\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1089,
+      "file": "archive-v2-slot-offsets.v1.index",
+      "status": 404
+    },
+    {
+      "epoch": 1089,
+      "file": "archive-v2-get-block.index",
+      "status": 404
+    },
+    {
+      "epoch": 1089,
+      "file": "archive-v2-block-access.index",
+      "status": 404
+    },
+    {
+      "epoch": 1089,
+      "file": "archive-v2-block-access.wincode",
+      "status": 404
+    },
+    {
+      "epoch": 1089,
+      "file": "archive-v2-generation.json",
+      "status": 404
+    },
+    {
+      "epoch": 1090,
+      "file": "archive-v2-blocks.index",
+      "status": 200,
+      "size": 22445264,
+      "etag": "\"14299e647adabdf9574d48499b3a2c23\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1090,
+      "file": "archive-v2-blocks.zstd",
+      "status": 200,
+      "size": 63486272838,
+      "etag": "\"55095261656b29000364d6621a28a17e-947\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1090,
+      "file": "signatures.bin",
+      "status": 200,
+      "size": 12241209856,
+      "etag": "\"72f7fe9faf345b49047a2de172c07045-92\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1090,
+      "file": "registry.bin",
+      "status": 200,
+      "size": 1046858176,
+      "etag": "\"1eb4d353fa31dff598f4379a9335f252-16\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1090,
+      "file": "registry.mphf",
+      "status": 200,
+      "size": 401398386,
+      "etag": "\"12a0b16dfe6541a74da2637420eb39c2-6\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1090,
+      "file": "registry_counts.bin",
+      "status": 200,
+      "size": 33990054,
+      "etag": "\"ee04430d83c973c1aaee4faeec41918e\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1090,
+      "file": "blockhash_registry.bin",
+      "status": 200,
+      "size": 13812448,
+      "etag": "\"e5b103d6c7e673792477c64e5761e566-1\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1090,
+      "file": "vote_hash_registry.bin",
+      "status": 200,
+      "size": 28056535,
+      "etag": "\"ae76ac1083c7c702c0ba8f41ff883d9e-1\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1090,
+      "file": "prev_blockhash_tail.bin",
+      "status": 200,
+      "size": 12000,
+      "etag": "\"2d1ecd244b58806d475ba3eb5522ec20-1\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1090,
+      "file": "blockhash_index_v3.bin",
+      "status": 200,
+      "size": 20718692,
+      "etag": "\"1adff42814cb6c427390e4f71edb5513\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1090,
+      "file": "archive-v2-meta.wincode",
+      "status": 200,
+      "size": 64,
+      "etag": "\"27dad0a8c3c3cc38bbee211fd1c2bb76\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1090,
+      "file": "skipped_slots.bin",
+      "status": 404
+    },
+    {
+      "epoch": 1090,
+      "file": "registry-first-seen.manifest",
+      "status": 200,
+      "size": 756,
+      "etag": "\"3215c7fad14239c891187ad1735ab529\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1090,
+      "file": "registry-hot-seed.bin",
+      "status": 200,
+      "size": 2097152,
+      "etag": "\"8c4fac5a057f2e29059230c61692955e\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1090,
+      "file": "block-time-gaps.bin",
+      "status": 200,
+      "size": 3840,
+      "etag": "\"858e099404e418d6adf4021d6796c0cd\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1090,
+      "file": "car-slot-meta.v1.bin",
+      "status": 200,
+      "size": 303022848,
+      "etag": "\"8ce060d321125b89b32a41a6b602081d-5\"",
+      "storage_class": null,
+      "content_range": null
+    },
+    {
+      "epoch": 1090,
+      "file": "archive-v2-slot-offsets.v1.index",
+      "status": 404
+    },
+    {
+      "epoch": 1090,
+      "file": "archive-v2-get-block.index",
+      "status": 404
+    },
+    {
+      "epoch": 1090,
+      "file": "archive-v2-block-access.index",
+      "status": 404
+    },
+    {
+      "epoch": 1090,
+      "file": "archive-v2-block-access.wincode",
+      "status": 404
+    },
+    {
+      "epoch": 1090,
+      "file": "archive-v2-generation.json",
+      "status": 404
+    }
+  ],
+  "hotHeaders": [
+    {
+      "epoch": 1089,
+      "headerBytesHex": "425a56324849583101000000c39606000000000036a60b260c0000000100000000000000",
+      "headerResponse": {
+        "status": 206,
+        "size": 36,
+        "etag": "\"10aed0ed5df5c1e4ab96129efbb9c3c4\"",
+        "storage_class": null,
+        "content_range": "bytes 0-35/22454208"
+      },
+      "blockCount": 431811,
+      "blocksBytes": 52177905206,
+      "flags": 0,
+      "zstdLevel": 1
+    },
+    {
+      "epoch": 1090,
+      "headerBytesHex": "425a56324849583101000000179606000000000046a513c80e0000000100000000000000",
+      "headerResponse": {
+        "status": 206,
+        "size": 36,
+        "etag": "\"14299e647adabdf9574d48499b3a2c23\"",
+        "storage_class": null,
+        "content_range": "bytes 0-35/22445264"
+      },
+      "blockCount": 431639,
+      "blocksBytes": 63486272838,
+      "flags": 0,
+      "zstdLevel": 1
+    }
+  ],
+  "manifests": [
+    {
+      "epoch": 1089,
+      "response": {
+        "status": 200,
+        "size": 2573,
+        "etag": "\"4d1d305fa3450eb6cc8d5fd19ad8fe69\"",
+        "storage_class": null,
+        "content_range": null
+      },
+      "manifest": {
+        "archive_coverage_verified_by_backup": false,
+        "bytes": 64766471852,
+        "canonical_publication": false,
+        "car_import": {
+          "converter_sha256": "851f35b3992f43adddd6fcb5bf7a90af150849f896810de48fd51877c2c4d2eb",
+          "input_sha256": "5833c5827ad55d6e725a2ad4e7da99500ccbc680ee52160853849a0bd6d572df",
+          "receipt_sha256": "a19de1e61029901cb46d62e3e6d09346b0c05c324337b110aa442da2a71b534e",
+          "schema": "blockzilla-car-import-v2"
+        },
+        "car_slot_meta": {
+          "bytes": 294804724,
+          "complete_ordinal_slot_coverage": true,
+          "file": "car-slot-meta.v1.bin",
+          "format_version": 1,
+          "raw_cbor_bytes_hashed": true,
+          "rows": 431811,
+          "sha256": "6d0eb59d5903257ef6768c379059ff72f898864e4c8c00970669c28dd6182100",
+          "source_profile": 1
+        },
+        "destination": "foundation:solana-archive-data/compact-v2/blockzilla-20261004/epoch-1089",
+        "epoch": 1089,
+        "excluded_files": [
+          "archive-v2-block-access.index",
+          "archive-v2-block-access.wincode",
+          "archive-v2-get-block.index",
+          "poh.wincode",
+          "shredding.wincode"
+        ],
+        "full_remote_readback": false,
+        "previously_uploaded_extras_retained": {
+          "poh.wincode": 5280008919,
+          "shredding.wincode": 26013061
+        },
+        "remote_file_sizes_verified": true,
+        "schema": "blockzilla-stored-compact-backup-v2",
+        "semantic_schema": "blockzilla-car-slot-meta-v1",
+        "source": "/volume1/blockzilla/car-batch-far-end-1088-1090-20261120/builds/epoch-1089/attempts/9b2035ffcdba451e928b01d934ed5ea3/epoch-1089",
+        "source_files": {
+          "archive-v2-blocks.index": [
+            64768,
+            2425848679,
+            22454208,
+            1795170806882625098
+          ],
+          "archive-v2-blocks.zstd": [
+            64768,
+            2425848599,
+            52177905206,
+            1795170806822624822
+          ],
+          "archive-v2-meta.wincode": [
+            64768,
+            2425848600,
+            64,
+            1795170806930625317
+          ],
+          "block-time-gaps.bin": [
+            64768,
+            2425848682,
+            2160,
+            1795170809058635072
+          ],
+          "blockhash_index_v3.bin": [
+            64768,
+            2425848604,
+            20726948,
+            1795170808814633954
+          ],
+          "blockhash_registry.bin": [
+            64768,
+            2425848598,
+            13817952,
+            1795170806842624913
+          ],
+          "blockzilla-car-import-receipt.json": [
+            64768,
+            2425848694,
+            1819,
+            1795171630246591788
+          ],
+          "car-slot-meta.v1.bin": [
+            64768,
+            2425848605,
+            294804724,
+            1795170806886625115
+          ],
+          "prev_blockhash_tail.bin": [
+            64768,
+            2425848596,
+            12000,
+            1795167451292038289
+          ],
+          "registry-first-seen.manifest": [
+            64768,
+            2425848684,
+            756,
+            1795170809368248046
+          ],
+          "registry-hot-seed.bin": [
+            64768,
+            2425848683,
+            2097152,
+            1795170809368248046
+          ],
+          "registry.bin": [
+            64768,
+            2425848597,
+            993910560,
+            1795170806934625336
+          ],
+          "registry.mphf": [
+            64768,
+            2425848691,
+            381097118,
+            1795171611298220542
+          ],
+          "registry_counts.bin": [
+            64768,
+            2425848680,
+            32195486,
+            1795170808794633862
+          ],
+          "signatures.bin": [
+            64768,
+            2425848601,
+            10799377984,
+            1795170806822624822
+          ],
+          "vote_hash_registry.bin": [
+            64768,
+            2425848678,
+            28067715,
+            1795170806854624969
+          ]
+        },
+        "source_profile": "NAS-retained-official-CAR-first-seen-recovery-directory",
+        "upload_profile": "query-with-signatures"
+      }
+    },
+    {
+      "epoch": 1090,
+      "response": {
+        "status": 200,
+        "size": 2574,
+        "etag": "\"1e94321c36648b68408270995e9193e7\"",
+        "storage_class": null,
+        "content_range": null
+      },
+      "manifest": {
+        "archive_coverage_verified_by_backup": false,
+        "bytes": 77599900728,
+        "canonical_publication": false,
+        "car_import": {
+          "converter_sha256": "851f35b3992f43adddd6fcb5bf7a90af150849f896810de48fd51877c2c4d2eb",
+          "input_sha256": "844ad5bfbb9c154f6f492e16f47fbb8a5e40cf811b408c097a83c489aa1db339",
+          "receipt_sha256": "0359ab0f5441175493a1a861b7e75a71384f0d15c61fa228feae54a87bf85f84",
+          "schema": "blockzilla-car-import-v2"
+        },
+        "car_slot_meta": {
+          "bytes": 303022848,
+          "complete_ordinal_slot_coverage": true,
+          "file": "car-slot-meta.v1.bin",
+          "format_version": 1,
+          "raw_cbor_bytes_hashed": true,
+          "rows": 431639,
+          "sha256": "c136cda90ce126741cac08ffa05a91e29cd4f3bbb1f3dc94a6939257a45a9577",
+          "source_profile": 1
+        },
+        "destination": "foundation:solana-archive-data/compact-v2/blockzilla-20261004/epoch-1090",
+        "epoch": 1090,
+        "excluded_files": [
+          "archive-v2-block-access.index",
+          "archive-v2-block-access.wincode",
+          "archive-v2-get-block.index",
+          "poh.wincode",
+          "shredding.wincode"
+        ],
+        "full_remote_readback": false,
+        "previously_uploaded_extras_retained": {
+          "poh.wincode": 5972906096,
+          "shredding.wincode": 29615598
+        },
+        "remote_file_sizes_verified": true,
+        "schema": "blockzilla-stored-compact-backup-v2",
+        "semantic_schema": "blockzilla-car-slot-meta-v1",
+        "source": "/volume1/blockzilla/car-batch-far-end-1088-1090-20261120/builds/epoch-1090/attempts/d22d38c0310f489c83f67d88f2c9da5a/epoch-1090",
+        "source_files": {
+          "archive-v2-blocks.index": [
+            64768,
+            2425848726,
+            22445264,
+            1795177101255687604
+          ],
+          "archive-v2-blocks.zstd": [
+            64768,
+            2425848718,
+            63486272838,
+            1795177101219687456
+          ],
+          "archive-v2-meta.wincode": [
+            64768,
+            2425848719,
+            64,
+            1795177101275687685
+          ],
+          "block-time-gaps.bin": [
+            64768,
+            2425848729,
+            3840,
+            1795177102615693195
+          ],
+          "blockhash_index_v3.bin": [
+            64768,
+            2425848723,
+            20718692,
+            1795177102471692602
+          ],
+          "blockhash_registry.bin": [
+            64768,
+            2425848717,
+            13812448,
+            1795177101235687521
+          ],
+          "blockzilla-car-import-receipt.json": [
+            64768,
+            2425848741,
+            1819,
+            1795178144840546662
+          ],
+          "car-slot-meta.v1.bin": [
+            64768,
+            2425848724,
+            303022848,
+            1795177101255687604
+          ],
+          "prev_blockhash_tail.bin": [
+            64768,
+            2425848715,
+            12000,
+            1795173067323745638
+          ],
+          "registry-first-seen.manifest": [
+            64768,
+            2425848731,
+            756,
+            1795177102959831261
+          ],
+          "registry-hot-seed.bin": [
+            64768,
+            2425848730,
+            2097152,
+            1795177102959831261
+          ],
+          "registry.bin": [
+            64768,
+            2425848716,
+            1046858176,
+            1795177101279687702
+          ],
+          "registry.mphf": [
+            64768,
+            2425848738,
+            401398386,
+            1795178123967884750
+          ],
+          "registry_counts.bin": [
+            64768,
+            2425848727,
+            33990054,
+            1795177102471692602
+          ],
+          "signatures.bin": [
+            64768,
+            2425848720,
+            12241209856,
+            1795177101219687456
+          ],
+          "vote_hash_registry.bin": [
+            64768,
+            2425848725,
+            28056535,
+            1795177101247687570
+          ]
+        },
+        "source_profile": "NAS-retained-official-CAR-first-seen-recovery-directory",
+        "upload_profile": "query-with-signatures"
+      }
+    }
+  ],
+  "integrityLimit": "Exact object sizes and ETags observed; full payload hashes and canonical/complete epoch publication were not verified.",
+  "savedLastRowEvidence": [
+    {
+      "epoch": 1089,
+      "sourceSavedReceipt": ".codex-tmp/get-block-deploy-20261121/bucket-probe.json",
+      "indexEtag": "\"10aed0ed5df5c1e4ab96129efbb9c3c4\"",
+      "currentEtagMatches": true,
+      "firstRow": {
+        "block_id": 0,
+        "slot": 470448000,
+        "compressed_offset": 0,
+        "compressed_len": 13182,
+        "uncompressed_len": 17908,
+        "tx_count": 0,
+        "first_tx_ordinal": 0,
+        "first_signature_ordinal": 0,
+        "signature_count": 0
+      },
+      "lastRow": {
+        "block_id": 431810,
+        "slot": 470879999,
+        "compressed_offset": 52177839049,
+        "compressed_len": 66157,
+        "uncompressed_len": 186747,
+        "tx_count": 215,
+        "first_tx_ordinal": 156439021,
+        "first_signature_ordinal": 168740046,
+        "signature_count": 235
+      }
+    },
+    {
+      "epoch": 1090,
+      "sourceSavedReceipt": ".codex-tmp/get-block-deploy-20261121/bucket-probe.json",
+      "indexEtag": "\"14299e647adabdf9574d48499b3a2c23\"",
+      "currentEtagMatches": true,
+      "firstRow": {
+        "block_id": 0,
+        "slot": 470880000,
+        "compressed_offset": 0,
+        "compressed_len": 13863,
+        "uncompressed_len": 18776,
+        "tx_count": 2,
+        "first_tx_ordinal": 0,
+        "first_signature_ordinal": 0,
+        "signature_count": 2
+      },
+      "lastRow": {
+        "block_id": 431638,
+        "slot": 471311999,
+        "compressed_offset": 63486154418,
+        "compressed_len": 118420,
+        "uncompressed_len": 329425,
+        "tx_count": 266,
+        "first_tx_ordinal": 178122187,
+        "first_signature_ordinal": 191268608,
+        "signature_count": 296
+      }
+    }
+  ]
+}

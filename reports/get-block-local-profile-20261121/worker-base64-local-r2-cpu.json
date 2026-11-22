@@ -1,0 +1,523 @@
+{
+  "schema": "blockzilla-local-release-wasm-cpu-v1",
+  "startedAt": "2026-11-21T21:03:43.853Z",
+  "status": "SUCCESS",
+  "scope": "Local Miniflare application Worker, real slot, local R2, profile cache bypass; no production or external archive calls.",
+  "representation": "base64-json",
+  "body": "stream",
+  "warmup": 2,
+  "iterations": 20,
+  "samplingIntervalUs": 1000,
+  "nodeVersion": "v26.13.0",
+  "wasmSha256": "2c38e66b7543ff1d72472f690ba4156d68f4eebda664ca63fbd16c83a2d48f4a",
+  "inspectorTarget": {
+    "title": "workerd: worker core:user:blockzilla-get-block-local-profile",
+    "type": "node",
+    "description": "workerd worker"
+  },
+  "reads": [
+    {
+      "status": 200,
+      "bytes": 2436727,
+      "headersMs": 17.47470800000019,
+      "totalMs": 61.093624999999975
+    },
+    {
+      "status": 200,
+      "bytes": 2436727,
+      "headersMs": 10.2465830000001,
+      "totalMs": 42.870750000000044
+    },
+    {
+      "status": 200,
+      "bytes": 2436727,
+      "headersMs": 12.54079200000001,
+      "totalMs": 43.90487499999995
+    },
+    {
+      "status": 200,
+      "bytes": 2436727,
+      "headersMs": 8.985832999999957,
+      "totalMs": 40.4994999999999
+    },
+    {
+      "status": 200,
+      "bytes": 2436727,
+      "headersMs": 13.33316600000012,
+      "totalMs": 45.962416000000076
+    },
+    {
+      "status": 200,
+      "bytes": 2436727,
+      "headersMs": 10.349959000000126,
+      "totalMs": 44.100000000000136
+    },
+    {
+      "status": 200,
+      "bytes": 2436727,
+      "headersMs": 11.254708000000164,
+      "totalMs": 47.396375000000035
+    },
+    {
+      "status": 200,
+      "bytes": 2436727,
+      "headersMs": 10.698582999999871,
+      "totalMs": 43.98258299999998
+    },
+    {
+      "status": 200,
+      "bytes": 2436727,
+      "headersMs": 12.130625000000009,
+      "totalMs": 44.16645799999992
+    },
+    {
+      "status": 200,
+      "bytes": 2436727,
+      "headersMs": 9.317291999999952,
+      "totalMs": 44.500707999999804
+    },
+    {
+      "status": 200,
+      "bytes": 2436727,
+      "headersMs": 9.20487500000013,
+      "totalMs": 40.903166000000056
+    },
+    {
+      "status": 200,
+      "bytes": 2436727,
+      "headersMs": 9.099333000000115,
+      "totalMs": 42.348666000000094
+    },
+    {
+      "status": 200,
+      "bytes": 2436727,
+      "headersMs": 12.230999999999995,
+      "totalMs": 48.134291000000076
+    },
+    {
+      "status": 200,
+      "bytes": 2436727,
+      "headersMs": 13.70508400000017,
+      "totalMs": 44.67925000000014
+    },
+    {
+      "status": 200,
+      "bytes": 2436727,
+      "headersMs": 13.499290999999857,
+      "totalMs": 50.47787500000004
+    },
+    {
+      "status": 200,
+      "bytes": 2436727,
+      "headersMs": 19.658500000000004,
+      "totalMs": 59.015499999999975
+    },
+    {
+      "status": 200,
+      "bytes": 2436727,
+      "headersMs": 17.318250000000035,
+      "totalMs": 70.46575000000007
+    },
+    {
+      "status": 200,
+      "bytes": 2436727,
+      "headersMs": 33.0070410000003,
+      "totalMs": 99.65962500000023
+    },
+    {
+      "status": 200,
+      "bytes": 2436727,
+      "headersMs": 10.598250000000007,
+      "totalMs": 50.81687499999998
+    },
+    {
+      "status": 200,
+      "bytes": 2436727,
+      "headersMs": 16.516665999999987,
+      "totalMs": 93.49229100000002
+    }
+  ],
+  "profile": "/Users/augustin/Developement/ferno/blockzilla-v1/reports/get-block-local-profile-20261121/worker-base64-local-r2.cpuprofile",
+  "attribution": {
+    "samples": 381,
+    "traceDurationMs": 1302.818,
+    "sampledDurationMs": 1279.875,
+    "sampledActiveMs": 1251.939,
+    "categoriesMs": {
+      "wasm": 890.028,
+      "javascript": 73.314,
+      "idle": 27.936,
+      "garbageCollector": 0,
+      "program": 27.945,
+      "other": 260.652
+    },
+    "wasmNodes": 278,
+    "numericWasmNodes": 0,
+    "topLeaves": [
+      {
+        "functionName": "get",
+        "url": "",
+        "sampledMs": 135.75,
+        "percentOfTrace": 10.606504541459127
+      },
+      {
+        "functionName": "<blockzilla_get_block[d3ffc8bc0e164ad9]::worker::JsonByteWriter>::write_raw",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 100.536,
+        "percentOfTrace": 7.855142103721066
+      },
+      {
+        "functionName": "sha2[f81f1aae0a8d7616]::sha256::compress256",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 91.287,
+        "percentOfTrace": 7.132493407559332
+      },
+      {
+        "functionName": "five8[d82bce9c86f41317]::encode::encode_32",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 88.584,
+        "percentOfTrace": 6.921300908291825
+      },
+      {
+        "functionName": "<ruzstd[44115b405542039b]::decoding::streaming_decoder::StreamingDecoder<&[u8], ruzstd[44115b405542039b]::decoding::frame_decoder::FrameDecoder> as alloc[cb2b8d99256f33df]::io::read::Read>::read",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 67.353,
+        "percentOfTrace": 5.26246703779666
+      },
+      {
+        "functionName": "blockzilla_get_block[d3ffc8bc0e164ad9]::worker::base58_bytes",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 59.956,
+        "percentOfTrace": 4.68451997265358
+      },
+      {
+        "functionName": "wasm-to-js",
+        "url": "",
+        "sampledMs": 52.899,
+        "percentOfTrace": 4.133138001757984
+      },
+      {
+        "functionName": "read",
+        "url": "",
+        "sampledMs": 45.275,
+        "percentOfTrace": 3.5374548295732007
+      },
+      {
+        "functionName": "core[608f92abc48d28da]::fmt::write",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 30.555,
+        "percentOfTrace": 2.3873425139173747
+      },
+      {
+        "functionName": "(program)",
+        "url": "",
+        "sampledMs": 27.945,
+        "percentOfTrace": 2.1834163492528567
+      },
+      {
+        "functionName": "(idle)",
+        "url": "",
+        "sampledMs": 27.936,
+        "percentOfTrace": 2.1827131555815997
+      },
+      {
+        "functionName": "blockzilla_get_block[d3ffc8bc0e164ad9]::worker::stream_metadata_value::{closure#0}",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 26.219,
+        "percentOfTrace": 2.0485594296318
+      },
+      {
+        "functionName": "wasm_bindgen[5946223aaec7bcce]::convert::closures::_::invoke::<wasm_bindgen[5946223aaec7bcce]::JsValue, core[608f92abc48d28da]::result::Result<(), wasm_bindgen[5946223aaec7bcce]::JsError>, true> externref shim multivalue shim",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 25.51,
+        "percentOfTrace": 1.9931633948627796
+      },
+      {
+        "functionName": "<blockzilla_get_block[d3ffc8bc0e164ad9]::worker::Resolver>::resolve_pubkey_bytes::{closure#0}",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 23.807,
+        "percentOfTrace": 1.860103525734935
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "index.js",
+        "sampledMs": 22.834,
+        "percentOfTrace": 1.784080476609044
+      },
+      {
+        "functionName": "<f64 as zmij[579d63dd5744ce48]::private::Sealed>::write_to_zmij_buffer",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 21.421,
+        "percentOfTrace": 1.6736790702217013
+      },
+      {
+        "functionName": "__wbg_new_with_length_5ffeddb9d9fbb96f",
+        "url": "index.js",
+        "sampledMs": 21.165,
+        "percentOfTrace": 1.6536771169059479
+      },
+      {
+        "functionName": "<alloc[cb2b8d99256f33df]::string::String as core[608f92abc48d28da]::fmt::Write>::write_str[7]",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 20.313,
+        "percentOfTrace": 1.5871081160269558
+      },
+      {
+        "functionName": "<dlmalloc[c66ed5ba1f893f92]::dlmalloc::Dlmalloc<dlmalloc[c66ed5ba1f893f92]::sys::System>>::malloc",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 20.304,
+        "percentOfTrace": 1.5864049223556989
+      },
+      {
+        "functionName": "<blockzilla_primitives[d04abae36287f99e]::framed::HistoricalSourceLeb128 as wincode[5e160e33637f9987]::schema::int_encoding::IntEncoding<wincode[5e160e33637f9987]::schema::int_encoding::LittleEndian>>::decode_u64::<&mut &[u8]>",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 20.255,
+        "percentOfTrace": 1.5825764234788553
+      },
+      {
+        "functionName": "blockzilla_get_block[d3ffc8bc0e164ad9]::worker::stream_resolved_pubkey_value::{closure#0}",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 19.592,
+        "percentOfTrace": 1.5307744896962594
+      },
+      {
+        "functionName": "blockzilla_get_block[d3ffc8bc0e164ad9]::worker::block_base64::stream_full_value_into::{closure#0}",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 17.207,
+        "percentOfTrace": 1.3444281668131652
+      },
+      {
+        "functionName": "<base64[b72e63f5bebfdb99]::engine::general_purpose::GeneralPurpose as base64[b72e63f5bebfdb99]::engine::Engine>::internal_encode",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 15.997,
+        "percentOfTrace": 1.2498876843441742
+      },
+      {
+        "functionName": "<dlmalloc[c66ed5ba1f893f92]::dlmalloc::Dlmalloc<dlmalloc[c66ed5ba1f893f92]::sys::System>>::free",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 15.677,
+        "percentOfTrace": 1.2248852426994823
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "",
+        "sampledMs": 15.071,
+        "percentOfTrace": 1.177536868834847
+      },
+      {
+        "functionName": "blockzilla_get_block[d3ffc8bc0e164ad9]::worker::ui_amount_string",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 15.024,
+        "percentOfTrace": 1.173864635218283
+      },
+      {
+        "functionName": "<blockzilla_primitives[d04abae36287f99e]::primitives::pubkey::CompactPubkey as wincode[5e160e33637f9987]::schema::SchemaRead<wincode[5e160e33637f9987]::config::Configuration<true, 33554432usize, wincode[5e160e33637f9987]::len::UseIntLen<u64, 0usize>, wincode[5e160e33637f9987]::schema::int_encoding::LittleEndian, blockzilla_primitives[d04abae36287f99e]::framed::HistoricalSourceLeb128>>>::read::<&mut &[u8]>",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 14.631,
+        "percentOfTrace": 1.1431585115733958
+      },
+      {
+        "functionName": "blockzilla_get_block[d3ffc8bc0e164ad9]::worker::decode_message",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 11.752,
+        "percentOfTrace": 0.9182146694013087
+      },
+      {
+        "functionName": "<js_sys[239d1bda2f6e04c1]::Function<_>>::call1::__wbg_call_6bcf8d3e20937e46 externref shim",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 11.244,
+        "percentOfTrace": 0.8785232932903604
+      },
+      {
+        "functionName": "blockzilla_get_block[d3ffc8bc0e164ad9]::worker::stream_token_balances_value::{closure#0}",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 11.062,
+        "percentOfTrace": 0.8643031546049419
+      }
+    ],
+    "topInclusive": [
+      {
+        "functionName": "(root)",
+        "url": "",
+        "sampledMs": 1279.875,
+        "percentOfTrace": 100
+      },
+      {
+        "functionName": "_",
+        "url": "index.js",
+        "sampledMs": 1202.854,
+        "percentOfTrace": 93.98214669401308
+      },
+      {
+        "functionName": "we",
+        "url": "index.js",
+        "sampledMs": 1185.543,
+        "percentOfTrace": 92.62959273366539
+      },
+      {
+        "functionName": "wasm_bindgen[5946223aaec7bcce]::convert::closures::_::invoke::<wasm_bindgen[5946223aaec7bcce]::JsValue, core[608f92abc48d28da]::result::Result<(), wasm_bindgen[5946223aaec7bcce]::JsError>, true> externref shim multivalue shim",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 1181.609,
+        "percentOfTrace": 92.32221896669597
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "",
+        "sampledMs": 1169.911,
+        "percentOfTrace": 91.4082234593222
+      },
+      {
+        "functionName": "wasm_bindgen[5946223aaec7bcce]::convert::closures::_::invoke::<wasm_bindgen[5946223aaec7bcce]::JsValue, core[608f92abc48d28da]::result::Result<(), wasm_bindgen[5946223aaec7bcce]::JsError>, true>",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 1156.099,
+        "percentOfTrace": 90.32905557183318
+      },
+      {
+        "functionName": "<js_sys[239d1bda2f6e04c1]::futures::queue::Queue>::new::{closure#0}",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 1154.84,
+        "percentOfTrace": 90.23068659048735
+      },
+      {
+        "functionName": "js-to-wasm:iin:ii",
+        "url": "",
+        "sampledMs": 915.059,
+        "percentOfTrace": 71.49596640296905
+      },
+      {
+        "functionName": "blockzilla_get_block[d3ffc8bc0e164ad9]::worker::block_base64::stream_full_value_into::{closure#0}",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 656.126,
+        "percentOfTrace": 51.26485008301592
+      },
+      {
+        "functionName": "blockzilla_get_block[d3ffc8bc0e164ad9]::worker::stream_json_rpc_get_block_success_body_with_policy::{closure#0}",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 652.403,
+        "percentOfTrace": 50.973962301005955
+      },
+      {
+        "functionName": "blockzilla_get_block[d3ffc8bc0e164ad9]::worker::stream_metadata_value::{closure#0}",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 483.351,
+        "percentOfTrace": 37.765484910635806
+      },
+      {
+        "functionName": "js_sys[239d1bda2f6e04c1]::futures::future_to_promise::<core[608f92abc48d28da]::panic::unwind_safe::AssertUnwindSafe<blockzilla_get_block[d3ffc8bc0e164ad9]::worker::_worker_fetch::fetch::{closure#0}>>::{closure#0}::{closure#0}",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 446.51,
+        "percentOfTrace": 34.88700068366052
+      },
+      {
+        "functionName": "blockzilla_get_block[d3ffc8bc0e164ad9]::worker::fetch_block::{closure#0}",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 369.073,
+        "percentOfTrace": 28.836644203535503
+      },
+      {
+        "functionName": "wasm-to-js",
+        "url": "",
+        "sampledMs": 333.681,
+        "percentOfTrace": 26.071374157632583
+      },
+      {
+        "functionName": "js-to-wasm::",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 282.13,
+        "percentOfTrace": 22.043558941302862
+      },
+      {
+        "functionName": "blockzilla_get_block[d3ffc8bc0e164ad9]::worker::stream_token_balances_value::{closure#0}",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 178.813,
+        "percentOfTrace": 13.971129993163395
+      },
+      {
+        "functionName": "a",
+        "url": "index.js",
+        "sampledMs": 163.889,
+        "percentOfTrace": 12.805078620959078
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "index.js",
+        "sampledMs": 162.634,
+        "percentOfTrace": 12.707022170133802
+      },
+      {
+        "functionName": "blockzilla_get_block[d3ffc8bc0e164ad9]::worker::resolution::load::{closure#0}",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 147.312,
+        "percentOfTrace": 11.509874011133899
+      },
+      {
+        "functionName": "<futures_util[7e41311c3fd8ee72]::future::try_maybe_done::TryMaybeDone<blockzilla_get_block[d3ffc8bc0e164ad9]::worker::resolution::pinned_bytes::{closure#0}> as core[608f92abc48d28da]::future::future::Future>::poll",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 141.902,
+        "percentOfTrace": 11.087176482078329
+      },
+      {
+        "functionName": "blockzilla_get_block[d3ffc8bc0e164ad9]::worker::render_logs_with_resolver::{closure#0}",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 136.291,
+        "percentOfTrace": 10.648774294364683
+      },
+      {
+        "functionName": "get",
+        "url": "",
+        "sampledMs": 135.75,
+        "percentOfTrace": 10.606504541459127
+      },
+      {
+        "functionName": "<worker[2694fd72632b3766]::r2::builder::GetOptionsBuilder>::execute::{closure#0}",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 133.969,
+        "percentOfTrace": 10.46735032718039
+      },
+      {
+        "functionName": "__wbg_get_395ac2273ef59cb0",
+        "url": "index.js",
+        "sampledMs": 131.428,
+        "percentOfTrace": 10.268815313995507
+      },
+      {
+        "functionName": "<blockzilla_get_block[d3ffc8bc0e164ad9]::worker::JsonByteWriter>::write_raw",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 104.27,
+        "percentOfTrace": 8.146889344662565
+      },
+      {
+        "functionName": "sha2[f81f1aae0a8d7616]::sha256::compress256",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 91.287,
+        "percentOfTrace": 7.132493407559332
+      },
+      {
+        "functionName": "<sha2[f81f1aae0a8d7616]::Sha256 as digest[65ed5ce01dc765ec]::digest::Digest>::digest::<&[u8]>",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 91.287,
+        "percentOfTrace": 7.132493407559332
+      },
+      {
+        "functionName": "blockzilla_get_block[d3ffc8bc0e164ad9]::worker::stream_resolved_pubkey_value::{closure#0}",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 89.019,
+        "percentOfTrace": 6.955288602402578
+      },
+      {
+        "functionName": "five8[d82bce9c86f41317]::encode::encode_32",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 88.584,
+        "percentOfTrace": 6.921300908291825
+      },
+      {
+        "functionName": "blockzilla_get_block[d3ffc8bc0e164ad9]::worker::resolution::pinned_response::{closure#0}",
+        "url": "wasm://wasm/blockzilla_get_block.wasm-0073e786",
+        "sampledMs": 80.276,
+        "percentOfTrace": 6.272175017091513
+      }
+    ],
+    "interpretation": "Sample-weighted local trace time. This is not production CPU time or billable CPU. Release WASM can lack Rust names."
+  },
+  "completedAt": "2026-11-21T21:03:46.012Z"
+}

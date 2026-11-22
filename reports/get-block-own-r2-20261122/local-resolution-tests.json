@@ -1,0 +1,51 @@
+{
+  "status": "PASSED",
+  "slot": 470987967,
+  "scope": "Local release WASM with one real compact block and independent provider JSON",
+  "checks": [
+    "resolution authentication before storage",
+    "unsupported direct JSON encodings fail before all storage reads",
+    "three GETs and zero HEADs for an exact native V1 binary stream",
+    "three GETs and complete Base64 RPC parity with the independent provider oracle",
+    "original signature windows complete legacy V0 and V1 wire schemas and every Ed25519 signature",
+    "explicit Base64 encoding matches the direct GET default",
+    "source-only profile keeps checked auth and index caches while forcing both source GETs",
+    "fully cold profile bypasses auth and index caches with three object GETs and one KV read",
+    "two GETs for the original compressed block without access data",
+    "one resolution GET followed by two authenticated client-part GETs and exact V1 reconstruction",
+    "zero archive GETs HEADs and bytes for all four full response cache hits",
+    "JSON and native binary reuse both source ranges in either order with zero origin operations",
+    "invalid resolution bytes are not promoted to either cache before validation",
+    "changed token wrong slot and changed generation rejection before origin reads",
+    "missing and corrupt admitted resolution objects fail without source reads",
+    "changed source ETag rejection before native binary body creation",
+    "binary streams do not decode hot blocks while JSON rejects corrupt zstd",
+    "early render errors abort on both normal requests and never become response-cache hits"
+  ],
+  "builder": {
+    "access_prefix_bytes": 441,
+    "access_suffix_bytes": 73009,
+    "bytes": 74314,
+    "epoch": 1090,
+    "generation": "resolution-local-v1",
+    "ok": true,
+    "output": "/var/folders/m1/d9tyn2w95t5c35l0rdn0h4_w0000gn/T/blockzilla-resolution-worker-SYIbpz/resolution.v1.bin",
+    "sha256": "c18cc61ab3b158bf20ac8e76614c662be2cca69ab271efec57744e6f9f4ce4df",
+    "signature_bytes_stored": 0,
+    "slot": 470987967,
+    "source_signature_bytes": 26432
+  },
+  "base64_wire": {
+    "transactions": 370,
+    "signatures": 413,
+    "versions": {
+      "0": 139,
+      "1": 161,
+      "legacy": 70
+    },
+    "length_prefixed_wire_sha256": "ca623dceb98319a3b28f4b62150e3f310d8ef6a19a609c187a2904712b5bba49"
+  },
+  "original_bundle_sha256": "afe23d5bc1bd8fafb60b173d053c9d3b5d65f5c9e4a43139ef5d863ff4fcb150",
+  "resolution_sha256": "c18cc61ab3b158bf20ac8e76614c662be2cca69ab271efec57744e6f9f4ce4df",
+  "resolution_bytes": 74314
+}

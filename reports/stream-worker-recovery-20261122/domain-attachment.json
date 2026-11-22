@@ -1,0 +1,16 @@
+{
+  "result": {
+    "id": "3e5664f63a8c29e94ab042d4c03a62552f034e00",
+    "zone_id": "fe1afd69f777e57eca0a230722f77da2",
+    "zone_name": "blockzilla.dev",
+    "hostname": "getblock.blockzilla.dev",
+    "service": "blockzilla-get-block",
+    "environment": "",
+    "cert_id": "3fd75145-cae3-44c0-8f74-0471a4e4d008",
+    "previews_enabled": false,
+    "enabled": true
+  },
+  "success": true,
+  "errors": [],
+  "messages": []
+}

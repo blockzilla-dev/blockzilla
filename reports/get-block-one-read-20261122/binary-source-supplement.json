@@ -1,0 +1,3765 @@
+{
+  "schema": "blockzilla.bundle-binary-source-supplement.v1",
+  "startedAt": "2026-11-22T11:10:57.288Z",
+  "completedAt": "2026-11-22T11:11:13.686Z",
+  "deploymentVersion": "8142880e-9475-4c45-b3a1-dc16b538d52f",
+  "slots": [
+    470555971,
+    470663944,
+    470771932,
+    470879999
+  ],
+  "plan": {
+    "requests": 10,
+    "rounds": 2,
+    "chargedJsonWarmups": 2,
+    "binarySourceCalls": 8,
+    "sequential": true,
+    "retries": 0,
+    "authWarmQuietMs": 5200,
+    "sourceQuietMs": 2200
+  },
+  "proof": {
+    "requests": 10,
+    "plannedRequests": 10,
+    "successful": 10,
+    "stoppedEarly": false,
+    "authWarmups": 2,
+    "authWarmJsonMatches": 2,
+    "binaryResponses": 8,
+    "originalBinaryMatches": 8,
+    "binaryOneGetAuthHot": 8,
+    "binaryKvReads": 0,
+    "binaryGets": 8
+  },
+  "windows": [
+    {
+      "phase": "auth_warm_0",
+      "round": 0,
+      "startedAt": "2026-11-22T11:11:02.495Z",
+      "completedAt": "2026-11-22T11:11:02.825Z",
+      "requests": 1,
+      "firstRequestAt": "2026-11-22T11:11:02.496Z",
+      "lastRequestCompletedAt": "2026-11-22T11:11:02.825Z",
+      "quietBeforeMs": 5200
+    },
+    {
+      "phase": "binary_source_0",
+      "round": 0,
+      "startedAt": "2026-11-22T11:11:05.027Z",
+      "completedAt": "2026-11-22T11:11:05.602Z",
+      "requests": 4,
+      "firstRequestAt": "2026-11-22T11:11:05.027Z",
+      "lastRequestCompletedAt": "2026-11-22T11:11:05.602Z",
+      "quietBeforeMs": 2200
+    },
+    {
+      "phase": "auth_warm_1",
+      "round": 1,
+      "startedAt": "2026-11-22T11:11:10.807Z",
+      "completedAt": "2026-11-22T11:11:11.078Z",
+      "requests": 1,
+      "firstRequestAt": "2026-11-22T11:11:10.809Z",
+      "lastRequestCompletedAt": "2026-11-22T11:11:11.078Z",
+      "quietBeforeMs": 5200
+    },
+    {
+      "phase": "binary_source_1",
+      "round": 1,
+      "startedAt": "2026-11-22T11:11:13.279Z",
+      "completedAt": "2026-11-22T11:11:13.685Z",
+      "requests": 4,
+      "firstRequestAt": "2026-11-22T11:11:13.280Z",
+      "lastRequestCompletedAt": "2026-11-22T11:11:13.684Z",
+      "quietBeforeMs": 2200
+    }
+  ],
+  "groups": [
+    {
+      "source": "blockzilla",
+      "label": "bundle",
+      "representation": "json",
+      "phase": "auth_warm_0",
+      "cache": "ALL",
+      "requests": 1,
+      "successful": 1,
+      "successRate": 1,
+      "errors": {},
+      "cacheCounts": {
+        "HIT": 1
+      },
+      "storageClassCounts": {
+        "response_cache_hit": 1
+      },
+      "storageBytesModes": {
+        "response-cache": 1
+      },
+      "readerKinds": {
+        "none": 1
+      },
+      "archiveBackends": {
+        "r2": 1
+      },
+      "verifiedOriginUncached": 0,
+      "verifiedFullyColdWithAuthBypass": 0,
+      "verifiedSourceIndexCached": 0,
+      "verifiedSourceIndexAndAuthCached": 0,
+      "auth": {
+        "cacheCounts": {
+          "MISS": 1
+        },
+        "kvReads": {
+          "reportedRequests": 1,
+          "total": 1,
+          "mean": 1,
+          "p50": 1,
+          "p95": 1,
+          "p99": 1
+        }
+      },
+      "edgeLocations": {
+        "CDG": 1
+      },
+      "ttfbMs": {
+        "p50": 225.884,
+        "p95": 225.884,
+        "p99": 225.884
+      },
+      "totalMs": {
+        "p50": 247.911,
+        "p95": 247.911,
+        "p99": 247.911
+      },
+      "bytes": {
+        "p50": 2531323,
+        "p95": 2531323,
+        "p99": 2531323
+      },
+      "storage": {
+        "originReads": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originGets": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originHeads": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originBytes": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originGetSuccesses": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originHeadSuccesses": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "archiveMemoryHits": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "archiveEdgeHits": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originExpectedBytes": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "readerHttpRequests": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "unconfirmedReaderRequests": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        }
+      },
+      "backendOperations": {
+        "ownerR2": {
+          "reads": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "gets": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "heads": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        },
+        "directS3": {
+          "reads": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "gets": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "heads": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        },
+        "foundationR2": {
+          "reads": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "gets": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "heads": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        }
+      }
+    },
+    {
+      "source": "blockzilla",
+      "label": "bundle",
+      "representation": "json",
+      "phase": "auth_warm_0",
+      "cache": "HIT",
+      "requests": 1,
+      "successful": 1,
+      "successRate": 1,
+      "errors": {},
+      "cacheCounts": {
+        "HIT": 1
+      },
+      "storageClassCounts": {
+        "response_cache_hit": 1
+      },
+      "storageBytesModes": {
+        "response-cache": 1
+      },
+      "readerKinds": {
+        "none": 1
+      },
+      "archiveBackends": {
+        "r2": 1
+      },
+      "verifiedOriginUncached": 0,
+      "verifiedFullyColdWithAuthBypass": 0,
+      "verifiedSourceIndexCached": 0,
+      "verifiedSourceIndexAndAuthCached": 0,
+      "auth": {
+        "cacheCounts": {
+          "MISS": 1
+        },
+        "kvReads": {
+          "reportedRequests": 1,
+          "total": 1,
+          "mean": 1,
+          "p50": 1,
+          "p95": 1,
+          "p99": 1
+        }
+      },
+      "edgeLocations": {
+        "CDG": 1
+      },
+      "ttfbMs": {
+        "p50": 225.884,
+        "p95": 225.884,
+        "p99": 225.884
+      },
+      "totalMs": {
+        "p50": 247.911,
+        "p95": 247.911,
+        "p99": 247.911
+      },
+      "bytes": {
+        "p50": 2531323,
+        "p95": 2531323,
+        "p99": 2531323
+      },
+      "storage": {
+        "originReads": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originGets": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originHeads": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originBytes": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originGetSuccesses": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originHeadSuccesses": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "archiveMemoryHits": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "archiveEdgeHits": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originExpectedBytes": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "readerHttpRequests": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "unconfirmedReaderRequests": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        }
+      },
+      "backendOperations": {
+        "ownerR2": {
+          "reads": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "gets": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "heads": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        },
+        "directS3": {
+          "reads": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "gets": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "heads": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        },
+        "foundationR2": {
+          "reads": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "gets": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "heads": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        }
+      }
+    },
+    {
+      "source": "blockzilla",
+      "label": "bundle",
+      "representation": "bin",
+      "phase": "binary_source_0",
+      "cache": "ALL",
+      "requests": 4,
+      "successful": 4,
+      "successRate": 1,
+      "errors": {},
+      "cacheCounts": {
+        "BYPASS": 4
+      },
+      "storageClassCounts": {
+        "bundle_source_uncached_verified": 4
+      },
+      "storageBytesModes": {
+        "streamed-completion": 4
+      },
+      "readerKinds": {
+        "none": 4
+      },
+      "archiveBackends": {
+        "r2": 4
+      },
+      "verifiedOriginUncached": 0,
+      "verifiedFullyColdWithAuthBypass": 0,
+      "verifiedSourceIndexCached": 0,
+      "verifiedSourceIndexAndAuthCached": 0,
+      "auth": {
+        "cacheCounts": {
+          "HIT": 4
+        },
+        "kvReads": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        }
+      },
+      "edgeLocations": {
+        "CDG": 4
+      },
+      "ttfbMs": {
+        "p50": 109.746,
+        "p95": 211.282,
+        "p99": 211.282
+      },
+      "totalMs": {
+        "p50": 114.587,
+        "p95": 212.363,
+        "p99": 212.363
+      },
+      "bytes": {
+        "p50": 247594,
+        "p95": 364638,
+        "p99": 364638
+      },
+      "storage": {
+        "originReads": {
+          "reportedRequests": 4,
+          "total": 4,
+          "mean": 1,
+          "p50": 1,
+          "p95": 1,
+          "p99": 1
+        },
+        "originGets": {
+          "reportedRequests": 4,
+          "total": 4,
+          "mean": 1,
+          "p50": 1,
+          "p95": 1,
+          "p99": 1
+        },
+        "originHeads": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originBytes": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originGetSuccesses": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originHeadSuccesses": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "archiveMemoryHits": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "archiveEdgeHits": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originExpectedBytes": {
+          "reportedRequests": 4,
+          "total": 1012959,
+          "mean": 253239.75,
+          "p50": 247594,
+          "p95": 364638,
+          "p99": 364638
+        },
+        "readerHttpRequests": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "unconfirmedReaderRequests": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        }
+      },
+      "backendOperations": {
+        "ownerR2": {
+          "reads": {
+            "reportedRequests": 4,
+            "total": 4,
+            "mean": 1,
+            "p50": 1,
+            "p95": 1,
+            "p99": 1
+          },
+          "gets": {
+            "reportedRequests": 4,
+            "total": 4,
+            "mean": 1,
+            "p50": 1,
+            "p95": 1,
+            "p99": 1
+          },
+          "heads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        },
+        "directS3": {
+          "reads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "gets": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "heads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        },
+        "foundationR2": {
+          "reads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "gets": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "heads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        }
+      }
+    },
+    {
+      "source": "blockzilla",
+      "label": "bundle",
+      "representation": "bin",
+      "phase": "binary_source_0",
+      "cache": "BYPASS",
+      "requests": 4,
+      "successful": 4,
+      "successRate": 1,
+      "errors": {},
+      "cacheCounts": {
+        "BYPASS": 4
+      },
+      "storageClassCounts": {
+        "bundle_source_uncached_verified": 4
+      },
+      "storageBytesModes": {
+        "streamed-completion": 4
+      },
+      "readerKinds": {
+        "none": 4
+      },
+      "archiveBackends": {
+        "r2": 4
+      },
+      "verifiedOriginUncached": 0,
+      "verifiedFullyColdWithAuthBypass": 0,
+      "verifiedSourceIndexCached": 0,
+      "verifiedSourceIndexAndAuthCached": 0,
+      "auth": {
+        "cacheCounts": {
+          "HIT": 4
+        },
+        "kvReads": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        }
+      },
+      "edgeLocations": {
+        "CDG": 4
+      },
+      "ttfbMs": {
+        "p50": 109.746,
+        "p95": 211.282,
+        "p99": 211.282
+      },
+      "totalMs": {
+        "p50": 114.587,
+        "p95": 212.363,
+        "p99": 212.363
+      },
+      "bytes": {
+        "p50": 247594,
+        "p95": 364638,
+        "p99": 364638
+      },
+      "storage": {
+        "originReads": {
+          "reportedRequests": 4,
+          "total": 4,
+          "mean": 1,
+          "p50": 1,
+          "p95": 1,
+          "p99": 1
+        },
+        "originGets": {
+          "reportedRequests": 4,
+          "total": 4,
+          "mean": 1,
+          "p50": 1,
+          "p95": 1,
+          "p99": 1
+        },
+        "originHeads": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originBytes": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originGetSuccesses": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originHeadSuccesses": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "archiveMemoryHits": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "archiveEdgeHits": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originExpectedBytes": {
+          "reportedRequests": 4,
+          "total": 1012959,
+          "mean": 253239.75,
+          "p50": 247594,
+          "p95": 364638,
+          "p99": 364638
+        },
+        "readerHttpRequests": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "unconfirmedReaderRequests": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        }
+      },
+      "backendOperations": {
+        "ownerR2": {
+          "reads": {
+            "reportedRequests": 4,
+            "total": 4,
+            "mean": 1,
+            "p50": 1,
+            "p95": 1,
+            "p99": 1
+          },
+          "gets": {
+            "reportedRequests": 4,
+            "total": 4,
+            "mean": 1,
+            "p50": 1,
+            "p95": 1,
+            "p99": 1
+          },
+          "heads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        },
+        "directS3": {
+          "reads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "gets": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "heads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        },
+        "foundationR2": {
+          "reads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "gets": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "heads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        }
+      }
+    },
+    {
+      "source": "blockzilla",
+      "label": "bundle",
+      "representation": "json",
+      "phase": "auth_warm_1",
+      "cache": "ALL",
+      "requests": 1,
+      "successful": 1,
+      "successRate": 1,
+      "errors": {},
+      "cacheCounts": {
+        "HIT": 1
+      },
+      "storageClassCounts": {
+        "response_cache_hit": 1
+      },
+      "storageBytesModes": {
+        "response-cache": 1
+      },
+      "readerKinds": {
+        "none": 1
+      },
+      "archiveBackends": {
+        "r2": 1
+      },
+      "verifiedOriginUncached": 0,
+      "verifiedFullyColdWithAuthBypass": 0,
+      "verifiedSourceIndexCached": 0,
+      "verifiedSourceIndexAndAuthCached": 0,
+      "auth": {
+        "cacheCounts": {
+          "MISS": 1
+        },
+        "kvReads": {
+          "reportedRequests": 1,
+          "total": 1,
+          "mean": 1,
+          "p50": 1,
+          "p95": 1,
+          "p99": 1
+        }
+      },
+      "edgeLocations": {
+        "CDG": 1
+      },
+      "ttfbMs": {
+        "p50": 152.147,
+        "p95": 152.147,
+        "p99": 152.147
+      },
+      "totalMs": {
+        "p50": 173.079,
+        "p95": 173.079,
+        "p99": 173.079
+      },
+      "bytes": {
+        "p50": 2531323,
+        "p95": 2531323,
+        "p99": 2531323
+      },
+      "storage": {
+        "originReads": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originGets": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originHeads": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originBytes": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originGetSuccesses": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originHeadSuccesses": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "archiveMemoryHits": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "archiveEdgeHits": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originExpectedBytes": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "readerHttpRequests": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "unconfirmedReaderRequests": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        }
+      },
+      "backendOperations": {
+        "ownerR2": {
+          "reads": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "gets": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "heads": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        },
+        "directS3": {
+          "reads": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "gets": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "heads": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        },
+        "foundationR2": {
+          "reads": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "gets": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "heads": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        }
+      }
+    },
+    {
+      "source": "blockzilla",
+      "label": "bundle",
+      "representation": "json",
+      "phase": "auth_warm_1",
+      "cache": "HIT",
+      "requests": 1,
+      "successful": 1,
+      "successRate": 1,
+      "errors": {},
+      "cacheCounts": {
+        "HIT": 1
+      },
+      "storageClassCounts": {
+        "response_cache_hit": 1
+      },
+      "storageBytesModes": {
+        "response-cache": 1
+      },
+      "readerKinds": {
+        "none": 1
+      },
+      "archiveBackends": {
+        "r2": 1
+      },
+      "verifiedOriginUncached": 0,
+      "verifiedFullyColdWithAuthBypass": 0,
+      "verifiedSourceIndexCached": 0,
+      "verifiedSourceIndexAndAuthCached": 0,
+      "auth": {
+        "cacheCounts": {
+          "MISS": 1
+        },
+        "kvReads": {
+          "reportedRequests": 1,
+          "total": 1,
+          "mean": 1,
+          "p50": 1,
+          "p95": 1,
+          "p99": 1
+        }
+      },
+      "edgeLocations": {
+        "CDG": 1
+      },
+      "ttfbMs": {
+        "p50": 152.147,
+        "p95": 152.147,
+        "p99": 152.147
+      },
+      "totalMs": {
+        "p50": 173.079,
+        "p95": 173.079,
+        "p99": 173.079
+      },
+      "bytes": {
+        "p50": 2531323,
+        "p95": 2531323,
+        "p99": 2531323
+      },
+      "storage": {
+        "originReads": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originGets": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originHeads": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originBytes": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originGetSuccesses": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originHeadSuccesses": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "archiveMemoryHits": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "archiveEdgeHits": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originExpectedBytes": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "readerHttpRequests": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "unconfirmedReaderRequests": {
+          "reportedRequests": 1,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        }
+      },
+      "backendOperations": {
+        "ownerR2": {
+          "reads": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "gets": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "heads": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        },
+        "directS3": {
+          "reads": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "gets": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "heads": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        },
+        "foundationR2": {
+          "reads": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "gets": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "heads": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 1,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        }
+      }
+    },
+    {
+      "source": "blockzilla",
+      "label": "bundle",
+      "representation": "bin",
+      "phase": "binary_source_1",
+      "cache": "ALL",
+      "requests": 4,
+      "successful": 4,
+      "successRate": 1,
+      "errors": {},
+      "cacheCounts": {
+        "BYPASS": 4
+      },
+      "storageClassCounts": {
+        "bundle_source_uncached_verified": 4
+      },
+      "storageBytesModes": {
+        "streamed-completion": 4
+      },
+      "readerKinds": {
+        "none": 4
+      },
+      "archiveBackends": {
+        "r2": 4
+      },
+      "verifiedOriginUncached": 0,
+      "verifiedFullyColdWithAuthBypass": 0,
+      "verifiedSourceIndexCached": 0,
+      "verifiedSourceIndexAndAuthCached": 0,
+      "auth": {
+        "cacheCounts": {
+          "HIT": 4
+        },
+        "kvReads": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        }
+      },
+      "edgeLocations": {
+        "CDG": 4
+      },
+      "ttfbMs": {
+        "p50": 93.984,
+        "p95": 126.438,
+        "p99": 126.438
+      },
+      "totalMs": {
+        "p50": 94.964,
+        "p95": 131.315,
+        "p99": 131.315
+      },
+      "bytes": {
+        "p50": 247594,
+        "p95": 364638,
+        "p99": 364638
+      },
+      "storage": {
+        "originReads": {
+          "reportedRequests": 4,
+          "total": 4,
+          "mean": 1,
+          "p50": 1,
+          "p95": 1,
+          "p99": 1
+        },
+        "originGets": {
+          "reportedRequests": 4,
+          "total": 4,
+          "mean": 1,
+          "p50": 1,
+          "p95": 1,
+          "p99": 1
+        },
+        "originHeads": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originBytes": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originGetSuccesses": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originHeadSuccesses": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "archiveMemoryHits": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "archiveEdgeHits": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originExpectedBytes": {
+          "reportedRequests": 4,
+          "total": 1012959,
+          "mean": 253239.75,
+          "p50": 247594,
+          "p95": 364638,
+          "p99": 364638
+        },
+        "readerHttpRequests": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "unconfirmedReaderRequests": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        }
+      },
+      "backendOperations": {
+        "ownerR2": {
+          "reads": {
+            "reportedRequests": 4,
+            "total": 4,
+            "mean": 1,
+            "p50": 1,
+            "p95": 1,
+            "p99": 1
+          },
+          "gets": {
+            "reportedRequests": 4,
+            "total": 4,
+            "mean": 1,
+            "p50": 1,
+            "p95": 1,
+            "p99": 1
+          },
+          "heads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        },
+        "directS3": {
+          "reads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "gets": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "heads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        },
+        "foundationR2": {
+          "reads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "gets": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "heads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        }
+      }
+    },
+    {
+      "source": "blockzilla",
+      "label": "bundle",
+      "representation": "bin",
+      "phase": "binary_source_1",
+      "cache": "BYPASS",
+      "requests": 4,
+      "successful": 4,
+      "successRate": 1,
+      "errors": {},
+      "cacheCounts": {
+        "BYPASS": 4
+      },
+      "storageClassCounts": {
+        "bundle_source_uncached_verified": 4
+      },
+      "storageBytesModes": {
+        "streamed-completion": 4
+      },
+      "readerKinds": {
+        "none": 4
+      },
+      "archiveBackends": {
+        "r2": 4
+      },
+      "verifiedOriginUncached": 0,
+      "verifiedFullyColdWithAuthBypass": 0,
+      "verifiedSourceIndexCached": 0,
+      "verifiedSourceIndexAndAuthCached": 0,
+      "auth": {
+        "cacheCounts": {
+          "HIT": 4
+        },
+        "kvReads": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        }
+      },
+      "edgeLocations": {
+        "CDG": 4
+      },
+      "ttfbMs": {
+        "p50": 93.984,
+        "p95": 126.438,
+        "p99": 126.438
+      },
+      "totalMs": {
+        "p50": 94.964,
+        "p95": 131.315,
+        "p99": 131.315
+      },
+      "bytes": {
+        "p50": 247594,
+        "p95": 364638,
+        "p99": 364638
+      },
+      "storage": {
+        "originReads": {
+          "reportedRequests": 4,
+          "total": 4,
+          "mean": 1,
+          "p50": 1,
+          "p95": 1,
+          "p99": 1
+        },
+        "originGets": {
+          "reportedRequests": 4,
+          "total": 4,
+          "mean": 1,
+          "p50": 1,
+          "p95": 1,
+          "p99": 1
+        },
+        "originHeads": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originBytes": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originGetSuccesses": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originHeadSuccesses": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "archiveMemoryHits": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "archiveEdgeHits": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "originExpectedBytes": {
+          "reportedRequests": 4,
+          "total": 1012959,
+          "mean": 253239.75,
+          "p50": 247594,
+          "p95": 364638,
+          "p99": 364638
+        },
+        "readerHttpRequests": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "unconfirmedReaderRequests": {
+          "reportedRequests": 4,
+          "total": 0,
+          "mean": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        }
+      },
+      "backendOperations": {
+        "ownerR2": {
+          "reads": {
+            "reportedRequests": 4,
+            "total": 4,
+            "mean": 1,
+            "p50": 1,
+            "p95": 1,
+            "p99": 1
+          },
+          "gets": {
+            "reportedRequests": 4,
+            "total": 4,
+            "mean": 1,
+            "p50": 1,
+            "p95": 1,
+            "p99": 1
+          },
+          "heads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        },
+        "directS3": {
+          "reads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "gets": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "heads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        },
+        "foundationR2": {
+          "reads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "gets": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "heads": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "bytes": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "getSuccesses": {
+            "reportedRequests": 4,
+            "total": 0,
+            "mean": 0,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          }
+        }
+      }
+    }
+  ],
+  "contentChecks": [
+    {
+      "slot": 470555971,
+      "status": "matched",
+      "referenceLabel": "bundle",
+      "missingLabels": [],
+      "mismatchedSamples": 0,
+      "samples": [
+        {
+          "label": "bundle",
+          "phase": "auth_warm_0",
+          "sha256": "2b955b420e98d124742667ddfb00bbb12b6eb736d3e6fc8b1b2ed46d7c72ce7d"
+        },
+        {
+          "label": "bundle",
+          "phase": "auth_warm_1",
+          "sha256": "2b955b420e98d124742667ddfb00bbb12b6eb736d3e6fc8b1b2ed46d7c72ce7d"
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": 1,
+      "label": "bundle",
+      "requests": 5,
+      "events": [
+        {
+          "name": "connectStart",
+          "atMs": 0
+        },
+        {
+          "name": "dnsStart",
+          "atMs": 26.306
+        },
+        {
+          "name": "dnsComplete",
+          "atMs": 42.162,
+          "families": [
+            4,
+            4
+          ]
+        },
+        {
+          "name": "connectionAttempt",
+          "atMs": 42.618,
+          "family": 4
+        },
+        {
+          "name": "tcpConnected",
+          "atMs": 51.58
+        },
+        {
+          "name": "ready",
+          "atMs": 71.439
+        },
+        {
+          "name": "tlsConnected",
+          "atMs": 76.92
+        },
+        {
+          "name": "closed",
+          "atMs": 7103.113
+        }
+      ],
+      "remoteFamily": "IPv4",
+      "alpn": "http/1.1",
+      "tlsProtocol": "TLSv1.3",
+      "tlsSessionReused": false
+    },
+    {
+      "id": 2,
+      "label": "bundle",
+      "requests": 5,
+      "events": [
+        {
+          "name": "connectStart",
+          "atMs": 0
+        },
+        {
+          "name": "dnsStart",
+          "atMs": 1.992
+        },
+        {
+          "name": "dnsComplete",
+          "atMs": 4.71,
+          "families": [
+            4,
+            4
+          ]
+        },
+        {
+          "name": "connectionAttempt",
+          "atMs": 4.78,
+          "family": 4
+        },
+        {
+          "name": "tcpConnected",
+          "atMs": 13.842
+        },
+        {
+          "name": "ready",
+          "atMs": 30.714
+        },
+        {
+          "name": "tlsConnected",
+          "atMs": 31.038
+        },
+        {
+          "name": "closed",
+          "atMs": 2874.531
+        }
+      ],
+      "remoteFamily": "IPv4",
+      "alpn": "http/1.1",
+      "tlsProtocol": "TLSv1.3",
+      "tlsSessionReused": false
+    }
+  ],
+  "samples": [
+    {
+      "startedAt": "2026-11-22T11:11:02.496Z",
+      "source": "blockzilla",
+      "label": "bundle",
+      "representation": "json",
+      "slot": 470555971,
+      "round": 0,
+      "phase": "auth_warm_0",
+      "uncached": false,
+      "sourceUncached": false,
+      "status": 200,
+      "cache": "HIT",
+      "bytes": 2531323,
+      "headersMs": 219.23620800000026,
+      "ttfbMs": 225.88437500000055,
+      "totalMs": 247.91108299999996,
+      "decodeMs": 8.499416999999994,
+      "ok": true,
+      "cacheFill": "HIT",
+      "contentEncoding": "zstd",
+      "contentLength": null,
+      "transferEncoding": "chunked",
+      "storage": {
+        "r2": {
+          "reads": 0,
+          "gets": 0,
+          "heads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "s3": {
+          "reads": 0,
+          "gets": 0,
+          "heads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "foundationR2": {
+          "gets": 0,
+          "heads": 0,
+          "reads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "archiveBackend": "r2",
+        "reader": null,
+        "readerHttpRequests": 0,
+        "unconfirmedReaderRequests": 0,
+        "readerAccountingComplete": true,
+        "originReads": 0,
+        "originGets": 0,
+        "originHeads": 0,
+        "originBytes": 0,
+        "originGetSuccesses": 0,
+        "originHeadSuccesses": 0,
+        "archiveMemoryHits": 0,
+        "archiveEdgeHits": 0,
+        "originExpectedBytes": 0,
+        "bytesMode": "response-cache"
+      },
+      "auth": {
+        "cache": "MISS",
+        "kvReads": 1,
+        "tier": "KV"
+      },
+      "profileMode": null,
+      "storageClass": "response_cache_hit",
+      "coldVerified": false,
+      "fullyColdVerified": false,
+      "sourceIndexCachedVerified": false,
+      "sourceAuthCachedVerified": false,
+      "edgeLocation": "CDG",
+      "identity": {
+        "slot": 470555971,
+        "blockhash": "4q6jP6q1p6RsFUQJmM6cDoVKdNahEVv5rG7LSxgu4YsB",
+        "previousBlockhash": "TE5kqp76RQtcQxvZA6nosbZxGcgPjt9gVv624AC65Pu",
+        "parentSlot": 470555970,
+        "transactions": 391
+      },
+      "contentSha256": "2b955b420e98d124742667ddfb00bbb12b6eb736d3e6fc8b1b2ed46d7c72ce7d",
+      "contentValidationMs": 72.07449999999972,
+      "completedAt": "2026-11-22T11:11:02.825Z",
+      "transport": {
+        "connectionId": 1,
+        "socketUse": 1,
+        "socketReused": false,
+        "timelineMs": {
+          "requestCreated": 10.075,
+          "requestHeadersSent": 87.343,
+          "requestBodySent": 87.687,
+          "responseHeadersParsed": 210.578,
+          "firstEncodedBodyByte": 217.277,
+          "lastEncodedBodyChunk": 238.827,
+          "fetchHeadersResolved": 219.664,
+          "firstDecodedBodyByte": 226.417,
+          "encodedBodyComplete": 241.247,
+          "decodedBodyComplete": 245.069
+        },
+        "encodedBodyBytes": 422343,
+        "encodedBodyChunks": 112,
+        "socketBytesReadDelta": 424476,
+        "sentToResponseHeadersMs": 122.891,
+        "encodedBodyTransferMs": 23.97,
+        "clientBodyCpuMs": {
+          "user": 119.042,
+          "system": 22.917
+        },
+        "clientCallIncludingValidationCpuMs": {
+          "user": 263.232,
+          "system": 33.083
+        }
+      },
+      "archiveLayout": "bundle-v1",
+      "contentMatchesSavedReference": true,
+      "contentMatchesReference": true
+    },
+    {
+      "startedAt": "2026-11-22T11:11:05.027Z",
+      "source": "blockzilla",
+      "label": "bundle",
+      "representation": "bin",
+      "slot": 470555971,
+      "round": 0,
+      "phase": "binary_source_0",
+      "uncached": false,
+      "sourceUncached": true,
+      "status": 200,
+      "cache": "BYPASS",
+      "bytes": 247594,
+      "headersMs": 109.11200000000008,
+      "ttfbMs": 109.7460000000001,
+      "totalMs": 114.58716699999968,
+      "decodeMs": null,
+      "ok": true,
+      "cacheFill": "BYPASS",
+      "contentEncoding": null,
+      "contentLength": 247594,
+      "transferEncoding": null,
+      "storage": {
+        "r2": {
+          "reads": 1,
+          "gets": 1,
+          "heads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "s3": {
+          "reads": 0,
+          "gets": 0,
+          "heads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "foundationR2": {
+          "gets": 0,
+          "heads": 0,
+          "reads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "archiveBackend": "r2",
+        "reader": null,
+        "readerHttpRequests": 0,
+        "unconfirmedReaderRequests": 0,
+        "readerAccountingComplete": true,
+        "originReads": 1,
+        "originGets": 1,
+        "originHeads": 0,
+        "originBytes": 0,
+        "originGetSuccesses": 0,
+        "originHeadSuccesses": 0,
+        "archiveMemoryHits": 0,
+        "archiveEdgeHits": 0,
+        "originExpectedBytes": 247594,
+        "bytesMode": "streamed-completion"
+      },
+      "auth": {
+        "cache": "HIT",
+        "kvReads": 0,
+        "tier": "MEMORY"
+      },
+      "profileMode": "source",
+      "storageClass": "bundle_source_uncached_verified",
+      "coldVerified": false,
+      "fullyColdVerified": false,
+      "sourceIndexCachedVerified": false,
+      "sourceAuthCachedVerified": false,
+      "edgeLocation": "CDG",
+      "workerProfile": {
+        "totalMs": 59,
+        "summary": [
+          {
+            "name": "authentication",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 0
+          },
+          {
+            "name": "bundle_headers",
+            "totalMs": 59,
+            "count": 1,
+            "bytes": 247594
+          },
+          {
+            "name": "worker_placement",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 0
+          }
+        ]
+      },
+      "bodySha256": "c0fc8383e217705dde28612195cc165e95b2163c73743e5cb1586aab220c8415",
+      "binaryMatchesReference": true,
+      "contentValidationMs": 0.36124999999992724,
+      "completedAt": "2026-11-22T11:11:05.142Z",
+      "transport": {
+        "connectionId": 1,
+        "socketUse": 2,
+        "socketReused": true,
+        "timelineMs": {
+          "requestCreated": 2.152,
+          "requestHeadersSent": 3.84,
+          "requestBodySent": 4.019,
+          "responseHeadersParsed": 108.303,
+          "firstEncodedBodyByte": 108.823,
+          "lastEncodedBodyChunk": 114.183,
+          "fetchHeadersResolved": 109.138,
+          "firstDecodedBodyByte": 109.797,
+          "encodedBodyComplete": 114.238,
+          "decodedBodyComplete": 114.608
+        },
+        "encodedBodyBytes": 247594,
+        "encodedBodyChunks": 19,
+        "socketBytesReadDelta": 250232,
+        "sentToResponseHeadersMs": 104.284,
+        "encodedBodyTransferMs": 5.415,
+        "clientBodyCpuMs": {
+          "user": 8.413,
+          "system": 1.523
+        },
+        "clientCallIncludingValidationCpuMs": {
+          "user": 9.018,
+          "system": 1.548
+        }
+      },
+      "archiveLayout": "bundle-v1",
+      "sourceDataReadVerified": true,
+      "authHotSourceVerified": true
+    },
+    {
+      "startedAt": "2026-11-22T11:11:05.142Z",
+      "source": "blockzilla",
+      "label": "bundle",
+      "representation": "bin",
+      "slot": 470663944,
+      "round": 0,
+      "phase": "binary_source_0",
+      "uncached": false,
+      "sourceUncached": true,
+      "status": 200,
+      "cache": "BYPASS",
+      "bytes": 364638,
+      "headersMs": 73.94770900000003,
+      "ttfbMs": 77.7039590000004,
+      "totalMs": 108.80283400000008,
+      "decodeMs": null,
+      "ok": true,
+      "cacheFill": "BYPASS",
+      "contentEncoding": null,
+      "contentLength": 364638,
+      "transferEncoding": null,
+      "storage": {
+        "r2": {
+          "reads": 1,
+          "gets": 1,
+          "heads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "s3": {
+          "reads": 0,
+          "gets": 0,
+          "heads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "foundationR2": {
+          "gets": 0,
+          "heads": 0,
+          "reads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "archiveBackend": "r2",
+        "reader": null,
+        "readerHttpRequests": 0,
+        "unconfirmedReaderRequests": 0,
+        "readerAccountingComplete": true,
+        "originReads": 1,
+        "originGets": 1,
+        "originHeads": 0,
+        "originBytes": 0,
+        "originGetSuccesses": 0,
+        "originHeadSuccesses": 0,
+        "archiveMemoryHits": 0,
+        "archiveEdgeHits": 0,
+        "originExpectedBytes": 364638,
+        "bytesMode": "streamed-completion"
+      },
+      "auth": {
+        "cache": "HIT",
+        "kvReads": 0,
+        "tier": "MEMORY"
+      },
+      "profileMode": "source",
+      "storageClass": "bundle_source_uncached_verified",
+      "coldVerified": false,
+      "fullyColdVerified": false,
+      "sourceIndexCachedVerified": false,
+      "sourceAuthCachedVerified": false,
+      "edgeLocation": "CDG",
+      "workerProfile": {
+        "totalMs": 55,
+        "summary": [
+          {
+            "name": "authentication",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 0
+          },
+          {
+            "name": "bundle_headers",
+            "totalMs": 55,
+            "count": 1,
+            "bytes": 364638
+          },
+          {
+            "name": "worker_placement",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 0
+          }
+        ]
+      },
+      "bodySha256": "64ac916826fef959e8786beea3723836e22c7bbc40f3431617ff58be175a4775",
+      "binaryMatchesReference": true,
+      "contentValidationMs": 0.4970000000002983,
+      "completedAt": "2026-11-22T11:11:05.252Z",
+      "transport": {
+        "connectionId": 1,
+        "socketUse": 3,
+        "socketReused": true,
+        "timelineMs": {
+          "requestCreated": 0.736,
+          "requestHeadersSent": 2.462,
+          "requestBodySent": 2.583,
+          "responseHeadersParsed": 73.598,
+          "fetchHeadersResolved": 73.929,
+          "firstEncodedBodyByte": 77.602,
+          "lastEncodedBodyChunk": 108.337,
+          "firstDecodedBodyByte": 77.715,
+          "encodedBodyComplete": 108.384,
+          "decodedBodyComplete": 108.681
+        },
+        "encodedBodyBytes": 364638,
+        "encodedBodyChunks": 26,
+        "socketBytesReadDelta": 367274,
+        "sentToResponseHeadersMs": 71.015,
+        "encodedBodyTransferMs": 30.782,
+        "clientBodyCpuMs": {
+          "user": 4.819,
+          "system": 1.494
+        },
+        "clientCallIncludingValidationCpuMs": {
+          "user": 5.153,
+          "system": 1.57
+        }
+      },
+      "archiveLayout": "bundle-v1",
+      "sourceDataReadVerified": true,
+      "authHotSourceVerified": true
+    },
+    {
+      "startedAt": "2026-11-22T11:11:05.253Z",
+      "source": "blockzilla",
+      "label": "bundle",
+      "representation": "bin",
+      "slot": 470771932,
+      "round": 0,
+      "phase": "binary_source_0",
+      "uncached": false,
+      "sourceUncached": true,
+      "status": 200,
+      "cache": "BYPASS",
+      "bytes": 275803,
+      "headersMs": 136.68108400000074,
+      "ttfbMs": 211.28233400000045,
+      "totalMs": 212.36291699999947,
+      "decodeMs": null,
+      "ok": true,
+      "cacheFill": "BYPASS",
+      "contentEncoding": null,
+      "contentLength": 275803,
+      "transferEncoding": null,
+      "storage": {
+        "r2": {
+          "reads": 1,
+          "gets": 1,
+          "heads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "s3": {
+          "reads": 0,
+          "gets": 0,
+          "heads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "foundationR2": {
+          "gets": 0,
+          "heads": 0,
+          "reads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "archiveBackend": "r2",
+        "reader": null,
+        "readerHttpRequests": 0,
+        "unconfirmedReaderRequests": 0,
+        "readerAccountingComplete": true,
+        "originReads": 1,
+        "originGets": 1,
+        "originHeads": 0,
+        "originBytes": 0,
+        "originGetSuccesses": 0,
+        "originHeadSuccesses": 0,
+        "archiveMemoryHits": 0,
+        "archiveEdgeHits": 0,
+        "originExpectedBytes": 275803,
+        "bytesMode": "streamed-completion"
+      },
+      "auth": {
+        "cache": "HIT",
+        "kvReads": 0,
+        "tier": "MEMORY"
+      },
+      "profileMode": "source",
+      "storageClass": "bundle_source_uncached_verified",
+      "coldVerified": false,
+      "fullyColdVerified": false,
+      "sourceIndexCachedVerified": false,
+      "sourceAuthCachedVerified": false,
+      "edgeLocation": "CDG",
+      "workerProfile": {
+        "totalMs": 68,
+        "summary": [
+          {
+            "name": "authentication",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 0
+          },
+          {
+            "name": "bundle_headers",
+            "totalMs": 68,
+            "count": 1,
+            "bytes": 275803
+          },
+          {
+            "name": "worker_placement",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 0
+          }
+        ]
+      },
+      "bodySha256": "dab59abd834b055e114e76eb34245f5b1506ec9518c4496f89a29e4b34db764b",
+      "binaryMatchesReference": true,
+      "contentValidationMs": 0.2899170000000595,
+      "completedAt": "2026-11-22T11:11:05.465Z",
+      "transport": {
+        "connectionId": 1,
+        "socketUse": 4,
+        "socketReused": true,
+        "timelineMs": {
+          "requestCreated": 1.137,
+          "requestHeadersSent": 3.209,
+          "requestBodySent": 3.413,
+          "responseHeadersParsed": 135.292,
+          "fetchHeadersResolved": 136.913,
+          "firstEncodedBodyByte": 211.44,
+          "lastEncodedBodyChunk": 212.404,
+          "firstDecodedBodyByte": 211.546,
+          "encodedBodyComplete": 212.457,
+          "decodedBodyComplete": 212.591
+        },
+        "encodedBodyBytes": 275803,
+        "encodedBodyChunks": 23,
+        "socketBytesReadDelta": 278441,
+        "sentToResponseHeadersMs": 131.879,
+        "encodedBodyTransferMs": 1.017,
+        "clientBodyCpuMs": {
+          "user": 3.255,
+          "system": 3.216
+        },
+        "clientCallIncludingValidationCpuMs": {
+          "user": 3.479,
+          "system": 3.377
+        }
+      },
+      "archiveLayout": "bundle-v1",
+      "sourceDataReadVerified": true,
+      "authHotSourceVerified": true
+    },
+    {
+      "startedAt": "2026-11-22T11:11:05.465Z",
+      "source": "blockzilla",
+      "label": "bundle",
+      "representation": "bin",
+      "slot": 470879999,
+      "round": 0,
+      "phase": "binary_source_0",
+      "uncached": false,
+      "sourceUncached": true,
+      "status": 200,
+      "cache": "BYPASS",
+      "bytes": 124924,
+      "headersMs": 117.98237499999959,
+      "ttfbMs": 125.63329199999862,
+      "totalMs": 135.16849999999977,
+      "decodeMs": null,
+      "ok": true,
+      "cacheFill": "BYPASS",
+      "contentEncoding": null,
+      "contentLength": 124924,
+      "transferEncoding": null,
+      "storage": {
+        "r2": {
+          "reads": 1,
+          "gets": 1,
+          "heads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "s3": {
+          "reads": 0,
+          "gets": 0,
+          "heads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "foundationR2": {
+          "gets": 0,
+          "heads": 0,
+          "reads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "archiveBackend": "r2",
+        "reader": null,
+        "readerHttpRequests": 0,
+        "unconfirmedReaderRequests": 0,
+        "readerAccountingComplete": true,
+        "originReads": 1,
+        "originGets": 1,
+        "originHeads": 0,
+        "originBytes": 0,
+        "originGetSuccesses": 0,
+        "originHeadSuccesses": 0,
+        "archiveMemoryHits": 0,
+        "archiveEdgeHits": 0,
+        "originExpectedBytes": 124924,
+        "bytesMode": "streamed-completion"
+      },
+      "auth": {
+        "cache": "HIT",
+        "kvReads": 0,
+        "tier": "MEMORY"
+      },
+      "profileMode": "source",
+      "storageClass": "bundle_source_uncached_verified",
+      "coldVerified": false,
+      "fullyColdVerified": false,
+      "sourceIndexCachedVerified": false,
+      "sourceAuthCachedVerified": false,
+      "edgeLocation": "CDG",
+      "workerProfile": {
+        "totalMs": 75,
+        "summary": [
+          {
+            "name": "authentication",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 0
+          },
+          {
+            "name": "bundle_headers",
+            "totalMs": 75,
+            "count": 1,
+            "bytes": 124924
+          },
+          {
+            "name": "worker_placement",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 0
+          }
+        ]
+      },
+      "bodySha256": "977d110e3d2328889faee91eda72703b9dee3ee4e7cb7edc3a12ce58f429296a",
+      "binaryMatchesReference": true,
+      "contentValidationMs": 1.1505419999994047,
+      "completedAt": "2026-11-22T11:11:05.602Z",
+      "transport": {
+        "connectionId": 1,
+        "socketUse": 5,
+        "socketReused": true,
+        "timelineMs": {
+          "requestCreated": 0.98,
+          "requestHeadersSent": 2.361,
+          "requestBodySent": 2.472,
+          "responseHeadersParsed": 117.198,
+          "fetchHeadersResolved": 117.973,
+          "firstEncodedBodyByte": 125.585,
+          "lastEncodedBodyChunk": 134.635,
+          "firstDecodedBodyByte": 125.641,
+          "encodedBodyComplete": 134.748,
+          "decodedBodyComplete": 134.982
+        },
+        "encodedBodyBytes": 124924,
+        "encodedBodyChunks": 10,
+        "socketBytesReadDelta": 127552,
+        "sentToResponseHeadersMs": 114.726,
+        "encodedBodyTransferMs": 9.163,
+        "clientBodyCpuMs": {
+          "user": 4.356,
+          "system": 1.9
+        },
+        "clientCallIncludingValidationCpuMs": {
+          "user": 4.599,
+          "system": 2.035
+        }
+      },
+      "archiveLayout": "bundle-v1",
+      "sourceDataReadVerified": true,
+      "authHotSourceVerified": true
+    },
+    {
+      "startedAt": "2026-11-22T11:11:10.809Z",
+      "source": "blockzilla",
+      "label": "bundle",
+      "representation": "json",
+      "slot": 470555971,
+      "round": 1,
+      "phase": "auth_warm_1",
+      "uncached": false,
+      "sourceUncached": false,
+      "status": 200,
+      "cache": "HIT",
+      "bytes": 2531323,
+      "headersMs": 148.1448330000003,
+      "ttfbMs": 152.1469159999997,
+      "totalMs": 173.0791250000002,
+      "decodeMs": 13.33929199999875,
+      "ok": true,
+      "cacheFill": "HIT",
+      "contentEncoding": "zstd",
+      "contentLength": null,
+      "transferEncoding": "chunked",
+      "storage": {
+        "r2": {
+          "reads": 0,
+          "gets": 0,
+          "heads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "s3": {
+          "reads": 0,
+          "gets": 0,
+          "heads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "foundationR2": {
+          "gets": 0,
+          "heads": 0,
+          "reads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "archiveBackend": "r2",
+        "reader": null,
+        "readerHttpRequests": 0,
+        "unconfirmedReaderRequests": 0,
+        "readerAccountingComplete": true,
+        "originReads": 0,
+        "originGets": 0,
+        "originHeads": 0,
+        "originBytes": 0,
+        "originGetSuccesses": 0,
+        "originHeadSuccesses": 0,
+        "archiveMemoryHits": 0,
+        "archiveEdgeHits": 0,
+        "originExpectedBytes": 0,
+        "bytesMode": "response-cache"
+      },
+      "auth": {
+        "cache": "MISS",
+        "kvReads": 1,
+        "tier": "KV"
+      },
+      "profileMode": null,
+      "storageClass": "response_cache_hit",
+      "coldVerified": false,
+      "fullyColdVerified": false,
+      "sourceIndexCachedVerified": false,
+      "sourceAuthCachedVerified": false,
+      "edgeLocation": "CDG",
+      "identity": {
+        "slot": 470555971,
+        "blockhash": "4q6jP6q1p6RsFUQJmM6cDoVKdNahEVv5rG7LSxgu4YsB",
+        "previousBlockhash": "TE5kqp76RQtcQxvZA6nosbZxGcgPjt9gVv624AC65Pu",
+        "parentSlot": 470555970,
+        "transactions": 391
+      },
+      "contentSha256": "2b955b420e98d124742667ddfb00bbb12b6eb736d3e6fc8b1b2ed46d7c72ce7d",
+      "contentValidationMs": 82.46033299999908,
+      "completedAt": "2026-11-22T11:11:11.078Z",
+      "transport": {
+        "connectionId": 2,
+        "socketUse": 1,
+        "socketReused": false,
+        "timelineMs": {
+          "requestCreated": 2.133,
+          "requestHeadersSent": 33.207,
+          "requestBodySent": 33.263,
+          "responseHeadersParsed": 144.931,
+          "firstEncodedBodyByte": 147.452,
+          "lastEncodedBodyChunk": 170.691,
+          "fetchHeadersResolved": 148.15,
+          "firstDecodedBodyByte": 152.191,
+          "encodedBodyComplete": 170.727,
+          "decodedBodyComplete": 173.102
+        },
+        "encodedBodyBytes": 422535,
+        "encodedBodyChunks": 110,
+        "socketBytesReadDelta": 424690,
+        "sentToResponseHeadersMs": 111.668,
+        "encodedBodyTransferMs": 23.275,
+        "clientBodyCpuMs": {
+          "user": 38.341,
+          "system": 12.513
+        },
+        "clientCallIncludingValidationCpuMs": {
+          "user": 161.371,
+          "system": 29.093
+        }
+      },
+      "archiveLayout": "bundle-v1",
+      "contentMatchesSavedReference": true,
+      "contentMatchesReference": true
+    },
+    {
+      "startedAt": "2026-11-22T11:11:13.280Z",
+      "source": "blockzilla",
+      "label": "bundle",
+      "representation": "bin",
+      "slot": 470555971,
+      "round": 1,
+      "phase": "binary_source_1",
+      "uncached": false,
+      "sourceUncached": true,
+      "status": 200,
+      "cache": "BYPASS",
+      "bytes": 247594,
+      "headersMs": 126.16141700000117,
+      "ttfbMs": 126.43783299999996,
+      "totalMs": 131.31479200000103,
+      "decodeMs": null,
+      "ok": true,
+      "cacheFill": "BYPASS",
+      "contentEncoding": null,
+      "contentLength": 247594,
+      "transferEncoding": null,
+      "storage": {
+        "r2": {
+          "reads": 1,
+          "gets": 1,
+          "heads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "s3": {
+          "reads": 0,
+          "gets": 0,
+          "heads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "foundationR2": {
+          "gets": 0,
+          "heads": 0,
+          "reads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "archiveBackend": "r2",
+        "reader": null,
+        "readerHttpRequests": 0,
+        "unconfirmedReaderRequests": 0,
+        "readerAccountingComplete": true,
+        "originReads": 1,
+        "originGets": 1,
+        "originHeads": 0,
+        "originBytes": 0,
+        "originGetSuccesses": 0,
+        "originHeadSuccesses": 0,
+        "archiveMemoryHits": 0,
+        "archiveEdgeHits": 0,
+        "originExpectedBytes": 247594,
+        "bytesMode": "streamed-completion"
+      },
+      "auth": {
+        "cache": "HIT",
+        "kvReads": 0,
+        "tier": "MEMORY"
+      },
+      "profileMode": "source",
+      "storageClass": "bundle_source_uncached_verified",
+      "coldVerified": false,
+      "fullyColdVerified": false,
+      "sourceIndexCachedVerified": false,
+      "sourceAuthCachedVerified": false,
+      "edgeLocation": "CDG",
+      "workerProfile": {
+        "totalMs": 73,
+        "summary": [
+          {
+            "name": "authentication",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 0
+          },
+          {
+            "name": "bundle_headers",
+            "totalMs": 73,
+            "count": 1,
+            "bytes": 247594
+          },
+          {
+            "name": "worker_placement",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 0
+          }
+        ]
+      },
+      "bodySha256": "c0fc8383e217705dde28612195cc165e95b2163c73743e5cb1586aab220c8415",
+      "binaryMatchesReference": true,
+      "contentValidationMs": 0.3087500000001455,
+      "completedAt": "2026-11-22T11:11:13.411Z",
+      "transport": {
+        "connectionId": 2,
+        "socketUse": 2,
+        "socketReused": true,
+        "timelineMs": {
+          "requestCreated": 0.639,
+          "requestHeadersSent": 1.985,
+          "requestBodySent": 2.133,
+          "responseHeadersParsed": 125.661,
+          "firstEncodedBodyByte": 125.975,
+          "lastEncodedBodyChunk": 131.091,
+          "fetchHeadersResolved": 126.176,
+          "firstDecodedBodyByte": 126.47,
+          "encodedBodyComplete": 131.141,
+          "decodedBodyComplete": 131.327
+        },
+        "encodedBodyBytes": 247594,
+        "encodedBodyChunks": 17,
+        "socketBytesReadDelta": 250232,
+        "sentToResponseHeadersMs": 123.528,
+        "encodedBodyTransferMs": 5.166,
+        "clientBodyCpuMs": {
+          "user": 3.601,
+          "system": 1.163
+        },
+        "clientCallIncludingValidationCpuMs": {
+          "user": 4.608,
+          "system": 1.225
+        }
+      },
+      "archiveLayout": "bundle-v1",
+      "sourceDataReadVerified": true,
+      "authHotSourceVerified": true
+    },
+    {
+      "startedAt": "2026-11-22T11:11:13.411Z",
+      "source": "blockzilla",
+      "label": "bundle",
+      "representation": "bin",
+      "slot": 470663944,
+      "round": 1,
+      "phase": "binary_source_1",
+      "uncached": false,
+      "sourceUncached": true,
+      "status": 200,
+      "cache": "BYPASS",
+      "bytes": 364638,
+      "headersMs": 71.33783399999993,
+      "ttfbMs": 71.5557090000002,
+      "totalMs": 76.40937499999927,
+      "decodeMs": null,
+      "ok": true,
+      "cacheFill": "BYPASS",
+      "contentEncoding": null,
+      "contentLength": 364638,
+      "transferEncoding": null,
+      "storage": {
+        "r2": {
+          "reads": 1,
+          "gets": 1,
+          "heads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "s3": {
+          "reads": 0,
+          "gets": 0,
+          "heads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "foundationR2": {
+          "gets": 0,
+          "heads": 0,
+          "reads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "archiveBackend": "r2",
+        "reader": null,
+        "readerHttpRequests": 0,
+        "unconfirmedReaderRequests": 0,
+        "readerAccountingComplete": true,
+        "originReads": 1,
+        "originGets": 1,
+        "originHeads": 0,
+        "originBytes": 0,
+        "originGetSuccesses": 0,
+        "originHeadSuccesses": 0,
+        "archiveMemoryHits": 0,
+        "archiveEdgeHits": 0,
+        "originExpectedBytes": 364638,
+        "bytesMode": "streamed-completion"
+      },
+      "auth": {
+        "cache": "HIT",
+        "kvReads": 0,
+        "tier": "MEMORY"
+      },
+      "profileMode": "source",
+      "storageClass": "bundle_source_uncached_verified",
+      "coldVerified": false,
+      "fullyColdVerified": false,
+      "sourceIndexCachedVerified": false,
+      "sourceAuthCachedVerified": false,
+      "edgeLocation": "CDG",
+      "workerProfile": {
+        "totalMs": 44,
+        "summary": [
+          {
+            "name": "authentication",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 0
+          },
+          {
+            "name": "bundle_headers",
+            "totalMs": 44,
+            "count": 1,
+            "bytes": 364638
+          },
+          {
+            "name": "worker_placement",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 0
+          }
+        ]
+      },
+      "bodySha256": "64ac916826fef959e8786beea3723836e22c7bbc40f3431617ff58be175a4775",
+      "binaryMatchesReference": true,
+      "contentValidationMs": 0.8473749999993743,
+      "completedAt": "2026-11-22T11:11:13.489Z",
+      "transport": {
+        "connectionId": 2,
+        "socketUse": 3,
+        "socketReused": true,
+        "timelineMs": {
+          "requestCreated": 0.43,
+          "requestHeadersSent": 1.744,
+          "requestBodySent": 1.85,
+          "responseHeadersParsed": 70.938,
+          "firstEncodedBodyByte": 71.166,
+          "lastEncodedBodyChunk": 76.027,
+          "fetchHeadersResolved": 71.331,
+          "firstDecodedBodyByte": 71.564,
+          "encodedBodyComplete": 76.065,
+          "decodedBodyComplete": 76.306
+        },
+        "encodedBodyBytes": 364638,
+        "encodedBodyChunks": 24,
+        "socketBytesReadDelta": 367272,
+        "sentToResponseHeadersMs": 69.088,
+        "encodedBodyTransferMs": 4.899,
+        "clientBodyCpuMs": {
+          "user": 3.535,
+          "system": 1.615
+        },
+        "clientCallIncludingValidationCpuMs": {
+          "user": 4.117,
+          "system": 1.723
+        }
+      },
+      "archiveLayout": "bundle-v1",
+      "sourceDataReadVerified": true,
+      "authHotSourceVerified": true
+    },
+    {
+      "startedAt": "2026-11-22T11:11:13.489Z",
+      "source": "blockzilla",
+      "label": "bundle",
+      "representation": "bin",
+      "slot": 470771932,
+      "round": 1,
+      "phase": "binary_source_1",
+      "uncached": false,
+      "sourceUncached": true,
+      "status": 200,
+      "cache": "BYPASS",
+      "bytes": 275803,
+      "headersMs": 97.61620900000162,
+      "ttfbMs": 98.04445899999882,
+      "totalMs": 99.87787500000013,
+      "decodeMs": null,
+      "ok": true,
+      "cacheFill": "BYPASS",
+      "contentEncoding": null,
+      "contentLength": 275803,
+      "transferEncoding": null,
+      "storage": {
+        "r2": {
+          "reads": 1,
+          "gets": 1,
+          "heads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "s3": {
+          "reads": 0,
+          "gets": 0,
+          "heads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "foundationR2": {
+          "gets": 0,
+          "heads": 0,
+          "reads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "archiveBackend": "r2",
+        "reader": null,
+        "readerHttpRequests": 0,
+        "unconfirmedReaderRequests": 0,
+        "readerAccountingComplete": true,
+        "originReads": 1,
+        "originGets": 1,
+        "originHeads": 0,
+        "originBytes": 0,
+        "originGetSuccesses": 0,
+        "originHeadSuccesses": 0,
+        "archiveMemoryHits": 0,
+        "archiveEdgeHits": 0,
+        "originExpectedBytes": 275803,
+        "bytesMode": "streamed-completion"
+      },
+      "auth": {
+        "cache": "HIT",
+        "kvReads": 0,
+        "tier": "MEMORY"
+      },
+      "profileMode": "source",
+      "storageClass": "bundle_source_uncached_verified",
+      "coldVerified": false,
+      "fullyColdVerified": false,
+      "sourceIndexCachedVerified": false,
+      "sourceAuthCachedVerified": false,
+      "edgeLocation": "CDG",
+      "workerProfile": {
+        "totalMs": 44,
+        "summary": [
+          {
+            "name": "authentication",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 0
+          },
+          {
+            "name": "bundle_headers",
+            "totalMs": 44,
+            "count": 1,
+            "bytes": 275803
+          },
+          {
+            "name": "worker_placement",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 0
+          }
+        ]
+      },
+      "bodySha256": "dab59abd834b055e114e76eb34245f5b1506ec9518c4496f89a29e4b34db764b",
+      "binaryMatchesReference": true,
+      "contentValidationMs": 0.41625000000203727,
+      "completedAt": "2026-11-22T11:11:13.589Z",
+      "transport": {
+        "connectionId": 2,
+        "socketUse": 4,
+        "socketReused": true,
+        "timelineMs": {
+          "requestCreated": 0.495,
+          "requestHeadersSent": 2.015,
+          "requestBodySent": 2.155,
+          "responseHeadersParsed": 94.167,
+          "firstEncodedBodyByte": 95.719,
+          "lastEncodedBodyChunk": 99.674,
+          "fetchHeadersResolved": 97.591,
+          "firstDecodedBodyByte": 98.056,
+          "encodedBodyComplete": 99.715,
+          "decodedBodyComplete": 99.863
+        },
+        "encodedBodyBytes": 275803,
+        "encodedBodyChunks": 20,
+        "socketBytesReadDelta": 278439,
+        "sentToResponseHeadersMs": 92.012,
+        "encodedBodyTransferMs": 3.996,
+        "clientBodyCpuMs": {
+          "user": 7.96,
+          "system": 1.341
+        },
+        "clientCallIncludingValidationCpuMs": {
+          "user": 8.688,
+          "system": 1.416
+        }
+      },
+      "archiveLayout": "bundle-v1",
+      "sourceDataReadVerified": true,
+      "authHotSourceVerified": true
+    },
+    {
+      "startedAt": "2026-11-22T11:11:13.589Z",
+      "source": "blockzilla",
+      "label": "bundle",
+      "representation": "bin",
+      "slot": 470879999,
+      "round": 1,
+      "phase": "binary_source_1",
+      "uncached": false,
+      "sourceUncached": true,
+      "status": 200,
+      "cache": "BYPASS",
+      "bytes": 124924,
+      "headersMs": 93.5848330000008,
+      "ttfbMs": 93.98441699999967,
+      "totalMs": 94.96362500000032,
+      "decodeMs": null,
+      "ok": true,
+      "cacheFill": "BYPASS",
+      "contentEncoding": null,
+      "contentLength": 124924,
+      "transferEncoding": null,
+      "storage": {
+        "r2": {
+          "reads": 1,
+          "gets": 1,
+          "heads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "s3": {
+          "reads": 0,
+          "gets": 0,
+          "heads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "foundationR2": {
+          "gets": 0,
+          "heads": 0,
+          "reads": 0,
+          "bytes": 0,
+          "getSuccesses": 0,
+          "headSuccesses": 0
+        },
+        "archiveBackend": "r2",
+        "reader": null,
+        "readerHttpRequests": 0,
+        "unconfirmedReaderRequests": 0,
+        "readerAccountingComplete": true,
+        "originReads": 1,
+        "originGets": 1,
+        "originHeads": 0,
+        "originBytes": 0,
+        "originGetSuccesses": 0,
+        "originHeadSuccesses": 0,
+        "archiveMemoryHits": 0,
+        "archiveEdgeHits": 0,
+        "originExpectedBytes": 124924,
+        "bytesMode": "streamed-completion"
+      },
+      "auth": {
+        "cache": "HIT",
+        "kvReads": 0,
+        "tier": "MEMORY"
+      },
+      "profileMode": "source",
+      "storageClass": "bundle_source_uncached_verified",
+      "coldVerified": false,
+      "fullyColdVerified": false,
+      "sourceIndexCachedVerified": false,
+      "sourceAuthCachedVerified": false,
+      "edgeLocation": "CDG",
+      "workerProfile": {
+        "totalMs": 51,
+        "summary": [
+          {
+            "name": "authentication",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 0
+          },
+          {
+            "name": "bundle_headers",
+            "totalMs": 51,
+            "count": 1,
+            "bytes": 124924
+          },
+          {
+            "name": "worker_placement",
+            "totalMs": 0,
+            "count": 1,
+            "bytes": 0
+          }
+        ]
+      },
+      "bodySha256": "977d110e3d2328889faee91eda72703b9dee3ee4e7cb7edc3a12ce58f429296a",
+      "binaryMatchesReference": true,
+      "contentValidationMs": 0.16658299999835435,
+      "completedAt": "2026-11-22T11:11:13.684Z",
+      "transport": {
+        "connectionId": 2,
+        "socketUse": 5,
+        "socketReused": true,
+        "timelineMs": {
+          "requestCreated": 0.595,
+          "requestHeadersSent": 1.958,
+          "requestBodySent": 2.089,
+          "responseHeadersParsed": 92.906,
+          "firstEncodedBodyByte": 93.233,
+          "lastEncodedBodyChunk": 94.736,
+          "fetchHeadersResolved": 93.565,
+          "firstDecodedBodyByte": 93.982,
+          "encodedBodyComplete": 94.79,
+          "decodedBodyComplete": 94.946
+        },
+        "encodedBodyBytes": 124924,
+        "encodedBodyChunks": 8,
+        "socketBytesReadDelta": 127562,
+        "sentToResponseHeadersMs": 90.817,
+        "encodedBodyTransferMs": 1.557,
+        "clientBodyCpuMs": {
+          "user": 3.983,
+          "system": 0.528
+        },
+        "clientCallIncludingValidationCpuMs": {
+          "user": 4.216,
+          "system": 0.551
+        }
+      },
+      "archiveLayout": "bundle-v1",
+      "sourceDataReadVerified": true,
+      "authHotSourceVerified": true
+    }
+  ],
+  "notes": [
+    "This is the one approved ten-call supplement to the119-call comparison, for129data calls total. It measures auth-hot binary CPU/cost directly; no provider or extra read probe is sent.",
+    "Each round uses the same four original slots. Its normal JSON auth warm request is charged separately after5.2seconds of quiet; binary source reads follow2.2seconds later.",
+    "All eight binary requests use profile=source: full bundle data cache and response cache bypass, auth retained. The required condition is one native R2 GET, zero HEADs, Auth HIT/KV0, and exact original full V1 binary SHA-256.",
+    "Header snapshot byte counters remain separate from Origin-Expected-Bytes and deferred completion receipts. Exact complete binary delivery is verified independently.",
+    "A persistent per-origin dispatcher is retained. Physical R2 cache state remains unknown. The original119-call timings and CPU windows remain unchanged."
+  ]
+}

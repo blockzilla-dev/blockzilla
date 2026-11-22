@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "slot": 470555971,
+      "exactOriginalDictionaries": true,
+      "exactCurrentAndPreviousHash": true,
+      "exactCounts": true
+    },
+    {
+      "slot": 470663944,
+      "exactOriginalDictionaries": true,
+      "exactCurrentAndPreviousHash": true,
+      "exactCounts": true
+    },
+    {
+      "slot": 470771932,
+      "exactOriginalDictionaries": true,
+      "exactCurrentAndPreviousHash": true,
+      "exactCounts": true
+    },
+    {
+      "slot": 470879999,
+      "exactOriginalDictionaries": true,
+      "exactCurrentAndPreviousHash": true,
+      "exactCounts": true
+    }
+  ]
+}

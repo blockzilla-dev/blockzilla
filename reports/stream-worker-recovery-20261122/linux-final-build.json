@@ -1,0 +1,93 @@
+{
+  "schema": "blockzilla-worker-recovery-linux-build-v1",
+  "state": "PASSED",
+  "started_at_unix_ms": 1795361658359,
+  "commands": [
+    {
+      "phase": "sdk-tests",
+      "argv": [
+        "/home/ubuntu/.cargo/bin/cargo",
+        "+1.98.0",
+        "test",
+        "--release",
+        "--locked"
+      ],
+      "started_at_unix_ms": 1795361658360,
+      "returncode": 0,
+      "finished_at_unix_ms": 1795361681604
+    },
+    {
+      "phase": "sdk-probe",
+      "argv": [
+        "/home/ubuntu/.cargo/bin/cargo",
+        "+1.98.0",
+        "build",
+        "--release",
+        "--locked",
+        "--example",
+        "worker_recovery_probe"
+      ],
+      "started_at_unix_ms": 1795361681604,
+      "returncode": 0,
+      "finished_at_unix_ms": 1795361681718
+    },
+    {
+      "phase": "sidecar-tests",
+      "argv": [
+        "/home/ubuntu/.cargo/bin/cargo",
+        "+1.98.0",
+        "test",
+        "--release",
+        "--locked"
+      ],
+      "started_at_unix_ms": 1795361681718,
+      "returncode": 0,
+      "finished_at_unix_ms": 1795361803589
+    },
+    {
+      "phase": "automatic-recovery-fixture",
+      "argv": [
+        "/home/ubuntu/.cargo/bin/cargo",
+        "+1.98.0",
+        "test",
+        "--release",
+        "--locked",
+        "automatic_worker_recovery_commits_once_after_disconnect_and_restart",
+        "--",
+        "--ignored",
+        "--nocapture"
+      ],
+      "started_at_unix_ms": 1795361803590,
+      "returncode": 0,
+      "finished_at_unix_ms": 1795361804505
+    },
+    {
+      "phase": "sidecar-release",
+      "argv": [
+        "/home/ubuntu/.cargo/bin/cargo",
+        "+1.98.0",
+        "build",
+        "--release",
+        "--locked"
+      ],
+      "started_at_unix_ms": 1795361804506,
+      "returncode": 0,
+      "finished_at_unix_ms": 1795361851082
+    }
+  ],
+  "production_services_changed": false,
+  "build_jobs": 2,
+  "artifacts": {
+    "worker_recovery_probe": {
+      "path": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/stream-worker-recovery-20261122/final-build-v3/candidate/e082e4d4fabc44921e244f74a0549ee34b2b5dc176b17da3dbdac35b7235a55a/worker_recovery_probe",
+      "bytes": 9927360,
+      "sha256": "e082e4d4fabc44921e244f74a0549ee34b2b5dc176b17da3dbdac35b7235a55a"
+    },
+    "blockzilla-stream-sidecar": {
+      "path": "/home/ubuntu/live/hivezilla-validator-20260930/jobs/stream-worker-recovery-20261122/final-build-v3/candidate/00631e8678ad3f86afadc698d316e19404222efccb2ef1a477f735704b2b67eb/blockzilla-stream-sidecar",
+      "bytes": 16946720,
+      "sha256": "00631e8678ad3f86afadc698d316e19404222efccb2ef1a477f735704b2b67eb"
+    }
+  },
+  "finished_at_unix_ms": 1795361851112
+}

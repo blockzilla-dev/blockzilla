@@ -1,0 +1,3230 @@
+{
+  "schema": "blockzilla-native-base64-client-v1",
+  "timeUtc": "2026-11-21T20:53:06.243Z",
+  "mode": "local-downloaded-v7-inputs",
+  "transactionEncoding": "base64",
+  "rewards": false,
+  "iterationsPerBlock": 10,
+  "allEightMatchHelius": true,
+  "matchedSlots": [
+    470987967,
+    471096104,
+    471204030,
+    471311999,
+    470555971,
+    470663944,
+    470771932,
+    470879999
+  ],
+  "medianBlockCpuMs": 9.950749999999998,
+  "records": [
+    {
+      "slot": 470987967,
+      "ok": true,
+      "canonicalSha256": "c4b1975a554979145bf7124a44bac3b227088cf1c79ac5d520a7f5b7a44206b0",
+      "heliusCanonicalSha256": "c4b1975a554979145bf7124a44bac3b227088cf1c79ac5d520a7f5b7a44206b0",
+      "oracleProof": {
+        "packetMatches": 370,
+        "packetBytes": 371444,
+        "versions": {
+          "legacy": 70,
+          "v0": 139,
+          "v1": 161
+        },
+        "firstPacketBytes": 853,
+        "firstPacketPrefixHex": "810100041f000000"
+      },
+      "processWallMs": 262.705583,
+      "totalCpuMedianMs": 8.610499999999995,
+      "jsonRenderCpuMedianMs": 7.516000000000002,
+      "receipt": {
+        "cpu_scope": "process-all-threads",
+        "file_read_elapsed_ms": 1.389916,
+        "file_write_elapsed_ms": 0.9122089999999999,
+        "include_rewards": false,
+        "iterations": 10,
+        "json_sha256": "a4e66037c519876e0b002a9ccdb9d04dd597fb862de9cf8bd9368d432ea1c12d",
+        "mode": "local-files-no-network",
+        "ok": true,
+        "render": {
+          "access_decode": {
+            "elapsed_ms": 0.01012500000000216,
+            "process_cpu_ms": 0.010000000000005116
+          },
+          "block_decode": {
+            "elapsed_ms": 1.033167000000006,
+            "process_cpu_ms": 1.0330000000000013
+          },
+          "compressed_block_bytes": 117962,
+          "decoded_block_bytes": 384623,
+          "json_bytes": 2436727,
+          "json_render": {
+            "elapsed_ms": 7.7982080000000025,
+            "process_cpu_ms": 7.73599999999999
+          },
+          "parts_bytes": 144458,
+          "parts_validate": {
+            "elapsed_ms": 0.0010000000000047748,
+            "process_cpu_ms": 0.000999999999990564
+          },
+          "resolution_bytes": 74364,
+          "resolution_decode": {
+            "elapsed_ms": 0.04791699999999821,
+            "process_cpu_ms": 0.04800000000000182
+          },
+          "signature_bytes": 26432,
+          "slot": 470987967,
+          "total": {
+            "elapsed_ms": 8.896,
+            "process_cpu_ms": 8.832999999999998
+          },
+          "transactions": 370
+        },
+        "renders": [
+          {
+            "access_decode": {
+              "elapsed_ms": 0.02312499999999984,
+              "process_cpu_ms": 0.022999999999999687
+            },
+            "block_decode": {
+              "elapsed_ms": 1.212375,
+              "process_cpu_ms": 1.2119999999999997
+            },
+            "compressed_block_bytes": 117962,
+            "decoded_block_bytes": 384623,
+            "json_bytes": 2436727,
+            "json_render": {
+              "elapsed_ms": 8.104334,
+              "process_cpu_ms": 8.105
+            },
+            "parts_bytes": 144458,
+            "parts_validate": {
+              "elapsed_ms": 0.012749999999999997,
+              "process_cpu_ms": 0.01200000000000001
+            },
+            "resolution_bytes": 74364,
+            "resolution_decode": {
+              "elapsed_ms": 0.085208,
+              "process_cpu_ms": 0.08499999999999996
+            },
+            "signature_bytes": 26432,
+            "slot": 470987967,
+            "total": {
+              "elapsed_ms": 9.442542,
+              "process_cpu_ms": 9.442
+            },
+            "transactions": 370
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.009584000000000259,
+              "process_cpu_ms": 0.009000000000000341
+            },
+            "block_decode": {
+              "elapsed_ms": 1.0358750000000008,
+              "process_cpu_ms": 1.0359999999999996
+            },
+            "compressed_block_bytes": 117962,
+            "decoded_block_bytes": 384623,
+            "json_bytes": 2436727,
+            "json_render": {
+              "elapsed_ms": 7.635332999999999,
+              "process_cpu_ms": 7.635000000000002
+            },
+            "parts_bytes": 144458,
+            "parts_validate": {
+              "elapsed_ms": 0.0008339999999993353,
+              "process_cpu_ms": 0
+            },
+            "resolution_bytes": 74364,
+            "resolution_decode": {
+              "elapsed_ms": 0.0462080000000018,
+              "process_cpu_ms": 0.04600000000000115
+            },
+            "signature_bytes": 26432,
+            "slot": 470987967,
+            "total": {
+              "elapsed_ms": 8.730875000000001,
+              "process_cpu_ms": 8.731
+            },
+            "transactions": 370
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.009624999999999773,
+              "process_cpu_ms": 0.010999999999999233
+            },
+            "block_decode": {
+              "elapsed_ms": 1.0374580000000009,
+              "process_cpu_ms": 1.036999999999999
+            },
+            "compressed_block_bytes": 117962,
+            "decoded_block_bytes": 384623,
+            "json_bytes": 2436727,
+            "json_render": {
+              "elapsed_ms": 7.509374999999999,
+              "process_cpu_ms": 7.475000000000001
+            },
+            "parts_bytes": 144458,
+            "parts_validate": {
+              "elapsed_ms": 0.0007089999999969621,
+              "process_cpu_ms": 0
+            },
+            "resolution_bytes": 74364,
+            "resolution_decode": {
+              "elapsed_ms": 0.04641600000000068,
+              "process_cpu_ms": 0.0470000000000006
+            },
+            "signature_bytes": 26432,
+            "slot": 470987967,
+            "total": {
+              "elapsed_ms": 8.606749999999998,
+              "process_cpu_ms": 8.572000000000003
+            },
+            "transactions": 370
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.009333999999999065,
+              "process_cpu_ms": 0.010000000000001563
+            },
+            "block_decode": {
+              "elapsed_ms": 1.0239580000000004,
+              "process_cpu_ms": 1.0229999999999997
+            },
+            "compressed_block_bytes": 117962,
+            "decoded_block_bytes": 384623,
+            "json_bytes": 2436727,
+            "json_render": {
+              "elapsed_ms": 7.385542000000001,
+              "process_cpu_ms": 7.386000000000003
+            },
+            "parts_bytes": 144458,
+            "parts_validate": {
+              "elapsed_ms": 0.0007079999999994868,
+              "process_cpu_ms": 0
+            },
+            "resolution_bytes": 74364,
+            "resolution_decode": {
+              "elapsed_ms": 0.04566600000000065,
+              "process_cpu_ms": 0.045999999999999375
+            },
+            "signature_bytes": 26432,
+            "slot": 470987967,
+            "total": {
+              "elapsed_ms": 8.467999999999996,
+              "process_cpu_ms": 8.468000000000004
+            },
+            "transactions": 370
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.009582999999999231,
+              "process_cpu_ms": 0.009000000000000341
+            },
+            "block_decode": {
+              "elapsed_ms": 1.034791999999996,
+              "process_cpu_ms": 1.033999999999999
+            },
+            "compressed_block_bytes": 117962,
+            "decoded_block_bytes": 384623,
+            "json_bytes": 2436727,
+            "json_render": {
+              "elapsed_ms": 7.606457999999996,
+              "process_cpu_ms": 7.598999999999997
+            },
+            "parts_bytes": 144458,
+            "parts_validate": {
+              "elapsed_ms": 0.0007500000000035811,
+              "process_cpu_ms": 0.0009999999999976694
+            },
+            "resolution_bytes": 74364,
+            "resolution_decode": {
+              "elapsed_ms": 0.0467920000000035,
+              "process_cpu_ms": 0.04800000000000182
+            },
+            "signature_bytes": 26432,
+            "slot": 470987967,
+            "total": {
+              "elapsed_ms": 8.702458,
+              "process_cpu_ms": 8.695
+            },
+            "transactions": 370
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.011209000000008018,
+              "process_cpu_ms": 0.011000000000002785
+            },
+            "block_decode": {
+              "elapsed_ms": 1.0575839999999985,
+              "process_cpu_ms": 1.0579999999999998
+            },
+            "compressed_block_bytes": 117962,
+            "decoded_block_bytes": 384623,
+            "json_bytes": 2436727,
+            "json_render": {
+              "elapsed_ms": 7.443584000000001,
+              "process_cpu_ms": 7.444000000000003
+            },
+            "parts_bytes": 144458,
+            "parts_validate": {
+              "elapsed_ms": 0.0019579999999947972,
+              "process_cpu_ms": 0.0020000000000024443
+            },
+            "resolution_bytes": 74364,
+            "resolution_decode": {
+              "elapsed_ms": 0.05566599999999511,
+              "process_cpu_ms": 0.054999999999999716
+            },
+            "signature_bytes": 26432,
+            "slot": 470987967,
+            "total": {
+              "elapsed_ms": 8.573374999999999,
+              "process_cpu_ms": 8.573999999999998
+            },
+            "transactions": 370
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.009417000000006226,
+              "process_cpu_ms": 0.009000000000000341
+            },
+            "block_decode": {
+              "elapsed_ms": 1.0313750000000041,
+              "process_cpu_ms": 1.0320000000000036
+            },
+            "compressed_block_bytes": 117962,
+            "decoded_block_bytes": 384623,
+            "json_bytes": 2436727,
+            "json_render": {
+              "elapsed_ms": 7.4702919999999935,
+              "process_cpu_ms": 7.463999999999999
+            },
+            "parts_bytes": 144458,
+            "parts_validate": {
+              "elapsed_ms": 0.0007500000000035811,
+              "process_cpu_ms": 0
+            },
+            "resolution_bytes": 74364,
+            "resolution_decode": {
+              "elapsed_ms": 0.04608299999999588,
+              "process_cpu_ms": 0.045999999999999375
+            },
+            "signature_bytes": 26432,
+            "slot": 470987967,
+            "total": {
+              "elapsed_ms": 8.561667,
+              "process_cpu_ms": 8.556000000000004
+            },
+            "transactions": 370
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.009124999999997385,
+              "process_cpu_ms": 0.00899999999998613
+            },
+            "block_decode": {
+              "elapsed_ms": 1.0277499999999975,
+              "process_cpu_ms": 1.027000000000001
+            },
+            "compressed_block_bytes": 117962,
+            "decoded_block_bytes": 384623,
+            "json_bytes": 2436727,
+            "json_render": {
+              "elapsed_ms": 7.424957999999997,
+              "process_cpu_ms": 7.425000000000011
+            },
+            "parts_bytes": 144458,
+            "parts_validate": {
+              "elapsed_ms": 0.0006669999999999732,
+              "process_cpu_ms": 0
+            },
+            "resolution_bytes": 74364,
+            "resolution_decode": {
+              "elapsed_ms": 0.04558399999999807,
+              "process_cpu_ms": 0.045999999999999375
+            },
+            "signature_bytes": 26432,
+            "slot": 470987967,
+            "total": {
+              "elapsed_ms": 8.510958000000002,
+              "process_cpu_ms": 8.512
+            },
+            "transactions": 370
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.009249999999980218,
+              "process_cpu_ms": 0.010000000000005116
+            },
+            "block_decode": {
+              "elapsed_ms": 1.031041000000016,
+              "process_cpu_ms": 1.0309999999999917
+            },
+            "compressed_block_bytes": 117962,
+            "decoded_block_bytes": 384623,
+            "json_bytes": 2436727,
+            "json_render": {
+              "elapsed_ms": 7.559208999999996,
+              "process_cpu_ms": 7.557000000000002
+            },
+            "parts_bytes": 144458,
+            "parts_validate": {
+              "elapsed_ms": 0.0007080000000030395,
+              "process_cpu_ms": 0.0010000000000047748
+            },
+            "resolution_bytes": 74364,
+            "resolution_decode": {
+              "elapsed_ms": 0.045249999999995794,
+              "process_cpu_ms": 0.045000000000001705
+            },
+            "signature_bytes": 26432,
+            "slot": 470987967,
+            "total": {
+              "elapsed_ms": 8.650041999999985,
+              "process_cpu_ms": 8.646999999999991
+            },
+            "transactions": 370
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.01012500000000216,
+              "process_cpu_ms": 0.010000000000005116
+            },
+            "block_decode": {
+              "elapsed_ms": 1.033167000000006,
+              "process_cpu_ms": 1.0330000000000013
+            },
+            "compressed_block_bytes": 117962,
+            "decoded_block_bytes": 384623,
+            "json_bytes": 2436727,
+            "json_render": {
+              "elapsed_ms": 7.7982080000000025,
+              "process_cpu_ms": 7.73599999999999
+            },
+            "parts_bytes": 144458,
+            "parts_validate": {
+              "elapsed_ms": 0.0010000000000047748,
+              "process_cpu_ms": 0.000999999999990564
+            },
+            "resolution_bytes": 74364,
+            "resolution_decode": {
+              "elapsed_ms": 0.04791699999999821,
+              "process_cpu_ms": 0.04800000000000182
+            },
+            "signature_bytes": 26432,
+            "slot": 470987967,
+            "total": {
+              "elapsed_ms": 8.896,
+              "process_cpu_ms": 8.832999999999998
+            },
+            "transactions": 370
+          }
+        ],
+        "total_elapsed_ms": 90.927042,
+        "transaction_encoding": "base64",
+        "workload": null
+      }
+    },
+    {
+      "slot": 471096104,
+      "ok": true,
+      "canonicalSha256": "c17db9c7d485f4e4b3e6595dcdfc1e34617224a2bce3efee8b70a19e50dccdd5",
+      "heliusCanonicalSha256": "c17db9c7d485f4e4b3e6595dcdfc1e34617224a2bce3efee8b70a19e50dccdd5",
+      "oracleProof": null,
+      "processWallMs": 194.02408299999996,
+      "totalCpuMedianMs": 17.893500000000003,
+      "jsonRenderCpuMedianMs": 15.607,
+      "receipt": {
+        "cpu_scope": "process-all-threads",
+        "file_read_elapsed_ms": 1.667375,
+        "file_write_elapsed_ms": 1.02275,
+        "include_rewards": false,
+        "iterations": 10,
+        "json_sha256": "e2db71fcb93d69db4a9463429f4b484b44191127850a66359c3940db7f807571",
+        "mode": "local-files-no-network",
+        "ok": true,
+        "render": {
+          "access_decode": {
+            "elapsed_ms": 0.013125000000002274,
+            "process_cpu_ms": 0.01300000000000523
+          },
+          "block_decode": {
+            "elapsed_ms": 2.1815830000000176,
+            "process_cpu_ms": 2.169000000000011
+          },
+          "compressed_block_bytes": 240636,
+          "decoded_block_bytes": 824794,
+          "json_bytes": 5019865,
+          "json_render": {
+            "elapsed_ms": 15.177292000000023,
+            "process_cpu_ms": 15.177999999999997
+          },
+          "parts_bytes": 275132,
+          "parts_validate": {
+            "elapsed_ms": 0.0010829999999657502,
+            "process_cpu_ms": 0.0010000000000047748
+          },
+          "resolution_bytes": 106968,
+          "resolution_decode": {
+            "elapsed_ms": 0.06920900000000074,
+            "process_cpu_ms": 0.06900000000001683
+          },
+          "signature_bytes": 34432,
+          "slot": 471096104,
+          "total": {
+            "elapsed_ms": 17.446792000000016,
+            "process_cpu_ms": 17.43599999999998
+          },
+          "transactions": 490
+        },
+        "renders": [
+          {
+            "access_decode": {
+              "elapsed_ms": 0.022250000000000103,
+              "process_cpu_ms": 0.02200000000000024
+            },
+            "block_decode": {
+              "elapsed_ms": 2.788583,
+              "process_cpu_ms": 2.7520000000000002
+            },
+            "compressed_block_bytes": 240636,
+            "decoded_block_bytes": 824794,
+            "json_bytes": 5019865,
+            "json_render": {
+              "elapsed_ms": 18.222292000000003,
+              "process_cpu_ms": 17.863999999999997
+            },
+            "parts_bytes": 275132,
+            "parts_validate": {
+              "elapsed_ms": 0.0040000000000000036,
+              "process_cpu_ms": 0.0040000000000000036
+            },
+            "resolution_bytes": 106968,
+            "resolution_decode": {
+              "elapsed_ms": 0.15433300000000003,
+              "process_cpu_ms": 0.129
+            },
+            "signature_bytes": 34432,
+            "slot": 471096104,
+            "total": {
+              "elapsed_ms": 21.203542,
+              "process_cpu_ms": 20.786
+            },
+            "transactions": 490
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.015332999999998265,
+              "process_cpu_ms": 0.015000000000000568
+            },
+            "block_decode": {
+              "elapsed_ms": 2.399167000000002,
+              "process_cpu_ms": 2.3989999999999974
+            },
+            "compressed_block_bytes": 240636,
+            "decoded_block_bytes": 824794,
+            "json_bytes": 5019865,
+            "json_render": {
+              "elapsed_ms": 16.502209,
+              "process_cpu_ms": 16.480999999999998
+            },
+            "parts_bytes": 275132,
+            "parts_validate": {
+              "elapsed_ms": 0.002292000000000627,
+              "process_cpu_ms": 0.0019999999999988916
+            },
+            "resolution_bytes": 106968,
+            "resolution_decode": {
+              "elapsed_ms": 0.07600000000000406,
+              "process_cpu_ms": 0.07600000000000051
+            },
+            "signature_bytes": 34432,
+            "slot": 471096104,
+            "total": {
+              "elapsed_ms": 19.000916999999998,
+              "process_cpu_ms": 18.978
+            },
+            "transactions": 490
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.014582999999994684,
+              "process_cpu_ms": 0.015000000000000568
+            },
+            "block_decode": {
+              "elapsed_ms": 2.258209000000001,
+              "process_cpu_ms": 2.2580000000000027
+            },
+            "compressed_block_bytes": 240636,
+            "decoded_block_bytes": 824794,
+            "json_bytes": 5019865,
+            "json_render": {
+              "elapsed_ms": 16.109332999999992,
+              "process_cpu_ms": 16.088
+            },
+            "parts_bytes": 275132,
+            "parts_validate": {
+              "elapsed_ms": 0.0012500000000059686,
+              "process_cpu_ms": 0.0009999999999976694
+            },
+            "resolution_bytes": 106968,
+            "resolution_decode": {
+              "elapsed_ms": 0.07245900000000205,
+              "process_cpu_ms": 0.07299999999999329
+            },
+            "signature_bytes": 34432,
+            "slot": 471096104,
+            "total": {
+              "elapsed_ms": 18.464374999999997,
+              "process_cpu_ms": 18.443999999999996
+            },
+            "transactions": 490
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.015124999999997613,
+              "process_cpu_ms": 0.015000000000000568
+            },
+            "block_decode": {
+              "elapsed_ms": 2.2537090000000077,
+              "process_cpu_ms": 2.253
+            },
+            "compressed_block_bytes": 240636,
+            "decoded_block_bytes": 824794,
+            "json_bytes": 5019865,
+            "json_render": {
+              "elapsed_ms": 15.871791000000002,
+              "process_cpu_ms": 15.864999999999995
+            },
+            "parts_bytes": 275132,
+            "parts_validate": {
+              "elapsed_ms": 0.0011669999999952552,
+              "process_cpu_ms": 0.0010000000000047748
+            },
+            "resolution_bytes": 106968,
+            "resolution_decode": {
+              "elapsed_ms": 0.07208400000000381,
+              "process_cpu_ms": 0.07200000000000273
+            },
+            "signature_bytes": 34432,
+            "slot": 471096104,
+            "total": {
+              "elapsed_ms": 18.221667000000004,
+              "process_cpu_ms": 18.214000000000006
+            },
+            "transactions": 490
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.014250000000004093,
+              "process_cpu_ms": 0.015000000000000568
+            },
+            "block_decode": {
+              "elapsed_ms": 2.248915999999994,
+              "process_cpu_ms": 2.2490000000000094
+            },
+            "compressed_block_bytes": 240636,
+            "decoded_block_bytes": 824794,
+            "json_bytes": 5019865,
+            "json_render": {
+              "elapsed_ms": 15.82875,
+              "process_cpu_ms": 15.808999999999997
+            },
+            "parts_bytes": 275132,
+            "parts_validate": {
+              "elapsed_ms": 0.0009579999999971278,
+              "process_cpu_ms": 0.0010000000000047748
+            },
+            "resolution_bytes": 106968,
+            "resolution_decode": {
+              "elapsed_ms": 0.0710420000000056,
+              "process_cpu_ms": 0.07099999999999795
+            },
+            "signature_bytes": 34432,
+            "slot": 471096104,
+            "total": {
+              "elapsed_ms": 18.170125,
+              "process_cpu_ms": 18.149
+            },
+            "transactions": 490
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.013083000000008838,
+              "process_cpu_ms": 0.01300000000000523
+            },
+            "block_decode": {
+              "elapsed_ms": 2.148333000000008,
+              "process_cpu_ms": 2.147999999999996
+            },
+            "compressed_block_bytes": 240636,
+            "decoded_block_bytes": 824794,
+            "json_bytes": 5019865,
+            "json_render": {
+              "elapsed_ms": 15.201291999999995,
+              "process_cpu_ms": 15.198000000000008
+            },
+            "parts_bytes": 275132,
+            "parts_validate": {
+              "elapsed_ms": 0.001084000000005858,
+              "process_cpu_ms": 0.0010000000000047748
+            },
+            "resolution_bytes": 106968,
+            "resolution_decode": {
+              "elapsed_ms": 0.06887499999999136,
+              "process_cpu_ms": 0.07000000000000739
+            },
+            "signature_bytes": 34432,
+            "slot": 471096104,
+            "total": {
+              "elapsed_ms": 17.437832999999998,
+              "process_cpu_ms": 17.43400000000001
+            },
+            "transactions": 490
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.013541000000003578,
+              "process_cpu_ms": 0.014000000000010004
+            },
+            "block_decode": {
+              "elapsed_ms": 2.1552500000000094,
+              "process_cpu_ms": 2.155000000000001
+            },
+            "compressed_block_bytes": 240636,
+            "decoded_block_bytes": 824794,
+            "json_bytes": 5019865,
+            "json_render": {
+              "elapsed_ms": 15.110334000000009,
+              "process_cpu_ms": 15.11099999999999
+            },
+            "parts_bytes": 275132,
+            "parts_validate": {
+              "elapsed_ms": 0.0008750000000219416,
+              "process_cpu_ms": 0.0010000000000047748
+            },
+            "resolution_bytes": 106968,
+            "resolution_decode": {
+              "elapsed_ms": 0.06887500000000557,
+              "process_cpu_ms": 0.0689999999999884
+            },
+            "signature_bytes": 34432,
+            "slot": 471096104,
+            "total": {
+              "elapsed_ms": 17.353375000000014,
+              "process_cpu_ms": 17.352999999999994
+            },
+            "transactions": 490
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.012791999999990367,
+              "process_cpu_ms": 0.013999999999981583
+            },
+            "block_decode": {
+              "elapsed_ms": 2.151292000000012,
+              "process_cpu_ms": 2.1520000000000152
+            },
+            "compressed_block_bytes": 240636,
+            "decoded_block_bytes": 824794,
+            "json_bytes": 5019865,
+            "json_render": {
+              "elapsed_ms": 15.405624999999986,
+              "process_cpu_ms": 15.336000000000013
+            },
+            "parts_bytes": 275132,
+            "parts_validate": {
+              "elapsed_ms": 0.0008330000000000837,
+              "process_cpu_ms": 0.0010000000000047748
+            },
+            "resolution_bytes": 106968,
+            "resolution_decode": {
+              "elapsed_ms": 0.06620800000001736,
+              "process_cpu_ms": 0.0660000000000025
+            },
+            "signature_bytes": 34432,
+            "slot": 471096104,
+            "total": {
+              "elapsed_ms": 17.64149999999998,
+              "process_cpu_ms": 17.572000000000003
+            },
+            "transactions": 490
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.01291699999998741,
+              "process_cpu_ms": 0.014000000000010004
+            },
+            "block_decode": {
+              "elapsed_ms": 2.146542000000011,
+              "process_cpu_ms": 2.1469999999999914
+            },
+            "compressed_block_bytes": 240636,
+            "decoded_block_bytes": 824794,
+            "json_bytes": 5019865,
+            "json_render": {
+              "elapsed_ms": 15.474625000000003,
+              "process_cpu_ms": 15.405000000000001
+            },
+            "parts_bytes": 275132,
+            "parts_validate": {
+              "elapsed_ms": 0.001040999999986525,
+              "process_cpu_ms": 0.0010000000000047748
+            },
+            "resolution_bytes": 106968,
+            "resolution_decode": {
+              "elapsed_ms": 0.06845899999999006,
+              "process_cpu_ms": 0.06800000000001205
+            },
+            "signature_bytes": 34432,
+            "slot": 471096104,
+            "total": {
+              "elapsed_ms": 17.70845799999998,
+              "process_cpu_ms": 17.638000000000005
+            },
+            "transactions": 490
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.013125000000002274,
+              "process_cpu_ms": 0.01300000000000523
+            },
+            "block_decode": {
+              "elapsed_ms": 2.1815830000000176,
+              "process_cpu_ms": 2.169000000000011
+            },
+            "compressed_block_bytes": 240636,
+            "decoded_block_bytes": 824794,
+            "json_bytes": 5019865,
+            "json_render": {
+              "elapsed_ms": 15.177292000000023,
+              "process_cpu_ms": 15.177999999999997
+            },
+            "parts_bytes": 275132,
+            "parts_validate": {
+              "elapsed_ms": 0.0010829999999657502,
+              "process_cpu_ms": 0.0010000000000047748
+            },
+            "resolution_bytes": 106968,
+            "resolution_decode": {
+              "elapsed_ms": 0.06920900000000074,
+              "process_cpu_ms": 0.06900000000001683
+            },
+            "signature_bytes": 34432,
+            "slot": 471096104,
+            "total": {
+              "elapsed_ms": 17.446792000000016,
+              "process_cpu_ms": 17.43599999999998
+            },
+            "transactions": 490
+          }
+        ],
+        "total_elapsed_ms": 187.799708,
+        "transaction_encoding": "base64",
+        "workload": null
+      }
+    },
+    {
+      "slot": 471204030,
+      "ok": true,
+      "canonicalSha256": "16a05c47d65a8f1e8cf044f60a075ba0c3d3de8c7fc466f2d57a2aa8015cf668",
+      "heliusCanonicalSha256": "16a05c47d65a8f1e8cf044f60a075ba0c3d3de8c7fc466f2d57a2aa8015cf668",
+      "oracleProof": null,
+      "processWallMs": 90.75879100000009,
+      "totalCpuMedianMs": 8.148500000000002,
+      "jsonRenderCpuMedianMs": 7.118000000000006,
+      "receipt": {
+        "cpu_scope": "process-all-threads",
+        "file_read_elapsed_ms": 1.058584,
+        "file_write_elapsed_ms": 0.64875,
+        "include_rewards": false,
+        "iterations": 10,
+        "json_sha256": "e257fd2c9f18d00a66a32beab69238bc2cbb77a8592f4fcdc940bef99544ac6f",
+        "mode": "local-files-no-network",
+        "ok": true,
+        "render": {
+          "access_decode": {
+            "elapsed_ms": 0.007917000000006169,
+            "process_cpu_ms": 0.007000000000005002
+          },
+          "block_decode": {
+            "elapsed_ms": 0.9605409999999921,
+            "process_cpu_ms": 0.9609999999999985
+          },
+          "compressed_block_bytes": 108839,
+          "decoded_block_bytes": 358698,
+          "json_bytes": 2635203,
+          "json_render": {
+            "elapsed_ms": 7.007958000000002,
+            "process_cpu_ms": 7.009
+          },
+          "parts_bytes": 129191,
+          "parts_validate": {
+            "elapsed_ms": 0.0007499999999964757,
+            "process_cpu_ms": 0.000999999999990564
+          },
+          "resolution_bytes": 65006,
+          "resolution_decode": {
+            "elapsed_ms": 0.041333000000008724,
+            "process_cpu_ms": 0.04200000000000159
+          },
+          "signature_bytes": 20288,
+          "slot": 471204030,
+          "total": {
+            "elapsed_ms": 8.023042000000004,
+            "process_cpu_ms": 8.022999999999996
+          },
+          "transactions": 286
+        },
+        "renders": [
+          {
+            "access_decode": {
+              "elapsed_ms": 0.012499999999999956,
+              "process_cpu_ms": 0.01200000000000001
+            },
+            "block_decode": {
+              "elapsed_ms": 1.193584,
+              "process_cpu_ms": 1.193
+            },
+            "compressed_block_bytes": 108839,
+            "decoded_block_bytes": 358698,
+            "json_bytes": 2635203,
+            "json_render": {
+              "elapsed_ms": 8.079042,
+              "process_cpu_ms": 8.072
+            },
+            "parts_bytes": 129191,
+            "parts_validate": {
+              "elapsed_ms": 0.002792000000000003,
+              "process_cpu_ms": 0.0030000000000001137
+            },
+            "resolution_bytes": 65006,
+            "resolution_decode": {
+              "elapsed_ms": 0.062084,
+              "process_cpu_ms": 0.06199999999999983
+            },
+            "signature_bytes": 20288,
+            "slot": 471204030,
+            "total": {
+              "elapsed_ms": 9.356874999999999,
+              "process_cpu_ms": 9.347999999999999
+            },
+            "transactions": 286
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.01066699999999976,
+              "process_cpu_ms": 0.011000000000001009
+            },
+            "block_decode": {
+              "elapsed_ms": 1.0858749999999997,
+              "process_cpu_ms": 1.0859999999999985
+            },
+            "compressed_block_bytes": 108839,
+            "decoded_block_bytes": 358698,
+            "json_bytes": 2635203,
+            "json_render": {
+              "elapsed_ms": 7.801167000000003,
+              "process_cpu_ms": 7.763000000000002
+            },
+            "parts_bytes": 129191,
+            "parts_validate": {
+              "elapsed_ms": 0.0024169999999994474,
+              "process_cpu_ms": 0.002000000000000668
+            },
+            "resolution_bytes": 65006,
+            "resolution_decode": {
+              "elapsed_ms": 0.054541000000000395,
+              "process_cpu_ms": 0.05299999999999905
+            },
+            "signature_bytes": 20288,
+            "slot": 471204030,
+            "total": {
+              "elapsed_ms": 8.959624999999997,
+              "process_cpu_ms": 8.922
+            },
+            "transactions": 286
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.00933300000000159,
+              "process_cpu_ms": 0.009000000000000341
+            },
+            "block_decode": {
+              "elapsed_ms": 1.009332999999998,
+              "process_cpu_ms": 1.0090000000000003
+            },
+            "compressed_block_bytes": 108839,
+            "decoded_block_bytes": 358698,
+            "json_bytes": 2635203,
+            "json_render": {
+              "elapsed_ms": 7.374832999999999,
+              "process_cpu_ms": 7.376000000000001
+            },
+            "parts_bytes": 129191,
+            "parts_validate": {
+              "elapsed_ms": 0.001334000000003499,
+              "process_cpu_ms": 0.0010000000000012221
+            },
+            "resolution_bytes": 65006,
+            "resolution_decode": {
+              "elapsed_ms": 0.045459000000001026,
+              "process_cpu_ms": 0.045999999999999375
+            },
+            "signature_bytes": 20288,
+            "slot": 471204030,
+            "total": {
+              "elapsed_ms": 8.445083999999998,
+              "process_cpu_ms": 8.445999999999998
+            },
+            "transactions": 286
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.010625000000000995,
+              "process_cpu_ms": 0.010999999999999233
+            },
+            "block_decode": {
+              "elapsed_ms": 1.1772920000000013,
+              "process_cpu_ms": 1.1330000000000027
+            },
+            "compressed_block_bytes": 108839,
+            "decoded_block_bytes": 358698,
+            "json_bytes": 2635203,
+            "json_render": {
+              "elapsed_ms": 7.2464580000000005,
+              "process_cpu_ms": 7.247
+            },
+            "parts_bytes": 129191,
+            "parts_validate": {
+              "elapsed_ms": 0.0009590000000017085,
+              "process_cpu_ms": 0.0009999999999976694
+            },
+            "resolution_bytes": 65006,
+            "resolution_decode": {
+              "elapsed_ms": 0.04449999999999932,
+              "process_cpu_ms": 0.045000000000001705
+            },
+            "signature_bytes": 20288,
+            "slot": 471204030,
+            "total": {
+              "elapsed_ms": 8.485666000000005,
+              "process_cpu_ms": 8.439999999999998
+            },
+            "transactions": 286
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.008541999999998495,
+              "process_cpu_ms": 0.008000000000002672
+            },
+            "block_decode": {
+              "elapsed_ms": 0.9725830000000002,
+              "process_cpu_ms": 0.9730000000000061
+            },
+            "compressed_block_bytes": 108839,
+            "decoded_block_bytes": 358698,
+            "json_bytes": 2635203,
+            "json_render": {
+              "elapsed_ms": 7.051166000000002,
+              "process_cpu_ms": 7.051000000000002
+            },
+            "parts_bytes": 129191,
+            "parts_validate": {
+              "elapsed_ms": 0.0012499999999988631,
+              "process_cpu_ms": 0.0009999999999976694
+            },
+            "resolution_bytes": 65006,
+            "resolution_decode": {
+              "elapsed_ms": 0.04391699999999332,
+              "process_cpu_ms": 0.04299999999999926
+            },
+            "signature_bytes": 20288,
+            "slot": 471204030,
+            "total": {
+              "elapsed_ms": 8.081915999999993,
+              "process_cpu_ms": 8.082
+            },
+            "transactions": 286
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.00808399999999665,
+              "process_cpu_ms": 0.007999999999995566
+            },
+            "block_decode": {
+              "elapsed_ms": 0.9688750000000041,
+              "process_cpu_ms": 0.9690000000000012
+            },
+            "compressed_block_bytes": 108839,
+            "decoded_block_bytes": 358698,
+            "json_bytes": 2635203,
+            "json_render": {
+              "elapsed_ms": 7.150999999999996,
+              "process_cpu_ms": 7.107000000000006
+            },
+            "parts_bytes": 129191,
+            "parts_validate": {
+              "elapsed_ms": 0.0010000000000047748,
+              "process_cpu_ms": 0.0010000000000047748
+            },
+            "resolution_bytes": 65006,
+            "resolution_decode": {
+              "elapsed_ms": 0.04233299999999929,
+              "process_cpu_ms": 0.04299999999999926
+            },
+            "signature_bytes": 20288,
+            "slot": 471204030,
+            "total": {
+              "elapsed_ms": 8.176625000000001,
+              "process_cpu_ms": 8.131
+            },
+            "transactions": 286
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.008208000000003324,
+              "process_cpu_ms": 0.007999999999995566
+            },
+            "block_decode": {
+              "elapsed_ms": 0.9792500000000004,
+              "process_cpu_ms": 0.9789999999999992
+            },
+            "compressed_block_bytes": 108839,
+            "decoded_block_bytes": 358698,
+            "json_bytes": 2635203,
+            "json_render": {
+              "elapsed_ms": 7.132041999999998,
+              "process_cpu_ms": 7.129000000000005
+            },
+            "parts_bytes": 129191,
+            "parts_validate": {
+              "elapsed_ms": 0.0010000000000047748,
+              "process_cpu_ms": 0.0009999999999976694
+            },
+            "resolution_bytes": 65006,
+            "resolution_decode": {
+              "elapsed_ms": 0.043375000000004604,
+              "process_cpu_ms": 0.04299999999999926
+            },
+            "signature_bytes": 20288,
+            "slot": 471204030,
+            "total": {
+              "elapsed_ms": 8.169541999999993,
+              "process_cpu_ms": 8.166000000000004
+            },
+            "transactions": 286
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.009790999999999883,
+              "process_cpu_ms": 0.009000000000000341
+            },
+            "block_decode": {
+              "elapsed_ms": 1.0102079999999987,
+              "process_cpu_ms": 1.0030000000000001
+            },
+            "compressed_block_bytes": 108839,
+            "decoded_block_bytes": 358698,
+            "json_bytes": 2635203,
+            "json_render": {
+              "elapsed_ms": 7.060707999999991,
+              "process_cpu_ms": 7.061
+            },
+            "parts_bytes": 129191,
+            "parts_validate": {
+              "elapsed_ms": 0.001290999999994824,
+              "process_cpu_ms": 0.0009999999999976694
+            },
+            "resolution_bytes": 65006,
+            "resolution_decode": {
+              "elapsed_ms": 0.046708000000002414,
+              "process_cpu_ms": 0.04700000000000415
+            },
+            "signature_bytes": 20288,
+            "slot": 471204030,
+            "total": {
+              "elapsed_ms": 8.13304200000001,
+              "process_cpu_ms": 8.125999999999998
+            },
+            "transactions": 286
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.008166000000002782,
+              "process_cpu_ms": 0.007999999999995566
+            },
+            "block_decode": {
+              "elapsed_ms": 0.9692090000000064,
+              "process_cpu_ms": 0.9699999999999989
+            },
+            "compressed_block_bytes": 108839,
+            "decoded_block_bytes": 358698,
+            "json_bytes": 2635203,
+            "json_render": {
+              "elapsed_ms": 6.966624999999993,
+              "process_cpu_ms": 6.9680000000000035
+            },
+            "parts_bytes": 129191,
+            "parts_validate": {
+              "elapsed_ms": 0.0010000000000047748,
+              "process_cpu_ms": 0.0010000000000047748
+            },
+            "resolution_bytes": 65006,
+            "resolution_decode": {
+              "elapsed_ms": 0.04245799999999633,
+              "process_cpu_ms": 0.04200000000000159
+            },
+            "signature_bytes": 20288,
+            "slot": 471204030,
+            "total": {
+              "elapsed_ms": 7.991749999999996,
+              "process_cpu_ms": 7.99199999999999
+            },
+            "transactions": 286
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.007917000000006169,
+              "process_cpu_ms": 0.007000000000005002
+            },
+            "block_decode": {
+              "elapsed_ms": 0.9605409999999921,
+              "process_cpu_ms": 0.9609999999999985
+            },
+            "compressed_block_bytes": 108839,
+            "decoded_block_bytes": 358698,
+            "json_bytes": 2635203,
+            "json_render": {
+              "elapsed_ms": 7.007958000000002,
+              "process_cpu_ms": 7.009
+            },
+            "parts_bytes": 129191,
+            "parts_validate": {
+              "elapsed_ms": 0.0007499999999964757,
+              "process_cpu_ms": 0.000999999999990564
+            },
+            "resolution_bytes": 65006,
+            "resolution_decode": {
+              "elapsed_ms": 0.041333000000008724,
+              "process_cpu_ms": 0.04200000000000159
+            },
+            "signature_bytes": 20288,
+            "slot": 471204030,
+            "total": {
+              "elapsed_ms": 8.023042000000004,
+              "process_cpu_ms": 8.022999999999996
+            },
+            "transactions": 286
+          }
+        ],
+        "total_elapsed_ms": 86.823292,
+        "transaction_encoding": "base64",
+        "workload": null
+      }
+    },
+    {
+      "slot": 471311999,
+      "ok": true,
+      "canonicalSha256": "c10f8b9aaa3f2ddc3e18e8581938c0738a545ca5d7175dc5b554af2285c9e774",
+      "heliusCanonicalSha256": "c10f8b9aaa3f2ddc3e18e8581938c0738a545ca5d7175dc5b554af2285c9e774",
+      "oracleProof": null,
+      "processWallMs": 94.92062499999997,
+      "totalCpuMedianMs": 8.562999999999999,
+      "jsonRenderCpuMedianMs": 7.4155000000000015,
+      "receipt": {
+        "cpu_scope": "process-all-threads",
+        "file_read_elapsed_ms": 2.077834,
+        "file_write_elapsed_ms": 0.5419170000000001,
+        "include_rewards": false,
+        "iterations": 10,
+        "json_sha256": "4d816081923b1e06a4d94a06d005e57b22f557d7ad1563758da7e7b76b6d4f1e",
+        "mode": "local-files-no-network",
+        "ok": true,
+        "render": {
+          "access_decode": {
+            "elapsed_ms": 0.009709000000000856,
+            "process_cpu_ms": 0.009000000000000341
+          },
+          "block_decode": {
+            "elapsed_ms": 1.0785410000000013,
+            "process_cpu_ms": 1.0790000000000077
+          },
+          "compressed_block_bytes": 118420,
+          "decoded_block_bytes": 329425,
+          "json_bytes": 1899038,
+          "json_render": {
+            "elapsed_ms": 7.135250000000013,
+            "process_cpu_ms": 7.135000000000005
+          },
+          "parts_bytes": 137428,
+          "parts_validate": {
+            "elapsed_ms": 0.001416000000006079,
+            "process_cpu_ms": 0.0010000000000047748
+          },
+          "resolution_bytes": 63959,
+          "resolution_decode": {
+            "elapsed_ms": 0.04704200000000469,
+            "process_cpu_ms": 0.04599999999999227
+          },
+          "signature_bytes": 18944,
+          "slot": 471311999,
+          "total": {
+            "elapsed_ms": 8.276375000000002,
+            "process_cpu_ms": 8.275999999999996
+          },
+          "transactions": 266
+        },
+        "renders": [
+          {
+            "access_decode": {
+              "elapsed_ms": 0.012750000000000261,
+              "process_cpu_ms": 0.01200000000000001
+            },
+            "block_decode": {
+              "elapsed_ms": 1.325042,
+              "process_cpu_ms": 1.3239999999999998
+            },
+            "compressed_block_bytes": 118420,
+            "decoded_block_bytes": 329425,
+            "json_bytes": 1899038,
+            "json_render": {
+              "elapsed_ms": 8.434416,
+              "process_cpu_ms": 8.434
+            },
+            "parts_bytes": 137428,
+            "parts_validate": {
+              "elapsed_ms": 0.0032090000000000035,
+              "process_cpu_ms": 0.0029999999999996696
+            },
+            "resolution_bytes": 63959,
+            "resolution_decode": {
+              "elapsed_ms": 0.061375,
+              "process_cpu_ms": 0.06200000000000028
+            },
+            "signature_bytes": 18944,
+            "slot": 471311999,
+            "total": {
+              "elapsed_ms": 9.843292,
+              "process_cpu_ms": 9.843
+            },
+            "transactions": 266
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.009207999999999217,
+              "process_cpu_ms": 0.009000000000000341
+            },
+            "block_decode": {
+              "elapsed_ms": 1.167916,
+              "process_cpu_ms": 1.1670000000000016
+            },
+            "compressed_block_bytes": 118420,
+            "decoded_block_bytes": 329425,
+            "json_bytes": 1899038,
+            "json_render": {
+              "elapsed_ms": 8.087708,
+              "process_cpu_ms": 8.087
+            },
+            "parts_bytes": 137428,
+            "parts_validate": {
+              "elapsed_ms": 0.0011249999999982663,
+              "process_cpu_ms": 0.0009999999999994458
+            },
+            "resolution_bytes": 63959,
+            "resolution_decode": {
+              "elapsed_ms": 0.04645799999999767,
+              "process_cpu_ms": 0.04600000000000115
+            },
+            "signature_bytes": 18944,
+            "slot": 471311999,
+            "total": {
+              "elapsed_ms": 9.316125000000001,
+              "process_cpu_ms": 9.316
+            },
+            "transactions": 266
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.009457999999998634,
+              "process_cpu_ms": 0.010000000000001563
+            },
+            "block_decode": {
+              "elapsed_ms": 1.1574589999999993,
+              "process_cpu_ms": 1.157
+            },
+            "compressed_block_bytes": 118420,
+            "decoded_block_bytes": 329425,
+            "json_bytes": 1899038,
+            "json_render": {
+              "elapsed_ms": 7.700458000000001,
+              "process_cpu_ms": 7.699999999999999
+            },
+            "parts_bytes": 137428,
+            "parts_validate": {
+              "elapsed_ms": 0.0008750000000006253,
+              "process_cpu_ms": 0.0010000000000012221
+            },
+            "resolution_bytes": 63959,
+            "resolution_decode": {
+              "elapsed_ms": 0.04483300000000057,
+              "process_cpu_ms": 0.04400000000000048
+            },
+            "signature_bytes": 18944,
+            "slot": 471311999,
+            "total": {
+              "elapsed_ms": 8.916958000000001,
+              "process_cpu_ms": 8.917000000000002
+            },
+            "transactions": 266
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.008417000000001451,
+              "process_cpu_ms": 0.007999999999999119
+            },
+            "block_decode": {
+              "elapsed_ms": 1.0781249999999964,
+              "process_cpu_ms": 1.0779999999999994
+            },
+            "compressed_block_bytes": 118420,
+            "decoded_block_bytes": 329425,
+            "json_bytes": 1899038,
+            "json_render": {
+              "elapsed_ms": 7.434332999999999,
+              "process_cpu_ms": 7.420000000000002
+            },
+            "parts_bytes": 137428,
+            "parts_validate": {
+              "elapsed_ms": 0.0007079999999994868,
+              "process_cpu_ms": 0.0010000000000012221
+            },
+            "resolution_bytes": 63959,
+            "resolution_decode": {
+              "elapsed_ms": 0.04245799999999633,
+              "process_cpu_ms": 0.04200000000000159
+            },
+            "signature_bytes": 18944,
+            "slot": 471311999,
+            "total": {
+              "elapsed_ms": 8.570084000000005,
+              "process_cpu_ms": 8.554000000000002
+            },
+            "transactions": 266
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.009875000000000966,
+              "process_cpu_ms": 0.011000000000002785
+            },
+            "block_decode": {
+              "elapsed_ms": 1.172583000000003,
+              "process_cpu_ms": 1.1729999999999947
+            },
+            "compressed_block_bytes": 118420,
+            "decoded_block_bytes": 329425,
+            "json_bytes": 1899038,
+            "json_render": {
+              "elapsed_ms": 7.559916999999999,
+              "process_cpu_ms": 7.560000000000002
+            },
+            "parts_bytes": 137428,
+            "parts_validate": {
+              "elapsed_ms": 0.0014169999999964489,
+              "process_cpu_ms": 0.0010000000000047748
+            },
+            "resolution_bytes": 63959,
+            "resolution_decode": {
+              "elapsed_ms": 0.04779200000000827,
+              "process_cpu_ms": 0.04800000000000182
+            },
+            "signature_bytes": 18944,
+            "slot": 471311999,
+            "total": {
+              "elapsed_ms": 8.797708,
+              "process_cpu_ms": 8.797000000000004
+            },
+            "transactions": 266
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.009332999999998037,
+              "process_cpu_ms": 0.00999999999999801
+            },
+            "block_decode": {
+              "elapsed_ms": 1.093167000000001,
+              "process_cpu_ms": 1.0929999999999964
+            },
+            "compressed_block_bytes": 118420,
+            "decoded_block_bytes": 329425,
+            "json_bytes": 1899038,
+            "json_render": {
+              "elapsed_ms": 7.170291999999996,
+              "process_cpu_ms": 7.169999999999995
+            },
+            "parts_bytes": 137428,
+            "parts_validate": {
+              "elapsed_ms": 0.0010839999999987526,
+              "process_cpu_ms": 0.0009999999999976694
+            },
+            "resolution_bytes": 63959,
+            "resolution_decode": {
+              "elapsed_ms": 0.04508300000000531,
+              "process_cpu_ms": 0.045000000000001705
+            },
+            "signature_bytes": 18944,
+            "slot": 471311999,
+            "total": {
+              "elapsed_ms": 8.323750000000004,
+              "process_cpu_ms": 8.323999999999998
+            },
+            "transactions": 266
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.009957999999997469,
+              "process_cpu_ms": 0.00999999999999801
+            },
+            "block_decode": {
+              "elapsed_ms": 1.1315829999999991,
+              "process_cpu_ms": 1.1029999999999944
+            },
+            "compressed_block_bytes": 118420,
+            "decoded_block_bytes": 329425,
+            "json_bytes": 1899038,
+            "json_render": {
+              "elapsed_ms": 7.489958999999999,
+              "process_cpu_ms": 7.411000000000001
+            },
+            "parts_bytes": 137428,
+            "parts_validate": {
+              "elapsed_ms": 0.0007909999999995421,
+              "process_cpu_ms": 0
+            },
+            "resolution_bytes": 63959,
+            "resolution_decode": {
+              "elapsed_ms": 0.04204199999999503,
+              "process_cpu_ms": 0.04200000000000159
+            },
+            "signature_bytes": 18944,
+            "slot": 471311999,
+            "total": {
+              "elapsed_ms": 8.680625,
+              "process_cpu_ms": 8.571999999999996
+            },
+            "transactions": 266
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.008499999999997954,
+              "process_cpu_ms": 0.009000000000000341
+            },
+            "block_decode": {
+              "elapsed_ms": 1.0518750000000026,
+              "process_cpu_ms": 1.0519999999999925
+            },
+            "compressed_block_bytes": 118420,
+            "decoded_block_bytes": 329425,
+            "json_bytes": 1899038,
+            "json_render": {
+              "elapsed_ms": 7.096375000000009,
+              "process_cpu_ms": 7.096000000000004
+            },
+            "parts_bytes": 137428,
+            "parts_validate": {
+              "elapsed_ms": 0.0010420000000053165,
+              "process_cpu_ms": 0.000999999999990564
+            },
+            "resolution_bytes": 63959,
+            "resolution_decode": {
+              "elapsed_ms": 0.04245900000000091,
+              "process_cpu_ms": 0.043000000000006366
+            },
+            "signature_bytes": 18944,
+            "slot": 471311999,
+            "total": {
+              "elapsed_ms": 8.204374999999992,
+              "process_cpu_ms": 8.203999999999994
+            },
+            "transactions": 266
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.007959000000013816,
+              "process_cpu_ms": 0.009000000000000341
+            },
+            "block_decode": {
+              "elapsed_ms": 1.0350830000000002,
+              "process_cpu_ms": 1.0350000000000108
+            },
+            "compressed_block_bytes": 118420,
+            "decoded_block_bytes": 329425,
+            "json_bytes": 1899038,
+            "json_render": {
+              "elapsed_ms": 7.3543750000000045,
+              "process_cpu_ms": 7.3219999999999885
+            },
+            "parts_bytes": 137428,
+            "parts_validate": {
+              "elapsed_ms": 0.0010000000000047748,
+              "process_cpu_ms": 0.001999999999995339
+            },
+            "resolution_bytes": 63959,
+            "resolution_decode": {
+              "elapsed_ms": 0.040207999999992694,
+              "process_cpu_ms": 0.04000000000000625
+            },
+            "signature_bytes": 18944,
+            "slot": 471311999,
+            "total": {
+              "elapsed_ms": 8.444250000000011,
+              "process_cpu_ms": 8.411000000000001
+            },
+            "transactions": 266
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.009709000000000856,
+              "process_cpu_ms": 0.009000000000000341
+            },
+            "block_decode": {
+              "elapsed_ms": 1.0785410000000013,
+              "process_cpu_ms": 1.0790000000000077
+            },
+            "compressed_block_bytes": 118420,
+            "decoded_block_bytes": 329425,
+            "json_bytes": 1899038,
+            "json_render": {
+              "elapsed_ms": 7.135250000000013,
+              "process_cpu_ms": 7.135000000000005
+            },
+            "parts_bytes": 137428,
+            "parts_validate": {
+              "elapsed_ms": 0.001416000000006079,
+              "process_cpu_ms": 0.0010000000000047748
+            },
+            "resolution_bytes": 63959,
+            "resolution_decode": {
+              "elapsed_ms": 0.04704200000000469,
+              "process_cpu_ms": 0.04599999999999227
+            },
+            "signature_bytes": 18944,
+            "slot": 471311999,
+            "total": {
+              "elapsed_ms": 8.276375000000002,
+              "process_cpu_ms": 8.275999999999996
+            },
+            "transactions": 266
+          }
+        ],
+        "total_elapsed_ms": 90.941333,
+        "transaction_encoding": "base64",
+        "workload": null
+      }
+    },
+    {
+      "slot": 470555971,
+      "ok": true,
+      "canonicalSha256": "2b955b420e98d124742667ddfb00bbb12b6eb736d3e6fc8b1b2ed46d7c72ce7d",
+      "heliusCanonicalSha256": "2b955b420e98d124742667ddfb00bbb12b6eb736d3e6fc8b1b2ed46d7c72ce7d",
+      "oracleProof": null,
+      "processWallMs": 123.33570800000007,
+      "totalCpuMedianMs": 11.291,
+      "jsonRenderCpuMedianMs": 9.858499999999998,
+      "receipt": {
+        "cpu_scope": "process-all-threads",
+        "file_read_elapsed_ms": 2.15875,
+        "file_write_elapsed_ms": 2.966042,
+        "include_rewards": false,
+        "iterations": 10,
+        "json_sha256": "bd74d5beecba1aff0a4f82c5cebc0b64b7114ca1f14b04e24ff85fc87ff6f9ae",
+        "mode": "local-files-no-network",
+        "ok": true,
+        "render": {
+          "access_decode": {
+            "elapsed_ms": 0.010332999999988601,
+            "process_cpu_ms": 0.01099999999999568
+          },
+          "block_decode": {
+            "elapsed_ms": 1.3315000000000055,
+            "process_cpu_ms": 1.3309999999999889
+          },
+          "compressed_block_bytes": 145910,
+          "decoded_block_bytes": 475182,
+          "json_bytes": 2531323,
+          "json_render": {
+            "elapsed_ms": 9.637792000000005,
+            "process_cpu_ms": 9.638000000000005
+          },
+          "parts_bytes": 172854,
+          "parts_validate": {
+            "elapsed_ms": 0.0012920000000065102,
+            "process_cpu_ms": 0.0010000000000047748
+          },
+          "resolution_bytes": 75724,
+          "resolution_decode": {
+            "elapsed_ms": 0.049791999999996506,
+            "process_cpu_ms": 0.04999999999999716
+          },
+          "signature_bytes": 26880,
+          "slot": 470555971,
+          "total": {
+            "elapsed_ms": 11.034791999999996,
+            "process_cpu_ms": 11.034000000000006
+          },
+          "transactions": 391
+        },
+        "renders": [
+          {
+            "access_decode": {
+              "elapsed_ms": 0.014667000000000208,
+              "process_cpu_ms": 0.01499999999999968
+            },
+            "block_decode": {
+              "elapsed_ms": 1.494916,
+              "process_cpu_ms": 1.496
+            },
+            "compressed_block_bytes": 145910,
+            "decoded_block_bytes": 475182,
+            "json_bytes": 2531323,
+            "json_render": {
+              "elapsed_ms": 10.166333,
+              "process_cpu_ms": 10.147
+            },
+            "parts_bytes": 172854,
+            "parts_validate": {
+              "elapsed_ms": 0.002834000000000017,
+              "process_cpu_ms": 0.0030000000000001137
+            },
+            "resolution_bytes": 75724,
+            "resolution_decode": {
+              "elapsed_ms": 0.065917,
+              "process_cpu_ms": 0.06599999999999984
+            },
+            "signature_bytes": 26880,
+            "slot": 470555971,
+            "total": {
+              "elapsed_ms": 11.750541,
+              "process_cpu_ms": 11.731
+            },
+            "transactions": 391
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.010540999999999912,
+              "process_cpu_ms": 0.009999999999999787
+            },
+            "block_decode": {
+              "elapsed_ms": 1.3352920000000008,
+              "process_cpu_ms": 1.3350000000000009
+            },
+            "compressed_block_bytes": 145910,
+            "decoded_block_bytes": 475182,
+            "json_bytes": 2531323,
+            "json_render": {
+              "elapsed_ms": 10.018207999999998,
+              "process_cpu_ms": 10.014000000000001
+            },
+            "parts_bytes": 172854,
+            "parts_validate": {
+              "elapsed_ms": 0.0015410000000013468,
+              "process_cpu_ms": 0.0030000000000001137
+            },
+            "resolution_bytes": 75724,
+            "resolution_decode": {
+              "elapsed_ms": 0.05316699999999841,
+              "process_cpu_ms": 0.05299999999999905
+            },
+            "signature_bytes": 26880,
+            "slot": 470555971,
+            "total": {
+              "elapsed_ms": 11.424916999999997,
+              "process_cpu_ms": 11.421000000000001
+            },
+            "transactions": 391
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.01274999999999693,
+              "process_cpu_ms": 0.012000000000000455
+            },
+            "block_decode": {
+              "elapsed_ms": 1.3374580000000016,
+              "process_cpu_ms": 1.3369999999999997
+            },
+            "compressed_block_bytes": 145910,
+            "decoded_block_bytes": 475182,
+            "json_bytes": 2531323,
+            "json_render": {
+              "elapsed_ms": 9.922583000000003,
+              "process_cpu_ms": 9.855999999999998
+            },
+            "parts_bytes": 172854,
+            "parts_validate": {
+              "elapsed_ms": 0.0034589999999994347,
+              "process_cpu_ms": 0.0030000000000001137
+            },
+            "resolution_bytes": 75724,
+            "resolution_decode": {
+              "elapsed_ms": 0.061249999999997584,
+              "process_cpu_ms": 0.06099999999999994
+            },
+            "signature_bytes": 26880,
+            "slot": 470555971,
+            "total": {
+              "elapsed_ms": 11.342291999999997,
+              "process_cpu_ms": 11.274999999999999
+            },
+            "transactions": 391
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.011499999999998067,
+              "process_cpu_ms": 0.012000000000000455
+            },
+            "block_decode": {
+              "elapsed_ms": 1.3769999999999953,
+              "process_cpu_ms": 1.3769999999999953
+            },
+            "compressed_block_bytes": 145910,
+            "decoded_block_bytes": 475182,
+            "json_bytes": 2531323,
+            "json_render": {
+              "elapsed_ms": 9.860916000000003,
+              "process_cpu_ms": 9.860999999999997
+            },
+            "parts_bytes": 172854,
+            "parts_validate": {
+              "elapsed_ms": 0.0014159999999989736,
+              "process_cpu_ms": 0.0010000000000047748
+            },
+            "resolution_bytes": 75724,
+            "resolution_decode": {
+              "elapsed_ms": 0.05133299999999963,
+              "process_cpu_ms": 0.05100000000000193
+            },
+            "signature_bytes": 26880,
+            "slot": 470555971,
+            "total": {
+              "elapsed_ms": 11.307084000000003,
+              "process_cpu_ms": 11.307000000000002
+            },
+            "transactions": 391
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.011250000000003979,
+              "process_cpu_ms": 0.012000000000000455
+            },
+            "block_decode": {
+              "elapsed_ms": 1.3669999999999973,
+              "process_cpu_ms": 1.367999999999995
+            },
+            "compressed_block_bytes": 145910,
+            "decoded_block_bytes": 475182,
+            "json_bytes": 2531323,
+            "json_render": {
+              "elapsed_ms": 10.460417,
+              "process_cpu_ms": 10.424
+            },
+            "parts_bytes": 172854,
+            "parts_validate": {
+              "elapsed_ms": 0.0014999999999929514,
+              "process_cpu_ms": 0.0010000000000047748
+            },
+            "resolution_bytes": 75724,
+            "resolution_decode": {
+              "elapsed_ms": 0.05195900000000364,
+              "process_cpu_ms": 0.0519999999999996
+            },
+            "signature_bytes": 26880,
+            "slot": 470555971,
+            "total": {
+              "elapsed_ms": 11.898291999999998,
+              "process_cpu_ms": 11.862000000000002
+            },
+            "transactions": 391
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.00995900000000205,
+              "process_cpu_ms": 0.009000000000000341
+            },
+            "block_decode": {
+              "elapsed_ms": 1.3132500000000036,
+              "process_cpu_ms": 1.3119999999999976
+            },
+            "compressed_block_bytes": 145910,
+            "decoded_block_bytes": 475182,
+            "json_bytes": 2531323,
+            "json_render": {
+              "elapsed_ms": 9.981125000000006,
+              "process_cpu_ms": 9.976999999999997
+            },
+            "parts_bytes": 172854,
+            "parts_validate": {
+              "elapsed_ms": 0.001041999999998211,
+              "process_cpu_ms": 0.001999999999995339
+            },
+            "resolution_bytes": 75724,
+            "resolution_decode": {
+              "elapsed_ms": 0.05070900000000478,
+              "process_cpu_ms": 0.05000000000000426
+            },
+            "signature_bytes": 26880,
+            "slot": 470555971,
+            "total": {
+              "elapsed_ms": 11.362208000000003,
+              "process_cpu_ms": 11.36
+            },
+            "transactions": 391
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.011334000000005062,
+              "process_cpu_ms": 0.01099999999999568
+            },
+            "block_decode": {
+              "elapsed_ms": 1.343291999999991,
+              "process_cpu_ms": 1.3440000000000083
+            },
+            "compressed_block_bytes": 145910,
+            "decoded_block_bytes": 475182,
+            "json_bytes": 2531323,
+            "json_render": {
+              "elapsed_ms": 9.471000000000004,
+              "process_cpu_ms": 9.471000000000004
+            },
+            "parts_bytes": 172854,
+            "parts_validate": {
+              "elapsed_ms": 0.001208000000005427,
+              "process_cpu_ms": 0.0010000000000047748
+            },
+            "resolution_bytes": 75724,
+            "resolution_decode": {
+              "elapsed_ms": 0.055666000000016425,
+              "process_cpu_ms": 0.05499999999999261
+            },
+            "signature_bytes": 26880,
+            "slot": 470555971,
+            "total": {
+              "elapsed_ms": 10.887292000000002,
+              "process_cpu_ms": 10.888000000000005
+            },
+            "transactions": 391
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.0095410000000129,
+              "process_cpu_ms": 0.009999999999990905
+            },
+            "block_decode": {
+              "elapsed_ms": 1.3009999999999877,
+              "process_cpu_ms": 1.301000000000002
+            },
+            "compressed_block_bytes": 145910,
+            "decoded_block_bytes": 475182,
+            "json_bytes": 2531323,
+            "json_render": {
+              "elapsed_ms": 9.506249999999994,
+              "process_cpu_ms": 9.495000000000005
+            },
+            "parts_bytes": 172854,
+            "parts_validate": {
+              "elapsed_ms": 0.0010000000000047748,
+              "process_cpu_ms": 0.0020000000000095497
+            },
+            "resolution_bytes": 75724,
+            "resolution_decode": {
+              "elapsed_ms": 0.04820900000001416,
+              "process_cpu_ms": 0.04799999999998761
+            },
+            "signature_bytes": 26880,
+            "slot": 470555971,
+            "total": {
+              "elapsed_ms": 10.870792000000009,
+              "process_cpu_ms": 10.86
+            },
+            "transactions": 391
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.013333000000002926,
+              "process_cpu_ms": 0.012999999999991019
+            },
+            "block_decode": {
+              "elapsed_ms": 1.5429999999999922,
+              "process_cpu_ms": 1.5050000000000097
+            },
+            "compressed_block_bytes": 145910,
+            "decoded_block_bytes": 475182,
+            "json_bytes": 2531323,
+            "json_render": {
+              "elapsed_ms": 9.654042000000004,
+              "process_cpu_ms": 9.617000000000004
+            },
+            "parts_bytes": 172854,
+            "parts_validate": {
+              "elapsed_ms": 0.0009590000000088139,
+              "process_cpu_ms": 0.000999999999990564
+            },
+            "resolution_bytes": 75724,
+            "resolution_decode": {
+              "elapsed_ms": 0.051458000000010884,
+              "process_cpu_ms": 0.05100000000000193
+            },
+            "signature_bytes": 26880,
+            "slot": 470555971,
+            "total": {
+              "elapsed_ms": 11.270459000000017,
+              "process_cpu_ms": 11.195000000000007
+            },
+            "transactions": 391
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.010332999999988601,
+              "process_cpu_ms": 0.01099999999999568
+            },
+            "block_decode": {
+              "elapsed_ms": 1.3315000000000055,
+              "process_cpu_ms": 1.3309999999999889
+            },
+            "compressed_block_bytes": 145910,
+            "decoded_block_bytes": 475182,
+            "json_bytes": 2531323,
+            "json_render": {
+              "elapsed_ms": 9.637792000000005,
+              "process_cpu_ms": 9.638000000000005
+            },
+            "parts_bytes": 172854,
+            "parts_validate": {
+              "elapsed_ms": 0.0012920000000065102,
+              "process_cpu_ms": 0.0010000000000047748
+            },
+            "resolution_bytes": 75724,
+            "resolution_decode": {
+              "elapsed_ms": 0.049791999999996506,
+              "process_cpu_ms": 0.04999999999999716
+            },
+            "signature_bytes": 26880,
+            "slot": 470555971,
+            "total": {
+              "elapsed_ms": 11.034791999999996,
+              "process_cpu_ms": 11.034000000000006
+            },
+            "transactions": 391
+          }
+        ],
+        "total_elapsed_ms": 119.522958,
+        "transaction_encoding": "base64",
+        "workload": null
+      }
+    },
+    {
+      "slot": 470663944,
+      "ok": true,
+      "canonicalSha256": "bed833a434be2dafcab86daafdd1b5b18c2d01c37e93048528a7953013afd005",
+      "heliusCanonicalSha256": "bed833a434be2dafcab86daafdd1b5b18c2d01c37e93048528a7953013afd005",
+      "oracleProof": null,
+      "processWallMs": 172.85845900000004,
+      "totalCpuMedianMs": 16.097,
+      "jsonRenderCpuMedianMs": 13.962999999999997,
+      "receipt": {
+        "cpu_scope": "process-all-threads",
+        "file_read_elapsed_ms": 1.447917,
+        "file_write_elapsed_ms": 3.485291,
+        "include_rewards": false,
+        "iterations": 10,
+        "json_sha256": "423b6900a13eb043355232db1a51eca023ca7b594ae95b704acc8bc391f90f27",
+        "mode": "local-files-no-network",
+        "ok": true,
+        "render": {
+          "access_decode": {
+            "elapsed_ms": 0.013874999999984539,
+            "process_cpu_ms": 0.01300000000000523
+          },
+          "block_decode": {
+            "elapsed_ms": 2.2011249999999905,
+            "process_cpu_ms": 2.201999999999998
+          },
+          "compressed_block_bytes": 229322,
+          "decoded_block_bytes": 692104,
+          "json_bytes": 4008256,
+          "json_render": {
+            "elapsed_ms": 14.207290999999998,
+            "process_cpu_ms": 14.192999999999984
+          },
+          "parts_bytes": 261962,
+          "parts_validate": {
+            "elapsed_ms": 0.0012499999999988631,
+            "process_cpu_ms": 0.0010000000000047748
+          },
+          "resolution_bytes": 103736,
+          "resolution_decode": {
+            "elapsed_ms": 0.07458399999998733,
+            "process_cpu_ms": 0.07499999999998863
+          },
+          "signature_bytes": 32576,
+          "slot": 470663944,
+          "total": {
+            "elapsed_ms": 16.50470899999999,
+            "process_cpu_ms": 16.49000000000001
+          },
+          "transactions": 467
+        },
+        "renders": [
+          {
+            "access_decode": {
+              "elapsed_ms": 0.01933399999999974,
+              "process_cpu_ms": 0.019000000000000128
+            },
+            "block_decode": {
+              "elapsed_ms": 2.392,
+              "process_cpu_ms": 2.393
+            },
+            "compressed_block_bytes": 229322,
+            "decoded_block_bytes": 692104,
+            "json_bytes": 4008256,
+            "json_render": {
+              "elapsed_ms": 14.337458,
+              "process_cpu_ms": 14.333
+            },
+            "parts_bytes": 261962,
+            "parts_validate": {
+              "elapsed_ms": 0.0030830000000000024,
+              "process_cpu_ms": 0.002000000000000224
+            },
+            "resolution_bytes": 103736,
+            "resolution_decode": {
+              "elapsed_ms": 0.09604199999999999,
+              "process_cpu_ms": 0.0950000000000002
+            },
+            "signature_bytes": 32576,
+            "slot": 470663944,
+            "total": {
+              "elapsed_ms": 16.855542,
+              "process_cpu_ms": 16.852
+            },
+            "transactions": 467
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.01658400000000171,
+              "process_cpu_ms": 0.01600000000000179
+            },
+            "block_decode": {
+              "elapsed_ms": 2.2072090000000024,
+              "process_cpu_ms": 2.2079999999999984
+            },
+            "compressed_block_bytes": 229322,
+            "decoded_block_bytes": 692104,
+            "json_bytes": 4008256,
+            "json_render": {
+              "elapsed_ms": 13.673750000000005,
+              "process_cpu_ms": 13.674999999999997
+            },
+            "parts_bytes": 261962,
+            "parts_validate": {
+              "elapsed_ms": 0.0022500000000000853,
+              "process_cpu_ms": 0.0019999999999988916
+            },
+            "resolution_bytes": 103736,
+            "resolution_decode": {
+              "elapsed_ms": 0.08045899999999762,
+              "process_cpu_ms": 0.08099999999999952
+            },
+            "signature_bytes": 32576,
+            "slot": 470663944,
+            "total": {
+              "elapsed_ms": 15.984832999999998,
+              "process_cpu_ms": 15.985000000000003
+            },
+            "transactions": 467
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.013291999999992754,
+              "process_cpu_ms": 0.015000000000000568
+            },
+            "block_decode": {
+              "elapsed_ms": 2.0413750000000093,
+              "process_cpu_ms": 2.040999999999997
+            },
+            "compressed_block_bytes": 229322,
+            "decoded_block_bytes": 692104,
+            "json_bytes": 4008256,
+            "json_render": {
+              "elapsed_ms": 13.990625000000001,
+              "process_cpu_ms": 13.966000000000001
+            },
+            "parts_bytes": 261962,
+            "parts_validate": {
+              "elapsed_ms": 0.001125000000001819,
+              "process_cpu_ms": 0.0009999999999976694
+            },
+            "resolution_bytes": 103736,
+            "resolution_decode": {
+              "elapsed_ms": 0.06750000000000256,
+              "process_cpu_ms": 0.06700000000000017
+            },
+            "signature_bytes": 32576,
+            "slot": 470663944,
+            "total": {
+              "elapsed_ms": 16.120333000000002,
+              "process_cpu_ms": 16.096999999999994
+            },
+            "transactions": 467
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.013458999999997445,
+              "process_cpu_ms": 0.012999999999998124
+            },
+            "block_decode": {
+              "elapsed_ms": 2.0719999999999956,
+              "process_cpu_ms": 2.0719999999999956
+            },
+            "compressed_block_bytes": 229322,
+            "decoded_block_bytes": 692104,
+            "json_bytes": 4008256,
+            "json_render": {
+              "elapsed_ms": 13.432209,
+              "process_cpu_ms": 13.431999999999995
+            },
+            "parts_bytes": 261962,
+            "parts_validate": {
+              "elapsed_ms": 0.0012500000000059686,
+              "process_cpu_ms": 0.0009999999999976694
+            },
+            "resolution_bytes": 103736,
+            "resolution_decode": {
+              "elapsed_ms": 0.06974999999999909,
+              "process_cpu_ms": 0.06900000000000261
+            },
+            "signature_bytes": 32576,
+            "slot": 470663944,
+            "total": {
+              "elapsed_ms": 15.593832999999997,
+              "process_cpu_ms": 15.594000000000001
+            },
+            "transactions": 467
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.012999999999991019,
+              "process_cpu_ms": 0.012000000000000455
+            },
+            "block_decode": {
+              "elapsed_ms": 2.0447499999999934,
+              "process_cpu_ms": 2.0450000000000017
+            },
+            "compressed_block_bytes": 229322,
+            "decoded_block_bytes": 692104,
+            "json_bytes": 4008256,
+            "json_render": {
+              "elapsed_ms": 13.184207999999998,
+              "process_cpu_ms": 13.166000000000011
+            },
+            "parts_bytes": 261962,
+            "parts_validate": {
+              "elapsed_ms": 0.0010839999999916472,
+              "process_cpu_ms": 0.000999999999990564
+            },
+            "resolution_bytes": 103736,
+            "resolution_decode": {
+              "elapsed_ms": 0.06754199999998889,
+              "process_cpu_ms": 0.06900000000000261
+            },
+            "signature_bytes": 32576,
+            "slot": 470663944,
+            "total": {
+              "elapsed_ms": 15.315792000000016,
+              "process_cpu_ms": 15.298000000000002
+            },
+            "transactions": 467
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.013582999999997014,
+              "process_cpu_ms": 0.01300000000000523
+            },
+            "block_decode": {
+              "elapsed_ms": 2.048209,
+              "process_cpu_ms": 2.048000000000002
+            },
+            "compressed_block_bytes": 229322,
+            "decoded_block_bytes": 692104,
+            "json_bytes": 4008256,
+            "json_render": {
+              "elapsed_ms": 13.159374999999997,
+              "process_cpu_ms": 13.159999999999997
+            },
+            "parts_bytes": 261962,
+            "parts_validate": {
+              "elapsed_ms": 0.0013339999999999463,
+              "process_cpu_ms": 0.0020000000000095497
+            },
+            "resolution_bytes": 103736,
+            "resolution_decode": {
+              "elapsed_ms": 0.06979100000000926,
+              "process_cpu_ms": 0.06999999999999318
+            },
+            "signature_bytes": 32576,
+            "slot": 470663944,
+            "total": {
+              "elapsed_ms": 15.297333000000009,
+              "process_cpu_ms": 15.296999999999997
+            },
+            "transactions": 467
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.014458000000004745,
+              "process_cpu_ms": 0.015000000000000568
+            },
+            "block_decode": {
+              "elapsed_ms": 2.0469580000000036,
+              "process_cpu_ms": 2.046999999999997
+            },
+            "compressed_block_bytes": 229322,
+            "decoded_block_bytes": 692104,
+            "json_bytes": 4008256,
+            "json_render": {
+              "elapsed_ms": 14.880041999999989,
+              "process_cpu_ms": 14.221999999999994
+            },
+            "parts_bytes": 261962,
+            "parts_validate": {
+              "elapsed_ms": 0.001167000000009466,
+              "process_cpu_ms": 0.0010000000000047748
+            },
+            "resolution_bytes": 103736,
+            "resolution_decode": {
+              "elapsed_ms": 0.0680409999999938,
+              "process_cpu_ms": 0.06799999999999784
+            },
+            "signature_bytes": 32576,
+            "slot": 470663944,
+            "total": {
+              "elapsed_ms": 17.017415999999997,
+              "process_cpu_ms": 16.358999999999995
+            },
+            "transactions": 467
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.013667000000012308,
+              "process_cpu_ms": 0.01300000000000523
+            },
+            "block_decode": {
+              "elapsed_ms": 2.0494580000000013,
+              "process_cpu_ms": 2.049999999999997
+            },
+            "compressed_block_bytes": 229322,
+            "decoded_block_bytes": 692104,
+            "json_bytes": 4008256,
+            "json_render": {
+              "elapsed_ms": 14.034583000000012,
+              "process_cpu_ms": 13.959999999999994
+            },
+            "parts_bytes": 261962,
+            "parts_validate": {
+              "elapsed_ms": 0.0012499999999988631,
+              "process_cpu_ms": 0.0010000000000047748
+            },
+            "resolution_bytes": 103736,
+            "resolution_decode": {
+              "elapsed_ms": 0.06870800000000088,
+              "process_cpu_ms": 0.07000000000000739
+            },
+            "signature_bytes": 32576,
+            "slot": 470663944,
+            "total": {
+              "elapsed_ms": 16.17170800000001,
+              "process_cpu_ms": 16.09700000000001
+            },
+            "transactions": 467
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.014874999999989313,
+              "process_cpu_ms": 0.014999999999986358
+            },
+            "block_decode": {
+              "elapsed_ms": 2.2645829999999876,
+              "process_cpu_ms": 2.2649999999999864
+            },
+            "compressed_block_bytes": 229322,
+            "decoded_block_bytes": 692104,
+            "json_bytes": 4008256,
+            "json_render": {
+              "elapsed_ms": 14.141707999999994,
+              "process_cpu_ms": 14.078000000000003
+            },
+            "parts_bytes": 261962,
+            "parts_validate": {
+              "elapsed_ms": 0.0012499999999988631,
+              "process_cpu_ms": 0.0010000000000047748
+            },
+            "resolution_bytes": 103736,
+            "resolution_decode": {
+              "elapsed_ms": 0.07275000000001342,
+              "process_cpu_ms": 0.0730000000000075
+            },
+            "signature_bytes": 32576,
+            "slot": 470663944,
+            "total": {
+              "elapsed_ms": 16.501499999999993,
+              "process_cpu_ms": 16.437000000000012
+            },
+            "transactions": 467
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.013874999999984539,
+              "process_cpu_ms": 0.01300000000000523
+            },
+            "block_decode": {
+              "elapsed_ms": 2.2011249999999905,
+              "process_cpu_ms": 2.201999999999998
+            },
+            "compressed_block_bytes": 229322,
+            "decoded_block_bytes": 692104,
+            "json_bytes": 4008256,
+            "json_render": {
+              "elapsed_ms": 14.207290999999998,
+              "process_cpu_ms": 14.192999999999984
+            },
+            "parts_bytes": 261962,
+            "parts_validate": {
+              "elapsed_ms": 0.0012499999999988631,
+              "process_cpu_ms": 0.0010000000000047748
+            },
+            "resolution_bytes": 103736,
+            "resolution_decode": {
+              "elapsed_ms": 0.07458399999998733,
+              "process_cpu_ms": 0.07499999999998863
+            },
+            "signature_bytes": 32576,
+            "slot": 470663944,
+            "total": {
+              "elapsed_ms": 16.50470899999999,
+              "process_cpu_ms": 16.49000000000001
+            },
+            "transactions": 467
+          }
+        ],
+        "total_elapsed_ms": 168.46883400000002,
+        "transaction_encoding": "base64",
+        "workload": null
+      }
+    },
+    {
+      "slot": 470771932,
+      "ok": true,
+      "canonicalSha256": "a9f32819f8ef9b3f024392e68487d8261c9bdd2613b414923787777d0cba5170",
+      "heliusCanonicalSha256": "a9f32819f8ef9b3f024392e68487d8261c9bdd2613b414923787777d0cba5170",
+      "oracleProof": null,
+      "processWallMs": 149.92899999999986,
+      "totalCpuMedianMs": 12.940500000000004,
+      "jsonRenderCpuMedianMs": 11.252000000000002,
+      "receipt": {
+        "cpu_scope": "process-all-threads",
+        "file_read_elapsed_ms": 1.429458,
+        "file_write_elapsed_ms": 4.0460840000000005,
+        "include_rewards": false,
+        "iterations": 10,
+        "json_sha256": "4c22c8563d508456569f44fbd519b4936347b3eb6d49cdb468c64ddcb8b2d861",
+        "mode": "local-files-no-network",
+        "ok": true,
+        "render": {
+          "access_decode": {
+            "elapsed_ms": 0.011625000000023533,
+            "process_cpu_ms": 0.012000000000000455
+          },
+          "block_decode": {
+            "elapsed_ms": 1.434666000000007,
+            "process_cpu_ms": 1.434999999999988
+          },
+          "compressed_block_bytes": 153791,
+          "decoded_block_bytes": 548629,
+          "json_bytes": 3380451,
+          "json_render": {
+            "elapsed_ms": 10.720792000000003,
+            "process_cpu_ms": 10.721000000000004
+          },
+          "parts_bytes": 185471,
+          "parts_validate": {
+            "elapsed_ms": 0.0010830000000225937,
+            "process_cpu_ms": 0.0010000000000047748
+          },
+          "resolution_bytes": 91373,
+          "resolution_decode": {
+            "elapsed_ms": 0.059042000000005146,
+            "process_cpu_ms": 0.0589999999999975
+          },
+          "signature_bytes": 31616,
+          "slot": 470771932,
+          "total": {
+            "elapsed_ms": 12.230874999999997,
+            "process_cpu_ms": 12.231000000000009
+          },
+          "transactions": 447
+        },
+        "renders": [
+          {
+            "access_decode": {
+              "elapsed_ms": 0.015542000000000167,
+              "process_cpu_ms": 0.015000000000000568
+            },
+            "block_decode": {
+              "elapsed_ms": 1.598958,
+              "process_cpu_ms": 1.5990000000000002
+            },
+            "compressed_block_bytes": 153791,
+            "decoded_block_bytes": 548629,
+            "json_bytes": 3380451,
+            "json_render": {
+              "elapsed_ms": 12.073542,
+              "process_cpu_ms": 12.074000000000002
+            },
+            "parts_bytes": 185471,
+            "parts_validate": {
+              "elapsed_ms": 0.0029589999999999894,
+              "process_cpu_ms": 0.0029999999999996696
+            },
+            "resolution_bytes": 91373,
+            "resolution_decode": {
+              "elapsed_ms": 0.079333,
+              "process_cpu_ms": 0.08000000000000007
+            },
+            "signature_bytes": 31616,
+            "slot": 470771932,
+            "total": {
+              "elapsed_ms": 13.777167,
+              "process_cpu_ms": 13.777000000000001
+            },
+            "transactions": 447
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.012874999999999304,
+              "process_cpu_ms": 0.012999999999998124
+            },
+            "block_decode": {
+              "elapsed_ms": 1.4819589999999998,
+              "process_cpu_ms": 1.4830000000000005
+            },
+            "compressed_block_bytes": 153791,
+            "decoded_block_bytes": 548629,
+            "json_bytes": 3380451,
+            "json_render": {
+              "elapsed_ms": 11.599500000000004,
+              "process_cpu_ms": 11.565000000000001
+            },
+            "parts_bytes": 185471,
+            "parts_validate": {
+              "elapsed_ms": 0.001082999999999501,
+              "process_cpu_ms": 0.0019999999999988916
+            },
+            "resolution_bytes": 91373,
+            "resolution_decode": {
+              "elapsed_ms": 0.06574999999999953,
+              "process_cpu_ms": 0.0660000000000025
+            },
+            "signature_bytes": 31616,
+            "slot": 470771932,
+            "total": {
+              "elapsed_ms": 13.166792000000001,
+              "process_cpu_ms": 13.132000000000001
+            },
+            "transactions": 447
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.01441600000000065,
+              "process_cpu_ms": 0.014999999999997016
+            },
+            "block_decode": {
+              "elapsed_ms": 1.572499999999998,
+              "process_cpu_ms": 1.5720000000000027
+            },
+            "compressed_block_bytes": 153791,
+            "decoded_block_bytes": 548629,
+            "json_bytes": 3380451,
+            "json_render": {
+              "elapsed_ms": 11.036208000000002,
+              "process_cpu_ms": 11.036000000000001
+            },
+            "parts_bytes": 185471,
+            "parts_validate": {
+              "elapsed_ms": 0.002292000000000627,
+              "process_cpu_ms": 0.0020000000000024443
+            },
+            "resolution_bytes": 91373,
+            "resolution_decode": {
+              "elapsed_ms": 0.0644580000000019,
+              "process_cpu_ms": 0.06400000000000006
+            },
+            "signature_bytes": 31616,
+            "slot": 470771932,
+            "total": {
+              "elapsed_ms": 12.694291000000003,
+              "process_cpu_ms": 12.692999999999998
+            },
+            "transactions": 447
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.012125000000004604,
+              "process_cpu_ms": 0.012000000000000455
+            },
+            "block_decode": {
+              "elapsed_ms": 1.4341250000000016,
+              "process_cpu_ms": 1.4349999999999952
+            },
+            "compressed_block_bytes": 153791,
+            "decoded_block_bytes": 548629,
+            "json_bytes": 3380451,
+            "json_render": {
+              "elapsed_ms": 10.92875,
+              "process_cpu_ms": 10.928000000000004
+            },
+            "parts_bytes": 185471,
+            "parts_validate": {
+              "elapsed_ms": 0.0011660000000048854,
+              "process_cpu_ms": 0.0009999999999976694
+            },
+            "resolution_bytes": 91373,
+            "resolution_decode": {
+              "elapsed_ms": 0.0585840000000033,
+              "process_cpu_ms": 0.05799999999999983
+            },
+            "signature_bytes": 31616,
+            "slot": 470771932,
+            "total": {
+              "elapsed_ms": 12.438625000000002,
+              "process_cpu_ms": 12.439
+            },
+            "transactions": 447
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.011249999999996874,
+              "process_cpu_ms": 0.012000000000000455
+            },
+            "block_decode": {
+              "elapsed_ms": 1.4124169999999978,
+              "process_cpu_ms": 1.4120000000000061
+            },
+            "compressed_block_bytes": 153791,
+            "decoded_block_bytes": 548629,
+            "json_bytes": 3380451,
+            "json_render": {
+              "elapsed_ms": 11.639167000000008,
+              "process_cpu_ms": 11.439999999999998
+            },
+            "parts_bytes": 185471,
+            "parts_validate": {
+              "elapsed_ms": 0.001041999999998211,
+              "process_cpu_ms": 0.0009999999999976694
+            },
+            "resolution_bytes": 91373,
+            "resolution_decode": {
+              "elapsed_ms": 0.05795799999999929,
+              "process_cpu_ms": 0.05799999999999983
+            },
+            "signature_bytes": 31616,
+            "slot": 470771932,
+            "total": {
+              "elapsed_ms": 13.127125,
+              "process_cpu_ms": 12.927
+            },
+            "transactions": 447
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.018959000000009496,
+              "process_cpu_ms": 0.018000000000000682
+            },
+            "block_decode": {
+              "elapsed_ms": 10.722666000000004,
+              "process_cpu_ms": 1.7579999999999956
+            },
+            "compressed_block_bytes": 153791,
+            "decoded_block_bytes": 548629,
+            "json_bytes": 3380451,
+            "json_render": {
+              "elapsed_ms": 11.104625000000013,
+              "process_cpu_ms": 11.104
+            },
+            "parts_bytes": 185471,
+            "parts_validate": {
+              "elapsed_ms": 0.0014159999999918682,
+              "process_cpu_ms": 0.001999999999995339
+            },
+            "resolution_bytes": 91373,
+            "resolution_decode": {
+              "elapsed_ms": 0.06283300000001191,
+              "process_cpu_ms": 0.06199999999999761
+            },
+            "signature_bytes": 31616,
+            "slot": 470771932,
+            "total": {
+              "elapsed_ms": 21.918333000000004,
+              "process_cpu_ms": 12.954000000000008
+            },
+            "transactions": 447
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.01300000000000523,
+              "process_cpu_ms": 0.01300000000000523
+            },
+            "block_decode": {
+              "elapsed_ms": 1.4806250000000034,
+              "process_cpu_ms": 1.4810000000000088
+            },
+            "compressed_block_bytes": 153791,
+            "decoded_block_bytes": 548629,
+            "json_bytes": 3380451,
+            "json_render": {
+              "elapsed_ms": 11.614416000000006,
+              "process_cpu_ms": 11.591999999999999
+            },
+            "parts_bytes": 185471,
+            "parts_validate": {
+              "elapsed_ms": 0.0014159999999918682,
+              "process_cpu_ms": 0.000999999999990564
+            },
+            "resolution_bytes": 91373,
+            "resolution_decode": {
+              "elapsed_ms": 0.059333000000009406,
+              "process_cpu_ms": 0.060000000000002274
+            },
+            "signature_bytes": 31616,
+            "slot": 470771932,
+            "total": {
+              "elapsed_ms": 13.174875,
+              "process_cpu_ms": 13.152000000000001
+            },
+            "transactions": 447
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.013291999999992754,
+              "process_cpu_ms": 0.013999999999995794
+            },
+            "block_decode": {
+              "elapsed_ms": 1.542749999999998,
+              "process_cpu_ms": 1.5430000000000064
+            },
+            "compressed_block_bytes": 153791,
+            "decoded_block_bytes": 548629,
+            "json_bytes": 3380451,
+            "json_render": {
+              "elapsed_ms": 11.405917000000002,
+              "process_cpu_ms": 11.400000000000006
+            },
+            "parts_bytes": 185471,
+            "parts_validate": {
+              "elapsed_ms": 0.0012920000000065102,
+              "process_cpu_ms": 0.0010000000000047748
+            },
+            "resolution_bytes": 91373,
+            "resolution_decode": {
+              "elapsed_ms": 0.060040999999998235,
+              "process_cpu_ms": 0.05999999999998806
+            },
+            "signature_bytes": 31616,
+            "slot": 470771932,
+            "total": {
+              "elapsed_ms": 13.029167000000015,
+              "process_cpu_ms": 13.022999999999996
+            },
+            "transactions": 447
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.011750000000006366,
+              "process_cpu_ms": 0.012000000000000455
+            },
+            "block_decode": {
+              "elapsed_ms": 1.4214580000000012,
+              "process_cpu_ms": 1.4210000000000065
+            },
+            "compressed_block_bytes": 153791,
+            "decoded_block_bytes": 548629,
+            "json_bytes": 3380451,
+            "json_render": {
+              "elapsed_ms": 10.802916999999994,
+              "process_cpu_ms": 10.780000000000001
+            },
+            "parts_bytes": 185471,
+            "parts_validate": {
+              "elapsed_ms": 0.001250000000013074,
+              "process_cpu_ms": 0.000999999999990564
+            },
+            "resolution_bytes": 91373,
+            "resolution_decode": {
+              "elapsed_ms": 0.058875000000000455,
+              "process_cpu_ms": 0.0589999999999975
+            },
+            "signature_bytes": 31616,
+            "slot": 470771932,
+            "total": {
+              "elapsed_ms": 12.301084000000003,
+              "process_cpu_ms": 12.277999999999992
+            },
+            "transactions": 447
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.011625000000023533,
+              "process_cpu_ms": 0.012000000000000455
+            },
+            "block_decode": {
+              "elapsed_ms": 1.434666000000007,
+              "process_cpu_ms": 1.434999999999988
+            },
+            "compressed_block_bytes": 153791,
+            "decoded_block_bytes": 548629,
+            "json_bytes": 3380451,
+            "json_render": {
+              "elapsed_ms": 10.720792000000003,
+              "process_cpu_ms": 10.721000000000004
+            },
+            "parts_bytes": 185471,
+            "parts_validate": {
+              "elapsed_ms": 0.0010830000000225937,
+              "process_cpu_ms": 0.0010000000000047748
+            },
+            "resolution_bytes": 91373,
+            "resolution_decode": {
+              "elapsed_ms": 0.059042000000005146,
+              "process_cpu_ms": 0.0589999999999975
+            },
+            "signature_bytes": 31616,
+            "slot": 470771932,
+            "total": {
+              "elapsed_ms": 12.230874999999997,
+              "process_cpu_ms": 12.231000000000009
+            },
+            "transactions": 447
+          }
+        ],
+        "total_elapsed_ms": 145.020625,
+        "transaction_encoding": "base64",
+        "workload": null
+      }
+    },
+    {
+      "slot": 470879999,
+      "ok": true,
+      "canonicalSha256": "d175745a35a80b37a24a0c57d73a6e0af318ceeaf4beb7669160dcc3429c5ba7",
+      "heliusCanonicalSha256": "d175745a35a80b37a24a0c57d73a6e0af318ceeaf4beb7669160dcc3429c5ba7",
+      "oracleProof": null,
+      "processWallMs": 59.88024999999993,
+      "totalCpuMedianMs": 4.8675000000000015,
+      "jsonRenderCpuMedianMs": 4.153500000000001,
+      "receipt": {
+        "cpu_scope": "process-all-threads",
+        "file_read_elapsed_ms": 2.0617919999999996,
+        "file_write_elapsed_ms": 2.5270420000000002,
+        "include_rewards": false,
+        "iterations": 10,
+        "json_sha256": "f23d112cd3102f50453e187ee9cdbb2b2cd3d36504d357a2d33bf139f67a7b88",
+        "mode": "local-files-no-network",
+        "ok": true,
+        "render": {
+          "access_decode": {
+            "elapsed_ms": 0.005709000000010178,
+            "process_cpu_ms": 0.007000000000005002
+          },
+          "block_decode": {
+            "elapsed_ms": 0.6032500000000098,
+            "process_cpu_ms": 0.6029999999999944
+          },
+          "compressed_block_bytes": 66157,
+          "decoded_block_bytes": 186747,
+          "json_bytes": 996544,
+          "json_render": {
+            "elapsed_ms": 4.111834000000002,
+            "process_cpu_ms": 4.111999999999995
+          },
+          "parts_bytes": 81261,
+          "parts_validate": {
+            "elapsed_ms": 0.0007080000000030395,
+            "process_cpu_ms": 0.0010000000000047748
+          },
+          "resolution_bytes": 44472,
+          "resolution_decode": {
+            "elapsed_ms": 0.02912500000000051,
+            "process_cpu_ms": 0.029000000000003467
+          },
+          "signature_bytes": 15040,
+          "slot": 470879999,
+          "total": {
+            "elapsed_ms": 4.753792000000004,
+            "process_cpu_ms": 4.754000000000005
+          },
+          "transactions": 215
+        },
+        "renders": [
+          {
+            "access_decode": {
+              "elapsed_ms": 0.009916000000000036,
+              "process_cpu_ms": 0.009000000000000341
+            },
+            "block_decode": {
+              "elapsed_ms": 0.678291,
+              "process_cpu_ms": 0.6779999999999999
+            },
+            "compressed_block_bytes": 66157,
+            "decoded_block_bytes": 186747,
+            "json_bytes": 996544,
+            "json_render": {
+              "elapsed_ms": 5.060125,
+              "process_cpu_ms": 4.667
+            },
+            "parts_bytes": 81261,
+            "parts_validate": {
+              "elapsed_ms": 0.0026670000000000027,
+              "process_cpu_ms": 0.0030000000000001137
+            },
+            "resolution_bytes": 44472,
+            "resolution_decode": {
+              "elapsed_ms": 0.045708,
+              "process_cpu_ms": 0.04599999999999982
+            },
+            "signature_bytes": 15040,
+            "slot": 470879999,
+            "total": {
+              "elapsed_ms": 5.803833999999999,
+              "process_cpu_ms": 5.41
+            },
+            "transactions": 215
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.007250000000000867,
+              "process_cpu_ms": 0.0070000000000014495
+            },
+            "block_decode": {
+              "elapsed_ms": 0.6503329999999998,
+              "process_cpu_ms": 0.6499999999999995
+            },
+            "compressed_block_bytes": 66157,
+            "decoded_block_bytes": 186747,
+            "json_bytes": 996544,
+            "json_render": {
+              "elapsed_ms": 4.194167,
+              "process_cpu_ms": 4.1949999999999985
+            },
+            "parts_bytes": 81261,
+            "parts_validate": {
+              "elapsed_ms": 0.0011250000000000426,
+              "process_cpu_ms": 0.001000000000000334
+            },
+            "resolution_bytes": 44472,
+            "resolution_decode": {
+              "elapsed_ms": 0.03199999999999914,
+              "process_cpu_ms": 0.03199999999999914
+            },
+            "signature_bytes": 15040,
+            "slot": 470879999,
+            "total": {
+              "elapsed_ms": 4.887792,
+              "process_cpu_ms": 4.886999999999999
+            },
+            "transactions": 215
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.0061659999999985615,
+              "process_cpu_ms": 0.006000000000000227
+            },
+            "block_decode": {
+              "elapsed_ms": 0.6458329999999997,
+              "process_cpu_ms": 0.645999999999999
+            },
+            "compressed_block_bytes": 66157,
+            "decoded_block_bytes": 186747,
+            "json_bytes": 996544,
+            "json_render": {
+              "elapsed_ms": 4.127291999999999,
+              "process_cpu_ms": 4.128
+            },
+            "parts_bytes": 81261,
+            "parts_validate": {
+              "elapsed_ms": 0.0007079999999994868,
+              "process_cpu_ms": 0.0009999999999994458
+            },
+            "resolution_bytes": 44472,
+            "resolution_decode": {
+              "elapsed_ms": 0.07437499999999986,
+              "process_cpu_ms": 0.0730000000000004
+            },
+            "signature_bytes": 15040,
+            "slot": 470879999,
+            "total": {
+              "elapsed_ms": 4.857500000000002,
+              "process_cpu_ms": 4.8580000000000005
+            },
+            "transactions": 215
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.007500000000000284,
+              "process_cpu_ms": 0.006999999999997897
+            },
+            "block_decode": {
+              "elapsed_ms": 0.657,
+              "process_cpu_ms": 0.6550000000000011
+            },
+            "compressed_block_bytes": 66157,
+            "decoded_block_bytes": 186747,
+            "json_bytes": 996544,
+            "json_render": {
+              "elapsed_ms": 4.178000000000001,
+              "process_cpu_ms": 4.179000000000002
+            },
+            "parts_bytes": 81261,
+            "parts_validate": {
+              "elapsed_ms": 0.0006669999999999732,
+              "process_cpu_ms": 0
+            },
+            "resolution_bytes": 44472,
+            "resolution_decode": {
+              "elapsed_ms": 0.03275000000000006,
+              "process_cpu_ms": 0.03200000000000003
+            },
+            "signature_bytes": 15040,
+            "slot": 470879999,
+            "total": {
+              "elapsed_ms": 4.8796669999999995,
+              "process_cpu_ms": 4.8770000000000024
+            },
+            "transactions": 215
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.006584000000000145,
+              "process_cpu_ms": 0.006000000000000227
+            },
+            "block_decode": {
+              "elapsed_ms": 0.6067500000000017,
+              "process_cpu_ms": 0.6080000000000005
+            },
+            "compressed_block_bytes": 66157,
+            "decoded_block_bytes": 186747,
+            "json_bytes": 996544,
+            "json_render": {
+              "elapsed_ms": 4.1179999999999986,
+              "process_cpu_ms": 4.118000000000002
+            },
+            "parts_bytes": 81261,
+            "parts_validate": {
+              "elapsed_ms": 0.0008749999999970726,
+              "process_cpu_ms": 0.0010000000000012221
+            },
+            "resolution_bytes": 44472,
+            "resolution_decode": {
+              "elapsed_ms": 0.03033299999999528,
+              "process_cpu_ms": 0.029999999999997584
+            },
+            "signature_bytes": 15040,
+            "slot": 470879999,
+            "total": {
+              "elapsed_ms": 4.765415999999998,
+              "process_cpu_ms": 4.766000000000002
+            },
+            "transactions": 215
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.005832999999999089,
+              "process_cpu_ms": 0.005000000000002558
+            },
+            "block_decode": {
+              "elapsed_ms": 0.6047089999999997,
+              "process_cpu_ms": 0.6049999999999969
+            },
+            "compressed_block_bytes": 66157,
+            "decoded_block_bytes": 186747,
+            "json_bytes": 996544,
+            "json_render": {
+              "elapsed_ms": 4.249458000000001,
+              "process_cpu_ms": 4.248999999999999
+            },
+            "parts_bytes": 81261,
+            "parts_validate": {
+              "elapsed_ms": 0.0007080000000030395,
+              "process_cpu_ms": 0.0020000000000024443
+            },
+            "resolution_bytes": 44472,
+            "resolution_decode": {
+              "elapsed_ms": 0.028790999999998235,
+              "process_cpu_ms": 0.028999999999999915
+            },
+            "signature_bytes": 15040,
+            "slot": 470879999,
+            "total": {
+              "elapsed_ms": 4.892875,
+              "process_cpu_ms": 4.892999999999997
+            },
+            "transactions": 215
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.006624999999999659,
+              "process_cpu_ms": 0.006000000000000227
+            },
+            "block_decode": {
+              "elapsed_ms": 0.6747499999999995,
+              "process_cpu_ms": 0.6760000000000019
+            },
+            "compressed_block_bytes": 66157,
+            "decoded_block_bytes": 186747,
+            "json_bytes": 996544,
+            "json_render": {
+              "elapsed_ms": 4.4999579999999995,
+              "process_cpu_ms": 4.4979999999999976
+            },
+            "parts_bytes": 81261,
+            "parts_validate": {
+              "elapsed_ms": 0.00079200000000057,
+              "process_cpu_ms": 0.0009999999999976694
+            },
+            "resolution_bytes": 44472,
+            "resolution_decode": {
+              "elapsed_ms": 0.031708000000001846,
+              "process_cpu_ms": 0.03100000000000591
+            },
+            "signature_bytes": 15040,
+            "slot": 470879999,
+            "total": {
+              "elapsed_ms": 5.218,
+              "process_cpu_ms": 5.214999999999996
+            },
+            "transactions": 215
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.006333000000005029,
+              "process_cpu_ms": 0.006000000000000227
+            },
+            "block_decode": {
+              "elapsed_ms": 0.6107919999999964,
+              "process_cpu_ms": 0.6110000000000042
+            },
+            "compressed_block_bytes": 66157,
+            "decoded_block_bytes": 186747,
+            "json_bytes": 996544,
+            "json_render": {
+              "elapsed_ms": 4.114333000000002,
+              "process_cpu_ms": 4.115000000000002
+            },
+            "parts_bytes": 81261,
+            "parts_validate": {
+              "elapsed_ms": 0.001082999999994172,
+              "process_cpu_ms": 0.0009999999999976694
+            },
+            "resolution_bytes": 44472,
+            "resolution_decode": {
+              "elapsed_ms": 0.03175000000000239,
+              "process_cpu_ms": 0.03300000000000125
+            },
+            "signature_bytes": 15040,
+            "slot": 470879999,
+            "total": {
+              "elapsed_ms": 4.767417000000002,
+              "process_cpu_ms": 4.767000000000003
+            },
+            "transactions": 215
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.005791999999999575,
+              "process_cpu_ms": 0.005000000000002558
+            },
+            "block_decode": {
+              "elapsed_ms": 0.605708000000007,
+              "process_cpu_ms": 0.6069999999999993
+            },
+            "compressed_block_bytes": 66157,
+            "decoded_block_bytes": 186747,
+            "json_bytes": 996544,
+            "json_render": {
+              "elapsed_ms": 4.1200410000000005,
+              "process_cpu_ms": 4.1200000000000045
+            },
+            "parts_bytes": 81261,
+            "parts_validate": {
+              "elapsed_ms": 0.0007079999999959341,
+              "process_cpu_ms": 0.0009999999999976694
+            },
+            "resolution_bytes": 44472,
+            "resolution_decode": {
+              "elapsed_ms": 0.02866699999999156,
+              "process_cpu_ms": 0.027999999999998693
+            },
+            "signature_bytes": 15040,
+            "slot": 470879999,
+            "total": {
+              "elapsed_ms": 4.763708000000001,
+              "process_cpu_ms": 4.763999999999996
+            },
+            "transactions": 215
+          },
+          {
+            "access_decode": {
+              "elapsed_ms": 0.005709000000010178,
+              "process_cpu_ms": 0.007000000000005002
+            },
+            "block_decode": {
+              "elapsed_ms": 0.6032500000000098,
+              "process_cpu_ms": 0.6029999999999944
+            },
+            "compressed_block_bytes": 66157,
+            "decoded_block_bytes": 186747,
+            "json_bytes": 996544,
+            "json_render": {
+              "elapsed_ms": 4.111834000000002,
+              "process_cpu_ms": 4.111999999999995
+            },
+            "parts_bytes": 81261,
+            "parts_validate": {
+              "elapsed_ms": 0.0007080000000030395,
+              "process_cpu_ms": 0.0010000000000047748
+            },
+            "resolution_bytes": 44472,
+            "resolution_decode": {
+              "elapsed_ms": 0.02912500000000051,
+              "process_cpu_ms": 0.029000000000003467
+            },
+            "signature_bytes": 15040,
+            "slot": 470879999,
+            "total": {
+              "elapsed_ms": 4.753792000000004,
+              "process_cpu_ms": 4.754000000000005
+            },
+            "transactions": 215
+          }
+        ],
+        "total_elapsed_ms": 54.692459,
+        "transaction_encoding": "base64",
+        "workload": null
+      }
+    }
+  ],
+  "notes": [
+    "Full JSON canonical digests preserve source number text and match the saved live Helius Base64 references.",
+    "All 370 packets in slot 470987967 also match the complete saved Helius oracle byte-for-byte, including the 853-byte V1 first packet.",
+    "Native codec CPU is not Cloudflare Worker CPU. Process wall times include ten iterations and file I/O.",
+    "Only matched generated JSON files were deleted. Original downloaded inputs remain."
+  ]
+}

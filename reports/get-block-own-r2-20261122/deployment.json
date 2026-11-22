@@ -1,0 +1,204 @@
+{
+  "status": "DEPLOYED",
+  "checkedAt": "2026-11-21T23:42:23.636084+00:00",
+  "worker": "blockzilla-get-block-native-test",
+  "url": "https://blockzilla-get-block-native-test.cheron-augustin.workers.dev",
+  "version": "c3ca487a-ce71-42ba-802f-b2f7a38e234b",
+  "wasmSha256": "a27fbc8b0325a1f6046629d5dee07efbe2aeb8b4300d52a36718adc9ae9736c2",
+  "config": "edgezilla/get-block/wrangler.native-test.jsonc",
+  "nativeArchiveBinding": "BZ_ARCHIVE_BUCKET",
+  "nativeResolutionBinding": "BZ_RESOLUTION",
+  "bucket": "blockzilla-get-block-native-test",
+  "source": "native owner R2; no S3 or Foundation reader credentials",
+  "partialEpochs": true,
+  "fullEpoch": false,
+  "canaryDeployments": {
+    "deployments": [
+      {
+        "id": "a0207bfd-59ba-4ad9-bc5b-c1d78b62f1b4",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "author_email": "cheron.augustin@gmail.com",
+        "annotations": {
+          "workers/message": "Test eight byte-exact blocks with native owner ...",
+          "workers/triggered_by": "upload"
+        },
+        "versions": [
+          {
+            "version_id": "c3ca487a-ce71-42ba-802f-b2f7a38e234b",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-11-21T23:41:38.116211Z"
+      }
+    ]
+  },
+  "mainPublicApiUnchanged": true,
+  "mainDeployments": {
+    "deployments": [
+      {
+        "id": "1bd87671-c88a-46ee-a7fd-658963e1241c",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "author_email": "cheron.augustin@gmail.com",
+        "annotations": {
+          "workers/triggered_by": "deployment"
+        },
+        "versions": [
+          {
+            "version_id": "2359b1b3-d95b-4e3b-bffc-b4161aac406f",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-11-21T21:36:14.893431Z"
+      },
+      {
+        "id": "0475fe4d-5c98-41bc-9c60-b648101da491",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "author_email": "cheron.augustin@gmail.com",
+        "annotations": {
+          "workers/triggered_by": "deployment"
+        },
+        "versions": [
+          {
+            "version_id": "566ecc0a-949d-417b-90cd-89c629bc9073",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-11-21T21:11:41.674907Z"
+      },
+      {
+        "id": "cc7ec5ff-a51f-4178-98da-acbb832518f9",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "author_email": "cheron.augustin@gmail.com",
+        "annotations": {
+          "workers/triggered_by": "deployment"
+        },
+        "versions": [
+          {
+            "version_id": "074812ac-a908-4eba-bec5-02752230eae6",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-11-21T20:53:24.301347Z"
+      },
+      {
+        "id": "bf3336df-cea8-4416-b633-fd6e1347df6c",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "author_email": "cheron.augustin@gmail.com",
+        "annotations": {
+          "workers/triggered_by": "deployment"
+        },
+        "versions": [
+          {
+            "version_id": "61ed6815-f9f9-4669-abe1-dd841717ea78",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-11-21T19:59:33.391069Z"
+      },
+      {
+        "id": "69e6d963-4c90-48db-afd4-e8939c54ec3f",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "author_email": "cheron.augustin@gmail.com",
+        "annotations": {
+          "workers/triggered_by": "deployment"
+        },
+        "versions": [
+          {
+            "version_id": "556cefdf-726a-4be4-8e95-3644c25f5d46",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-11-21T19:47:50.360236Z"
+      },
+      {
+        "id": "62063040-5cff-4199-9471-34a2f478530d",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "author_email": "cheron.augustin@gmail.com",
+        "annotations": {
+          "workers/triggered_by": "deployment"
+        },
+        "versions": [
+          {
+            "version_id": "62a0e93e-0565-49d1-9f28-347a6595aeb2",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-11-21T19:46:22.670038Z"
+      },
+      {
+        "id": "cbc3e686-d2cd-436e-ba34-689f07c97515",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "author_email": "cheron.augustin@gmail.com",
+        "annotations": {
+          "workers/triggered_by": "secret"
+        },
+        "versions": [
+          {
+            "version_id": "a2345d14-1cfc-48e4-bfe9-f0b46bd9a449",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-11-21T19:39:31.426127Z"
+      },
+      {
+        "id": "f9931159-d23a-4e27-8df3-78816edfeb00",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "author_email": "cheron.augustin@gmail.com",
+        "annotations": {
+          "workers/message": "Admit sparse registry pages within fixed byte budgets and bound cache writes and profile headers",
+          "workers/triggered_by": "deployment"
+        },
+        "versions": [
+          {
+            "version_id": "12cccb1b-69e5-4fec-8071-f3e50863b412",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-11-21T18:52:21.485456Z"
+      },
+      {
+        "id": "8de55372-620e-4f20-8333-4ec2a398888c",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "author_email": "cheron.augustin@gmail.com",
+        "annotations": {
+          "workers/message": "Enable exact known-program log grammar and current Foundation execution metadata",
+          "workers/triggered_by": "deployment"
+        },
+        "versions": [
+          {
+            "version_id": "3b574ea9-c495-4f1d-8550-036d331ced88",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-11-21T18:37:58.931776Z"
+      },
+      {
+        "id": "9c3155bf-8313-406f-88a4-3cbee0d5366f",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "author_email": "cheron.augustin@gmail.com",
+        "annotations": {
+          "workers/message": "Declare Foundation source schemas and bound sparse slot lookup by missing-row count",
+          "workers/triggered_by": "deployment"
+        },
+        "versions": [
+          {
+            "version_id": "97956654-bcb1-48c5-a42d-e187517303b9",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-11-21T18:29:27.763709Z"
+      }
+    ]
+  }
+}

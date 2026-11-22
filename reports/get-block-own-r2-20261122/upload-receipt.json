@@ -1,0 +1,107 @@
+{
+  "status": "REMOTE_VERIFIED",
+  "startedAt": "2026-11-21T23:41:09.594272+00:00",
+  "finishedAt": "2026-11-21T23:41:18.152280+00:00",
+  "bucket": "blockzilla-get-block-native-test",
+  "location": "WEUR",
+  "storageClass": "Standard",
+  "partialEpochs": true,
+  "fullEpoch": false,
+  "totals": {
+    "objectCount": 12,
+    "sourceObjectCount": 4,
+    "resolutionObjectCount": 8,
+    "sourceBytes": 1387245,
+    "resolutionBytes": 624895,
+    "uploadBytes": 2012140,
+    "resolutionOverSourceFraction": 0.4504575615698741,
+    "resolutionOverTotalFraction": 0.31056238631506755
+  },
+  "objects": [
+    {
+      "key": "compact-v2/native-r2-test-20261122/epoch-1089/archive-v2-blocks.zstd",
+      "bytes": 595180,
+      "etag": "\"a6666597f0cab01526e284f9d9e4d96a\"",
+      "sha256": "dc6a27cd28f9e6a09c08b02ee3aebfa7d4fe17f58ca89838aefcd8d36850a572",
+      "verified": true
+    },
+    {
+      "key": "compact-v2/native-r2-test-20261122/epoch-1089/signatures.bin",
+      "bytes": 106112,
+      "etag": "\"04aa2d82b0819375db0e9e585581cbdd\"",
+      "sha256": "4996dceb70847c92c34645d6aa33de9639eed8093ca1caef8ccbc63b2c942234",
+      "verified": true
+    },
+    {
+      "key": "compact-v2/native-r2-test-20261122/epoch-1090/archive-v2-blocks.zstd",
+      "bytes": 585857,
+      "etag": "\"1f461807c73fd9dbb3566e1dc5f40ad6\"",
+      "sha256": "9058fd5c2df24f2e1c2637334f661006187e232b10a42bdcb599bbc3526719e5",
+      "verified": true
+    },
+    {
+      "key": "compact-v2/native-r2-test-20261122/epoch-1090/signatures.bin",
+      "bytes": 100096,
+      "etag": "\"f54c7e341259a364d0a5413986361767\"",
+      "sha256": "bc49be4bf95118c1c465354759daec841bebfe63174cce899961331b1a8ec35d",
+      "verified": true
+    },
+    {
+      "key": "serving/native-r2-test-20261122-v1/epoch-1089/slot-470555971.resolution.v1",
+      "bytes": 75634,
+      "etag": "\"a7a8f27a54ed43edb868bec0949d8240\"",
+      "sha256": "f2900d07a4b479282610d0f9047cdf24d55a96095c0d3cb0ce5e3ecdad958f10",
+      "verified": true
+    },
+    {
+      "key": "serving/native-r2-test-20261122-v1/epoch-1089/slot-470663944.resolution.v1",
+      "bytes": 103649,
+      "etag": "\"131250ce9c349faf5d9978fc6dce64da\"",
+      "sha256": "2f0b0a1237b512b1310edc87bd6425e16c0fbc1be32f6548462f6b3b4d5e3124",
+      "verified": true
+    },
+    {
+      "key": "serving/native-r2-test-20261122-v1/epoch-1089/slot-470771932.resolution.v1",
+      "bytes": 91285,
+      "etag": "\"a54530f8aaa64d4f96d8b8c97c9892b1\"",
+      "sha256": "8c967f77668c5fb3af55f8b45ea6c9d7d2864ee08ac5622bc1bca8343c6e3b33",
+      "verified": true
+    },
+    {
+      "key": "serving/native-r2-test-20261122-v1/epoch-1089/slot-470879999.resolution.v1",
+      "bytes": 44384,
+      "etag": "\"1e11ee67d2f9638476f28fcbb550f491\"",
+      "sha256": "767a2b6f6d6b001d7982c4a3420a1bf00964c63b03834068eb58f033a5160bb6",
+      "verified": true
+    },
+    {
+      "key": "serving/native-r2-test-20261122-v1/epoch-1090/slot-470987967.resolution.v1",
+      "bytes": 74274,
+      "etag": "\"47c2aee44ba7e65800d9f81da518602e\"",
+      "sha256": "f39f1e6177efee73190bffad0a6b37c3912dfe9815a654df9f30ccf435702a02",
+      "verified": true
+    },
+    {
+      "key": "serving/native-r2-test-20261122-v1/epoch-1090/slot-471096104.resolution.v1",
+      "bytes": 106880,
+      "etag": "\"75b28c6325df2587595355307cba910a\"",
+      "sha256": "058667af7c778c73b84978c189ce7e2505fea94543becbd551e9fa37006de32c",
+      "verified": true
+    },
+    {
+      "key": "serving/native-r2-test-20261122-v1/epoch-1090/slot-471204030.resolution.v1",
+      "bytes": 64918,
+      "etag": "\"43e33356f72a9845b08ff09c5e9928d3\"",
+      "sha256": "290132944525305397d0c680121d8e1be4ab789ed5e93dac63a1849b0805a8b6",
+      "verified": true
+    },
+    {
+      "key": "serving/native-r2-test-20261122-v1/epoch-1090/slot-471311999.resolution.v1",
+      "bytes": 63871,
+      "etag": "\"10f8aed7636295574e48b6b249a77543\"",
+      "sha256": "579a50701d021417d3ad0216d2ae939d91ab584032d02e645b6cbe9ce17c421d",
+      "verified": true
+    }
+  ],
+  "checks": "Every remote byte, object length, and single-PUT ETag matches the manifest."
+}

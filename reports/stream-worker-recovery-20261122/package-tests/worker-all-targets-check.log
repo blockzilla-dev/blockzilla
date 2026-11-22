@@ -1,0 +1,605 @@
+   Compiling libc v0.2.189
+    Checking cfg-if v1.0.4
+   Compiling shlex v2.0.1
+   Compiling find-msvc-tools v0.1.12
+   Compiling pkg-config v0.3.34
+    Checking once_cell v1.21.4
+   Compiling syn v3.0.6
+   Compiling syn v2.0.119
+    Checking stable_deref_trait v1.2.1
+    Checking memchr v2.8.3
+    Checking pin-project-lite v0.2.17
+    Checking bytes v1.12.1
+    Checking futures-core v0.3.34
+    Checking typenum v1.20.1
+    Checking futures-sink v0.3.34
+   Compiling wasm-bindgen-shared v0.2.128
+    Checking itoa v1.0.18
+   Compiling jobserver v0.1.35
+    Checking slab v0.4.12
+    Checking serde_core v1.0.229
+    Checking futures-io v0.3.34
+    Checking futures-task v0.3.34
+    Checking zeroize v1.9.0
+   Compiling cc v1.4.5
+    Checking smallvec v1.16.0
+   Compiling fs_extra v1.3.0
+   Compiling dunce v1.0.5
+   Compiling rustix v1.1.4
+   Compiling anyhow v1.0.104
+    Checking litemap v0.8.3
+    Checking subtle v2.6.1
+    Checking five8_core v1.0.0
+    Checking writeable v0.6.4
+    Checking hybrid-array v0.4.14
+    Checking crossbeam-utils v0.8.23
+    Checking socket2 v0.6.5
+    Checking mio v1.2.3
+    Checking http v1.5.0
+   Compiling cmake v0.1.58
+   Compiling aws-lc-rs v1.18.1
+    Checking adler2 v2.0.1
+    Checking utf8_iter v1.0.4
+    Checking unicode-ident v1.0.24
+    Checking crossbeam-epoch v0.9.21
+    Checking five8 v1.0.0
+   Compiling errno v0.3.14
+   Compiling atty v0.2.14
+    Checking tracing-core v0.1.36
+    Checking equivalent v1.0.2
+    Checking solana-sanitize v3.0.1
+    Checking hashbrown v0.17.1
+    Checking percent-encoding v2.3.2
+   Compiling zstd-sys v2.1.0+zstd.1.5.7
+   Compiling aws-lc-sys v0.45.0
+    Checking http-body v1.1.0
+    Checking crossbeam-deque v0.8.8
+    Checking generic-array v0.14.7
+    Checking indexmap v2.14.2
+    Checking icu_normalizer_data v2.3.0
+    Checking icu_properties_data v2.3.0
+    Checking crypto-common v0.2.2
+    Checking block-buffer v0.12.1
+    Checking five8_const v1.0.0
+    Checking const-oid v0.10.2
+    Checking bitflags v2.13.1
+    Checking solana-atomic-u64 v3.0.1
+   Compiling zstd-safe v7.3.0
+    Checking arrayvec v0.7.8
+    Checking alloc-no-stdlib v2.0.4
+    Checking solana-program-error v3.0.1
+   Compiling crc32fast v1.5.1
+    Checking alloc-stdlib v0.2.4
+    Checking solana-address v2.6.1
+   Compiling clap v2.34.0
+   Compiling tempfile v3.27.0
+    Checking digest v0.11.3
+   Compiling env_logger v0.7.1
+    Checking rayon-core v1.13.0
+    Checking memmap2 v0.9.11
+    Checking rustls-pki-types v1.15.1
+   Compiling wasm-bindgen-macro-support v0.2.128
+    Checking either v1.18.0
+    Checking simd-adler32 v0.3.10
+   Compiling httparse v1.10.1
+    Checking byteorder v1.5.0
+   Compiling rustls v0.23.43
+   Compiling synstructure v0.13.2
+   Compiling darling_core v0.23.0
+   Compiling prettyplease v0.2.37
+   Compiling zerovec-derive v0.11.6
+   Compiling zerofrom-derive v0.1.7
+   Compiling yoke-derive v0.8.2
+   Compiling displaydoc v0.2.7
+   Compiling futures-macro v0.3.34
+   Compiling tokio-macros v2.7.2
+    Checking zerofrom v0.1.8
+    Checking yoke v0.8.3
+   Compiling serde_derive v1.0.229
+    Checking tokio v1.53.1
+    Checking zerovec v0.11.8
+    Checking futures-util v0.3.34
+   Compiling darling_macro v0.23.0
+    Checking tinystr v0.8.4
+    Checking potential_utf v0.1.6
+    Checking zerotrie v0.2.5
+    Checking icu_locale_core v2.3.0
+   Compiling prost-derive v0.14.4
+   Compiling zerocopy-derive v0.8.56
+   Compiling thiserror-impl v2.0.20
+    Checking serde v1.0.229
+   Compiling wasm-bindgen-macro v0.2.128
+    Checking icu_provider v2.3.1
+    Checking icu_collections v2.3.0
+   Compiling darling v0.23.0
+    Checking wasm-bindgen v0.2.128
+    Checking zerocopy v0.8.56
+   Compiling wincode-derive v0.5.1
+    Checking thiserror v2.0.20
+   Compiling prost v0.14.4
+    Checking icu_properties v2.3.0
+   Compiling prost-types v0.14.4
+    Checking tokio-util v0.7.19
+    Checking js-sys v0.3.105
+    Checking icu_normalizer v2.3.0
+    Checking log v0.4.34
+    Checking untrusted v0.9.0
+    Checking wincode v0.6.1
+    Checking idna_adapter v1.2.2
+   Compiling prost-build v0.14.4
+   Compiling pb-rs v0.10.0
+    Checking rayon v1.12.0
+    Checking miniz_oxide v0.9.1
+    Checking solana-pubkey v4.2.1
+    Checking brotli-decompressor v5.0.3
+    Checking block-buffer v0.10.4
+    Checking crypto-common v0.1.7
+    Checking tracing v0.1.44
+    Checking form_urlencoded v1.2.2
+    Checking cpufeatures v0.3.1
+    Checking futures-channel v0.3.34
+    Checking fnv v1.0.7
+    Checking tower-service v0.3.3
+    Checking try-lock v0.2.5
+    Checking dyn_size_of v0.4.5
+   Compiling getrandom v0.3.4
+    Checking atomic-waker v1.1.2
+    Checking core-foundation-sys v0.8.7
+    Checking h2 v0.4.19
+    Checking bitm v0.5.2
+    Checking brotli v8.0.4
+    Checking want v0.3.1
+   Compiling of-car-reader v0.2.1 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/old-faithful/of-car-reader)
+    Checking blockzilla-primitives v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/blockzilla-primitives)
+    Checking voracious_radix_sort v1.2.0
+    Checking sha2 v0.11.0
+    Checking digest v0.10.7
+    Checking half v2.7.1
+    Checking flate2 v1.1.10
+    Checking idna v1.1.0
+   Compiling minicbor-derive v0.19.5
+   Compiling strum_macros v0.27.2
+   Compiling ahash v0.8.12
+    Checking uuid v1.26.0
+    Checking binout v0.3.2
+    Checking compression-core v0.4.33
+   Compiling getrandom v0.4.3
+    Checking utf8parse v0.2.2
+    Checking lazy_static v1.5.0
+   Compiling object v0.37.3
+    Checking seedable_hash v0.2.3
+   Compiling cpp_demangle v0.4.5
+    Checking ph v0.11.0
+    Checking zstd v0.13.3
+    Checking compression-codecs v0.4.39
+    Checking anstyle-parse v1.0.0
+    Checking web-sys v0.3.105
+    Checking debugid v0.8.0
+    Checking hyper v1.11.1
+    Checking url v2.5.8
+    Checking zmij v1.0.23
+    Checking minicbor v2.3.0
+    Checking gxhash v3.5.0
+    Checking core-foundation v0.10.1
+    Checking security-framework-sys v2.17.0
+   Compiling equator-macro v0.4.2
+    Checking quick-protobuf v0.8.1
+    Checking hash32 v0.3.1
+   Compiling findshlibs v0.10.2
+    Checking cpufeatures v0.2.17
+    Checking sync_wrapper v1.0.2
+    Checking tower-layer v0.3.3
+    Checking anstyle v1.0.14
+    Checking anstyle-query v1.1.5
+    Checking base64 v0.22.1
+    Checking data-encoding v2.11.1
+    Checking scopeguard v1.2.0
+    Checking ipnet v2.12.2
+   Compiling symbolic-demangle v12.18.3
+    Checking colorchoice v1.0.5
+    Checking bytemuck v1.25.2
+    Checking signature v2.2.0
+    Checking rustc-demangle v0.1.28
+   Compiling zstd-safe v8.0.0
+    Checking gimli v0.32.3
+    Checking is_terminal_polyfill v1.70.2
+    Checking anstream v1.0.0
+    Checking rgb v0.8.53
+    Checking ed25519 v2.2.3
+    Checking hyper-util v0.1.20
+    Checking blockzilla-program-logs v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/parser/blockzilla-program-logs)
+    Checking lock_api v0.4.14
+    Checking equator v0.4.2
+    Checking tower v0.5.3
+    Checking sha2 v0.10.9
+    Checking heapless v0.9.3
+    Checking security-framework v3.7.0
+    Checking addr2line v0.25.1
+    Checking serde_json v1.0.151
+    Checking blockzilla-registry v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/compact-v2/blockzilla-registry)
+    Checking num-traits v0.2.19
+   Compiling strum v0.27.2
+    Checking curve25519-dalek v4.1.3
+    Checking symbolic-common v12.18.3
+    Checking async-compression v0.4.44
+    Checking wasm-bindgen-futures v0.4.78
+   Compiling pin-project-internal v1.1.13
+warning: constant `BLS_AFFINE_LEN` is never used
+  --> crates/old-faithful/of-car-reader/src/blockmarker.rs:20:7
+   |
+20 | const BLS_AFFINE_LEN: usize = 192;
+   |       ^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `of-car-reader` (lib) generated 1 warning
+   Compiling async-trait v0.1.92
+    Checking num-format v0.4.4
+    Checking http-body-util v0.1.5
+    Checking miniz_oxide v0.8.9
+    Checking is-terminal v0.4.17
+    Checking quick-xml v0.26.0
+    Checking strsim v0.11.1
+    Checking bitflags v1.3.2
+   Compiling pprof v0.15.0
+    Checking ryu v1.0.23
+    Checking blockzilla-log-parser v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/parser/blockzilla-log-parser)
+    Checking str_stack v0.1.1
+    Checking fastrand v2.5.0
+    Checking clap_lex v1.1.0
+    Checking clap_builder v4.6.6
+    Checking inferno v0.11.21
+    Checking serde_urlencoded v0.7.1
+    Checking nix v0.26.4
+    Checking tower-http v0.6.11
+    Checking pin-project v1.1.13
+    Checking ed25519-dalek v2.2.0
+    Checking wasm-streams v0.6.0
+    Checking chrono v0.4.45
+    Checking worker-sys v0.8.5
+    Checking aligned-vec v0.6.4
+    Checking blockzilla-compact v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/compact-v2/blockzilla-compact)
+    Checking spin v0.10.1
+    Checking sharded-slab v0.1.7
+    Checking serde-wasm-bindgen v0.6.5
+    Checking tracing-log v0.2.0
+   Compiling clap_derive v4.6.4
+    Checking thread_local v1.1.10
+    Checking twox-hash v2.1.4
+    Checking matchit v0.7.3
+    Checking nu-ansi-term v0.50.3
+    Checking tracing-subscriber v0.3.23
+    Checking ruzstd v0.9.0
+    Checking zstd v0.14.0
+    Checking backtrace v0.3.76
+    Checking solana-signature v3.4.1
+    Checking base64 v0.23.1
+    Checking bs58 v0.5.1
+    Checking signature v3.0.0
+    Checking curve25519-dalek v5.0.0
+    Checking ed25519 v3.0.0
+    Checking clap v4.6.6
+    Checking ed25519-dalek v3.0.0
+   Compiling worker-macros v0.8.5
+    Checking worker v0.8.5
+    Checking blockzilla-archive-v2 v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/crates/compact-v2/blockzilla-archive-v2)
+    Checking rustls-webpki v0.103.15
+    Checking tokio-rustls v0.26.5
+    Checking rustls-platform-verifier v0.7.0
+    Checking hyper-rustls v0.27.9
+    Checking reqwest v0.13.4
+    Checking blockzilla-get-block v0.2.0 (/Users/augustin/.codex/worktrees/getblock-stream-recovery-20261122/blockzilla-v1/edgezilla/get-block)
+warning: unused import: `JsCast`
+  --> edgezilla/get-block/src/worker.rs:59:20
+   |
+59 | use wasm_bindgen::{JsCast, JsValue};
+   |                    ^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `handle_probe_first` is never used
+    --> edgezilla/get-block/src/worker.rs:3767:10
+     |
+3767 | async fn handle_probe_first(req: Request, ctx: RouteContext<()>) -> Result<Response> {
+     |          ^^^^^^^^^^^^^^^^^^
+     |
+     = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `handle_probe_slot` is never used
+    --> edgezilla/get-block/src/worker.rs:3771:10
+     |
+3771 | async fn handle_probe_slot(req: Request, ctx: RouteContext<()>) -> Result<Response> {
+     |          ^^^^^^^^^^^^^^^^^
+
+warning: function `handle_probe` is never used
+    --> edgezilla/get-block/src/worker.rs:3782:10
+     |
+3782 | async fn handle_probe(req: Request, ctx: RouteContext<()>, slot: Option<u64>) -> Result<Response> {
+     |          ^^^^^^^^^^^^
+
+warning: function `query_epoch` is never used
+    --> edgezilla/get-block/src/worker.rs:3839:4
+     |
+3839 | fn query_epoch(req: &Request) -> Option<u64> {
+     |    ^^^^^^^^^^^
+
+warning: field `index_row` is never read
+    --> edgezilla/get-block/src/worker.rs:4054:5
+     |
+4052 | struct FetchedHotBlock {
+     |        --------------- field in this struct
+4053 |     epoch: u64,
+4054 |     index_row: ArchiveV2GetBlockIndexRow,
+     |     ^^^^^^^^^
+
+warning: function `stream_get_block_full_value` is never used
+    --> edgezilla/get-block/src/worker.rs:4997:10
+     |
+4997 | async fn stream_get_block_full_value(
+     |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `stream_account_metadata_lite_value` is never used
+    --> edgezilla/get-block/src/worker.rs:6223:4
+     |
+6223 | fn stream_account_metadata_lite_value(
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `stream_token_balances_lite_value` is never used
+    --> edgezilla/get-block/src/worker.rs:6256:4
+     |
+6256 | fn stream_token_balances_lite_value(w: &mut JsonByteWriter, count: usize) {
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: fields `err`, `fee`, `pre_balances`, `post_balances`, `pre_token_balance_count`, and `post_token_balance_count` are never read
+    --> edgezilla/get-block/src/worker.rs:6376:5
+     |
+6375 | struct AccountMetaLite {
+     |        --------------- fields in this struct
+6376 |     err: Option<StoredTransactionError>,
+     |     ^^^
+6377 |     fee: u64,
+     |     ^^^
+6378 |     pre_balances: Vec<u64>,
+     |     ^^^^^^^^^^^^
+6379 |     post_balances: Vec<u64>,
+     |     ^^^^^^^^^^^^^
+6380 |     pre_token_balance_count: usize,
+     |     ^^^^^^^^^^^^^^^^^^^^^^^
+6381 |     post_token_balance_count: usize,
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `account_transaction_value` is never used
+    --> edgezilla/get-block/src/worker.rs:6446:10
+     |
+6446 | async fn account_transaction_value(
+     |          ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `decode_account_message_lite_bytes` is never used
+    --> edgezilla/get-block/src/worker.rs:6689:4
+     |
+6689 | fn decode_account_message_lite_bytes(
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `decode_account_metadata_lite` is never used
+    --> edgezilla/get-block/src/worker.rs:6755:4
+     |
+6755 | fn decode_account_metadata_lite(
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `decode_account_metadata_lite_bytes` is never used
+    --> edgezilla/get-block/src/worker.rs:6777:4
+     |
+6777 | fn decode_account_metadata_lite_bytes(
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `read_wincode_len` is never used
+    --> edgezilla/get-block/src/worker.rs:6814:4
+     |
+6814 | fn read_wincode_len<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<usize, String> {
+     |    ^^^^^^^^^^^^^^^^
+
+warning: function `skip_raw_bytes` is never used
+    --> edgezilla/get-block/src/worker.rs:6819:4
+     |
+6819 | fn skip_raw_bytes<'de>(
+     |    ^^^^^^^^^^^^^^
+
+warning: function `read_option_tag` is never used
+    --> edgezilla/get-block/src/worker.rs:6829:4
+     |
+6829 | fn read_option_tag<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<u8, String> {
+     |    ^^^^^^^^^^^^^^^
+
+warning: function `skip_option_u8` is never used
+    --> edgezilla/get-block/src/worker.rs:6837:4
+     |
+6837 | fn skip_option_u8<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^^^
+
+warning: function `skip_option_u32` is never used
+    --> edgezilla/get-block/src/worker.rs:6844:4
+     |
+6844 | fn skip_option_u32<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^^^^
+
+warning: function `skip_option_u64` is never used
+    --> edgezilla/get-block/src/worker.rs:6851:4
+     |
+6851 | fn skip_option_u64<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^^^^
+
+warning: function `skip_byte_vec` is never used
+    --> edgezilla/get-block/src/worker.rs:6858:4
+     |
+6858 | fn skip_byte_vec<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^^
+
+warning: function `skip_u32_vec` is never used
+    --> edgezilla/get-block/src/worker.rs:6863:4
+     |
+6863 | fn skip_u32_vec<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^
+
+warning: function `skip_option_inner_instructions` is never used
+    --> edgezilla/get-block/src/worker.rs:6871:4
+     |
+6871 | fn skip_option_inner_instructions<'de>(
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `skip_inner_instructions` is never used
+    --> edgezilla/get-block/src/worker.rs:6883:4
+     |
+6883 | fn skip_inner_instructions<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `skip_option_log_stream` is never used
+    --> edgezilla/get-block/src/worker.rs:6895:4
+     |
+6895 | fn skip_option_log_stream<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `skip_log_events` is never used
+    --> edgezilla/get-block/src/worker.rs:6904:4
+     |
+6904 | fn skip_log_events<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^^^^
+
+warning: function `skip_string_table` is never used
+    --> edgezilla/get-block/src/worker.rs:6912:4
+     |
+6912 | fn skip_string_table<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^^^^^^
+
+warning: function `skip_data_table` is never used
+    --> edgezilla/get-block/src/worker.rs:6917:4
+     |
+6917 | fn skip_data_table<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^^^^
+
+warning: function `skip_token_balances` is never used
+    --> edgezilla/get-block/src/worker.rs:6926:4
+     |
+6926 | fn skip_token_balances<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<usize, String> {
+     |    ^^^^^^^^^^^^^^^^^^^
+
+warning: function `skip_rewards` is never used
+    --> edgezilla/get-block/src/worker.rs:6939:4
+     |
+6939 | fn skip_rewards<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^
+
+warning: function `skip_option_return_data` is never used
+    --> edgezilla/get-block/src/worker.rs:6951:4
+     |
+6951 | fn skip_option_return_data<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `skip_option_compact_pubkey` is never used
+    --> edgezilla/get-block/src/worker.rs:6959:4
+     |
+6959 | fn skip_option_compact_pubkey<'de>(
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `skip_compact_pubkey` is never used
+    --> edgezilla/get-block/src/worker.rs:6968:4
+     |
+6968 | fn skip_compact_pubkey<'de>(reader: &mut impl Reader<'de>) -> std::result::Result<(), String> {
+     |    ^^^^^^^^^^^^^^^^^^^
+
+warning: function `account_metadata_lite_value` is never used
+    --> edgezilla/get-block/src/worker.rs:7589:4
+     |
+7589 | fn account_metadata_lite_value(
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `token_balances_lite_value` is never used
+    --> edgezilla/get-block/src/worker.rs:7617:4
+     |
+7617 | fn token_balances_lite_value(_count: usize) -> Value {
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `short_error_body` is never used
+    --> edgezilla/get-block/src/worker.rs:8731:4
+     |
+8731 | fn short_error_body(body: &str) -> String {
+     |    ^^^^^^^^^^^^^^^^
+
+warning: field `bytes` is never read
+  --> edgezilla/get-block/src/worker/foundation_first.rs:68:9
+   |
+66 |     Resolved {
+   |     -------- field in this variant
+67 |         checked: CheckedResolution,
+68 |         bytes: Vec<u8>,
+   |         ^^^^^
+
+warning: field `status` is never read
+   --> edgezilla/get-block/src/worker/foundation_first.rs:145:9
+    |
+142 |     Unavailable {
+    |     ----------- field in this variant
+...
+145 |         status: u16,
+    |         ^^^^^^
+
+warning: function `plan_registry_pages` is never used
+   --> edgezilla/get-block/src/worker/stored.rs:926:4
+    |
+926 | fn plan_registry_pages<const N: usize>(
+    |    ^^^^^^^^^^^^^^^^^^^
+
+warning: `blockzilla-get-block` (lib) generated 39 warnings (run `cargo fix --lib -p blockzilla-get-block` to apply 1 suggestion)
+warning: `blockzilla-get-block` (lib test) generated 36 warnings (36 duplicates)
+warning: constant `CURRENT_MESSAGE_MARKER_FILE` is never used
+  --> edgezilla/get-block/src/bin/../archive_schema.rs:24:11
+   |
+24 | pub const CURRENT_MESSAGE_MARKER_FILE: &str = "archive-v2-message-schema-current-v1.marker";
+   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `MAY24_MESSAGE_MARKER_FILE` is never used
+  --> edgezilla/get-block/src/bin/../archive_schema.rs:25:11
+   |
+25 | pub const MAY24_MESSAGE_MARKER_FILE: &str =
+   |           ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `LEGACY_METADATA_MARKER_FILE` is never used
+  --> edgezilla/get-block/src/bin/../archive_schema.rs:27:11
+   |
+27 | pub const LEGACY_METADATA_MARKER_FILE: &str =
+   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `CURRENT_MESSAGE_MARKER_BYTES` is never used
+  --> edgezilla/get-block/src/bin/../archive_schema.rs:29:11
+   |
+29 | pub const CURRENT_MESSAGE_MARKER_BYTES: &[u8; 52] = include_bytes!(
+   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `MAY24_MESSAGE_MARKER_BYTES` is never used
+  --> edgezilla/get-block/src/bin/../archive_schema.rs:32:11
+   |
+32 | pub const MAY24_MESSAGE_MARKER_BYTES: &[u8; 87] = include_bytes!(
+   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `LEGACY_METADATA_MARKER_BYTES` is never used
+  --> edgezilla/get-block/src/bin/../archive_schema.rs:35:11
+   |
+35 | pub const LEGACY_METADATA_MARKER_BYTES: &[u8; 58] = include_bytes!(
+   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `message_schema_overrides` is never used
+  --> edgezilla/get-block/src/bin/../archive_schema.rs:61:15
+   |
+61 | pub(crate) fn message_schema_overrides(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `metadata_schema_override` is never used
+  --> edgezilla/get-block/src/bin/../archive_schema.rs:93:15
+   |
+93 | pub(crate) fn metadata_schema_override(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `blockzilla-get-block` (bin "build-slot-resolution") generated 8 warnings
+warning: `blockzilla-get-block` (bin "build-slot-resolution" test) generated 6 warnings (6 duplicates)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1m 22s
