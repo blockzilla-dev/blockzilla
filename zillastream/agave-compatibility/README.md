@@ -107,10 +107,25 @@ live upgrade or certify a new host/plugin pair.
 The ledger helper keeps the exact Agave RC1 API in the separate fork branch
 [`codex/ledger-read-v4.4.0-rc.1`](https://github.com/blockzilla-dev/agave/tree/codex/ledger-read-v4.4.0-rc.1). Its optional file-cache cap, implementation
 and tests are in that fork. The helper uses the sibling `agave-ledger` worktree.
-Use the [sibling source setup](../../README.md#sibling-source-setup) to create
-that worktree. This does not change the native-validator profile or deploy a
+Use the [fork checkout](#fork-checkout) below to create that worktree. This does not change the native-validator profile or deploy a
 new host.
 
 The source default for native capture follows newer main at Agave `a2033000`
 (interface 4.3.2). Recorded deployed 4.4.0 evidence remains historical; run the
 matched host/plugin check for whichever profile is selected next.
+
+## Fork checkout
+
+The core builds alone. The optional ledger reader needs the private Agave
+repository beside the core and a separate worktree for its exact RC1 profile.
+From one parent directory:
+
+```sh
+git clone --branch codex/1.0-core https://github.com/blockzilla-dev/blockzilla.git blockzilla
+git clone git@github.com:blockzilla-dev/agave.git agave
+git -C agave worktree add --detach ../agave-ledger origin/codex/ledger-read-v4.4.0-rc.1
+```
+
+The `agave` checkout uses the native integration profile on `main`. The
+`agave-ledger` worktree uses the ledger profile. The other private repositories
+have their own checkout instructions and use the same sibling directory layout.
