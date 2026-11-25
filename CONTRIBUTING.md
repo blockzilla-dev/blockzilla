@@ -8,6 +8,10 @@ first so maintainers can agree on its scope and compatibility rules.
 This repository owns Compact V2, block production, archive readers, getBlock,
 Zillastream and small examples. Keep application indexers, infrastructure,
 operational records and general runtime experiments outside this repository.
+Use Rust for native tools and process-test helpers. Do not add Python files or
+Python interpreter calls. SSH adapters, key provisioning, deployment probes,
+operator notifications and full benchmark tools belong in private infrastructure
+repositories. Keep self-contained public tests and the fixed sample benchmark.
 
 The core workspace builds without access to a private repository. Agave host
 work is optional and has separate [compatibility instructions](zillastream/agave-compatibility/README.md).
@@ -45,6 +49,7 @@ The stream crates have separate workspaces. Run the checks for the code you chan
 ```sh
 cargo test --locked --manifest-path crates/blockzilla-bank-stream-v2/Cargo.toml
 cargo test --locked --manifest-path crates/blockzilla-bank-client/Cargo.toml
+cargo test --locked --manifest-path blockzilla/get-block/resolver/Cargo.toml
 cargo test --locked --manifest-path zillastream/capture-core/Cargo.toml
 cargo test --locked --manifest-path zillastream/relay/Cargo.toml
 ```

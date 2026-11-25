@@ -11,7 +11,6 @@ use tokio::sync::{OwnedSemaphorePermit, Semaphore, mpsc};
 mod beam;
 pub use beam::BeamStream;
 pub mod recovery;
-pub mod ssh_beam;
 pub use recovery::{RecoveryEntry, RecoveryNotice, WorkerRecoveryClient, WorkerRecoveryConfig};
 
 // This budget covers announced frame bytes from before GET through queued

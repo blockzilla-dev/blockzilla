@@ -792,7 +792,7 @@ mod tests {
         (api, frames, db)
     }
     #[tokio::test]
-    #[ignore = "requires the matching private release binary"]
+    #[ignore = "requires a separately built matching relay binary"]
     async fn direct_process_uses_only_native_feed_and_recovers_its_unix_socket() {
         use futures_util::StreamExt;
         struct Child(std::process::Child);
@@ -802,7 +802,7 @@ mod tests {
                 let _ = self.0.wait();
             }
         }
-        let binary = std::env::var("BLOCKZILLA_BEAM_ORIGIN_BINARY").unwrap();
+        let binary = std::env::var("BLOCKZILLA_RELAY_BINARY").unwrap();
         let temp = tempfile::tempdir().unwrap();
         let (_api, frames, _db) = replay_fixture(temp.path());
         let socket = temp.path().join("origin.sock");

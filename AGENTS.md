@@ -6,3 +6,9 @@
 - Preserve exact format bytes, source identity, cursors, and fork controls.
 - Read `zillastream/agave-compatibility/README.md` before changing validator integration.
 - Keep deployment credentials, private infrastructure records, and research logs out of this repository.
+
+- Implement native tools and process-test helpers in Rust.
+- Do not add Python files or Python interpreter calls.
+- Keep SSH adapters, key provisioning, deployment probes, operator notifications,
+  and full benchmark tools in private infrastructure repositories. Keep public
+  runtime APIs, self-contained tests, and the fixed sample benchmark here.

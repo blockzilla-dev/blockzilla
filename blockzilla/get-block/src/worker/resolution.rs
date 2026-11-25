@@ -7,9 +7,6 @@ use base64::engine::general_purpose::URL_SAFE_NO_PAD;
 use std::collections::BTreeSet;
 use worker::ResponseBody;
 
-mod r2_probe;
-pub(super) use r2_probe::response as r2_probe_response;
-
 #[derive(Clone)]
 pub(super) struct Config {
     bucket: Bucket,

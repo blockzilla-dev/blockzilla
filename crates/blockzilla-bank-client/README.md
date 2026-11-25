@@ -33,9 +33,8 @@ The plan uses opt-in `recovery=1` notices. Each page has a 128-event limit, a
 expired cursor or identity mismatch returns an error. Healthy stream reads do
 not call the Worker.
 
-## Private recovery
+## Authenticated recovery
 
 Use `WorkerRecoveryClient::new` with `WorkerRecoveryConfig` for deployments
-that require a separate Worker key. The existing `SshConfig::recovery_plan`
-path remains available for a private SSH stream. Both paths keep the same
+that require a separate Worker key. HTTP and Unix-socket clients keep the same
 source, cursor and atomic commit requirements.

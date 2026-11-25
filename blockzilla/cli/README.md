@@ -8,6 +8,7 @@ The core command tree contains:
 | `stream` | Read an archive epoch as ordered JSON block summaries. |
 | `dump-tokens` | Export recorded token balances as JSON Lines. |
 | `inspect` | Show an archive's admitted identity and range. |
+| `compare-sdk-rpc` | Compare a saved SDK capture with finalized RPC blocks. |
 | `build-direct-agave-compact` | Build compact blocks from a complete native callback batch. |
 
 ```sh
@@ -39,3 +40,37 @@ through the reader SDK.
 
 The combined live-capture and archive-backfill token example is a product
 acceptance target. The current `dump-tokens` command reads archives only.
+
+## Compare SDK output with RPC
+
+```sh
+blockzilla compare-sdk-rpc capture.json \
+  --rpc-url http://127.0.0.1:8899 --report comparison.json
+```
+
+Save decoded SDK blocks in a JSON document with `program`, `all`,
+`programMatches` and `accountMatches` fields. `program` is the address used for
+both the program and account filters. The three arrays contain the unfiltered,
+program-filtered and account-filtered blocks. All arrays must contain the same
+slots, including blocks with no matching transactions.
+
+Each block contains `slot`, `parentSlot`, `blockhash`, `parentBlockhash`,
+`transactionCount` and `transactions`. Each transaction contains its original
+`index`, primary `signature`, complete `signatures`, `success`,
+`topLevelPrograms`, `innerPrograms` and `innerCoverage`. Preserve these decoded
+SDK values when you save the capture.
+
+The command makes one finalized `getBlock` request per block. It compares block
+and parent identities, transaction count and order, every signature, execution
+status, top-level and recorded inner program references, and both filter results
+(including loaded addresses). Missing execution or inner-instruction data fails
+the comparison. Empty input, duplicate slots and extra filtered slots also fail.
+
+The input and each RPC reply have a 64 MiB limit; a capture can contain at most
+1,000 blocks. `--timeout-seconds` sets each request deadline (default: 30). A
+matching capture produces a JSON summary on stdout and, if requested, in a new
+report file. A mismatch or unavailable RPC block exits with an error and does not
+write a successful report. Existing report files are never overwritten.
+
+This compares the SDK projection with the supplied RPC node. It does not verify
+cryptographic signatures, certify consensus or establish archive completeness.
