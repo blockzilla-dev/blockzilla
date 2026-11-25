@@ -206,6 +206,8 @@ mod tests {
                     tx_rows: Vec::new(),
                     message_bytes: Vec::new(),
                     metadata_bytes: Vec::new(),
+                    consensus_block_id: None,
+                    block_markers: Vec::new(),
                 };
                 let first_signature_ordinal = signatures.len() as u64 / 64;
                 for (tx_index, count) in block_counts.iter().copied().enumerate() {

@@ -326,6 +326,34 @@
           "path": "core/src/shred_fetch_stage.rs"
         }
       ]
+    },
+    {
+      "id": "read-only-ledger-file-cap",
+      "owner": "Blockzilla ledger reader / Agave fork",
+      "purpose": "Bound the read-only RocksDB file cache without changing primary or default behavior.",
+      "source": {
+        "repository": "agave",
+        "revision": "e98c50da300c3df0d9178d72478c528dfd695d41",
+        "path": "ledger/src/blockstore_options.rs"
+      },
+      "required_regressions": [
+        {
+          "repository": "agave",
+          "revision": "e98c50da300c3df0d9178d72478c528dfd695d41",
+          "path": "ledger/src/blockstore_options.rs",
+          "names": [
+            "default_and_primary_file_limits_remain_unbounded",
+            "read_only_file_limit_is_opt_in",
+            "read_only_file_limit_rejects_i32_overflow"
+          ],
+          "selection": "named tests; not run during extraction"
+        }
+      ],
+      "remove_when": [
+        "The selected upstream API offers equivalent per-open read-only file-cache limits and preserves default/primary behavior.",
+        "Equivalent limit and overflow tests pass on the replacement."
+      ],
+      "decision": "Keep on the separate exact RC1 ledger-read profile."
     }
   ],
   "upgrade_decision_fields": [
@@ -352,7 +380,14 @@
       "remote_url": null,
       "imported_fork_commit": "5ae64ceb26f78c6e7a6b78932627e5978521c0ae",
       "status": "Imported and committed locally; no fork remote created and no deployment performed.",
-      "sibling_path": "../agave"
+      "sibling_path": "../agave",
+      "ledger_read_profile": {
+        "branch": "codex/ledger-read-v4.4.0-rc.1",
+        "upstream_commit": "b6149a719f8fa84123ac3ce1e5f201af64bca8ee",
+        "commit": "e98c50da300c3df0d9178d72478c528dfd695d41",
+        "sibling_worktree": "../agave-ledger",
+        "validation": "Patch applied and dependency metadata resolved; full Agave/Linux suite not run."
+      }
     },
     "hivezilla": {
       "remote_url": null,
@@ -409,5 +444,10 @@
     "fork_commit": "5ae64ceb26f78c6e7a6b78932627e5978521c0ae",
     "remote_url": null,
     "host_build_and_deployment": "not performed"
+  },
+  "source_build_profile": {
+    "default_agave_revision": "a203300045b405f86c9c84308b2eae76af69ac3b",
+    "geyser_interface": "4.3.2",
+    "note": "Preserved from newer main. A matched host/plugin load check remains required before deployment."
   }
 }

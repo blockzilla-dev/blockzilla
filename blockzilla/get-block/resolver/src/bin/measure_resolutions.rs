@@ -824,6 +824,8 @@ mod tests {
         let epoch = mirror.join("epoch-0");
         fs::create_dir_all(&epoch).unwrap();
         let hot = ArchiveV2HotBlockBlob {
+            consensus_block_id: None,
+            block_markers: Vec::new(),
             header: ArchiveV2HotBlockHeader {
                 slot: 0,
                 parent_slot: 0,

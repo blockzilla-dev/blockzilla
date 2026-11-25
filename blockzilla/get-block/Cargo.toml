@@ -57,6 +57,8 @@ cli = [
     "dep:zstd",
 ]
 worker = [
+    "dep:blockzilla-bank-stream-v2",
+    "dep:bytes",
     "dep:futures-channel",
     "dep:futures-util",
     "dep:js-sys",
@@ -69,6 +71,8 @@ worker = [
 ]
 
 [dependencies]
+blockzilla-bank-stream-v2 = { path = "../../crates/blockzilla-bank-stream-v2", optional = true }
+bytes = { version = "1.11", optional = true }
 # These features define stored log enum tags. Keep the full archive grammar
 # available in an isolated Worker build, as in the native Compact V2 reader.
 blockzilla-archive-v2 = { path = "../../crates/compact-v2/blockzilla-archive-v2", default-features = false, features = ["known-program-logs"] }
@@ -102,6 +106,7 @@ wincode = "=0.6.1"
 zstd = { version = "0.14.0", optional = true }
 
 [dev-dependencies]
+blockzilla-bank-stream-v2 = { path = "../../crates/blockzilla-bank-stream-v2", features = ["test-fixtures"] }
 ed25519-dalek = "3.0.0"
 
 [lints]

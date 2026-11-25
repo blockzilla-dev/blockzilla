@@ -55,17 +55,22 @@ account changes and restartable epoch snapshots only after parity checks.
 
 ## Extraction checks
 
-The lean candidate is prepared on `codex/1.0-core`, separate from the original
-`codex/1.0-cleanup` working tree. The full core workspace and all targets passed
-813 tests, with four pre-existing ignored tests. The native builder CLI passed
-its 17 unit tests, including processed/rooted source checks and interrupted
-build handling. Earlier component checks passed 58 relay Rust tests (three
-ignored), 25 JavaScript SDK tests and 14 publisher tests. The copied source
-codec tests also passed before extraction.
+The lean candidate is on `codex/1.0-core`, separate from the original dirty
+`codex/1.0-cleanup` working tree. It incorporates the recorded newer main at
+`841998ee915ca2ff9dc79d2734756163bc3a8e3e`, including current-epoch getBlock,
+stream recovery and consensus marker/footer support.
+
+The final core workspace and all targets passed 822 tests, with four existing
+ignored tests. The getBlock Worker also compiles for wasm32-unknown-unknown.
+Targeted stream checks passed: bank stream 40, bank client 53, decoder 17,
+relay 58, resolver 51, getBlock 71, JavaScript SDK 30 and provider reader 12.
+These scopes overlap the full core suite and are not an additive test total.
+The exported CAR reader passed 63 tests; runtime compact tests passed 17.
 
 The fixed Compact V2 sample preserves 2,969 transactions and 3,035 signatures
 from its source CAR, with matching reconstructed signed bytes. It is a checked
 benchmark input, not proof of chain-wide coverage. No live validator, public
 service, remote repository or default branch was changed by this work.
-Linux worker, host/plugin and combined live/backfill acceptance remain required
-before promotion to main.
+Linux worker, matched host/plugin and combined live/backfill acceptance remain
+required before promotion to main. The separate Agave RC1 ledger profile has
+resolved dependency metadata; its full Linux/RocksDB build is still required.

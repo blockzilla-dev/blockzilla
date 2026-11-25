@@ -354,6 +354,8 @@ mod tests {
         let epoch = root.join("mirror/epoch-1");
         fs::create_dir_all(&epoch).unwrap();
         let hot = ArchiveV2HotBlockBlob {
+            consensus_block_id: None,
+            block_markers: Vec::new(),
             header: ArchiveV2HotBlockHeader {
                 slot: 432000,
                 parent_slot: 431999,

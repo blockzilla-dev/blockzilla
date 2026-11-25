@@ -460,6 +460,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "blockzilla-bank-stream-v2"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "bs58",
+ "bytes",
+ "serde",
+ "serde_json",
+ "sha2 0.11.0",
+]
+
+[[package]]
 name = "blockzilla-compact"
 version = "0.2.0"
 dependencies = [
@@ -525,11 +537,13 @@ dependencies = [
  "anyhow",
  "base64 0.23.1",
  "blockzilla-archive-v2",
+ "blockzilla-bank-stream-v2",
  "blockzilla-compact",
  "blockzilla-primitives",
  "blockzilla-program-logs",
  "blockzilla-registry",
  "bs58",
+ "bytes",
  "clap 4.6.6",
  "ed25519-dalek 3.0.0",
  "five8",
@@ -668,6 +682,7 @@ dependencies = [
  "quick-protobuf",
  "ruzstd",
  "serde",
+ "serde_json",
  "wincode 0.6.1",
  "zstd 0.14.0",
 ]

@@ -4,6 +4,7 @@
 //! and source metadata encodings. CAR transport and reconstruction are owned
 //! by the separate source adapter.
 
+pub mod blockmarker;
 mod convert_metadata;
 pub mod metadata_decoder;
 pub mod short_vec;

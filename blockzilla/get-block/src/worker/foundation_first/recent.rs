@@ -126,7 +126,7 @@ pub(crate) struct RecentMetadata {
 }
 
 impl RecentMetadata {
-    fn validate(
+    pub(super) fn validate(
         &self,
         request: &RecentRequest,
         source: &RecentSource,

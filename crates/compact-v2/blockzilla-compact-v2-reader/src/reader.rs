@@ -666,6 +666,8 @@ impl BorrowedDecodedBlock<'_> {
                     tx_rows,
                     message_bytes,
                     metadata_bytes,
+                    consensus_block_id: block.consensus_block_id,
+                    block_markers: block.block_markers,
                 }
             }
             BorrowedDecodedBlockPayload::CurrentWithoutRewards(_) => {
@@ -5083,6 +5085,8 @@ mod tests {
                 ],
                 message_bytes: first_messages,
                 metadata_bytes: Vec::new(),
+                consensus_block_id: Some([0x21; 32]),
+                block_markers: vec![vec![1, 2, 3]],
             };
 
             let second_message = ArchiveV2HotMessagePayload::V0(ArchiveV2HotV0Message {
@@ -5137,6 +5141,9 @@ mod tests {
                 }],
                 message_bytes: second_message,
                 metadata_bytes: second_metadata,
+
+                consensus_block_id: None,
+                block_markers: Vec::new(),
             };
 
             let first_uncompressed =
@@ -5238,6 +5245,9 @@ mod tests {
                     tx_rows: Vec::new(),
                     message_bytes: Vec::new(),
                     metadata_bytes: Vec::new(),
+
+                    consensus_block_id: None,
+                    block_markers: Vec::new(),
                 };
                 let uncompressed =
                     wincode::config::serialize(&block, wincode_leb128_config()).unwrap();
@@ -5384,6 +5394,9 @@ mod tests {
                 }],
                 message_bytes,
                 metadata_bytes,
+
+                consensus_block_id: None,
+                block_markers: Vec::new(),
             },
         }
     }
@@ -7268,6 +7281,8 @@ mod tests {
         let converted = decoded.into_owned().unwrap();
         assert_eq!(converted.index_row.block_id, expected.index_row.block_id);
         assert_eq!(converted.index_row.slot, expected.index_row.slot);
+        assert_eq!(converted.block.consensus_block_id, Some([0x21; 32]));
+        assert_eq!(converted.block.block_markers, vec![vec![1, 2, 3]]);
         assert_eq!(
             wincode::config::serialize(&converted.block, wincode_leb128_config()).unwrap(),
             expected_bytes
@@ -7677,6 +7692,9 @@ mod tests {
                 tx_rows: rows,
                 message_bytes,
                 metadata_bytes: vec![0xaa],
+
+                consensus_block_id: None,
+                block_markers: Vec::new(),
             },
         };
         let scanned = archive.scan_decoded_block(&filter, decoded).unwrap();

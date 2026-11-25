@@ -2599,6 +2599,8 @@ fn hot_block_from_live_no_registry_block(
             tx_rows,
             message_bytes,
             metadata_bytes,
+            consensus_block_id: None,
+            block_markers: Vec::new(),
         },
         block_signature_count,
     ))
@@ -2795,6 +2797,8 @@ fn hot_block_from_live_no_registry_block_signature_counts(
             tx_rows,
             message_bytes,
             metadata_bytes,
+            consensus_block_id: None,
+            block_markers: Vec::new(),
         },
         block_signature_count,
     ))

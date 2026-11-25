@@ -689,6 +689,8 @@ mod tests {
         };
         (
             ArchiveV2HotBlockBlob {
+                consensus_block_id: None,
+                block_markers: Vec::new(),
                 header: ArchiveV2HotBlockHeader {
                     slot: 432001,
                     parent_slot: 432000,

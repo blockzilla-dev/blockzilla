@@ -14,6 +14,8 @@ use std::{
     io::{Read, Write},
 };
 
+pub mod consensus;
+
 const MAX_FRAME: usize = 16 * 1024 * 1024 + 65_536 + 16;
 const MAX_BLOCK: usize = 64 * 1024 * 1024;
 const MAX_OUTPUT: usize = 32 * 1024 * 1024;
@@ -299,7 +301,15 @@ fn exact<
 
 /// Return semantic compact values. This is not an RPC JSON or exact signed-wire renderer.
 pub fn decode(wire: &[u8], options: &Options) -> Result<Vec<u8>> {
-    encode_projection(&decode_projection(wire, options, false, false, None, None, MAX_PORTABLE_FILTER_KEYS)?)
+    encode_projection(&decode_projection(
+        wire,
+        options,
+        false,
+        false,
+        None,
+        None,
+        MAX_PORTABLE_FILTER_KEYS,
+    )?)
 }
 
 /// Typed semantic admission for an original native Bank payload. It uses the
@@ -384,7 +394,11 @@ pub fn bank_wallet_programs(
 /// Opt-in v2 entry point. Controls carry identity and native expiry, never a
 /// second block. The v1 entry points continue to reject this profile.
 pub fn decode_banks(wire: &[u8], options: &Options) -> Result<Vec<u8>> {
-    Ok(serde_json::to_vec(&decode_bank_value(wire, options, MAX_PORTABLE_FILTER_KEYS)?)?)
+    Ok(serde_json::to_vec(&decode_bank_value(
+        wire,
+        options,
+        MAX_PORTABLE_FILTER_KEYS,
+    )?)?)
 }
 
 /// Project a Bank for a trusted local caller with a larger, bounded filter.
@@ -624,7 +638,10 @@ fn decode_projection(
         let mut transactions = Vec::new();
         let mut encoded_keys = HashMap::<[u8; 32], String>::new();
         let mut encode_key = |key: &[u8; 32]| {
-            encoded_keys.entry(*key).or_insert_with(|| base58(key)).clone()
+            encoded_keys
+                .entry(*key)
+                .or_insert_with(|| base58(key))
+                .clone()
         };
         let mut signature_at = r.first_signature * 64;
         let mut message_at = 0usize;
@@ -824,9 +841,13 @@ fn decode_projection(
                     let keys = usize::from(header.num_required_signatures)
                         .checked_add(top.union(&inner).count())
                         .context("wallet_fact_count_overflow")?;
-                    wallet_fact_keys = wallet_fact_keys.checked_add(keys)
+                    wallet_fact_keys = wallet_fact_keys
+                        .checked_add(keys)
                         .context("wallet_fact_count_overflow")?;
-                    ensure!(wallet_fact_keys <= 1_048_576, "wallet_fact_memory_limit_exceeded");
+                    ensure!(
+                        wallet_fact_keys <= 1_048_576,
+                        "wallet_fact_memory_limit_exceeded"
+                    );
                     wallets.push(BankWalletPrograms {
                         signers: accounts[..usize::from(header.num_required_signatures)].to_vec(),
                         programs: top.union(&inner).copied().collect(),

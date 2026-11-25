@@ -1,6 +1,6 @@
 use anyhow::{Context, Result};
 use blockzilla_compact_v2_reader::archive::{CompactV2Archive, CompactV2LocalDescriptor};
-use blockzilla_model::{BlockSink, BlockView, Error, ScanRequest};
+use blockzilla_model::{ArchiveInstructionSource, BlockSink, BlockView, Error, ScanRequest};
 use clap::Parser;
 use serde_json::json;
 use std::{io::Write, path::PathBuf};

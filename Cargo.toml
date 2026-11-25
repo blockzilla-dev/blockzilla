@@ -24,6 +24,7 @@ members = [
 ]
 exclude = [
     "blockzilla/builder",
+    "blockzilla/ledger-archive",
     "blockzilla/get-block/resolver",
     "crates/blockzilla-account-bridge-protocol",
     "crates/blockzilla-account-client",

@@ -101,3 +101,14 @@ An empty test-name array means the manifest selects all tests in the named
 file. It never means that no tests are required. Build and deployment tools
 live in the external Hivezilla repository. This record does not authorize a
 live upgrade or certify a new host/plugin pair.
+
+## Ledger-read profile
+
+The ledger helper keeps the exact Agave RC1 API in the separate fork branch
+`codex/ledger-read-v4.4.0-rc.1`. Its optional file-cache cap, implementation
+and tests are in that fork. The helper uses the sibling `agave-ledger` worktree.
+This does not change the native-validator profile or deploy a new host.
+
+The source default for native capture follows newer main at Agave `a2033000`
+(interface 4.3.2). Recorded deployed 4.4.0 evidence remains historical; run the
+matched host/plugin check for whichever profile is selected next.

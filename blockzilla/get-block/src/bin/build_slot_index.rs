@@ -534,6 +534,8 @@ mod tests {
             let message_bytes = wincode::config::serialize(&message, wincode_leb128_config())?;
             let metadata_bytes = wincode::config::serialize(&metadata, wincode_leb128_config())?;
             let block = ArchiveV2HotBlockBlob {
+                consensus_block_id: None,
+                block_markers: Vec::new(),
                 header: ArchiveV2HotBlockHeader {
                     slot,
                     parent_slot: parent,

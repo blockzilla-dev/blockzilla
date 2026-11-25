@@ -373,15 +373,75 @@ pub(super) fn decode_complete_bundle(
     locator: &LocatorV1,
 ) -> std::result::Result<FetchedHotBlock, String> {
     locator.validate(&locator.source_prefix, &locator.generation, slot)?;
+    decode_checked_bundle(
+        source,
+        slot,
+        bytes,
+        BundleIdentity {
+            epoch: locator.epoch,
+            row: locator.hot.into(),
+            parent_slot: locator.parent_slot,
+            blockhash: locator.blockhash,
+            previous_blockhash: locator.previous_blockhash,
+            message_schema: locator.message_schema,
+            metadata_schema: locator.metadata_schema,
+        },
+    )
+}
+
+pub(super) fn decode_ledger_bundle(
+    source: &WorkerSource,
+    slot: u64,
+    bytes: &[u8],
+    metadata: &foundation_first::LedgerCompactMetadata,
+) -> std::result::Result<FetchedHotBlock, String> {
+    metadata.validate(slot)?;
+    let (blockhash, previous_blockhash) = metadata.hashes()?;
+    let block = decode_checked_bundle(
+        source,
+        slot,
+        bytes,
+        BundleIdentity {
+            epoch: epoch_for_slot(slot),
+            row: metadata.hot.into(),
+            parent_slot: metadata.parent_slot,
+            blockhash,
+            previous_blockhash,
+            message_schema: metadata.message_schema,
+            metadata_schema: metadata.metadata_schema,
+        },
+    )?;
+    if block.block.header.blockhash_id != 1 || block.block.header.previous_blockhash_id != 0 {
+        return Err("ledger compact block uses invalid local block hash IDs".into());
+    }
+    Ok(block)
+}
+
+struct BundleIdentity {
+    epoch: u64,
+    row: ArchiveV2HotBlockIndexRow,
+    parent_slot: u64,
+    blockhash: [u8; 32],
+    previous_blockhash: [u8; 32],
+    message_schema: u8,
+    metadata_schema: u8,
+}
+
+fn decode_checked_bundle(
+    source: &WorkerSource,
+    slot: u64,
+    bytes: &[u8],
+    identity: BundleIdentity,
+) -> std::result::Result<FetchedHotBlock, String> {
     let frame = borrowed_bundle(bytes, slot)?;
-    let row: ArchiveV2HotBlockIndexRow = locator.hot.into();
+    let row = identity.row;
     if frame.hot.len() != row.compressed_len as usize {
         return Err("bundle hot length differs from source provenance".into());
     }
     let (decoded, block) = stored::decode_block(source, slot, &row, frame.hot)?;
     let decoded_len = decoded.len();
     drop(decoded);
-    if block.header.parent_slot != locator.parent_slot {
+    if block.header.parent_slot != identity.parent_slot {
         return Err("bundle parent differs from source provenance".into());
     }
     let access_started = now_ms();
@@ -393,8 +453,8 @@ pub(super) fn decode_complete_bundle(
     validate_access_blob(&access, &row)?;
     if access.version != WINCODE_ARCHIVE_V2_BLOCK_ACCESS_VERSION
         || access.flags != 0
-        || access.blockhash != locator.blockhash
-        || access.previous_blockhash != locator.previous_blockhash
+        || access.blockhash != identity.blockhash
+        || access.previous_blockhash != identity.previous_blockhash
         || block
             .tx_rows
             .iter()
@@ -428,7 +488,7 @@ pub(super) fn decode_complete_bundle(
         None,
     );
     Ok(FetchedHotBlock {
-        epoch: locator.epoch,
+        epoch: identity.epoch,
         index_row: ArchiveV2GetBlockIndexRow {
             block_offset: row.compressed_offset,
             block_len: row.compressed_len,
@@ -439,12 +499,12 @@ pub(super) fn decode_complete_bundle(
         decoded_len,
         block,
         access: Some(FetchedAccess::Full(access)),
-        message_schema: if locator.message_schema == 0 {
+        message_schema: if identity.message_schema == 0 {
             MessageSchema::Current
         } else {
             MessageSchema::May24
         },
-        metadata_schema: if locator.metadata_schema == 0 {
+        metadata_schema: if identity.metadata_schema == 0 {
             MetadataSchema::Current
         } else {
             MetadataSchema::Legacy
@@ -456,7 +516,7 @@ pub(super) async fn binary_response(
     source: &WorkerSource,
     slot: u64,
     ctx: &Rc<worker::Context>,
-    metrics: &AnalyticsEngineDataset,
+    metrics: &Option<AnalyticsEngineDataset>,
     key_record: &RpcApiKeyRecord,
 ) -> std::result::Result<Response, String> {
     let (config, entry) = admission(source, slot)?;
@@ -495,6 +555,9 @@ pub(super) async fn binary_response(
     ctx.wait_until(async move {
         let Ok(value) = wasm_bindgen_futures::JsFuture::from(parts.completion).await else {
             console_error!("admitted bundle stream failed or was cancelled");
+            return;
+        };
+        let Some(dataset) = dataset else {
             return;
         };
         let bytes = js_sys::Reflect::get(&value, &JsValue::from_str("hotBytes"))

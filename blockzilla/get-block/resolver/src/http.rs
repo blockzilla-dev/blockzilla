@@ -31,6 +31,9 @@ use tokio::sync::Semaphore;
 const REQUEST_TYPE: &str = "application/vnd.blockzilla.resolve-ids+json";
 const RESPONSE_TYPE: &str = "application/vnd.blockzilla.slot-resolution.wincode";
 
+#[path = "finalized.rs"]
+mod finalized;
+
 #[derive(Default)]
 struct Counters {
     lookups: AtomicU64,
@@ -106,6 +109,7 @@ pub fn router_with_recent(
         .route("/v1/info", get(info))
         .route("/v1/block/{slot}", get(block))
         .route("/v1/recent/{slot}", get(recent_block))
+        .route("/v1/finalized/{slot}", get(finalized::block))
         .route("/v1/resolve", post(resolve))
         .route("/v1/resolve-block/{slot}", post(resolve_block))
         .with_state(state))

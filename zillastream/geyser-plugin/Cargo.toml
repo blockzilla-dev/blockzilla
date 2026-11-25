@@ -23,8 +23,8 @@ blockzilla-archive-v2 = { path = "../../crates/compact-v2/blockzilla-archive-v2"
 blockzilla-compact = { path = "../../crates/compact-v2/blockzilla-compact", default-features = false }
 serde_json = { version = "1.0.151", features = ["raw_value"] }
 wincode = { version = "=0.6.1", features = ["derive"] }
-agave-geyser-plugin-interface = { git = "https://github.com/anza-xyz/agave", rev = "825efd18292aff6ffcf9daa0f7612f21b3531a72", features = ["agave-unstable-api"] }
-solana-transaction-status = { git = "https://github.com/anza-xyz/agave", rev = "825efd18292aff6ffcf9daa0f7612f21b3531a72", features = ["agave-unstable-api"] }
+agave-geyser-plugin-interface = { git = "https://github.com/anza-xyz/agave", rev = "a203300045b405f86c9c84308b2eae76af69ac3b", features = ["agave-unstable-api"] }
+solana-transaction-status = { git = "https://github.com/anza-xyz/agave", rev = "a203300045b405f86c9c84308b2eae76af69ac3b", features = ["agave-unstable-api"] }
 solana-transaction = { version = "=4.2.0", features = ["wincode"] }
 solana-transaction-error = { version = "=3.4.0", features = ["wincode"] }
 solana-message = { version = "=4.5.0", features = ["wincode"] }

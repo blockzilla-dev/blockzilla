@@ -3,6 +3,8 @@ pub mod cache;
 pub mod catalog;
 pub mod direct;
 pub mod http;
+pub mod ledger_compact;
+pub mod native_archive;
 pub mod recent;
 
 use anyhow::Result;

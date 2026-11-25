@@ -8,7 +8,8 @@ Agave capture, retained block delivery, relays and clients in this repository.
 - `crates/`: formats, shared Solana wire codecs, reader SDKs and byte sources.
 - `blockzilla/cli`: archive stream, token dump, inspect and native block builder.
 - `blockzilla/builder`: native capture worker (the existing binary name is preserved).
-- `blockzilla/get-block`: getBlock service and the private resolution service.
+- `blockzilla/get-block`: getBlock service, private resolver and provider range reader.
+- `blockzilla/ledger-archive`: optional read-only Agave ledger-to-Compact helper.
 - `blockzilla/archive-gateway`: immutable archive range service.
 - `zillastream/`: Geyser adapter, capture journal, relay and clients.
 - `examples/`: token, required-signer wallet and program dumps.

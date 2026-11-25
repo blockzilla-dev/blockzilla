@@ -365,6 +365,8 @@ mod tests {
             row,
             decoded_len: message_bytes.len() + metadata_bytes.len(),
             block: ArchiveV2HotBlockBlob {
+                consensus_block_id: None,
+                block_markers: Vec::new(),
                 header: ArchiveV2HotBlockHeader {
                     slot: 432_002,
                     parent_slot: 432_000,

@@ -1754,6 +1754,8 @@ mod tests {
     fn block_validation_checks_index_signature_count_and_transaction_regions() {
         let index = row(0, 432_000);
         let mut block = ArchiveV2HotBlockBlob {
+            consensus_block_id: None,
+            block_markers: Vec::new(),
             header: blockzilla_archive_v2::ArchiveV2HotBlockHeader {
                 slot: 432_000,
                 parent_slot: 431_999,
@@ -1783,6 +1785,8 @@ mod tests {
     fn sparse_genesis_has_an_explicit_zero_parent_without_a_previous_epoch() {
         let index = row(0, 0);
         let mut block = ArchiveV2HotBlockBlob {
+            consensus_block_id: None,
+            block_markers: Vec::new(),
             header: blockzilla_archive_v2::ArchiveV2HotBlockHeader {
                 slot: 0,
                 parent_slot: 0,
@@ -1825,6 +1829,8 @@ mod tests {
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0xb4, 0x10, 0x01, 0xe4, 0x1a,
         ];
         let mut block = ArchiveV2HotBlockBlob {
+            consensus_block_id: None,
+            block_markers: Vec::new(),
             header: blockzilla_archive_v2::ArchiveV2HotBlockHeader {
                 slot: 432_000,
                 parent_slot: 431_999,

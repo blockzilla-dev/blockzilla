@@ -1,5 +1,6 @@
 //! Native compact-block workers consuming Zillastream's Agave capture journal.
 pub mod confirmed;
+pub mod consensus;
 pub mod processed;
 pub mod worker;
 

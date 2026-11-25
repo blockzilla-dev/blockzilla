@@ -91,6 +91,8 @@ pub(crate) fn fixture() -> Fixture {
         payload_root: processed,
         source: frame.source.clone(),
         producer_generation: generation,
+        native_archive_catalog: None,
+        ledger_compact: None,
     })
     .unwrap();
     Fixture {
@@ -219,4 +221,98 @@ fn retirement_removes_processed_frame_without_changing_the_reader_cursor() {
         f.client.read(100, &request(&f.frame, "finalized")).unwrap(),
         RecentOutcome::Miss
     ));
+}
+
+#[test]
+fn finalized_slot_read_returns_original_frame_and_exact_root_without_client_hash() {
+    let f = fixture();
+    let before = fs::read(f.root.path().join("feed.sqlite")).unwrap();
+    let found = f.client.read_finalized_by_slot(100).unwrap().unwrap();
+    assert_eq!(found.frame.wire, f.frame.wire);
+    assert_eq!(found.metadata.blockhash, encode_hash(&[100; 32]));
+    assert_eq!(found.metadata.commitment, "finalized");
+    assert_eq!(found.root.envelope.event.kind, "root");
+    assert_eq!(found.root.source, found.frame.source);
+    found
+        .root
+        .envelope
+        .event
+        .matches_payload(&found.frame)
+        .unwrap();
+    assert_eq!(before, fs::read(f.root.path().join("feed.sqlite")).unwrap());
+    assert!(f.client.read_finalized_by_slot(99).unwrap().is_none());
+    assert!(f.client.read_finalized_by_slot(v2::SAFE + 1).is_err());
+}
+
+#[test]
+fn finalized_slot_read_never_selects_an_unrooted_or_ambiguous_bank() {
+    let f = fixture();
+    f.db.execute("UPDATE banks SET state='confirmed'", [])
+        .unwrap();
+    assert_eq!(
+        f.client
+            .read_finalized_by_slot(100)
+            .err()
+            .unwrap()
+            .to_string(),
+        "finalized_not_rooted"
+    );
+    let f = fixture();
+    f.db.execute(
+        "INSERT INTO banks SELECT slot,bank+1,artifact,payload_event,frame_sha256,state FROM banks",
+        [],
+    )
+    .unwrap();
+    assert_eq!(
+        f.client
+            .read_finalized_by_slot(100)
+            .err()
+            .unwrap()
+            .to_string(),
+        "ambiguous_rooted_bank"
+    );
+}
+
+#[test]
+fn finalized_slot_read_rejects_missing_or_changed_custody_instead_of_a_miss() {
+    for mutation in [
+        "root_missing",
+        "root_corrupt",
+        "payload_corrupt",
+        "payload_missing",
+        "expired",
+        "source_changed",
+    ] {
+        let f = fixture();
+        match mutation {
+            "root_missing" => {
+                f.db.execute("DELETE FROM feed_events WHERE sequence=3", [])
+                    .unwrap();
+            }
+            "root_corrupt" => {
+                f.db.execute("UPDATE feed_events SET event_json=json_set(event_json,'$.payload_frame_sha256',?1) WHERE sequence=3", ["b".repeat(64)]).unwrap();
+            }
+            "payload_corrupt" => fs::write(f.artifact.join("signatures.bin"), [43]).unwrap(),
+            "payload_missing" => fs::remove_file(f.artifact.join("signatures.bin")).unwrap(),
+            "expired" => {
+                f.db.execute(
+                    "UPDATE feed_retention SET base_sequence=3,base_sha256=?1",
+                    [&v2::fixtures::control(&f.frame, 3, "root", 2000).sha256],
+                )
+                .unwrap();
+            }
+            "source_changed" => {
+                let path = f.root.path().join("FEED.json");
+                let mut value: serde_json::Value =
+                    serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+                value["producer_generation"] = json!("b".repeat(64));
+                fs::write(path, serde_json::to_vec(&value).unwrap()).unwrap();
+            }
+            _ => unreachable!(),
+        }
+        assert!(
+            f.client.read_finalized_by_slot(100).is_err(),
+            "{mutation} became an archive miss"
+        );
+    }
 }

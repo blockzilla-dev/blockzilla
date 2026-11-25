@@ -127,6 +127,8 @@ fn fixture_with_tokens(loaded: bool, failed: bool, id: u32, tokens: bool) -> Vec
         }],
         message_bytes,
         metadata_bytes,
+        consensus_block_id: None,
+        block_markers: Vec::new(),
     };
     let raw = wincode::config::serialize(&block, wincode_leb128_config()).unwrap();
     let mut index = b"BZV2HIX1".to_vec();
@@ -633,7 +635,11 @@ fn compact_validation_matches_full_semantic_admission_without_projection() {
             .to_string();
         let compact = validate_bank_payload(&frame).unwrap_err().to_string();
         assert_eq!(compact, full, "semantic case {case}");
-        assert_eq!(bank_wallet_programs(&frame).unwrap_err().to_string(), full, "wallet semantic case {case}");
+        assert_eq!(
+            bank_wallet_programs(&frame).unwrap_err().to_string(),
+            full,
+            "wallet semantic case {case}"
+        );
     }
 }
 
@@ -793,7 +799,6 @@ fn wallet_program_facts_use_all_signers_and_reached_inner_programs_only_after_su
     assert!(bank_wallet_programs(&changed).is_err());
 }
 
-
 #[test]
 fn wallet_program_facts_share_native_semantic_admission() {
     let good = bank_fixture(false);
@@ -806,9 +811,11 @@ fn wallet_program_facts_share_native_semantic_admission() {
     let (summary, facts) = bank_wallet_programs(&bank_fixture(true)).unwrap();
     assert_eq!(summary.failed, 1);
     assert!(facts.is_empty());
-    let bad = bank_fixture_with(false, |block, _| edit_metadata(block, |m| {
-        m.inner_instructions.as_mut().unwrap()[0].instructions[0].program_id_index = 255;
-    }));
+    let bad = bank_fixture_with(false, |block, _| {
+        edit_metadata(block, |m| {
+            m.inner_instructions.as_mut().unwrap()[0].instructions[0].program_id_index = 255;
+        })
+    });
     assert!(bank_wallet_programs(&bad).is_err());
     let mut altered = good;
     altered.source.node_identity = base58(&[42; 32]);
