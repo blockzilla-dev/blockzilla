@@ -190,6 +190,11 @@ impl std::fmt::Debug for CachedHttpRangeSource {
 }
 
 impl CachedHttpRangeSource {
+    /// Open the cache with the default options.
+    ///
+    /// A cold object downloads with one range GET at a time. For a remote
+    /// object store such as R2, use
+    /// [`with_parallel_options`](Self::with_parallel_options).
     pub fn open(
         http: HttpRangeSource,
         cache_root: impl AsRef<Path>,
@@ -198,6 +203,9 @@ impl CachedHttpRangeSource {
         Self::with_options(http, cache_root, objects, HttpRangeCacheOptions::default())
     }
 
+    /// Open the cache. A cold object downloads with one range GET at a time.
+    /// [`with_parallel_options`](Self::with_parallel_options) is the
+    /// concurrent form.
     pub fn with_options(
         http: HttpRangeSource,
         cache_root: impl AsRef<Path>,
@@ -208,6 +216,17 @@ impl CachedHttpRangeSource {
     }
 
     /// Open the cache and use concurrent range requests for each cold object.
+    ///
+    /// `download_concurrency` workers (1 to
+    /// [`MAX_HTTP_CACHE_DOWNLOAD_CONCURRENCY`]) take the
+    /// `download_range_bytes` ranges of one cold object in turn. Cold objects
+    /// still download one after another, and the identity HEADs stay
+    /// sequential. Each range read uses the retry policy and all identity
+    /// checks of the [`HttpRangeSource`]. A failed range removes the private
+    /// partial file and publishes nothing. For a remote object store such as
+    /// R2, a value near
+    /// [`RangeSource::recommended_read_concurrency`] (8) cuts the cold time of
+    /// the control files (index, metadata, registry) without a new option.
     pub fn with_parallel_options(
         http: HttpRangeSource,
         cache_root: impl AsRef<Path>,

@@ -10,19 +10,20 @@ use std::{
     fmt,
     num::NonZeroU32,
     path::{Path, PathBuf},
+    sync::Arc,
 };
 
 use crate::{
     ArchiveIdentity, ArchiveReader, CachedHttpRangeSource, CompactV2InstructionSource,
     CompactV2InstructionSourceError, HashVerification, HttpObjectIdentity, HttpObjectPathLayout,
-    HttpRangeSource, HttpRangeSourceOptions, OpenOptions, PinnedLocalRangeSource, RangeSource,
-    SourceError, create_http_cache_directory,
+    HttpRangeCacheOptions, HttpRangeSource, HttpRangeSourceOptions, HttpRequestSigner, OpenOptions,
+    PinnedLocalRangeSource, RangeSource, SourceError, SourceResult, create_http_cache_directory,
 };
 pub use crate::{
     COMPACT_V2_PARTIAL_REGISTRY_PREFETCH_MIN_TRANSACTIONS,
     COMPACT_V2_PROJECTION_SCRATCH_RETAINED_BYTES, CompactV2ParallelRegistryMode,
     CompactV2ParallelRegistryReceipt, CompactV2ParallelScanConfig, CompactV2ParallelScanReceipt,
-    CompactV2RegistryReadPolicy, DEFAULT_COMPACT_V2_FULL_REGISTRY_BYTES,
+    CompactV2PipelineStage, CompactV2RegistryReadPolicy, DEFAULT_COMPACT_V2_FULL_REGISTRY_BYTES,
     MAX_ORDERED_PARALLEL_DECODE_WORKERS as MAX_COMPACT_V2_PARALLEL_WORKERS,
 };
 use crate::{CompactV2MessageSchema, CompactV2MetadataSchema};
@@ -66,11 +67,15 @@ const OPTIONAL_COMPACT_V2_OBJECTS: &[&str] = &[
     blockzilla_archive_v2::ARCHIVE_V2_GET_BLOCK_INDEX_FILE,
 ];
 
+/// Every format object the local reader may probe. It must hold each entry of
+/// `COMPACT_V2_REQUIRED_OBJECTS` and `COMPACT_V2_OPTIONAL_OBJECTS`: a probe for
+/// a name outside this list fails the open instead of reporting it absent.
 const LOCAL_COMPACT_V2_OBJECTS: &[&str] = &[
     blockzilla_archive_v2::ARCHIVE_V2_BLOCKS_FILE,
     blockzilla_archive_v2::ARCHIVE_V2_BLOCK_INDEX_FILE,
     blockzilla_archive_v2::ARCHIVE_V2_META_FILE,
     blockzilla_archive_v2::ARCHIVE_V2_PUBKEY_REGISTRY_FILE,
+    blockzilla_archive_v2::CAR_SLOT_META_FILE,
     blockzilla_archive_v2::ARCHIVE_V2_SIGNATURES_FILE,
     blockzilla_archive_v2::ARCHIVE_V2_GENESIS_BIN_FILE,
     blockzilla_archive_v2::ARCHIVE_V2_BLOCKHASH_REGISTRY_FILE,
@@ -321,21 +326,57 @@ struct NetworkObjectInventory {
 }
 
 impl NetworkObjectInventory {
+    /// Send the identity HEAD requests concurrently, then check the results
+    /// in the fixed object order. The admitted set and the first reported
+    /// error are the same as with one request at a time; a failure can only
+    /// cause some extra HEAD requests for later names.
     fn discover(http: &HttpRangeSource, epoch: u64) -> Result<Self> {
-        let mut objects = BTreeMap::new();
-        for &name in REQUIRED_COMPACT_V2_OBJECTS {
-            let identity = http.strong_identity(name).map_err(Error::RangeSource)?;
-            objects.insert(name.to_owned(), identity);
-        }
-        for &name in OPTIONAL_COMPACT_V2_OBJECTS {
-            if name == blockzilla_archive_v2::ARCHIVE_V2_GENESIS_BIN_FILE && epoch != 0 {
-                continue;
+        let names: Vec<(&'static str, bool)> = REQUIRED_COMPACT_V2_OBJECTS
+            .iter()
+            .map(|&name| (name, true))
+            .chain(
+                OPTIONAL_COMPACT_V2_OBJECTS
+                    .iter()
+                    .filter(|&&name| {
+                        name != blockzilla_archive_v2::ARCHIVE_V2_GENESIS_BIN_FILE || epoch == 0
+                    })
+                    .map(|&name| (name, false)),
+            )
+            .collect();
+        let workers = http
+            .recommended_read_concurrency()
+            .clamp(1, names.len().max(1));
+        let mut results: Vec<Option<SourceResult<HttpObjectIdentity>>> =
+            (0..names.len()).map(|_| None).collect();
+        let next = std::sync::atomic::AtomicUsize::new(0);
+        std::thread::scope(|scope| {
+            let handles: Vec<_> = (0..workers)
+                .map(|_| {
+                    scope.spawn(|| {
+                        let mut found = Vec::new();
+                        loop {
+                            let index = next.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                            let Some(&(name, _)) = names.get(index) else {
+                                break found;
+                            };
+                            found.push((index, http.strong_identity(name)));
+                        }
+                    })
+                })
+                .collect();
+            for handle in handles {
+                for (index, result) in handle.join().expect("identity worker panicked") {
+                    results[index] = Some(result);
+                }
             }
-            match http.strong_identity(name) {
+        });
+        let mut objects = BTreeMap::new();
+        for (&(name, required), result) in names.iter().zip(results) {
+            match result.expect("every object name has an identity result") {
                 Ok(identity) => {
                     objects.insert(name.to_owned(), identity);
                 }
-                Err(SourceError::NotFound(_)) => {}
+                Err(SourceError::NotFound(_)) if !required => {}
                 Err(error) => return Err(Error::RangeSource(error)),
             }
         }
@@ -457,7 +498,7 @@ impl CompactV2Archive {
         options: CompactV2OpenOptions,
     ) -> Result<Self> {
         let endpoint = ArchiveEndpoint::parse_origin(origin, options.allow_insecure_http)?;
-        Self::open_endpoint(endpoint, epoch, cache_root, options)
+        Self::open_endpoint(endpoint, epoch, cache_root, options, None)
     }
 
     /// Open a public HTTPS epoch directory, with each object directly below it.
@@ -469,7 +510,37 @@ impl CompactV2Archive {
         cache_root: impl AsRef<Path>,
     ) -> Result<Self> {
         let endpoint = ArchiveEndpoint::parse_epoch_url(epoch_url)?;
-        Self::open_endpoint(endpoint, epoch, cache_root, CompactV2OpenOptions::default())
+        Self::open_endpoint(
+            endpoint,
+            epoch,
+            cache_root,
+            CompactV2OpenOptions::default(),
+            None,
+        )
+    }
+
+    /// Open a private S3-compatible epoch directory with signed requests.
+    ///
+    /// For a Cloudflare R2 bucket through its S3 API, the URL is path-style:
+    /// `https://<account>.r2.cloudflarestorage.com/<bucket>/<prefix>/epoch-200`,
+    /// and the signer is `S3SigV4Signer::for_r2(S3Credentials::from_env()?)`.
+    /// The signer signs every request, retries included, so an indexer needs
+    /// no signing gateway. Admission, the strong-ETag pins, the retry policy
+    /// and the cache are the same as for [`Self::open_epoch_url`].
+    pub fn open_signed_epoch_url(
+        epoch_url: &str,
+        epoch: u64,
+        cache_root: impl AsRef<Path>,
+        signer: Arc<dyn HttpRequestSigner>,
+    ) -> Result<Self> {
+        let endpoint = ArchiveEndpoint::parse_epoch_url(epoch_url)?;
+        Self::open_endpoint(
+            endpoint,
+            epoch,
+            cache_root,
+            CompactV2OpenOptions::default(),
+            Some(signer),
+        )
     }
 
     fn open_endpoint(
@@ -477,20 +548,22 @@ impl CompactV2Archive {
         epoch: u64,
         cache_root: impl AsRef<Path>,
         options: CompactV2OpenOptions,
+        signer: Option<Arc<dyn HttpRequestSigner>>,
     ) -> Result<Self> {
         let cache_root = cache_root.as_ref();
         create_http_cache_directory(cache_root).map_err(Error::RangeSource)?;
 
-        let http = HttpRangeSource::with_options(
-            &endpoint.base_url,
-            epoch,
-            None,
-            HttpRangeSourceOptions {
-                allow_insecure_http: options.allow_insecure_http,
-                object_path_layout: endpoint.layout,
-                ..HttpRangeSourceOptions::default()
-            },
-        )
+        let http_options = HttpRangeSourceOptions {
+            allow_insecure_http: options.allow_insecure_http,
+            object_path_layout: endpoint.layout,
+            ..HttpRangeSourceOptions::default()
+        };
+        let http = match signer {
+            Some(signer) => {
+                HttpRangeSource::with_signer(&endpoint.base_url, epoch, signer, http_options)
+            }
+            None => HttpRangeSource::with_options(&endpoint.base_url, epoch, None, http_options),
+        }
         .map_err(Error::RangeSource)?;
         let inventory = NetworkObjectInventory::discover(&http, epoch)?;
         let object_set_id = inventory.object_set_id(epoch);
@@ -504,8 +577,18 @@ impl CompactV2Archive {
             .join(&object_set_id);
         create_http_cache_directory(&generation_cache).map_err(Error::RangeSource)?;
         let cached_objects = cache_objects(&inventory, epoch)?;
-        let cache = CachedHttpRangeSource::open(http, &generation_cache, &cached_objects)
-            .map_err(Error::RangeSource)?;
+        // A cold open downloads the index, metadata and registry with the
+        // source's own request concurrency. Each range is written and checked
+        // as before, so the cache files are identical.
+        let download_concurrency = http.recommended_read_concurrency();
+        let cache = CachedHttpRangeSource::with_parallel_options(
+            http,
+            &generation_cache,
+            &cached_objects,
+            HttpRangeCacheOptions::default(),
+            download_concurrency,
+        )
+        .map_err(Error::RangeSource)?;
         let source = CompactV2HttpObjectSet { cache, inventory };
         let reader = ArchiveReader::open_object_set_with_schemas(
             source,
@@ -551,6 +634,24 @@ impl CompactV2Archive {
         root: impl AsRef<Path>,
         descriptor: CompactV2LocalDescriptor,
     ) -> Result<Self> {
+        Self::open_local_with_read_concurrency(root, descriptor, 1)
+    }
+
+    /// [`Self::open_local`] with `readers` concurrent block reads in parallel
+    /// scans.
+    ///
+    /// A NAS or disk array serves several outstanding reads at the same time:
+    /// one reader measured about 41 MB/s and six readers about 259 MB/s on the
+    /// Blockzilla NAS. With `readers` above 1, `scan_ordered_parallel` reads
+    /// frame-aligned ranges concurrently with the `network_input` geometry of
+    /// its config, and still publishes blocks in exact order. `readers` is
+    /// clamped to `1..=PinnedLocalRangeSource::MAX_READ_CONCURRENCY`; 1 is the
+    /// same as `open_local`. Bytes, order and errors do not change.
+    pub fn open_local_with_read_concurrency(
+        root: impl AsRef<Path>,
+        descriptor: CompactV2LocalDescriptor,
+        readers: usize,
+    ) -> Result<Self> {
         descriptor.validate()?;
         let root = root.as_ref();
         if !root.is_absolute() {
@@ -559,7 +660,8 @@ impl CompactV2Archive {
             ));
         }
         let pinned = PinnedLocalRangeSource::new_anchored(root, LOCAL_COMPACT_V2_OBJECTS)
-            .map_err(Error::RangeSource)?;
+            .map_err(Error::RangeSource)?
+            .with_read_concurrency(readers);
         let reader = ArchiveReader::open_pinned_with_schemas(
             pinned,
             ArchiveIdentity {
@@ -662,15 +764,40 @@ impl CompactV2Archive {
     }
 
     /// Set the complete-registry memory limit for later sequential scans.
+    ///
+    /// This limit also applies to the registry that this archive keeps between
+    /// scans, including a registry that a parallel scan loaded. The
+    /// requested-transaction threshold does not change.
     pub fn set_full_registry_limit(&mut self, max_full_registry_bytes: u64) {
         self.registry_read_policy =
-            CompactV2RegistryReadPolicy::with_full_registry_limit(max_full_registry_bytes);
+            CompactV2RegistryReadPolicy::with_full_registry_limit(max_full_registry_bytes)
+                .with_min_requested_transactions(
+                    self.registry_read_policy.min_requested_transactions(),
+                );
+        self.release_full_registry_above_policy();
+    }
+
+    /// Set the smallest requested-transaction count for which a later partial
+    /// sequential scan loads one complete registry. Full scans ignore this
+    /// value. The default is one million.
+    ///
+    /// Parallel scans use
+    /// [`CompactV2ParallelScanConfig::with_full_registry_min_transactions`].
+    pub fn set_full_registry_min_transactions(&mut self, transactions: u64) {
+        self.registry_read_policy = self
+            .registry_read_policy
+            .with_min_requested_transactions(transactions);
+    }
+
+    /// Release a kept complete registry above the sequential policy limit.
+    fn release_full_registry_above_policy(&mut self) {
+        let max_bytes = self.registry_read_policy.max_full_registry_bytes();
         match &mut self.source {
             CompactV2ArchiveSource::Network(source) => {
-                source.release_full_registry_above(max_full_registry_bytes);
+                source.release_full_registry_above(max_bytes);
             }
             CompactV2ArchiveSource::Local(source) => {
-                source.release_full_registry_above(max_full_registry_bytes);
+                source.release_full_registry_above(max_bytes);
             }
         }
     }
@@ -693,10 +820,17 @@ impl CompactV2Archive {
     /// request needs exact instruction payload reconstruction.
     ///
     /// A full scan shares one complete registry across workers when it fits the
-    /// caller's configured byte limit. A partial scan uses the same path at one
-    /// million requested transactions. Smaller ranges use bounded worker-local
-    /// sparse caches. Network setup has already persisted the complete
-    /// ETag-bound registry before this policy reads it into shared memory.
+    /// caller's configured byte limit. A partial scan uses the same path at
+    /// `config.full_registry_min_transactions` requested transactions (default
+    /// one million). Smaller ranges use bounded worker-local sparse caches.
+    /// Network setup has already persisted the complete ETag-bound registry
+    /// before this policy reads it into shared memory.
+    ///
+    /// The archive keeps a loaded registry for later scans when it fits the
+    /// [`Self::set_full_registry_limit`] limit. A later scan then reads no
+    /// registry bytes for the complete-registry prefetch. Bound filter keys
+    /// (mint, program or signer) are also kept, and a later scan whose keys
+    /// they cover binds them without registry reads.
     pub fn scan_ordered_parallel(
         &mut self,
         request: &ScanRequest,
@@ -704,14 +838,48 @@ impl CompactV2Archive {
         config: CompactV2ParallelScanConfig,
     ) -> QueryResult<CompactV2ParallelScanReceipt> {
         let config = parallel_config_for_admitted_transport(self.transport_kind, config);
-        match &mut self.source {
+        let receipt = match &mut self.source {
             CompactV2ArchiveSource::Network(source) => {
                 source.scan_ordered_parallel(request, sink, config)
             }
             CompactV2ArchiveSource::Local(source) => {
                 source.scan_ordered_parallel(request, sink, config)
             }
-        }
+        };
+        self.release_full_registry_above_policy();
+        receipt
+    }
+
+    /// Run `map` on the parallel workers and `consume` on the ordered thread.
+    ///
+    /// This is [`CompactV2InstructionSource::scan_ordered_parallel_map`] with
+    /// the registry rules of [`Self::scan_ordered_parallel`]. `consume` gets
+    /// the `map` results in exact source order, only for blocks that pass all
+    /// publication checks. `map` must not have external side effects. The
+    /// request must not include primary signatures.
+    pub fn scan_ordered_parallel_map<T, M, C>(
+        &mut self,
+        request: &ScanRequest,
+        config: CompactV2ParallelScanConfig,
+        map: M,
+        consume: C,
+    ) -> QueryResult<CompactV2ParallelScanReceipt>
+    where
+        T: Send,
+        M: Fn(BlockView<'_>) -> QueryResult<T> + Sync,
+        C: FnMut(T) -> QueryResult<()>,
+    {
+        let config = parallel_config_for_admitted_transport(self.transport_kind, config);
+        let receipt = match &mut self.source {
+            CompactV2ArchiveSource::Network(source) => {
+                source.scan_ordered_parallel_map(request, config, map, consume)
+            }
+            CompactV2ArchiveSource::Local(source) => {
+                source.scan_ordered_parallel_map(request, config, map, consume)
+            }
+        };
+        self.release_full_registry_above_policy();
+        receipt
     }
 
     /// Token-only projection with source registry IDs and a discovery resolver.
@@ -723,14 +891,16 @@ impl CompactV2Archive {
         config: CompactV2ParallelScanConfig,
     ) -> QueryResult<CompactV2ParallelScanReceipt> {
         let config = parallel_config_for_admitted_transport(self.transport_kind, config);
-        match &mut self.source {
+        let receipt = match &mut self.source {
             CompactV2ArchiveSource::Network(source) => {
                 source.scan_token_balances_indexed_parallel(request, sink, config)
             }
             CompactV2ArchiveSource::Local(source) => {
                 source.scan_token_balances_indexed_parallel(request, sink, config)
             }
-        }
+        };
+        self.release_full_registry_above_policy();
+        receipt
     }
 
     /// Describe the admitted registry for a separate indexed output and mapping log.
@@ -1048,6 +1218,19 @@ fn io_snapshot(cache: &CachedHttpRangeSource) -> ArchiveIoSnapshot {
 mod tests {
     use super::*;
 
+    #[test]
+    fn local_allowlist_holds_every_object_the_reader_probes() {
+        for name in crate::COMPACT_V2_REQUIRED_OBJECTS
+            .into_iter()
+            .chain(crate::COMPACT_V2_OPTIONAL_OBJECTS)
+        {
+            assert!(
+                LOCAL_COMPACT_V2_OBJECTS.contains(&name),
+                "{name} is missing from the local object allowlist"
+            );
+        }
+    }
+
     fn identity(length: u64, etag: &str) -> HttpObjectIdentity {
         HttpObjectIdentity {
             length,
@@ -1287,5 +1470,160 @@ mod tests {
             Error::Reader(crate::Error::MissingLocalFile(name))
                 if name == blockzilla_archive_v2::ARCHIVE_V2_BLOCKS_FILE
         ));
+    }
+
+    /// A local facade over one query fixture with the default policy.
+    fn fixture_archive(root: &Path) -> CompactV2Archive {
+        use crate::compact_query::tests::{EPOCH, FIRST_SLOT, SLOTS_PER_EPOCH};
+
+        // The local allowlist holds every object the reader probes.
+        let pinned = PinnedLocalRangeSource::new_anchored(root, LOCAL_COMPACT_V2_OBJECTS).unwrap();
+        let reader = ArchiveReader::open_pinned_with_schemas(
+            pinned,
+            ArchiveIdentity {
+                cluster_id: "testnet".into(),
+                epoch: EPOCH,
+                generation_id: "facade-registry-fixture".into(),
+                first_slot: FIRST_SLOT,
+                slots_per_epoch: SLOTS_PER_EPOCH,
+            },
+            OpenOptions {
+                epoch_first_slot: Some(FIRST_SLOT),
+                ..OpenOptions::default()
+            },
+            CompactV2MessageSchema::Current,
+            CompactV2MetadataSchema::CurrentTypedError,
+        )
+        .unwrap();
+        let source = CompactV2InstructionSource::new(reader, FIRST_SLOT).unwrap();
+        CompactV2Archive {
+            identity: source.identity().clone(),
+            source: CompactV2ArchiveSource::Local(Box::new(source)),
+            bound_source_size_bytes: 0,
+            cache_root: PathBuf::new(),
+            transport_kind: CompactV2TransportKind::LocalDirectory,
+            candidate_id: None,
+            registry_read_policy: CompactV2RegistryReadPolicy::with_full_registry_limit(
+                DEFAULT_COMPACT_V2_FULL_REGISTRY_BYTES,
+            ),
+        }
+    }
+
+    #[test]
+    fn parallel_scans_keep_a_registry_within_the_facade_retention_limit() {
+        use crate::compact_query::tests::{block_bytes, indexer_fixture};
+
+        let fixture = indexer_fixture(12);
+        let mut archive = fixture_archive(fixture.directory.path());
+        let request = ScanRequest::all()
+            .allow_unverified_source()
+            .without_instruction_data()
+            .without_primary_signatures();
+        let config = CompactV2ParallelScanConfig::new(2);
+        let parallel = |archive: &mut CompactV2Archive| {
+            let mut bytes = Vec::new();
+            let mut sink = FnBlockSink::new(|block: BlockView<'_>| {
+                bytes.extend_from_slice(&block_bytes(block));
+                Ok(())
+            });
+            let receipt = archive
+                .scan_ordered_parallel(&request, &mut sink, config)
+                .unwrap();
+            (bytes, receipt.registry.prefetch_read_calls)
+        };
+
+        // The default 1 GiB limit keeps the registry for the next scans.
+        let (expected, calls) = parallel(&mut archive);
+        assert!(!expected.is_empty());
+        assert_eq!(calls, 1);
+        assert_eq!(parallel(&mut archive), (expected.clone(), 0));
+        let mut mapped = Vec::new();
+        let receipt = archive
+            .scan_ordered_parallel_map(
+                &request,
+                config,
+                |block| Ok(block_bytes(block)),
+                |bytes: Vec<u8>| {
+                    mapped.extend_from_slice(&bytes);
+                    Ok(())
+                },
+            )
+            .unwrap();
+        assert_eq!(mapped, expected);
+        assert_eq!(receipt.registry.prefetch_read_calls, 0);
+        // The facade re-exports the stage type of the receipt.
+        let stage: CompactV2PipelineStage = receipt.limiting_stage();
+        assert!(!stage.to_string().is_empty());
+        let mut sequential = Vec::new();
+        let receipt = archive
+            .for_each_block(&request, |block| {
+                sequential.extend_from_slice(&block_bytes(block));
+                Ok(())
+            })
+            .unwrap();
+        assert_eq!(sequential, expected);
+        let block_read_bytes = receipt.io.source_read_bytes;
+
+        // A zero retention limit releases the registry after each scan. The
+        // threshold stays when the limit changes.
+        archive.set_full_registry_min_transactions(7);
+        archive.set_full_registry_limit(0);
+        assert_eq!(archive.registry_read_policy().max_full_registry_bytes(), 0);
+        assert_eq!(
+            archive.registry_read_policy().min_requested_transactions(),
+            7
+        );
+        assert_eq!(parallel(&mut archive), (expected.clone(), 1));
+        assert_eq!(parallel(&mut archive), (expected.clone(), 1));
+        assert!(!archive.release_full_registry());
+
+        archive.set_full_registry_limit(DEFAULT_COMPACT_V2_FULL_REGISTRY_BYTES);
+        assert_eq!(
+            archive.registry_read_policy().min_requested_transactions(),
+            7
+        );
+        assert_eq!(parallel(&mut archive), (expected.clone(), 1));
+        assert_eq!(parallel(&mut archive), (expected, 0));
+        // The kept registry also serves the sequential scan: the same reads.
+        let receipt = archive.for_each_block(&request, |_| Ok(())).unwrap();
+        assert_eq!(receipt.io.source_read_bytes, block_read_bytes);
+        assert!(archive.release_full_registry());
+    }
+
+    #[test]
+    fn facade_sequential_threshold_permits_a_small_dense_scan() {
+        use crate::compact_query::tests::{block_bytes, indexer_fixture};
+
+        let fixture = indexer_fixture(12);
+        let request = ScanRequest::bounded(ScanRange {
+            first_block: 2,
+            block_count: NonZeroU32::new(8).unwrap(),
+        })
+        .allow_unverified_source()
+        .without_instruction_data()
+        .without_primary_signatures();
+        let scan = |archive: &mut CompactV2Archive| {
+            let mut bytes = Vec::new();
+            let receipt = archive
+                .for_each_block(&request, |block| {
+                    bytes.extend_from_slice(&block_bytes(block));
+                    Ok(())
+                })
+                .unwrap();
+            (bytes, receipt.io.source_read_calls.unwrap())
+        };
+
+        let mut sparse = fixture_archive(fixture.directory.path());
+        let (expected, sparse_calls) = scan(&mut sparse);
+        assert!(!sparse.release_full_registry());
+
+        let mut dense = fixture_archive(fixture.directory.path());
+        dense.set_full_registry_min_transactions(1);
+        let (actual, dense_calls) = scan(&mut dense);
+        assert_eq!(actual, expected);
+        // This registry is one chunk, so both modes read it with one call.
+        assert_eq!(dense_calls, sparse_calls);
+        // Only the dense scan kept a complete registry.
+        assert!(dense.release_full_registry());
     }
 }

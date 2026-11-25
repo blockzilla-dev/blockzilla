@@ -367,10 +367,27 @@ impl ScanRequest {
         self
     }
 
+    /// Recorded token balances only: no instructions, no primary signatures
+    /// and no required signers.
+    ///
+    /// This is [`Self::all`] with [`Self::without_instructions`],
+    /// [`Self::without_primary_signatures`], [`Self::without_required_signers`]
+    /// and [`Self::with_token_balances`]. Use it for token exports. A request
+    /// built from `all().without_instructions()` still reads one signature
+    /// per transaction and resolves every required signer.
+    pub fn token_balances_only() -> Self {
+        Self::all()
+            .without_instructions()
+            .without_primary_signatures()
+            .without_required_signers()
+            .with_token_balances()
+    }
+
     /// Omit the complete instruction stream from canonical output.
     ///
     /// This is useful for token-balance-only jobs. It also disables the
-    /// instruction and CPI completeness gates.
+    /// instruction and CPI completeness gates. Primary signatures and
+    /// required signers stay on; see [`Self::token_balances_only`].
     pub fn without_instructions(mut self) -> Self {
         self.include_instructions = false;
         self.include_instruction_accounts = false;
@@ -616,6 +633,174 @@ pub trait ArchiveInstructionSourceExt: ArchiveInstructionSource {
 
 impl<T: ArchiveInstructionSource + ?Sized> ArchiveInstructionSourceExt for T {}
 
+/// The order-independent publication checks of one canonical block.
+///
+/// [`OrderedBlockPublisher::publish`] runs these checks on the ordered thread.
+/// A parallel adapter can run [`BlockPrecheck::check`] on a worker and pass the
+/// result to [`OrderedBlockPublisher::publish_prechecked`]. The checks are the
+/// block structure, the request's coverage gates and the per-block receipt
+/// counts; they do not read primary signatures, so a precheck stays valid when
+/// the ordered thread assigns signatures later.
+#[derive(Debug)]
+pub struct BlockPrecheck {
+    outcome: Result<ScanReceipt>,
+}
+
+impl BlockPrecheck {
+    /// Check `block` against `request`.
+    pub fn check(request: &ScanRequest, block: &CanonicalBlock) -> Self {
+        Self {
+            outcome: Self::check_block(request, block),
+        }
+    }
+
+    /// The block's receipt counts, or the first check error in the order of
+    /// the single-pass publisher.
+    fn check_block(request: &ScanRequest, block: &CanonicalBlock) -> Result<ScanReceipt> {
+        block.validate()?;
+        let mut delta = ScanReceipt::default();
+        if let Some(counts) = block.counts {
+            if !request.counts_only
+                || !block.transactions.is_empty()
+                || counts.recorded_inner_instructions > counts.instructions
+                || counts.incomplete_instructions > counts.transactions
+                || counts.incomplete_cpi > counts.transactions
+            {
+                return Err(Error::InvalidStream(
+                    "invalid count-only block projection".into(),
+                ));
+            }
+            if (request.require_complete_instructions && counts.incomplete_instructions != 0)
+                || (request.require_complete_cpi && counts.incomplete_cpi != 0)
+            {
+                return Err(Error::InvalidTransaction(
+                    "count scan has incomplete instruction coverage".into(),
+                ));
+            }
+            delta.transactions = counts.transactions;
+            delta.instructions = counts.instructions;
+            delta.instructions_not_requested = counts.instructions;
+            delta.transactions_with_incomplete_instructions = counts.incomplete_instructions;
+            delta.transactions_with_incomplete_cpi = counts.incomplete_cpi;
+            delta.transactions_with_unknown_execution = counts.transactions;
+            return Ok(delta);
+        }
+
+        for transaction in &block.transactions {
+            if request.omit_failed_transaction_details
+                && transaction.header.status == ExecutionStatus::Failed
+            {
+                continue; // Omitted failed details are not missing source evidence.
+            }
+            if !matches!(
+                transaction.header.instruction_coverage,
+                InstructionCoverage::Complete
+            ) {
+                increment(
+                    &mut delta.transactions_with_incomplete_instructions,
+                    1,
+                    "incomplete-instruction transaction count",
+                )?;
+                if request.require_complete_instructions {
+                    return Err(Error::InvalidTransaction(format!(
+                        "transaction {} in block {} has incomplete instruction coverage",
+                        transaction.header.tx_index, block.header.block_ordinal
+                    )));
+                }
+            }
+            for instruction in &transaction.instructions {
+                if matches!(
+                    instruction.data_coverage,
+                    InstructionDataCoverage::NotRequested
+                ) {
+                    increment(
+                        &mut delta.instructions_not_requested,
+                        1,
+                        "not-requested instruction-data count",
+                    )?;
+                } else if matches!(
+                    instruction.data_coverage,
+                    InstructionDataCoverage::Unknown(_)
+                ) {
+                    increment(
+                        &mut delta.instructions_with_unknown_data,
+                        1,
+                        "unknown instruction-data count",
+                    )?;
+                }
+                if !matches!(instruction.data_coverage, InstructionDataCoverage::Exact)
+                    && request
+                        .instruction_data
+                        .requires_optional(instruction.program_id.as_ref())
+                    && request.require_complete_instruction_data
+                {
+                    return Err(Error::InvalidTransaction(format!(
+                        "instruction {} in transaction {} block {} has incomplete data coverage",
+                        instruction.coordinate.order,
+                        transaction.header.tx_index,
+                        block.header.block_ordinal
+                    )));
+                }
+            }
+            if !matches!(transaction.header.cpi_coverage, CpiCoverage::Complete) {
+                increment(
+                    &mut delta.transactions_with_incomplete_cpi,
+                    1,
+                    "incomplete-CPI transaction count",
+                )?;
+                if request.require_complete_cpi {
+                    return Err(Error::InvalidTransaction(format!(
+                        "transaction {} in block {} has incomplete CPI coverage",
+                        transaction.header.tx_index, block.header.block_ordinal
+                    )));
+                }
+            }
+            if matches!(transaction.header.status, ExecutionStatus::Unknown(_)) {
+                increment(
+                    &mut delta.transactions_with_unknown_execution,
+                    1,
+                    "unknown-execution transaction count",
+                )?;
+                if request.require_known_execution {
+                    return Err(Error::InvalidTransaction(format!(
+                        "transaction {} in block {} has unknown execution state",
+                        transaction.header.tx_index, block.header.block_ordinal
+                    )));
+                }
+            }
+            if request.token_balances.is_requested()
+                && !matches!(
+                    transaction.token_balance_coverage,
+                    TokenBalanceCoverage::Complete
+                )
+            {
+                increment(
+                    &mut delta.transactions_with_incomplete_token_balances,
+                    1,
+                    "incomplete-token-balance transaction count",
+                )?;
+                if request.require_complete_token_balances {
+                    return Err(Error::InvalidTransaction(format!(
+                        "transaction {} in block {} has incomplete token-balance coverage",
+                        transaction.header.tx_index, block.header.block_ordinal
+                    )));
+                }
+            }
+            increment(
+                &mut delta.instructions,
+                u64::try_from(transaction.instructions.len()).map_err(|_| {
+                    Error::InvalidTransaction("instruction count exceeds u64".into())
+                })?,
+                "instruction count",
+            )?;
+        }
+
+        delta.transactions = u64::try_from(block.transactions.len())
+            .map_err(|_| Error::InvalidTransaction("transaction count exceeds u64".into()))?;
+        Ok(delta)
+    }
+}
+
 /// Checked publisher used by format adapters.
 ///
 /// It enforces exact block-row order, source epoch binding, transaction order,
@@ -651,6 +836,31 @@ impl<'a> OrderedBlockPublisher<'a> {
     }
 
     pub fn publish(&mut self, block: &CanonicalBlock) -> Result<()> {
+        self.check_order(block)?;
+        let delta = BlockPrecheck::check_block(self.request, block)?;
+        self.commit(block, &delta)
+    }
+
+    /// [`Self::publish`] with the order-independent checks already done by
+    /// [`BlockPrecheck::check`] on another thread.
+    ///
+    /// The order checks (range, epoch, ordinal and slot) run here first, as in
+    /// `publish`, then the precheck result. So the first error and the receipt
+    /// are the same as with `publish`. A parallel adapter can run the per-block
+    /// work on its workers and keep only constant work per block on the
+    /// ordered thread.
+    pub fn publish_prechecked(
+        &mut self,
+        block: &CanonicalBlock,
+        precheck: BlockPrecheck,
+    ) -> Result<()> {
+        self.check_order(block)?;
+        let delta = precheck.outcome?;
+        self.commit(block, &delta)
+    }
+
+    /// Checks that depend on the stream position of the block.
+    fn check_order(&self, block: &CanonicalBlock) -> Result<()> {
         if self.next_block >= self.end_block {
             return Err(Error::InvalidStream(
                 "adapter published more blocks than the request".into(),
@@ -688,184 +898,91 @@ impl<'a> OrderedBlockPublisher<'a> {
                 block.header.slot
             )));
         }
-        block.validate()?;
+        Ok(())
+    }
 
-        if let Some(counts) = block.counts {
-            if !self.request.counts_only
-                || !block.transactions.is_empty()
-                || counts.recorded_inner_instructions > counts.instructions
-                || counts.incomplete_instructions > counts.transactions
-                || counts.incomplete_cpi > counts.transactions
-            {
-                return Err(Error::InvalidStream(
-                    "invalid count-only block projection".into(),
-                ));
-            }
-            if (self.request.require_complete_instructions && counts.incomplete_instructions != 0)
-                || (self.request.require_complete_cpi && counts.incomplete_cpi != 0)
-            {
-                return Err(Error::InvalidTransaction(
-                    "count scan has incomplete instruction coverage".into(),
-                ));
-            }
+    /// Add the block's counts and deliver it. Count-only blocks add their
+    /// counts before the sink runs; transaction blocks add the per-transaction
+    /// counts before and the block and transaction totals after the sink, as
+    /// the single-pass publisher did.
+    fn commit(&mut self, block: &CanonicalBlock, delta: &ScanReceipt) -> Result<()> {
+        if block.counts.is_some() {
             increment(&mut self.receipt.blocks, 1, "block count")?;
             increment(
                 &mut self.receipt.transactions,
-                counts.transactions,
+                delta.transactions,
                 "transaction count",
             )?;
             increment(
                 &mut self.receipt.instructions,
-                counts.instructions,
+                delta.instructions,
                 "instruction count",
             )?;
             increment(
                 &mut self.receipt.instructions_not_requested,
-                counts.instructions,
+                delta.instructions_not_requested,
                 "instruction data count",
             )?;
             increment(
                 &mut self.receipt.transactions_with_incomplete_instructions,
-                counts.incomplete_instructions,
+                delta.transactions_with_incomplete_instructions,
                 "instruction coverage",
             )?;
             increment(
                 &mut self.receipt.transactions_with_incomplete_cpi,
-                counts.incomplete_cpi,
+                delta.transactions_with_incomplete_cpi,
                 "CPI coverage",
             )?;
             increment(
                 &mut self.receipt.transactions_with_unknown_execution,
-                counts.transactions,
+                delta.transactions_with_unknown_execution,
                 "execution coverage",
             )?;
             self.sink.visit_block(block.as_view())?;
-            self.previous_slot = Some(block.header.slot);
-            self.next_block = self
-                .next_block
-                .checked_add(1)
-                .ok_or_else(|| Error::InvalidStream("block ordinal overflow".into()))?;
-            return Ok(());
-        }
-
-        for transaction in &block.transactions {
-            if self.request.omit_failed_transaction_details
-                && transaction.header.status == ExecutionStatus::Failed
-            {
-                continue; // Omitted failed details are not missing source evidence.
-            }
-            if !matches!(
-                transaction.header.instruction_coverage,
-                InstructionCoverage::Complete
-            ) {
-                increment(
-                    &mut self.receipt.transactions_with_incomplete_instructions,
-                    1,
-                    "incomplete-instruction transaction count",
-                )?;
-                if self.request.require_complete_instructions {
-                    return Err(Error::InvalidTransaction(format!(
-                        "transaction {} in block {} has incomplete instruction coverage",
-                        transaction.header.tx_index, block.header.block_ordinal
-                    )));
-                }
-            }
-            for instruction in &transaction.instructions {
-                if matches!(
-                    instruction.data_coverage,
-                    InstructionDataCoverage::NotRequested
-                ) {
-                    increment(
-                        &mut self.receipt.instructions_not_requested,
-                        1,
-                        "not-requested instruction-data count",
-                    )?;
-                } else if matches!(
-                    instruction.data_coverage,
-                    InstructionDataCoverage::Unknown(_)
-                ) {
-                    increment(
-                        &mut self.receipt.instructions_with_unknown_data,
-                        1,
-                        "unknown instruction-data count",
-                    )?;
-                }
-                if !matches!(instruction.data_coverage, InstructionDataCoverage::Exact)
-                    && self
-                        .request
-                        .instruction_data
-                        .requires_optional(instruction.program_id.as_ref())
-                    && self.request.require_complete_instruction_data
-                {
-                    return Err(Error::InvalidTransaction(format!(
-                        "instruction {} in transaction {} block {} has incomplete data coverage",
-                        instruction.coordinate.order,
-                        transaction.header.tx_index,
-                        block.header.block_ordinal
-                    )));
-                }
-            }
-            if !matches!(transaction.header.cpi_coverage, CpiCoverage::Complete) {
-                increment(
-                    &mut self.receipt.transactions_with_incomplete_cpi,
-                    1,
-                    "incomplete-CPI transaction count",
-                )?;
-                if self.request.require_complete_cpi {
-                    return Err(Error::InvalidTransaction(format!(
-                        "transaction {} in block {} has incomplete CPI coverage",
-                        transaction.header.tx_index, block.header.block_ordinal
-                    )));
-                }
-            }
-            if matches!(transaction.header.status, ExecutionStatus::Unknown(_)) {
-                increment(
-                    &mut self.receipt.transactions_with_unknown_execution,
-                    1,
-                    "unknown-execution transaction count",
-                )?;
-                if self.request.require_known_execution {
-                    return Err(Error::InvalidTransaction(format!(
-                        "transaction {} in block {} has unknown execution state",
-                        transaction.header.tx_index, block.header.block_ordinal
-                    )));
-                }
-            }
-            if self.request.token_balances.is_requested()
-                && !matches!(
-                    transaction.token_balance_coverage,
-                    TokenBalanceCoverage::Complete
-                )
-            {
-                increment(
-                    &mut self.receipt.transactions_with_incomplete_token_balances,
-                    1,
-                    "incomplete-token-balance transaction count",
-                )?;
-                if self.request.require_complete_token_balances {
-                    return Err(Error::InvalidTransaction(format!(
-                        "transaction {} in block {} has incomplete token-balance coverage",
-                        transaction.header.tx_index, block.header.block_ordinal
-                    )));
-                }
-            }
+        } else {
+            increment(
+                &mut self.receipt.transactions_with_incomplete_instructions,
+                delta.transactions_with_incomplete_instructions,
+                "incomplete-instruction transaction count",
+            )?;
+            increment(
+                &mut self.receipt.instructions_not_requested,
+                delta.instructions_not_requested,
+                "not-requested instruction-data count",
+            )?;
+            increment(
+                &mut self.receipt.instructions_with_unknown_data,
+                delta.instructions_with_unknown_data,
+                "unknown instruction-data count",
+            )?;
+            increment(
+                &mut self.receipt.transactions_with_incomplete_cpi,
+                delta.transactions_with_incomplete_cpi,
+                "incomplete-CPI transaction count",
+            )?;
+            increment(
+                &mut self.receipt.transactions_with_unknown_execution,
+                delta.transactions_with_unknown_execution,
+                "unknown-execution transaction count",
+            )?;
+            increment(
+                &mut self.receipt.transactions_with_incomplete_token_balances,
+                delta.transactions_with_incomplete_token_balances,
+                "incomplete-token-balance transaction count",
+            )?;
             increment(
                 &mut self.receipt.instructions,
-                u64::try_from(transaction.instructions.len()).map_err(|_| {
-                    Error::InvalidTransaction("instruction count exceeds u64".into())
-                })?,
+                delta.instructions,
                 "instruction count",
             )?;
+            self.sink.visit_block(block.as_view())?;
+            increment(&mut self.receipt.blocks, 1, "block count")?;
+            increment(
+                &mut self.receipt.transactions,
+                delta.transactions,
+                "transaction count",
+            )?;
         }
-
-        self.sink.visit_block(block.as_view())?;
-        increment(&mut self.receipt.blocks, 1, "block count")?;
-        increment(
-            &mut self.receipt.transactions,
-            u64::try_from(block.transactions.len())
-                .map_err(|_| Error::InvalidTransaction("transaction count exceeds u64".into()))?,
-            "transaction count",
-        )?;
         self.previous_slot = Some(block.header.slot);
         self.next_block = self
             .next_block
@@ -1166,6 +1283,157 @@ mod tests {
             validate_request(&identity, &invalid),
             Err(Error::InvalidRequest(_))
         ));
+    }
+
+    /// Publish `blocks` once with `publish` and once with worker-style
+    /// prechecks, and return both results with the number of sink calls.
+    fn publish_both_ways(
+        identity: &SourceIdentity,
+        request: &ScanRequest,
+        blocks: &[CanonicalBlock],
+    ) -> [(std::result::Result<ScanReceipt, String>, usize); 2] {
+        struct Counting(usize);
+        impl BlockSink for Counting {
+            fn visit_block(&mut self, _: BlockView<'_>) -> Result<()> {
+                self.0 += 1;
+                Ok(())
+            }
+        }
+        let run = |prechecked: bool| {
+            let mut sink = Counting(0);
+            let result = (|| {
+                let mut publisher = OrderedBlockPublisher::new(identity, request, &mut sink)?;
+                for block in blocks {
+                    if prechecked {
+                        let check = BlockPrecheck::check(request, block);
+                        publisher.publish_prechecked(block, check)?;
+                    } else {
+                        publisher.publish(block)?;
+                    }
+                }
+                publisher.finish()
+            })()
+            .map_err(|error| error.to_string());
+            (result, sink.0)
+        };
+        [run(false), run(true)]
+    }
+
+    #[test]
+    fn prechecked_publication_equals_single_pass_publication() {
+        let source = fixture(SourceVerification::ObjectSetBound);
+        let identity = &source.identity;
+        let good = source.blocks.clone();
+        let requests = [
+            ScanRequest::all(),
+            ScanRequest::all().allow_incomplete_instructions(),
+            ScanRequest::all().allow_incomplete_cpi(),
+            ScanRequest::all().allow_unknown_execution(),
+            ScanRequest::all().without_failed_transaction_details(),
+            ScanRequest::all()
+                .without_instructions()
+                .with_token_balances(),
+            ScanRequest::token_balances_only().allow_incomplete_token_balances(),
+            ScanRequest::all().allow_incomplete_instruction_data(),
+        ];
+        let mut variants = vec![good.clone()];
+        let mut edit = |change: &dyn Fn(&mut CanonicalTransaction)| {
+            let mut blocks = good.clone();
+            change(&mut blocks[1].transactions[0]);
+            variants.push(blocks);
+        };
+        edit(&|tx| {
+            tx.header.instruction_coverage =
+                InstructionCoverage::Unknown(crate::CoverageReason::RawTransaction)
+        });
+        edit(&|tx| tx.header.cpi_coverage = CpiCoverage::NotRecorded);
+        edit(&|tx| {
+            tx.header.status = ExecutionStatus::Unknown(crate::CoverageReason::MetadataAbsent)
+        });
+        edit(&|tx| tx.header.status = ExecutionStatus::Failed);
+        edit(&|tx| {
+            tx.token_balance_coverage =
+                TokenBalanceCoverage::Unknown(crate::CoverageReason::MetadataAbsent)
+        });
+        edit(&|tx| tx.token_balance_coverage = TokenBalanceCoverage::Complete);
+        edit(&|tx| {
+            tx.instructions[0].data_coverage =
+                InstructionDataCoverage::Unknown(crate::CoverageReason::AmbiguousInstructionData)
+        });
+        edit(&|tx| tx.instructions[0].data_coverage = InstructionDataCoverage::NotRequested);
+        // A structure error that `CanonicalBlock::validate` finds.
+        edit(&|tx| tx.header.tx_index = 5);
+        // Order errors that the ordered thread finds.
+        let mut wrong_ordinal = good.clone();
+        wrong_ordinal[1].header.block_ordinal = 3;
+        variants.push(wrong_ordinal);
+        let mut wrong_epoch = good.clone();
+        wrong_epoch[0].header.epoch = 8;
+        variants.push(wrong_epoch);
+        let mut repeated_slot = good.clone();
+        repeated_slot[1].header.slot = repeated_slot[0].header.slot;
+        variants.push(repeated_slot);
+        let mut cases: Vec<(ScanRequest, Vec<CanonicalBlock>)> = Vec::new();
+        for request in &requests {
+            for blocks in &variants {
+                cases.push((request.clone(), blocks.clone()));
+            }
+        }
+        // Count-only blocks, valid and invalid.
+        let counts = ScanRequest::all().count_instructions_only();
+        let mut counted = good.clone();
+        for block in &mut counted {
+            block.transactions.clear();
+            block.counts = Some(crate::BlockCounts {
+                transactions: 1,
+                instructions: 2,
+                recorded_inner_instructions: 1,
+                incomplete_instructions: 0,
+                incomplete_cpi: 0,
+            });
+        }
+        cases.push((counts.clone(), counted.clone()));
+        counted[1].counts.as_mut().unwrap().incomplete_cpi = 1;
+        cases.push((counts.clone(), counted.clone()));
+        counted[1]
+            .counts
+            .as_mut()
+            .unwrap()
+            .recorded_inner_instructions = 9;
+        cases.push((counts, counted));
+
+        let mut errors = 0;
+        for (number, (request, blocks)) in cases.iter().enumerate() {
+            let [single, prechecked] = publish_both_ways(identity, request, blocks);
+            assert_eq!(single, prechecked, "case {number}");
+            errors += usize::from(single.0.is_err());
+        }
+        // The cases must cover both accepted and rejected streams.
+        assert!(
+            errors > 10 && errors + 5 < cases.len(),
+            "{errors} of {}",
+            cases.len()
+        );
+    }
+
+    #[test]
+    fn token_balances_only_reads_no_signatures_signers_or_instructions() {
+        let identity = fixture(SourceVerification::ObjectSetBound).identity;
+        let request = ScanRequest::token_balances_only();
+        assert_eq!(
+            request,
+            ScanRequest::all()
+                .without_instructions()
+                .without_primary_signatures()
+                .without_required_signers()
+                .with_token_balances()
+        );
+        assert!(!request.include_primary_signatures);
+        assert!(!request.include_required_signers);
+        assert!(!request.include_instructions);
+        assert_eq!(request.instruction_data, InstructionDataRequirement::None);
+        assert_eq!(request.token_balances, TokenBalanceRequirement::All);
+        validate_request(&identity, &request).unwrap();
     }
 
     #[test]

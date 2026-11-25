@@ -30,6 +30,12 @@ pub(crate) struct EpochSourceArgs {
     /// Public HTTPS epoch directory, such as https://archive.example.com/epoch-N.
     #[arg(long, env = "BLOCKZILLA_ARCHIVE_URL", conflicts_with_all = ["origin", "archive_dir"])]
     pub archive_url: Option<String>,
+    /// Sign requests to --archive-url for a private S3-compatible bucket in this
+    /// region (`auto` for Cloudflare R2). Credentials come from
+    /// AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY and the optional
+    /// AWS_SESSION_TOKEN.
+    #[arg(long, requires = "archive_url")]
+    pub s3_region: Option<String>,
     /// Cache directory. Relative paths are resolved from the current directory.
     #[arg(long, default_value = ".blockzilla-cache")]
     pub cache_root: PathBuf,
@@ -39,9 +45,17 @@ pub(crate) struct EpochSourceArgs {
     /// Stable ID for a local archive build. Change it when you replace that build.
     #[arg(long, requires = "archive_dir")]
     pub source_id: Option<String>,
+    /// Concurrent block reads for --archive-dir. Use several on a NAS or disk
+    /// array; 1 reads one range at a time.
+    #[arg(long, default_value_t = 1, requires = "archive_dir", value_parser = clap::value_parser!(u16).range(1..=64))]
+    pub read_concurrency: u16,
     /// Decode workers (1 through 64).
     #[arg(long, default_value_t = 4, value_parser = clap::value_parser!(u16).range(1..=64))]
     pub threads: u16,
+    /// First block row to read. Use the next row after a saved checkpoint to
+    /// resume a stream.
+    #[arg(long, default_value_t = 0)]
+    pub first_block: u32,
     /// Read at most this many block rows. Omit to stream all admitted rows.
     #[arg(long)]
     pub max_blocks: Option<NonZeroU32>,
@@ -107,7 +121,11 @@ pub(crate) fn open(args: &EpochSourceArgs) -> Result<CompactV2Archive> {
             .as_deref()
             .context("Local reads require --source-id")?;
         let descriptor = CompactV2LocalDescriptor::mainnet(args.epoch, source_id)?;
-        CompactV2Archive::open_local(root, descriptor)?
+        CompactV2Archive::open_local_with_read_concurrency(
+            root,
+            descriptor,
+            usize::from(args.read_concurrency),
+        )?
     } else {
         let cache_root = if args.cache_root.is_absolute() {
             args.cache_root.clone()
@@ -116,8 +134,22 @@ pub(crate) fn open(args: &EpochSourceArgs) -> Result<CompactV2Archive> {
         };
         if let Some(epoch_url) = &args.archive_url {
             eprintln!("Source: {epoch_url}\nPreparing archive index and key registry...");
-            CompactV2Archive::open_epoch_url(epoch_url, args.epoch, cache_root)
-                .with_context(|| format!("Cannot open epoch {} at {epoch_url}", args.epoch))?
+            match &args.s3_region {
+                Some(region) => {
+                    let signer = blockzilla_compact_v2_reader::S3SigV4Signer::new(
+                        blockzilla_compact_v2_reader::S3Credentials::from_env()?,
+                        region.as_str(),
+                    )?;
+                    CompactV2Archive::open_signed_epoch_url(
+                        epoch_url,
+                        args.epoch,
+                        cache_root,
+                        std::sync::Arc::new(signer),
+                    )
+                }
+                None => CompactV2Archive::open_epoch_url(epoch_url, args.epoch, cache_root),
+            }
+            .with_context(|| format!("Cannot open epoch {} at {epoch_url}", args.epoch))?
         } else {
             let origin = args.origin.as_deref().unwrap_or(DEFAULT_ORIGIN);
             eprintln!("Source: {origin}\nPreparing archive index and key registry...");
@@ -128,10 +160,25 @@ pub(crate) fn open(args: &EpochSourceArgs) -> Result<CompactV2Archive> {
     Ok(archive)
 }
 
+/// Parallel scan settings for the selected source. With `--read-concurrency`
+/// above 1, a local archive keeps that many block reads in flight.
+pub(crate) fn parallel_config(args: &EpochSourceArgs) -> CompactV2ParallelScanConfig {
+    let mut config = CompactV2ParallelScanConfig::new(usize::from(args.threads));
+    if args.archive_dir.is_some()
+        && args.read_concurrency > 1
+        && let Some(input) = config.network_input.as_mut()
+    {
+        input.workers = usize::from(args.read_concurrency);
+    }
+    config
+}
+
 pub(crate) fn request(archive: &CompactV2Archive, args: &EpochSourceArgs) -> Result<ScanRequest> {
-    Ok(match args.max_blocks {
-        Some(limit) => ScanRequest::bounded(archive.bounded_range(0, limit)?),
-        None => ScanRequest::all(),
+    Ok(match (args.first_block, args.max_blocks) {
+        (0, None) => ScanRequest::all(),
+        (first_block, limit) => ScanRequest::bounded(
+            archive.bounded_range(first_block, limit.unwrap_or(NonZeroU32::MAX))?,
+        ),
     })
 }
 
@@ -159,11 +206,7 @@ pub(crate) fn run(args: StreamArgs) -> Result<()> {
         blocks: 0,
         transactions: 0,
     };
-    let receipt = archive.scan_ordered_parallel(
-        &request,
-        &mut sink,
-        CompactV2ParallelScanConfig::new(usize::from(args.threads)),
-    )?;
+    let receipt = archive.scan_ordered_parallel(&request, &mut sink, parallel_config(&args))?;
     archive.verify_local_unchanged()?;
     anyhow::ensure!(
         receipt.scan.blocks == expected_blocks

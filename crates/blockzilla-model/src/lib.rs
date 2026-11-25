@@ -26,7 +26,8 @@ pub use model::{
 };
 pub use source::{
     ArchiveFormat, ArchiveInstructionSource, ArchiveInstructionSourceExt, ArchiveIoSnapshot,
-    BlockSink, FnBlockSink, InstructionDataRequirement, MAX_INSTRUCTION_DATA_PROGRAMS,
-    MAX_TOKEN_BALANCE_MINTS, OrderedBlockPublisher, ScanIoReceipt, ScanRange, ScanReceipt,
-    ScanRequest, SourceIdentity, SourceVerification, TokenBalanceRequirement, validate_request,
+    BlockPrecheck, BlockSink, FnBlockSink, InstructionDataRequirement,
+    MAX_INSTRUCTION_DATA_PROGRAMS, MAX_TOKEN_BALANCE_MINTS, OrderedBlockPublisher, ScanIoReceipt,
+    ScanRange, ScanReceipt, ScanRequest, SourceIdentity, SourceVerification,
+    TokenBalanceRequirement, validate_request,
 };
