@@ -6,19 +6,25 @@ ledger in read-only mode.
 ```text
 hivezilla-ledger-archive check-ledger-range <LEDGER> --start-slot N --end-slot M
 hivezilla-ledger-archive build-epoch-archive <LEDGER> <OUTPUT-PARENT> --epoch N
+hivezilla-ledger-archive public-epoch-to-cf <OUTPUT-PARENT> --epoch N
 hivezilla-ledger-archive read-slot-compact --ledger <LEDGER> --slot N
 ```
 
-The build uses the separate sibling `agave-ledger` profile, based on the exact
-upstream Agave `v4.4.0-rc.1` commit
-`b6149a719f8fa84123ac3ce1e5f201af64bca8ee`, with the bounded read-only patch.
-Its lock file is separate from the
-main workspace. The default build supports the range and epoch commands.
+`public-epoch-to-cf` uploads every file in the epoch directory that
+`EPOCH_ARCHIVE_FILES` names. The bucket, prefix, endpoint, and keys come from
+`R2_BUCKET`, `R2_PREFIX`, `R2_ENDPOINT` or `R2_S3_ENDPOINT`, `R2_ACCESS_KEY_ID`,
+and `R2_SECRET_ACCESS_KEY`. An object that already has the same size stays in
+place. After the upload, one Telegram line is sent when `TELEGRAM_BOT_TOKEN`
+and `TELEGRAM_CHAT_ID` are set. A Telegram failure still exits 0.
 
-`read-slot-compact` requires `bounded-ledger-read` and the matching external
-Agave RC1 profile. That profile supplies the checked read-only open-file limit.
-The patch and build preparation recipe belong in the separate Agave repository;
-this repository does not contain patch copies. A default build rejects this
+The default build fetches upstream Agave tag `v4.4.0-rc.1`, commit
+`b6149a719f8fa84123ac3ce1e5f201af64bca8ee`. Cargo does not need a local
+`agave-ledger` checkout. Its lock file is separate from the main workspace.
+The default build supports the range and epoch commands.
+
+`read-slot-compact` requires `bounded-ledger-read` and an Agave tree that
+defines `BlockstoreOptions::read_only_max_open_files`. The upstream
+`v4.4.0-rc.1` tag does not define that field. A default build rejects this
 command before it opens the ledger.
 
 The one-slot command writes a bounded `BZLGR01!` response with metadata and one
