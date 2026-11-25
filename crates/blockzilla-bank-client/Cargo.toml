@@ -16,12 +16,11 @@ blockzilla-bank-stream-v2 = { path = "../blockzilla-bank-stream-v2" }
 bs58 = "0.5.1"
 bytes = "1.11"
 futures-util = "0.3.34"
-libc = "0.2.191"
 reqwest = { version = "0.13.4", default-features = false, features = ["rustls", "stream", "http2", "json"] }
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.151"
 thiserror = "2.0"
-tokio = { version = "1.53.1", features = ["rt", "sync", "time", "signal", "process", "io-util", "macros"] }
+tokio = { version = "1.53.1", features = ["rt", "sync", "time", "macros"] }
 
 [dev-dependencies]
 tempfile = "3.27.0"

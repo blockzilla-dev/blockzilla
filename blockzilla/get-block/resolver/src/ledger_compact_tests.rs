@@ -1,5 +1,4 @@
 use super::*;
-use base64::{Engine, engine::general_purpose::STANDARD};
 use blockzilla_archive_v2::{BlockzillaGetBlockBlobEncoding, BlockzillaGetBlockBundleV1};
 use serde_json::json;
 use std::{fs, os::unix::fs::PermissionsExt};
@@ -30,28 +29,13 @@ fn framed(metadata: &serde_json::Value, body: &[u8]) -> Vec<u8> {
 
 pub(crate) fn fixture(action: &str, wall: u64) -> (tempfile::TempDir, Config) {
     let directory = tempfile::tempdir().unwrap();
-    let ledger = directory.path().join("ledger with spaces");
+    let root = directory.path().canonicalize().unwrap();
+    let ledger = root.join("ledger with spaces");
     fs::create_dir(&ledger).unwrap();
-    let helper = directory.path().join("helper.py");
-    let mut script = String::from(
-        "#!/usr/bin/python3\nimport base64,os,pathlib,sys,time\nassert sys.argv[1]=='read-slot-compact' and sys.argv[2]=='--ledger' and sys.argv[4]=='--slot'\nledger=pathlib.Path(sys.argv[3])\n(ledger/'helper.pid').write_text(str(os.getpid()))\n",
-    );
-    match action {
-        "emit"=>{},
-        "absent"=>script.push_str("sys.exit(3)\n"),
-        "unrooted"=>script.push_str("sys.exit(4)\n"),
-        "incomplete"=>script.push_str("sys.exit(5)\n"),
-        "timeout"=>script.push_str("time.sleep(30)\n"),
-        "wait_release"=>script.push_str("while not (ledger/'release').exists(): time.sleep(.005)\n"),
-        "stderr"=>script.push_str("sys.stderr.buffer.write(b'x'*16385);sys.stderr.flush()\n"),
-        "stdout"=>script.push_str("sys.stdout.buffer.write(b'BZLGR01!'+(1).to_bytes(4,'little')+b'{}'+b'x'*(16*1024*1024+4096));sys.stdout.flush()\n"),
-        _=>panic!("unknown helper fixture"),
-    }
-    script.push_str(&format!(
-        "sys.stdout.buffer.write(base64.b64decode('{}'))\n",
-        STANDARD.encode(frame())
-    ));
-    fs::write(&helper, script).unwrap();
+    let helper = root.join("helper");
+    fs::copy(native_helper(), &helper).unwrap();
+    fs::write(helper.with_extension("config"), action).unwrap();
+    fs::write(ledger.join("fixture.frame"), frame()).unwrap();
     fs::set_permissions(&helper, fs::Permissions::from_mode(0o700)).unwrap();
     let config = Config {
         helper_sha256: hex::encode(Sha256::digest(fs::read(&helper).unwrap())),
@@ -62,6 +46,33 @@ pub(crate) fn fixture(action: &str, wall: u64) -> (tempfile::TempDir, Config) {
         generation: "ledger-compact-v1".into(),
     };
     (directory, config)
+}
+
+fn native_helper() -> &'static std::path::Path {
+    static HELPER: std::sync::OnceLock<(tempfile::TempDir, std::path::PathBuf)> =
+        std::sync::OnceLock::new();
+    &HELPER
+        .get_or_init(|| {
+            let directory = tempfile::tempdir().unwrap();
+            let executable = directory.path().join("ledger-helper");
+            let result = std::process::Command::new("rustc")
+                .args(["--edition=2024", "-O"])
+                .arg(concat!(
+                    env!("CARGO_MANIFEST_DIR"),
+                    "/tests/fixtures/ledger-helper.rs"
+                ))
+                .arg("-o")
+                .arg(&executable)
+                .output()
+                .unwrap();
+            assert!(
+                result.status.success(),
+                "{}",
+                String::from_utf8_lossy(&result.stderr)
+            );
+            (directory, executable)
+        })
+        .1
 }
 
 #[test]

@@ -1135,29 +1135,6 @@ async fn handle_authenticated_direct_block(
             );
         }
     };
-    let r2_probe = req
-        .url()?
-        .query_pairs()
-        .any(|(key, value)| key == "r2_probe" && value == "1");
-    if r2_probe
-        && (optional_var(&env, "BZ_R2_PROBE_ENABLED").as_deref() != Some("true")
-            || profile.is_none()
-            || mode != RouteBlockMode::Full
-            || request.format != BlockResponseFormat::Wincode)
-    {
-        return finish_metered_response(
-            json_error(
-                404,
-                "probe_unavailable",
-                "R2 diagnostics are not enabled for this request",
-            )?,
-            &api_key,
-            &metrics,
-            MeteredRequest::new(method, "invalid_request", "bypass", transport, 0, 0),
-            request_started,
-            profile.as_ref(),
-        );
-    }
     if request.format == BlockResponseFormat::Wincode && req.headers().get("Range")?.is_some() {
         return finish_metered_response(
             json_error_profiled(
@@ -1612,42 +1589,6 @@ async fn handle_authenticated_direct_block(
             &api_key,
             &metrics,
             MeteredRequest::new(method, "invalid_request", "bypass", transport, 0, 0),
-            request_started,
-            profile.as_ref(),
-        );
-    }
-
-    if r2_probe {
-        let prepared = source.foundation_prepared.borrow_mut().take();
-        let result = match prepared {
-            Some(foundation_first::Outcome::NotCached {
-                source: Some(route),
-            }) => resolution::r2_probe_response(&source, request.slot, route).await,
-            _ => Err("R2 diagnostics require an admitted Foundation archive route".into()),
-        };
-        let (mut response, outcome) = match result {
-            Ok(response) => (response, "ok"),
-            Err(error) => (
-                json_error_profiled(502, "r2_probe_error", &error, profile.as_ref())?,
-                "backend_error",
-            ),
-        };
-        response
-            .headers_mut()
-            .set("X-Blockzilla-Foundation-Result", foundation_status)?;
-        return finish_metered_response(
-            response,
-            &api_key,
-            &metrics,
-            MeteredRequest::new(
-                method,
-                outcome,
-                "bypass",
-                "http_r2_probe",
-                0,
-                source.billable_backend_reads(),
-            )
-            .with_storage(source.storage_metrics.snapshot()),
             request_started,
             profile.as_ref(),
         );

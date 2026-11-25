@@ -88,9 +88,15 @@ node --test test.mjs sdk-test.mjs
 ```
 
 Tests cover decoder buffer ownership, bounds, dictionary resolution, and the
-existing transport. `sdk-live-test.mjs` checks Node and real Chrome, both HTTP
-modes, local program/account filters, checkpoint restart, and stable memory on
-repeated reads.
+existing transport. Compare a saved SDK capture with a finalized RPC node using
+the Rust CLI:
+
+```sh
+blockzilla compare-sdk-rpc capture.json --rpc-url http://127.0.0.1:8899 --report comparison.json
+```
+
+See the [comparison command](../../../blockzilla/cli/README.md#compare-sdk-output-with-rpc)
+for its input contract and checks.
 
 The processed profile is `native-processed-compact-v1`. `batch.kind` is `block`,
 `root`, or `invalidate`. A block contains one bank, with `bankId` and

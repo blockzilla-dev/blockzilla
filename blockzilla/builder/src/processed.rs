@@ -3944,6 +3944,60 @@ fn run_inner(
 mod tests {
     use super::*;
 
+    fn native_process_helper() -> &'static Path {
+        static HELPER: std::sync::OnceLock<(tempfile::TempDir, PathBuf)> =
+            std::sync::OnceLock::new();
+        &HELPER
+            .get_or_init(|| {
+                let directory = tempfile::tempdir().unwrap();
+                let executable = directory.path().join("process-helper");
+                let result = Command::new("rustc")
+                    .args(["--edition=2024", "-O"])
+                    .arg(concat!(
+                        env!("CARGO_MANIFEST_DIR"),
+                        "/tests/fixtures/process-helper.rs"
+                    ))
+                    .arg("-o")
+                    .arg(&executable)
+                    .output()
+                    .unwrap();
+                assert!(
+                    result.status.success(),
+                    "{}",
+                    String::from_utf8_lossy(&result.stderr)
+                );
+                (directory, executable)
+            })
+            .1
+    }
+
+    #[test]
+    fn native_process_fixture_preserves_four_converter_barrier_and_counters() {
+        let directory = tempfile::tempdir().unwrap();
+        let state = directory.path().join("state");
+        fs::write(&state, "0 0 0 0\n").unwrap();
+        let wrapper = directory.path().join("parallel-writer");
+        fs::copy(native_process_helper(), &wrapper).unwrap();
+        fs::write(
+            wrapper.with_extension("config"),
+            format!(
+                "{}\n{}\n{}\ntrue\n",
+                state.display(),
+                native_process_helper().display(),
+                directory.path().display()
+            ),
+        )
+        .unwrap();
+        let mut children: Vec<_> = (0..4)
+            .map(|_| Command::new(&wrapper).spawn().unwrap())
+            .collect();
+        for child in &mut children {
+            assert!(child.wait().unwrap().success());
+        }
+        assert_eq!(fs::read_to_string(&state).unwrap().trim(), "4 0 4 4");
+        assert_eq!(fs::read_dir(directory.path()).unwrap().count(), 3);
+    }
+
     fn continuous_options(root: &Path) -> ContinuousLiveOptions {
         ContinuousLiveOptions {
             retained_banks: 1,
@@ -4962,7 +5016,10 @@ mod tests {
         let fd = watch.fd.as_raw_fd();
         assert!(unsafe { libc::fcntl(fd, libc::F_GETFD) } & libc::FD_CLOEXEC != 0);
         assert!(unsafe { libc::fcntl(fd, libc::F_GETFL) } & libc::O_NONBLOCK != 0);
-        let output = Command::new("/usr/bin/python3").args(["-c", "import os; print([os.readlink('/proc/self/fd/'+n) for n in os.listdir('/proc/self/fd') if os.path.exists('/proc/self/fd/'+n)])"]).output().unwrap();
+        let output = Command::new(native_process_helper())
+            .arg("fds")
+            .output()
+            .unwrap();
         assert!(output.status.success());
         assert!(!String::from_utf8_lossy(&output.stdout).contains("anon_inode:inotify"));
     }
@@ -6317,17 +6374,17 @@ mod tests {
         }
     }
     #[test]
-    #[ignore = "requires the real compact writer and Python 3 on a native integration host"]
+    #[ignore = "requires the real compact writer on a native integration host"]
     fn live_only_four_converters_run_together_and_commit_complete_banks_in_order() {
         parallel_live_fixture(false, false);
     }
     #[test]
-    #[ignore = "requires the real compact writer and Python 3 on a native integration host"]
+    #[ignore = "requires the real compact writer on a native integration host"]
     fn live_only_parallel_converters_cannot_bypass_feed_event_limit() {
         parallel_live_fixture(true, false);
     }
     #[test]
-    #[ignore = "requires the real compact writer and Python 3 on a native integration host"]
+    #[ignore = "requires the real compact writer on a native integration host"]
     fn live_only_parallel_converters_survive_repeated_stage_rename_churn() {
         parallel_live_fixture(false, true);
     }
@@ -6340,66 +6397,22 @@ mod tests {
         fs::create_dir(&output).unwrap();
         let builder = PathBuf::from(std::env::var("BLOCKZILLA_BUILDER").unwrap());
         let state = t.path().join("converters.json");
-        fs::write(
-            &state,
-            br#"{"entered":0,"active":0,"maximum":0,"finished":0}"#,
-        )
-        .unwrap();
+        fs::write(&state, "0 0 0 0\n").unwrap();
         let wrapper = t.path().join("parallel-writer");
         // The barrier proves real process overlap. The old live chunk size of
         // one times out before any real conversion can complete.
-        let script = format!(
-            r#"#!/usr/bin/env python3
-import fcntl, json, os, pathlib, subprocess, sys, time
-state = {state}
-builder = {builder}
-churn_root = {churn_root}
-rename_churn = {rename_churn}
-def change(enter=False, finish=False):
-    with open(state, 'r+') as stream:
-        fcntl.flock(stream, fcntl.LOCK_EX)
-        value = json.load(stream)
-        if enter:
-            value['entered'] += 1
-            value['active'] += 1
-            value['maximum'] = max(value['maximum'], value['active'])
-        if finish:
-            value['active'] -= 1
-            value['finished'] += 1
-        stream.seek(0)
-        json.dump(value, stream)
-        stream.truncate()
-        stream.flush()
-        return value
-change(enter=True)
-try:
-    deadline = time.monotonic() + 10
-    while change()['entered'] < 4:
-        if time.monotonic() >= deadline:
-            raise RuntimeError('four compact converters did not overlap')
-        time.sleep(0.01)
-    if rename_churn:
-        stage = pathlib.Path(churn_root) / ('moving-' + str(os.getpid()))
-        compact = stage.with_suffix('.compact')
-        until = time.monotonic() + 0.4
-        while time.monotonic() < until:
-            stage.mkdir()
-            (stage / 'payload').write_bytes(b'x' * 4096)
-            stage.rename(compact)
-            time.sleep(0.001)
-            (compact / 'payload').unlink()
-            compact.rmdir()
-    result = subprocess.run([builder] + sys.argv[1:])
-finally:
-    change(finish=True)
-sys.exit(result.returncode)
-"#,
-            state = serde_json::to_string(&state).unwrap(),
-            builder = serde_json::to_string(&builder).unwrap(),
-            churn_root = serde_json::to_string(&output).unwrap(),
-            rename_churn = if rename_churn { "True" } else { "False" },
-        );
-        fs::write(&wrapper, script).unwrap();
+        fs::copy(native_process_helper(), &wrapper).unwrap();
+        fs::write(
+            wrapper.with_extension("config"),
+            format!(
+                "{}\n{}\n{}\n{}\n",
+                state.display(),
+                builder.display(),
+                output.display(),
+                rename_churn
+            ),
+        )
+        .unwrap();
         fs::set_permissions(&wrapper, fs::Permissions::from_mode(0o700)).unwrap();
         let mut live = test_live();
         if limit_feed {
@@ -6479,11 +6492,12 @@ sys.exit(result.returncode)
         } else {
             result.unwrap();
         }
-        let state: Value = serde_json::from_slice(&fs::read(state).unwrap()).unwrap();
-        assert_eq!(
-            state,
-            json!({"entered":4,"active":0,"maximum":4,"finished":4})
-        );
+        let counts: Vec<u64> = fs::read_to_string(state)
+            .unwrap()
+            .split_whitespace()
+            .map(|value| value.parse().unwrap())
+            .collect();
+        assert_eq!(counts, [4, 0, 4, 4]);
         let published = if limit_feed { 3 } else { 4 };
         assert_eq!(
             db.query_row("SELECT count(*) FROM feed_events", [], |r| r

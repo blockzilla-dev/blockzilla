@@ -184,7 +184,10 @@ pub(crate) mod tests {
         crate::recent::tests::Fixture,
         NativeArchiveV1,
     ) {
-        let directory = tempfile::tempdir().unwrap();
+        // The reader requires canonical paths, including when the OS temp root is a symlink.
+        let directory = tempfile::Builder::new()
+            .tempdir_in(std::env::temp_dir().canonicalize().unwrap())
+            .unwrap();
         let native = crate::recent::tests::fixture();
         let found = native.client.read_finalized_by_slot(100).unwrap().unwrap();
         let value = NativeArchiveV1 {

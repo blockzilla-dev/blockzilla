@@ -7,6 +7,7 @@ use clap::{Parser, Subcommand};
 use std::path::PathBuf;
 
 mod archive_v2;
+mod compare_sdk_rpc;
 mod dump_tokens;
 mod first_seen_finalization;
 mod progress;
@@ -42,6 +43,8 @@ enum Commands {
         #[command(flatten)]
         source: stream::EpochSourceArgs,
     },
+    /// Compare an SDK capture with finalized JSON-RPC blocks.
+    CompareSdkRpc(compare_sdk_rpc::CompareSdkRpcArgs),
     /// Build a compact projection from a complete native Agave callback batch.
     BuildDirectAgaveCompact {
         normalized_dir: PathBuf,
@@ -57,6 +60,7 @@ fn main() -> Result<()> {
         .with_max_level(tracing::Level::INFO)
         .init();
     match Cli::parse().command {
+        Commands::CompareSdkRpc(args) => compare_sdk_rpc::run(args),
         Commands::Stream(args) => stream::run(args),
         Commands::DumpTokens(args) => dump_tokens::run(args),
         Commands::Inspect { source } => {
@@ -76,6 +80,26 @@ fn main() -> Result<()> {
 #[cfg(test)]
 mod cli_tests {
     use super::*;
+
+    #[test]
+    fn sdk_comparison_parses_local_default_and_bounded_timeout() {
+        let cli = Cli::try_parse_from(["blockzilla", "compare-sdk-rpc", "capture.json"]).unwrap();
+        let Commands::CompareSdkRpc(args) = cli.command else {
+            panic!("wrong command")
+        };
+        assert_eq!(args.rpc_url.as_str(), "http://127.0.0.1:8899/");
+        assert_eq!(args.timeout_seconds, 30);
+        assert!(
+            Cli::try_parse_from([
+                "blockzilla",
+                "compare-sdk-rpc",
+                "capture.json",
+                "--timeout-seconds",
+                "0"
+            ])
+            .is_err()
+        );
+    }
 
     #[test]
     fn native_builder_keeps_existing_arguments_and_default_level() {

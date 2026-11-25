@@ -43,6 +43,7 @@ gxhash = "3.5.0"
 libc = "0.2.189"
 memmap2 = "0.9.11"
 rayon = "1.12.0"
+reqwest = { version = "0.13.4", default-features = false, features = ["blocking", "rustls"] }
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.151"
 sha2 = "0.11.0"
