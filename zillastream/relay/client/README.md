@@ -90,10 +90,7 @@ node --test test.mjs sdk-test.mjs
 Tests cover decoder buffer ownership, bounds, dictionary resolution, and the
 existing transport. `sdk-live-test.mjs` checks Node and real Chrome, both HTTP
 modes, local program/account filters, checkpoint restart, and stable memory on
-repeated reads. `../tests/sdk_rpc_oracle.py` compares every transaction ID,
-signature, result, and program reference with the local validator's finalized
-`getBlock` response. It also compares the selected program/account transaction
-sets.
+repeated reads.
 
 The processed profile is `native-processed-compact-v1`. `batch.kind` is `block`,
 `root`, or `invalidate`. A block contains one bank, with `bankId` and
