@@ -343,7 +343,9 @@ impl NetworkObjectInventory {
                     .map(|&name| (name, false)),
             )
             .collect();
-        let workers = http.recommended_read_concurrency().clamp(1, names.len().max(1));
+        let workers = http
+            .recommended_read_concurrency()
+            .clamp(1, names.len().max(1));
         let mut results: Vec<Option<SourceResult<HttpObjectIdentity>>> =
             (0..names.len()).map(|_| None).collect();
         let next = std::sync::atomic::AtomicUsize::new(0);

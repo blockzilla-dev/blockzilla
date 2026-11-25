@@ -31,9 +31,8 @@ use blockzilla_archive_v2::{
 use blockzilla_compact::{CompactTokenBalance, OwnedCompactRecentBlockhash};
 use blockzilla_model::{
     ArchiveFormat, ArchiveInstructionSource, BlockHeader, BlockPrecheck, BlockSink, BlockView,
-    CanonicalBlock,
-    CanonicalTransaction, CoverageReason, CpiCoverage, Error as QueryError, ExecutionStatus,
-    InstructionCoordinate, InstructionCoverage, InstructionDataCoverage,
+    CanonicalBlock, CanonicalTransaction, CoverageReason, CpiCoverage, Error as QueryError,
+    ExecutionStatus, InstructionCoordinate, InstructionCoverage, InstructionDataCoverage,
     InstructionDataRequirement, OrderedBlockPublisher, RecordedTokenBalance, ResolvedInstruction,
     ScanIoReceipt, ScanReceipt, ScanRequest, SourceIdentity, SourceVerification,
     TokenBalanceCoverage, TokenBalanceRequirement, TokenBalanceSide, TransactionHeader,

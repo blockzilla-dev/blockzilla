@@ -1766,7 +1766,9 @@ impl<S: RangeSource> ArchiveReader<S> {
             config.max_blocks_per_batch,
         )
         .map_err(E::from)?;
-        let (input_workers, buffer_count, buffer_capacity, serial_input) = if let Some(remote) = remote {
+        let (input_workers, buffer_count, buffer_capacity, serial_input) = if let Some(remote) =
+            remote
+        {
             plans =
                 coalesce_network_plans(&plans, remote.range_bytes.min(self.options.prefetch_bytes))
                     .map_err(E::from)?;

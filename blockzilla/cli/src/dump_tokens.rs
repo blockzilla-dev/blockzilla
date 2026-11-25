@@ -189,11 +189,7 @@ pub(crate) fn run(args: DumpTokensArgs) -> Result<()> {
         &source_id,
     );
     let receipt = archive
-        .scan_ordered_parallel(
-            &request,
-            &mut sink,
-            stream::parallel_config(&args.source),
-        )
+        .scan_ordered_parallel(&request, &mut sink, stream::parallel_config(&args.source))
         .context("Token dump stopped; output can contain an incomplete prefix")?;
     sink.output.flush().context("flush token dump output")?;
     archive.verify_local_unchanged()?;
@@ -307,8 +303,12 @@ mod tests {
                 } else {
                     (&b"succeeded"[..], "succeeded")
                 };
-                let (epoch, ordinal, slot, tx_index) =
-                    ([0, 900, u64::MAX][index as usize % 3], index as u32, index * 7, index as u32);
+                let (epoch, ordinal, slot, tx_index) = (
+                    [0, 900, u64::MAX][index as usize % 3],
+                    index as u32,
+                    index * 7,
+                    index as u32,
+                );
                 serde_json::to_writer(
                     &mut expected,
                     &TokenRow {
@@ -330,7 +330,8 @@ mod tests {
                 )
                 .unwrap();
                 expected.push(b'\n');
-                sink.row(epoch, ordinal, slot, tx_index, status, &balance).unwrap();
+                sink.row(epoch, ordinal, slot, tx_index, status, &balance)
+                    .unwrap();
             }
             assert_eq!(
                 String::from_utf8(sink.output).unwrap(),

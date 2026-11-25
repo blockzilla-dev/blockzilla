@@ -1330,7 +1330,9 @@ mod tests {
             ScanRequest::all().allow_incomplete_cpi(),
             ScanRequest::all().allow_unknown_execution(),
             ScanRequest::all().without_failed_transaction_details(),
-            ScanRequest::all().without_instructions().with_token_balances(),
+            ScanRequest::all()
+                .without_instructions()
+                .with_token_balances(),
             ScanRequest::token_balances_only().allow_incomplete_token_balances(),
             ScanRequest::all().allow_incomplete_instruction_data(),
         ];
@@ -1355,9 +1357,8 @@ mod tests {
         });
         edit(&|tx| tx.token_balance_coverage = TokenBalanceCoverage::Complete);
         edit(&|tx| {
-            tx.instructions[0].data_coverage = InstructionDataCoverage::Unknown(
-                crate::CoverageReason::AmbiguousInstructionData,
-            )
+            tx.instructions[0].data_coverage =
+                InstructionDataCoverage::Unknown(crate::CoverageReason::AmbiguousInstructionData)
         });
         edit(&|tx| tx.instructions[0].data_coverage = InstructionDataCoverage::NotRequested);
         // A structure error that `CanonicalBlock::validate` finds.
@@ -1394,7 +1395,11 @@ mod tests {
         cases.push((counts.clone(), counted.clone()));
         counted[1].counts.as_mut().unwrap().incomplete_cpi = 1;
         cases.push((counts.clone(), counted.clone()));
-        counted[1].counts.as_mut().unwrap().recorded_inner_instructions = 9;
+        counted[1]
+            .counts
+            .as_mut()
+            .unwrap()
+            .recorded_inner_instructions = 9;
         cases.push((counts, counted));
 
         let mut errors = 0;
@@ -1404,7 +1409,11 @@ mod tests {
             errors += usize::from(single.0.is_err());
         }
         // The cases must cover both accepted and rejected streams.
-        assert!(errors > 10 && errors + 5 < cases.len(), "{errors} of {}", cases.len());
+        assert!(
+            errors > 10 && errors + 5 < cases.len(),
+            "{errors} of {}",
+            cases.len()
+        );
     }
 
     #[test]

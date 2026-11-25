@@ -296,10 +296,9 @@ pub fn run(kind: Kind) -> Result<()> {
         }
     };
     if args.first_block != 0 || args.max_blocks.is_some() {
-        request.range = Some(archive.bounded_range(
-            args.first_block,
-            args.max_blocks.unwrap_or(NonZeroU32::MAX),
-        )?);
+        request.range = Some(
+            archive.bounded_range(args.first_block, args.max_blocks.unwrap_or(NonZeroU32::MAX))?,
+        );
     }
     let workers = match args.workers {
         Some(workers) => workers,
@@ -479,7 +478,10 @@ mod tests {
                 token_row(&mut output, slot, tx_index, status, &row);
             }
         }
-        assert_eq!(String::from_utf8(output).unwrap(), String::from_utf8(expected).unwrap());
+        assert_eq!(
+            String::from_utf8(output).unwrap(),
+            String::from_utf8(expected).unwrap()
+        );
     }
 
     #[test]
@@ -498,6 +500,9 @@ mod tests {
                 }
             }
         }
-        assert_eq!(String::from_utf8(output).unwrap(), String::from_utf8(expected).unwrap());
+        assert_eq!(
+            String::from_utf8(output).unwrap(),
+            String::from_utf8(expected).unwrap()
+        );
     }
 }

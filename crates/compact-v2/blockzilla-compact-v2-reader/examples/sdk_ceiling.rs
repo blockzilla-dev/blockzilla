@@ -37,8 +37,8 @@ use blockzilla_compact_v2_reader::{
     CompactV2ParallelScanConfig, HttpObjectPathLayout, HttpRangeSource, HttpRangeSourceOptions,
     NetworkInputConfig, PinnedLocalRangeSource, RangeSource,
     archive::{
-        ArchiveInstructionSource, BlockSink, BlockView, CompactV2Archive,
-        CompactV2LocalDescriptor, QueryResult, ScanRequest,
+        ArchiveInstructionSource, BlockSink, BlockView, CompactV2Archive, CompactV2LocalDescriptor,
+        QueryResult, ScanRequest,
     },
 };
 use serde_json::json;
@@ -122,9 +122,10 @@ fn options() -> Result<Options> {
 /// The byte source that the `input` leg reads, with no reader on top.
 fn raw_source(options: &Options) -> Result<Box<dyn RangeSource>> {
     Ok(match (&options.archive_dir, &options.url) {
-        (Some(directory), None) => Box::new(
-            PinnedLocalRangeSource::new_anchored(directory, &[INDEX_FILE, BLOCKS_FILE])?,
-        ),
+        (Some(directory), None) => Box::new(PinnedLocalRangeSource::new_anchored(
+            directory,
+            &[INDEX_FILE, BLOCKS_FILE],
+        )?),
         (None, Some(url)) => Box::new(HttpRangeSource::with_options(
             url.trim_end_matches('/'),
             options.epoch,
@@ -178,7 +179,10 @@ fn block_span(source: &dyn RangeSource, first: u32, count: u32) -> Result<(u64, 
         let compressed_len = u32::from_le_bytes(bytes[20..24].try_into()?);
         Ok((compressed_offset, u64::from(compressed_len)))
     };
-    ensure!(count > 0 && (first as usize) + (count as usize) <= rows, "range outside index");
+    ensure!(
+        count > 0 && (first as usize) + (count as usize) <= rows,
+        "range outside index"
+    );
     let (start, _) = row(first)?;
     let (last_offset, last_length) = row(first + count - 1)?;
     Ok((start, last_offset + last_length))
@@ -259,7 +263,9 @@ fn main() -> Result<()> {
     let request = match options.request.as_str() {
         "token" => ScanRequest::token_balances_only(),
         // The common mistake: all() keeps signatures and signers.
-        "signers" => ScanRequest::all().without_instructions().with_token_balances(),
+        "signers" => ScanRequest::all()
+            .without_instructions()
+            .with_token_balances(),
         other => bail!("unknown --request {other}; use token or signers"),
     };
     let mut archive = open_archive(&options)?;
@@ -281,9 +287,20 @@ fn main() -> Result<()> {
     };
     // One warm-up pass so the local page cache or the network path is in the
     // same state for every leg.
-    read_span(source.as_ref(), start, end, options.range_bytes, input_requests)?;
-    let (bytes, elapsed) =
-        read_span(source.as_ref(), start, end, options.range_bytes, input_requests)?;
+    read_span(
+        source.as_ref(),
+        start,
+        end,
+        options.range_bytes,
+        input_requests,
+    )?;
+    let (bytes, elapsed) = read_span(
+        source.as_ref(),
+        start,
+        end,
+        options.range_bytes,
+        input_requests,
+    )?;
     let blocks = u64::from(range.block_count.get());
     let input = rates(bytes, blocks, 0, elapsed);
     println!(
@@ -302,7 +319,12 @@ fn main() -> Result<()> {
     let receipt = archive.scan_ordered_parallel(&request, &mut sink, config)?;
     let elapsed = started.elapsed();
     let pipeline = receipt.pipeline;
-    let parallel = rates(pipeline.compressed_bytes, sink.blocks, sink.transactions, elapsed);
+    let parallel = rates(
+        pipeline.compressed_bytes,
+        sink.blocks,
+        sink.transactions,
+        elapsed,
+    );
     let wall = elapsed.as_secs_f64().max(f64::MIN_POSITIVE);
     let workers = receipt.effective_workers.max(1) as f64;
     println!(

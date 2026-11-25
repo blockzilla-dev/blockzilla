@@ -206,11 +206,7 @@ pub(crate) fn run(args: StreamArgs) -> Result<()> {
         blocks: 0,
         transactions: 0,
     };
-    let receipt = archive.scan_ordered_parallel(
-        &request,
-        &mut sink,
-        parallel_config(&args),
-    )?;
+    let receipt = archive.scan_ordered_parallel(&request, &mut sink, parallel_config(&args))?;
     archive.verify_local_unchanged()?;
     anyhow::ensure!(
         receipt.scan.blocks == expected_blocks
