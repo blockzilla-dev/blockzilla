@@ -650,7 +650,7 @@ fn decode_message<'de, const MAY24: bool>(
         }
         if count_only {
             maximum_account_index =
-                maximum_account_index.max(instruction.accounts.iter().copied().max());
+                fold_maximum_account_index(maximum_account_index, instruction.accounts);
         } else {
             instructions.push(instruction);
         }
@@ -759,6 +759,23 @@ fn decode_message<'de, const MAY24: bool>(
         instructions,
         expected_loaded_writable,
         expected_loaded_readonly,
+    }))
+}
+
+/// Return `current.max(accounts.iter().copied().max())` with the same value.
+///
+/// `None` orders below each `Some`, so an empty list keeps `current`. A plain
+/// `u8` fold can vectorize. The `Option` reduction cannot.
+#[inline]
+fn fold_maximum_account_index(current: Option<u8>, accounts: &[u8]) -> Option<u8> {
+    let Some((&first, rest)) = accounts.split_first() else {
+        return current;
+    };
+    let instruction_maximum = rest
+        .iter()
+        .fold(first, |maximum, &index| maximum.max(index));
+    Some(current.map_or(instruction_maximum, |current| {
+        current.max(instruction_maximum)
     }))
 }
 
@@ -1860,5 +1877,113 @@ mod tests {
                 .project(&huge_v1_static_count, None)
                 .is_err()
         );
+    }
+
+    #[test]
+    fn maximum_account_index_fold_equals_the_option_reduction() {
+        // The count-only expression before the plain `u8` fold.
+        let reference =
+            |current: Option<u8>, accounts: &[u8]| current.max(accounts.iter().copied().max());
+        let values = [0_u8, 1, 2, 127, 128, 254, 255];
+        let currents: Vec<Option<u8>> = std::iter::once(None)
+            .chain(values.iter().copied().map(Some))
+            .collect();
+        let mut lists: Vec<Vec<u8>> = vec![Vec::new()];
+        for &first in &values {
+            lists.push(vec![first]);
+            for &second in &values {
+                lists.push(vec![first, second]);
+                for &third in &values {
+                    lists.push(vec![first, second, third]);
+                }
+            }
+        }
+        let mut state = 0x9e37_79b9_7f4a_7c15_u64;
+        let mut next = || {
+            state ^= state << 13;
+            state ^= state >> 7;
+            state ^= state << 17;
+            state
+        };
+        for length in [4_usize, 7, 8, 15, 16, 17, 31, 32, 33, 64, 255, 256] {
+            for _ in 0..8 {
+                lists.push((0..length).map(|_| (next() % 256) as u8).collect());
+            }
+        }
+        for &current in &currents {
+            for accounts in &lists {
+                assert_eq!(
+                    fold_maximum_account_index(current, accounts),
+                    reference(current, accounts),
+                    "{current:?} {accounts:?}"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn count_only_account_bound_equals_the_full_projection() {
+        let projector = CompactV2MessageProjector::new(CompactV2MessageSchema::Current, 0);
+        let instruction = |accounts: &Vec<u8>| ArchiveV2HotInstruction {
+            program_id_index: 1,
+            accounts: accounts.clone(),
+            data: ArchiveV2HotInstructionData::Raw(vec![9]),
+        };
+        // Legacy messages have 2 accounts. V0 messages have 2 static and 3
+        // loaded accounts.
+        let cases: [Vec<Vec<u8>>; 10] = [
+            vec![vec![]],
+            vec![vec![], vec![]],
+            vec![vec![0], vec![], vec![1]],
+            vec![vec![1, 0, 1]],
+            vec![vec![2]],
+            vec![vec![], vec![0, 2]],
+            vec![vec![1], vec![255, 0]],
+            vec![vec![0, 1], vec![]],
+            vec![vec![4], vec![]],
+            vec![vec![0, 4], vec![5]],
+        ];
+        let mut outcomes = Vec::new();
+        for accounts in &cases {
+            let legacy = ArchiveV2HotMessagePayload::Legacy(ArchiveV2HotLegacyMessage {
+                header: header(),
+                account_keys: vec![key(1), key(2)],
+                recent_blockhash: OwnedCompactRecentBlockhash::Nonce([3; 32]),
+                instructions: accounts.iter().map(instruction).collect(),
+            });
+            let v0 = ArchiveV2HotMessagePayload::V0(ArchiveV2HotV0Message {
+                header: header(),
+                account_keys: vec![key(1), key(2)],
+                recent_blockhash: OwnedCompactRecentBlockhash::Id(-1),
+                instructions: accounts.iter().map(instruction).collect(),
+                address_table_lookups: vec![OwnedCompactAddressTableLookup {
+                    account_key: key(3),
+                    writable_indexes: vec![4, 5],
+                    readonly_indexes: vec![6],
+                }],
+            });
+            for message in [legacy, v0] {
+                let bytes = wincode::config::serialize(&message, wincode_leb128_config()).unwrap();
+                let full = projector
+                    .project(&bytes, None)
+                    .map(|message| message.count_limits());
+                let counted = projector
+                    .count_message(&bytes)
+                    .map(|message| message.count_limits());
+                match (full, counted) {
+                    (Ok(full), Ok(counted)) => {
+                        assert_eq!(full, counted, "{accounts:?}");
+                        outcomes.push(true);
+                    }
+                    (Err(full), Err(counted)) => {
+                        assert_eq!(full.to_string(), counted.to_string(), "{accounts:?}");
+                        outcomes.push(false);
+                    }
+                    (full, counted) => panic!("{accounts:?}: {full:?} differs from {counted:?}"),
+                }
+            }
+        }
+        // Both projections accept and reject cases.
+        assert!(outcomes.contains(&true) && outcomes.contains(&false));
     }
 }

@@ -157,12 +157,17 @@ impl<S: RangeSource> CompactV2InstructionSource<S> {
     /// token slice. It can resolve new dictionary entries through one bounded
     /// consumer cache. The configured full-registry policy applies to that one
     /// consumer cache; projection workers never resolve account keys.
+    ///
+    /// A complete registry follows the retention rules of
+    /// [`Self::scan_ordered_parallel`]: this source keeps a newly loaded one,
+    /// and a later scan uses a retained one that fits the call limit.
     pub fn scan_token_balances_indexed_parallel(
         &mut self,
         request: &ScanRequest,
         sink: &mut dyn IndexedTokenSink,
         config: CompactV2ParallelScanConfig,
     ) -> blockzilla_model::Result<CompactV2ParallelScanReceipt> {
+        let scan_started = Instant::now();
         if request.counts_only
             || request.include_instructions
             || request.include_required_signers
@@ -217,15 +222,9 @@ impl<S: RangeSource> CompactV2InstructionSource<S> {
         );
         let requested_transactions =
             requested_transaction_count(&self.reader, start..end).map_err(source_error)?;
-        let (shared_registry, mut registry_receipt) = prepare_parallel_registry(
-            &self.reader,
-            start,
-            end,
-            request,
-            requested_transactions,
-            config,
-        )
-        .map_err(source_error)?;
+        let (shared_registry, mut registry_receipt) = self
+            .parallel_registry_for_scan(start, end, request, requested_transactions, config)
+            .map_err(source_error)?;
         if matches!(
             registry_receipt.mode,
             CompactV2ParallelRegistryMode::SparseWorkerCache
@@ -416,8 +415,9 @@ impl<S: RangeSource> CompactV2InstructionSource<S> {
             cache_read_calls: None,
             cache_read_bytes: None,
         });
+        let scan = publisher.finish()?;
         Ok(CompactV2ParallelScanReceipt {
-            scan: publisher.finish()?,
+            scan,
             pipeline,
             requested_workers: config.workers,
             effective_workers: pipeline.effective_workers,
@@ -429,6 +429,7 @@ impl<S: RangeSource> CompactV2InstructionSource<S> {
             signature_read_wall_time: Duration::ZERO,
             signature_assign_wall_time: Duration::ZERO,
             publish_wall_time,
+            elapsed_wall_time: scan_started.elapsed(),
         })
     }
 }

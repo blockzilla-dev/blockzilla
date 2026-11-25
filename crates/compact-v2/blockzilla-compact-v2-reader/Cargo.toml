@@ -54,6 +54,10 @@ name = "first_read"
 required-features = ["http"]
 
 [[example]]
+name = "sdk_ceiling"
+required-features = ["http"]
+
+[[example]]
 name = "read_epoch"
 required-features = ["http"]
 

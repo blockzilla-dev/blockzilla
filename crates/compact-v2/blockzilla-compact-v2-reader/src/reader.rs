@@ -125,16 +125,29 @@ pub const MAX_ORDERED_PARALLEL_BLOCKS_PER_BATCH: usize = 65_536;
 pub const MAX_ORDERED_PARALLEL_TRANSACTIONS_PER_BATCH: u64 = 65_536;
 pub const MAX_ORDERED_PARALLEL_UNCOMPRESSED_BATCH_BYTES: usize = 1024 * 1024 * 1024;
 pub const MAX_ORDERED_PARALLEL_RETAINED_DECOMPRESSED_BYTES: usize = 1024 * 1024 * 1024;
+/// Largest [`NetworkInputConfig::workers`] value.
+///
+/// An object store with a high time to first byte needs many range requests
+/// in flight. `max_buffer_bytes` still limits the compressed memory: the
+/// reader starts at most `max_buffer_bytes / largest_range` workers.
+pub const MAX_NETWORK_INPUT_WORKERS: usize = 64;
+/// Largest [`NetworkInputConfig::max_buffer_bytes`] value.
+pub const MAX_NETWORK_INPUT_BUFFER_BYTES: usize = 1024 * 1024 * 1024;
 
 static NEXT_READER_ID: AtomicU64 = AtomicU64::new(1);
 
 /// Network download geometry, independent of decoded-block admission limits.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct NetworkInputConfig {
+    /// Concurrent range requests, in `1..=MAX_NETWORK_INPUT_WORKERS`. Each
+    /// request owns one compressed buffer. The reader starts at most
+    /// `max_buffer_bytes / largest_range` workers, and not more workers than
+    /// planned ranges.
     pub workers: usize,
     /// Target range size; must not exceed `max_buffer_bytes`.
     pub range_bytes: usize,
     /// Includes free, downloading, queued and decoder-held compressed buffers.
+    /// At most [`MAX_NETWORK_INPUT_BUFFER_BYTES`].
     pub max_buffer_bytes: usize,
 }
 
@@ -170,6 +183,8 @@ pub struct OrderedParallelBlockConfig {
     pub max_blocks_per_batch: usize,
     /// Number of compressed `Vec` tokens recycled between producer and
     /// workers. Three permits one fill, one decode, and one queued batch.
+    /// When `network_input` applies, the network window sets the token count
+    /// (see [`NetworkInputConfig::workers`]).
     pub compressed_buffer_count: usize,
     /// Private threads for borrowed decoding and projection.
     pub decode_workers: usize,
@@ -324,11 +339,67 @@ pub struct GenerationBinding {
     pub registry_sha256: [u8; 32],
 }
 
+/// The registry IDs of one compiled filter, sorted for a lookup without allocation.
+///
+/// A filtered scan checks each account reference of each transaction here.
+/// An ID outside `[minimum, maximum]` returns after two compares. Small sets
+/// use a linear scan. Larger sets use a binary search. Membership is equal to
+/// the membership of a `HashSet<u32>` with the same IDs.
+#[derive(Debug, Clone)]
+struct RegistryIdSet {
+    sorted: Box<[u32]>,
+    minimum: u32,
+    maximum: u32,
+}
+
+impl RegistryIdSet {
+    const LINEAR_LIMIT: usize = 16;
+
+    fn new(ids: impl IntoIterator<Item = u32>) -> Self {
+        let mut sorted: Vec<u32> = ids.into_iter().collect();
+        sorted.sort_unstable();
+        sorted.dedup();
+        let (minimum, maximum) = match (sorted.first(), sorted.last()) {
+            (Some(&minimum), Some(&maximum)) => (minimum, maximum),
+            // An empty set: no ID satisfies minimum <= id <= maximum.
+            _ => (u32::MAX, 0),
+        };
+        Self {
+            sorted: sorted.into_boxed_slice(),
+            minimum,
+            maximum,
+        }
+    }
+
+    #[inline]
+    fn contains(&self, id: &u32) -> bool {
+        let id = *id;
+        if id < self.minimum || id > self.maximum {
+            return false;
+        }
+        if self.sorted.len() <= Self::LINEAR_LIMIT {
+            // The IDs are sorted, so the first ID at or above `id` decides.
+            for &candidate in self.sorted.iter() {
+                if candidate >= id {
+                    return candidate == id;
+                }
+            }
+            false
+        } else {
+            self.sorted.binary_search(&id).is_ok()
+        }
+    }
+
+    fn len(&self) -> usize {
+        self.sorted.len()
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct CompiledPubkeyFilter {
     reader_id: u64,
     binding: GenerationBinding,
-    registry_ids: HashSet<u32>,
+    registry_ids: RegistryIdSet,
     raw_pubkeys: HashSet<[u8; 32]>,
     resolved_ids: HashMap<[u8; 32], u32>,
 }
@@ -1340,7 +1411,7 @@ impl<S: RangeSource> ArchiveReader<S> {
         CompiledPubkeyFilter {
             reader_id: self.reader_id,
             binding: self.binding,
-            registry_ids: resolved_ids.values().copied().collect(),
+            registry_ids: RegistryIdSet::new(resolved_ids.values().copied()),
             raw_pubkeys,
             resolved_ids,
         }
@@ -1695,7 +1766,7 @@ impl<S: RangeSource> ArchiveReader<S> {
             config.max_blocks_per_batch,
         )
         .map_err(E::from)?;
-        let (input_workers, buffer_count, buffer_capacity) = if let Some(remote) = remote {
+        let (input_workers, buffer_count, buffer_capacity, serial_input) = if let Some(remote) = remote {
             plans =
                 coalesce_network_plans(&plans, remote.range_bytes.min(self.options.prefetch_bytes))
                     .map_err(E::from)?;
@@ -1705,14 +1776,18 @@ impl<S: RangeSource> ArchiveReader<S> {
                     "one compressed frame exceeds the network input byte budget".into(),
                 )));
             }
-            let count = remote.workers.min(remote.max_buffer_bytes / capacity);
-            (count, count, capacity)
+            // Each request in flight owns one buffer of `capacity` bytes. The
+            // index rejects empty frames, so `capacity` is not zero here. A
+            // worker without a plan does not get a thread or a buffer.
+            // The producer kind follows the configured window, not the plan
+            // count, so a short range keeps the concurrent producer and its
+            // error behaviour.
+            let window = remote.workers.min(remote.max_buffer_bytes / capacity);
+            let count = window.min(plans.len());
+            (count, count, capacity, window == 1)
         } else {
-            (
-                source_concurrency.clamp(1, config.compressed_buffer_count.min(8)),
-                config.compressed_buffer_count,
-                0,
-            )
+            let readers = source_concurrency.clamp(1, config.compressed_buffer_count.min(8));
+            (readers, config.compressed_buffer_count, 0, readers == 1)
         };
         let workers: Vec<_> = (0..config.decode_workers)
             .map(|worker| {
@@ -1845,7 +1920,7 @@ impl<S: RangeSource> ArchiveReader<S> {
                         window: &window,
                         armed: true,
                     };
-                    let result = if input_workers == 1 {
+                    let result = if serial_input {
                         produce_ordered_compressed_batches(
                             self,
                             &plans,
@@ -2175,14 +2250,62 @@ impl<S: RangeSource> ArchiveReader<S> {
         self.scan_decoded_block_inner(filter, decoded, true)
     }
 
+    /// [`Self::scan_matching_decoded_block`] for a block lent by a
+    /// [`BorrowedBlockStream`], by [`Self::read_borrowed_block_reusing`] or to
+    /// the `project` callback of [`Self::process_borrowed_blocks_parallel_ordered`].
+    ///
+    /// The result is equal to the result for the owned [`DecodedBlock`] of the
+    /// same row, errors included. The scan reads the transaction rows and the
+    /// byte lanes in the lent decompression buffer, so the caller does not
+    /// copy the message and metadata lanes of each block. Matched and
+    /// indeterminate transactions still get an owned message and metadata.
+    pub fn scan_matching_borrowed_block(
+        &self,
+        filter: &CompiledPubkeyFilter,
+        decoded: &BorrowedDecodedBlock<'_>,
+    ) -> Result<ScannedBlock> {
+        self.scan_block_rows(
+            filter,
+            &decoded.index_row,
+            decoded.header(),
+            decoded.tx_rows(),
+            BlockLanes {
+                message_bytes: decoded.message_bytes(),
+                metadata_bytes: decoded.metadata_bytes(),
+            },
+            true,
+        )
+    }
+
     fn scan_decoded_block_inner(
         &self,
         filter: &CompiledPubkeyFilter,
         decoded: &DecodedBlock,
         matching_only: bool,
     ) -> Result<ScannedBlock> {
-        self.ensure_filter_binding(filter)?;
         let DecodedBlock { index_row, block } = decoded;
+        self.scan_block_rows(
+            filter,
+            index_row,
+            &block.header,
+            block.tx_rows.iter().copied(),
+            BlockLanes::of(block),
+            matching_only,
+        )
+    }
+
+    /// Scan one block for the owned and the borrowed forms. Both forms give
+    /// the same rows and the same byte lanes, so they give the same result.
+    fn scan_block_rows(
+        &self,
+        filter: &CompiledPubkeyFilter,
+        index_row: &ArchiveV2HotBlockIndexRow,
+        header: &ArchiveV2HotBlockHeader,
+        rows: impl ExactSizeIterator<Item = ArchiveV2HotTxRow>,
+        lanes: BlockLanes<'_>,
+        matching_only: bool,
+    ) -> Result<ScannedBlock> {
+        self.ensure_filter_binding(filter)?;
         let schemas = SelectedCompactV2Schemas {
             message: self.message_schema,
             metadata: self.metadata_schema,
@@ -2197,9 +2320,9 @@ impl<S: RangeSource> ArchiveReader<S> {
         let mut transactions = if matching_only {
             Vec::new()
         } else {
-            Vec::with_capacity(block.tx_rows.len())
+            Vec::with_capacity(rows.len())
         };
-        for row in block.tx_rows.iter().copied() {
+        for row in rows {
             let signatures = SignatureReference {
                 reader_id: self.reader_id,
                 first_ordinal: first_signature_ordinal,
@@ -2212,7 +2335,7 @@ impl<S: RangeSource> ArchiveReader<S> {
                 && compact_keys_prove_no_match(
                     index_row.slot,
                     &row,
-                    block,
+                    lanes,
                     filter,
                     message,
                     metadata,
@@ -2223,7 +2346,7 @@ impl<S: RangeSource> ArchiveReader<S> {
             let scanned = scan_transaction(
                 index_row.slot,
                 row,
-                block,
+                lanes,
                 filter,
                 self.registry_entries,
                 schemas,
@@ -2235,10 +2358,10 @@ impl<S: RangeSource> ArchiveReader<S> {
         }
         Ok(ScannedBlock {
             block_id: index_row.block_id,
-            slot: block.header.slot,
-            parent_slot: block.header.parent_slot,
-            block_time: block.header.block_time,
-            block_height: block.header.block_height,
+            slot: header.slot,
+            parent_slot: header.parent_slot,
+            block_time: header.block_time,
+            block_height: header.block_height,
             transactions,
         })
     }
@@ -2371,12 +2494,12 @@ fn validate_ordered_parallel_config(config: OrderedParallelBlockConfig) -> Resul
         ));
     }
     if let Some(network) = config.network_input
-        && (!(1..=16).contains(&network.workers)
+        && (!(1..=MAX_NETWORK_INPUT_WORKERS).contains(&network.workers)
             || network.range_bytes == 0
             || network.range_bytes > MAX_GATEWAY_RANGE_BYTES
             || network.range_bytes > network.max_buffer_bytes
             || network.max_buffer_bytes == 0
-            || network.max_buffer_bytes > 1024 * 1024 * 1024)
+            || network.max_buffer_bytes > MAX_NETWORK_INPUT_BUFFER_BYTES)
     {
         return Err(Error::InvalidManifest(
             "invalid network input workers, range, or byte budget (range must fit the budget)"
@@ -4511,10 +4634,26 @@ fn validate_decoded_block_parts(
     Ok(())
 }
 
+/// The message and metadata byte lanes of one decoded block, owned or borrowed.
+#[derive(Clone, Copy)]
+struct BlockLanes<'a> {
+    message_bytes: &'a [u8],
+    metadata_bytes: &'a [u8],
+}
+
+impl<'a> BlockLanes<'a> {
+    fn of(block: &'a ArchiveV2HotBlockBlob) -> Self {
+        Self {
+            message_bytes: &block.message_bytes,
+            metadata_bytes: &block.metadata_bytes,
+        }
+    }
+}
+
 fn compact_keys_prove_no_match(
     slot: u64,
     row: &ArchiveV2HotTxRow,
-    block: &ArchiveV2HotBlockBlob,
+    block: BlockLanes<'_>,
     filter: &CompiledPubkeyFilter,
     message: crate::CompactV2MessageProjector,
     metadata: crate::CompactV2MetadataProjector,
@@ -4527,7 +4666,7 @@ fn compact_keys_prove_no_match(
         CompactPubkey::Raw(key) => filter.raw_pubkeys.contains(&key),
     };
     let message_bytes = checked_region(
-        &block.message_bytes,
+        block.message_bytes,
         row.message_offset,
         row.message_len,
         "message",
@@ -4553,7 +4692,7 @@ fn compact_keys_prove_no_match(
         return Ok(false);
     }
     let metadata_bytes = checked_region(
-        &block.metadata_bytes,
+        block.metadata_bytes,
         row.metadata_offset,
         row.metadata_len,
         "metadata",
@@ -4569,7 +4708,7 @@ fn compact_keys_prove_no_match(
 fn scan_transaction(
     slot: u64,
     row: ArchiveV2HotTxRow,
-    block: &ArchiveV2HotBlockBlob,
+    block: BlockLanes<'_>,
     filter: &CompiledPubkeyFilter,
     registry_entries: u32,
     schemas: SelectedCompactV2Schemas,
@@ -4587,7 +4726,7 @@ fn scan_transaction(
         });
     }
     let message_bytes = checked_region(
-        &block.message_bytes,
+        block.message_bytes,
         row.message_offset,
         row.message_len,
         "message",
@@ -4896,7 +5035,7 @@ fn select_token_balances(
 }
 
 fn metadata_state(
-    block: &ArchiveV2HotBlockBlob,
+    block: BlockLanes<'_>,
     row: &ArchiveV2HotTxRow,
     slot: u64,
     read: bool,
@@ -4912,7 +5051,7 @@ fn metadata_state(
         return Ok(MetadataState::NotRead);
     }
     let bytes = checked_region(
-        &block.metadata_bytes,
+        block.metadata_bytes,
         row.metadata_offset,
         row.metadata_len,
         "metadata",
@@ -5546,6 +5685,298 @@ mod tests {
             ),
             Err(Error::InvalidBlock { .. })
         ));
+    }
+
+    #[test]
+    fn registry_id_set_membership_equals_a_hash_set() {
+        let mut state = 0x853c_49e6_748f_ea9b_u64;
+        let mut next = || {
+            state ^= state << 13;
+            state ^= state >> 7;
+            state ^= state << 17;
+            state
+        };
+        for size in [0_usize, 1, 2, 5, 16, 17, 100, 1000] {
+            let ids: Vec<u32> = (0..size).map(|_| (next() % 5000) as u32 + 1).collect();
+            let set = RegistryIdSet::new(ids.iter().copied());
+            let reference: HashSet<u32> = ids.iter().copied().collect();
+            assert_eq!(set.len(), reference.len());
+            for probe in (0..=5002).chain([u32::MAX - 1, u32::MAX]) {
+                assert_eq!(
+                    set.contains(&probe),
+                    reference.contains(&probe),
+                    "{size} {probe}"
+                );
+            }
+        }
+        // The extreme IDs and duplicate IDs.
+        let ids = [u32::MAX, 0, 7, 7, u32::MAX];
+        let set = RegistryIdSet::new(ids);
+        let reference: HashSet<u32> = ids.into_iter().collect();
+        assert_eq!(set.len(), reference.len());
+        for probe in [0, 1, 6, 7, 8, u32::MAX - 1, u32::MAX] {
+            assert_eq!(set.contains(&probe), reference.contains(&probe), "{probe}");
+        }
+
+        let fixture = Fixture::build();
+        let archive = ArchiveReader::open(fixture.source()).unwrap();
+        let filter = archive
+            .compile_pubkey_filter([REGISTRY_KEY_TWO, RAW_KEY, REGISTRY_KEY_TWO])
+            .unwrap();
+        assert_eq!(filter.registry_id_count(), 1);
+        assert_eq!(filter.pubkey_count(), 2);
+        for (id, expected) in [
+            (0, PubkeyReferenceMatch::InvalidRegistryReference),
+            (1, PubkeyReferenceMatch::NoMatch),
+            (2, PubkeyReferenceMatch::Match),
+            (3, PubkeyReferenceMatch::InvalidRegistryReference),
+        ] {
+            assert_eq!(
+                filter.classify_reference(&CompactPubkey::Id(id), archive.registry_entries),
+                expected
+            );
+        }
+    }
+
+    /// Scan one block in its owned form and in its borrowed current-schema
+    /// form, and return the shared `Debug` text of the two results.
+    fn owned_and_borrowed_matching_scan(
+        archive: &ArchiveReader<LocalRangeSource>,
+        filter: &CompiledPubkeyFilter,
+        mut decoded: DecodedBlock,
+    ) -> String {
+        let bytes = wincode::config::serialize(&decoded.block, wincode_leb128_config()).unwrap();
+        decoded.index_row.uncompressed_len = bytes.len() as u32;
+        let borrowed = archive
+            .decode_uncompressed_block_borrowed(decoded.index_row, &bytes, false)
+            .unwrap();
+        assert!(!borrowed.uses_owned_fallback());
+        let owned = format!(
+            "{:?}",
+            archive.scan_matching_decoded_block(filter, &decoded)
+        );
+        let lent = format!(
+            "{:?}",
+            archive.scan_matching_borrowed_block(filter, &borrowed)
+        );
+        assert_eq!(owned, lent);
+        owned
+    }
+
+    #[test]
+    fn borrowed_matching_scan_equals_the_owned_matching_scan() {
+        let fixture = Fixture::build();
+        let archive = ArchiveReader::open(fixture.source()).unwrap();
+        let rows = archive.index().rows.len();
+        assert!(rows > 0);
+        let filters: Vec<Vec<[u8; 32]>> = vec![
+            vec![],
+            vec![REGISTRY_KEY_ONE],
+            vec![REGISTRY_KEY_TWO],
+            vec![RAW_KEY],
+            vec![REGISTRY_KEY_ONE, REGISTRY_KEY_TWO, RAW_KEY],
+        ];
+        let mut matched_transactions = Vec::new();
+        for keys in filters {
+            let filter = archive.compile_pubkey_filter(keys).unwrap();
+            let mut transactions = 0;
+            let owned: Vec<String> = archive
+                .blocks_range(0..rows)
+                .unwrap()
+                .map(|block| {
+                    let scanned = archive.scan_matching_decoded_block(&filter, &block.unwrap());
+                    transactions += scanned.as_ref().map_or(0, |block| block.transactions.len());
+                    format!("{scanned:?}")
+                })
+                .collect();
+            matched_transactions.push(transactions);
+            for discard_rewards in [false, true] {
+                let mut stream = if discard_rewards {
+                    archive.borrowed_blocks_without_rewards_range(0..rows)
+                } else {
+                    archive.borrowed_blocks_range(0..rows)
+                }
+                .unwrap();
+                let mut borrowed = Vec::new();
+                while let Some(block) = stream.next_block() {
+                    let block = block.unwrap();
+                    borrowed.push(format!(
+                        "{:?}",
+                        archive.scan_matching_borrowed_block(&filter, &block)
+                    ));
+                }
+                assert_eq!(owned, borrowed, "discard_rewards {discard_rewards}");
+            }
+            let mut scratch = RecycledBlockScratch::new();
+            for (row, expected) in owned.iter().enumerate() {
+                let block = archive
+                    .read_borrowed_block_reusing(row, &mut scratch, false)
+                    .unwrap();
+                assert_eq!(
+                    *expected,
+                    format!(
+                        "{:?}",
+                        archive.scan_matching_borrowed_block(&filter, &block)
+                    )
+                );
+            }
+            // The parallel workers scan the lent blocks, and the sink gets
+            // the owned results in row order.
+            let mut parallel = Vec::new();
+            archive
+                .process_borrowed_blocks_parallel_ordered(
+                    0..rows,
+                    OrderedParallelBlockConfig {
+                        decode_workers: 2,
+                        max_blocks_per_batch: 1,
+                        discard_rewards: true,
+                        ..OrderedParallelBlockConfig::default()
+                    },
+                    |_| Ok(()),
+                    |_, _, block| -> Result<String> {
+                        Ok(format!(
+                            "{:?}",
+                            archive.scan_matching_borrowed_block(&filter, &block)
+                        ))
+                    },
+                    |row, scanned| {
+                        parallel.push((row, scanned));
+                        Ok(())
+                    },
+                )
+                .unwrap();
+            assert_eq!(
+                parallel,
+                owned.iter().cloned().enumerate().collect::<Vec<_>>()
+            );
+        }
+        // The filters find matches, so the test does not compare only empty blocks.
+        assert_eq!(matched_transactions, vec![0, 3, 1, 2, 3]);
+
+        // A filter of a different reader gives the same error.
+        let other = ArchiveReader::open(fixture.source()).unwrap();
+        let foreign = other.compile_pubkey_filter([REGISTRY_KEY_ONE]).unwrap();
+        let owned = archive.read_block(0).unwrap();
+        let mut stream = archive.borrowed_blocks_range(0..1).unwrap();
+        let block = stream.next_block().unwrap().unwrap();
+        assert!(matches!(
+            archive.scan_matching_borrowed_block(&foreign, &block),
+            Err(Error::FilterBindingMismatch)
+        ));
+        assert_eq!(
+            format!(
+                "{:?}",
+                archive.scan_matching_decoded_block(&foreign, &owned)
+            ),
+            format!(
+                "{:?}",
+                archive.scan_matching_borrowed_block(&foreign, &block)
+            )
+        );
+    }
+
+    #[test]
+    fn borrowed_matching_scan_keeps_owned_outcomes_and_errors() {
+        let fixture = Fixture::build();
+        let archive = ArchiveReader::open(fixture.source()).unwrap();
+        let v0 = wincode::config::serialize(
+            &ArchiveV2HotMessagePayload::V0(ArchiveV2HotV0Message {
+                header: message_header(),
+                account_keys: vec![CompactPubkey::Id(1)],
+                recent_blockhash: OwnedCompactRecentBlockhash::Id(1),
+                instructions: Vec::new(),
+                address_table_lookups: vec![blockzilla_compact::OwnedCompactAddressTableLookup {
+                    account_key: CompactPubkey::Raw(RAW_KEY),
+                    writable_indexes: vec![0],
+                    readonly_indexes: Vec::new(),
+                }],
+            }),
+            wincode_leb128_config(),
+        )
+        .unwrap();
+        let mut loaded = selector_metadata();
+        loaded.loaded_writable_addresses = vec![CompactPubkey::Id(2)];
+        let loaded = wincode::config::serialize(&loaded, wincode_leb128_config()).unwrap();
+        let legacy = |id| {
+            wincode::config::serialize(
+                &selector_message(vec![CompactPubkey::Id(id)], Vec::new()),
+                wincode_leb128_config(),
+            )
+            .unwrap()
+        };
+        let mut trailing = legacy(1);
+        trailing.push(0);
+        let v0_flags = ARCHIVE_V2_TX_FLAG_MESSAGE_V0 | ARCHIVE_V2_TX_FLAG_HAS_LOADED_ADDRESSES;
+        let with_metadata = v0_flags | ARCHIVE_V2_TX_FLAG_HAS_METADATA;
+        // Each case: name, filter key, message bytes, metadata bytes, row flags.
+        let cases = vec![
+            (
+                "loaded match",
+                REGISTRY_KEY_TWO,
+                v0.clone(),
+                loaded.clone(),
+                with_metadata,
+            ),
+            (
+                "loaded miss",
+                RAW_KEY,
+                v0.clone(),
+                loaded.clone(),
+                with_metadata,
+            ),
+            (
+                "loaded unavailable",
+                RAW_KEY,
+                v0.clone(),
+                Vec::new(),
+                v0_flags,
+            ),
+            (
+                "malformed metadata",
+                RAW_KEY,
+                v0.clone(),
+                vec![0xff],
+                with_metadata,
+            ),
+            (
+                "raw metadata",
+                RAW_KEY,
+                v0.clone(),
+                vec![1, 2, 3],
+                with_metadata | ARCHIVE_V2_TX_FLAG_METADATA_RAW_FALLBACK,
+            ),
+            ("static match", REGISTRY_KEY_ONE, legacy(1), Vec::new(), 0),
+            ("invalid registry", RAW_KEY, legacy(3), Vec::new(), 0),
+            ("trailing message", RAW_KEY, trailing, Vec::new(), 0),
+            (
+                "raw transaction",
+                RAW_KEY,
+                vec![1, 2, 3],
+                Vec::new(),
+                ARCHIVE_V2_TX_FLAG_TX_RAW_FALLBACK,
+            ),
+        ];
+        let mut results = Vec::new();
+        for (name, key, message, metadata, flags) in cases {
+            let filter = archive.compile_pubkey_filter([key]).unwrap();
+            let result = owned_and_borrowed_matching_scan(
+                &archive,
+                &filter,
+                decoded_single_transaction(message, metadata, flags),
+            );
+            results.push((name, result));
+        }
+        // The cases cover a match, a skipped miss, an indeterminate row and an error.
+        let text = |name| &results.iter().find(|(case, _)| *case == name).unwrap().1;
+        assert!(text("loaded match").contains("loaded_address: true"));
+        assert!(text("loaded miss").contains("transactions: []"));
+        assert!(text("loaded unavailable").contains("V0LoadedAddressesUnavailable"));
+        assert!(text("malformed metadata").starts_with("Err(InvalidBlock"));
+        assert!(text("raw metadata").contains("V0LoadedAddressesUnavailable"));
+        assert!(text("static match").contains("static_account: true"));
+        assert!(text("invalid registry").contains("InvalidRegistryReference"));
+        assert!(text("trailing message").starts_with("Err(InvalidBlock"));
+        assert!(text("raw transaction").contains("RawTransactionFallback"));
     }
 
     fn decode_hex(value: &str) -> Vec<u8> {
@@ -7148,6 +7579,242 @@ mod tests {
             })
             .is_ok()
         );
+    }
+
+    #[test]
+    fn network_input_accepts_sixty_four_workers_and_keeps_the_byte_budget() {
+        let config = |network| OrderedParallelBlockConfig {
+            network_input: Some(network),
+            ..OrderedParallelBlockConfig::default()
+        };
+        let workers = |workers| {
+            config(NetworkInputConfig {
+                workers,
+                ..NetworkInputConfig::default()
+            })
+        };
+        assert_eq!(MAX_NETWORK_INPUT_WORKERS, 64);
+        for count in [1, 8, 16, 17, 63, MAX_NETWORK_INPUT_WORKERS] {
+            assert!(
+                validate_ordered_parallel_config(workers(count)).is_ok(),
+                "{count}"
+            );
+        }
+        let message = "invalid generation manifest: invalid network input workers, range, or byte budget (range must fit the budget)";
+        let budget = |max_buffer_bytes| {
+            config(NetworkInputConfig {
+                workers: MAX_NETWORK_INPUT_WORKERS,
+                range_bytes: 16 * 1024 * 1024,
+                max_buffer_bytes,
+            })
+        };
+        assert_eq!(MAX_NETWORK_INPUT_BUFFER_BYTES, 1024 * 1024 * 1024);
+        assert!(validate_ordered_parallel_config(budget(MAX_NETWORK_INPUT_BUFFER_BYTES)).is_ok());
+        for invalid in [
+            workers(0),
+            workers(MAX_NETWORK_INPUT_WORKERS + 1),
+            workers(usize::MAX),
+            budget(MAX_NETWORK_INPUT_BUFFER_BYTES + 1),
+            budget(8 * 1024 * 1024),
+        ] {
+            let error = validate_ordered_parallel_config(invalid).unwrap_err();
+            assert!(matches!(error, Error::InvalidManifest(_)));
+            assert_eq!(error.to_string(), message);
+        }
+    }
+
+    #[test]
+    fn network_window_keeps_sixty_four_requests_in_flight_in_row_order() {
+        const WORKERS: usize = MAX_NETWORK_INPUT_WORKERS;
+        // The fixture epoch has 100 slots. More blocks than workers make a
+        // second wave of requests.
+        const BLOCKS: usize = 96;
+        const OVERLAP_GUARD: Duration = Duration::from_secs(10);
+
+        // A remote source with a high time to first byte. When `hold` is set,
+        // the first requests wait until `WORKERS` requests are in flight.
+        #[derive(Clone)]
+        struct Remote {
+            inner: LocalRangeSource,
+            in_flight: Arc<(Mutex<(usize, usize)>, Condvar)>,
+            hold: Arc<AtomicBool>,
+            reads: Arc<Mutex<Vec<(u64, usize)>>>,
+        }
+        impl RangeSource for Remote {
+            fn recommended_read_concurrency(&self) -> usize {
+                WORKERS
+            }
+            fn size(&self, object: &str) -> SourceResult<Option<u64>> {
+                self.inner.size(object)
+            }
+            fn read_range(
+                &self,
+                object: &str,
+                offset: u64,
+                length: usize,
+            ) -> SourceResult<Vec<u8>> {
+                self.inner.read_range(object, offset, length)
+            }
+            fn read_range_into(
+                &self,
+                object: &str,
+                offset: u64,
+                length: usize,
+                bytes: &mut Vec<u8>,
+            ) -> SourceResult<()> {
+                if object != BLOCKS_FILE {
+                    return self.inner.read_range_into(object, offset, length, bytes);
+                }
+                self.reads.lock().unwrap().push((offset, length));
+                let (lock, changed) = &*self.in_flight;
+                let mut state = lock.lock().unwrap();
+                state.0 += 1;
+                state.1 = state.1.max(state.0);
+                changed.notify_all();
+                while self.hold.load(Ordering::Acquire) && state.1 < WORKERS {
+                    let (next, timeout) = changed.wait_timeout(state, OVERLAP_GUARD).unwrap();
+                    state = next;
+                    if timeout.timed_out() && state.1 < WORKERS {
+                        state.0 -= 1;
+                        return Err(SourceError::Protocol(format!(
+                            "only {} of {WORKERS} requests were in flight",
+                            state.1
+                        )));
+                    }
+                }
+                drop(state);
+                let result = self.inner.read_range_into(object, offset, length, bytes);
+                lock.lock().unwrap().0 -= 1;
+                result
+            }
+        }
+
+        let fixture = Fixture::parallel_blocks(BLOCKS);
+        let local = ArchiveReader::open(fixture.source()).unwrap();
+        let expected: Vec<(usize, (u32, u64, u64))> = local
+            .blocks()
+            .enumerate()
+            .map(|(row, block)| {
+                let block = block.unwrap();
+                (
+                    row,
+                    (
+                        block.index_row.block_id,
+                        block.block.header.slot,
+                        block.block.header.parent_slot,
+                    ),
+                )
+            })
+            .collect();
+        assert_eq!(expected.len(), BLOCKS);
+        let frame = local
+            .index()
+            .rows
+            .iter()
+            .map(|row| row.compressed_len as usize)
+            .max()
+            .unwrap();
+        let minimum_frame = local
+            .index()
+            .rows
+            .iter()
+            .map(|row| row.compressed_len as usize)
+            .min()
+            .unwrap();
+        // Two frames do not fit one range, so each request reads one frame.
+        assert!(2 * minimum_frame > frame);
+
+        let run = |range: Range<usize>, max_buffer_bytes: usize, hold: bool| {
+            let source = Remote {
+                inner: fixture.source(),
+                in_flight: Arc::new((Mutex::new((0, 0)), Condvar::new())),
+                hold: Arc::new(AtomicBool::new(false)),
+                reads: Arc::new(Mutex::new(Vec::new())),
+            };
+            let archive = ArchiveReader::open_with_options(
+                source.clone(),
+                OpenOptions {
+                    hash_verification: HashVerification::SizesOnly,
+                    ..OpenOptions::default()
+                },
+            )
+            .unwrap();
+            // Count only the reads of the scan.
+            source.reads.lock().unwrap().clear();
+            *source.in_flight.0.lock().unwrap() = (0, 0);
+            source.hold.store(hold, Ordering::Release);
+            let mut consumed = Vec::new();
+            let stats = archive
+                .process_borrowed_blocks_parallel_ordered(
+                    range,
+                    OrderedParallelBlockConfig {
+                        network_input: Some(NetworkInputConfig {
+                            workers: WORKERS,
+                            range_bytes: frame,
+                            max_buffer_bytes,
+                        }),
+                        decode_workers: 4,
+                        max_blocks_per_batch: 1,
+                        discard_rewards: true,
+                        ..OrderedParallelBlockConfig::default()
+                    },
+                    |_| Ok(()),
+                    |_, _, block| -> Result<(u32, u64, u64)> {
+                        assert!(!block.uses_owned_fallback());
+                        Ok((
+                            block.index_row.block_id,
+                            block.header().slot,
+                            block.header().parent_slot,
+                        ))
+                    },
+                    |row, output| {
+                        consumed.push((row, output));
+                        Ok(())
+                    },
+                )
+                .unwrap();
+            let (active, peak) = *source.in_flight.0.lock().unwrap();
+            assert_eq!(active, 0, "a request was still in flight after the scan");
+            let mut reads = source.reads.lock().unwrap().clone();
+            reads.sort_unstable();
+            (stats, consumed, peak, reads)
+        };
+
+        // 64 requests are in flight at the same time, and the sink still
+        // receives every block once in row order.
+        let (stats, consumed, peak, reads) = run(0..BLOCKS, WORKERS * frame, true);
+        assert_eq!(consumed, expected);
+        assert_eq!(peak, WORKERS);
+        assert_eq!(stats.input_workers, WORKERS);
+        assert_eq!(stats.input_buffer_count, WORKERS);
+        assert!(stats.input_buffer_capacity_bytes <= WORKERS * frame);
+        assert_eq!(stats.block_count, BLOCKS as u64);
+        assert_eq!(stats.read_call_count, BLOCKS as u64);
+        assert_eq!(stats.compressed_bytes, local.index().blob_file_bytes);
+        // Each frame is read once, with no gap and no overlap.
+        assert_eq!(reads.len(), BLOCKS);
+        let mut next = 0u64;
+        for ((offset, length), row) in reads.iter().zip(&local.index().rows) {
+            assert_eq!((*offset, *length), (next, row.compressed_len as usize));
+            next += *length as u64;
+        }
+        assert_eq!(next, local.index().blob_file_bytes);
+
+        // The byte budget still limits the requests in flight.
+        let (stats, consumed, peak, _) = run(0..BLOCKS, 10 * frame, false);
+        assert_eq!(consumed, expected);
+        assert_eq!(stats.input_workers, 10);
+        assert_eq!(stats.input_buffer_count, 10);
+        assert!(stats.input_buffer_capacity_bytes <= 10 * frame);
+        assert!(peak <= 10, "{peak} requests exceeded the byte budget");
+
+        // A short range does not start workers or buffers without a request.
+        let (stats, consumed, peak, reads) = run(5..10, WORKERS * frame, false);
+        assert_eq!(consumed, expected[5..10]);
+        assert_eq!(stats.input_workers, 5);
+        assert_eq!(stats.input_buffer_count, 5);
+        assert!(peak <= 5);
+        assert_eq!(reads.len(), 5);
     }
 
     #[test]

@@ -8,6 +8,7 @@
 mod indexed_tokens;
 
 use std::{
+    cell::Cell,
     collections::{HashMap, VecDeque},
     mem::size_of,
     ops::Range,
@@ -29,7 +30,8 @@ use blockzilla_archive_v2::{
 };
 use blockzilla_compact::{CompactTokenBalance, OwnedCompactRecentBlockhash};
 use blockzilla_model::{
-    ArchiveFormat, ArchiveInstructionSource, BlockHeader, BlockSink, CanonicalBlock,
+    ArchiveFormat, ArchiveInstructionSource, BlockHeader, BlockPrecheck, BlockSink, BlockView,
+    CanonicalBlock,
     CanonicalTransaction, CoverageReason, CpiCoverage, Error as QueryError, ExecutionStatus,
     InstructionCoordinate, InstructionCoverage, InstructionDataCoverage,
     InstructionDataRequirement, OrderedBlockPublisher, RecordedTokenBalance, ResolvedInstruction,
@@ -78,18 +80,24 @@ pub const COMPACT_V2_PARALLEL_UNCOMPRESSED_BATCH_BYTES: usize = 32 * 1024 * 1024
 pub const COMPACT_V2_PROJECTION_SCRATCH_RETAINED_BYTES: usize = 1024 * 1024;
 /// Default limit for one immutable registry used by one dense scan.
 pub const DEFAULT_COMPACT_V2_FULL_REGISTRY_BYTES: u64 = 1 << 30;
-/// Small partial scans keep the sparse cache below this transaction count.
+/// Default threshold: small partial scans keep the sparse cache below this
+/// transaction count.
 pub const COMPACT_V2_PARTIAL_REGISTRY_PREFETCH_MIN_TRANSACTIONS: u64 = 1_000_000;
 /// Largest source read used to prefetch the shared registry.
 pub const COMPACT_V2_REGISTRY_PREFETCH_READ_BYTES: usize = 32 * 1024 * 1024;
+/// A pipeline stage is saturated when its busy time is at least
+/// `NUMERATOR / DENOMINATOR` (two thirds) of the scan wall time.
+const LIMITING_STAGE_BUSY_NUMERATOR: u128 = 2;
+const LIMITING_STAGE_BUSY_DENOMINATOR: u128 = 3;
 
 /// Policy for automatic full-registry prefetch during a sequential scan.
 ///
 /// A nonzero limit permits one complete immutable registry when the request is
-/// a full archive scan or contains at least one million transactions. The
-/// request must select fields that need public-key resolution, and the exact
-/// registry payload must fit the supplied limit. A zero-byte limit keeps the
-/// bounded eight-chunk LRU path.
+/// a full archive scan or contains at least
+/// [`Self::min_requested_transactions`] transactions (default one million).
+/// The request must select fields that need public-key resolution, and the
+/// exact registry payload must fit the supplied limit. A zero-byte limit keeps
+/// the bounded eight-chunk LRU path.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct CompactV2RegistryReadPolicy {
     max_full_registry_bytes: u64,
@@ -113,8 +121,22 @@ impl CompactV2RegistryReadPolicy {
         }
     }
 
+    /// Permit the complete registry for a partial scan with at least
+    /// `transactions` requested transactions. Full scans ignore this value.
+    /// The default is [`COMPACT_V2_PARTIAL_REGISTRY_PREFETCH_MIN_TRANSACTIONS`].
+    pub const fn with_min_requested_transactions(mut self, transactions: u64) -> Self {
+        self.min_requested_transactions = transactions;
+        self
+    }
+
     pub const fn max_full_registry_bytes(self) -> u64 {
         self.max_full_registry_bytes
+    }
+
+    /// Smallest requested-transaction count that permits the complete
+    /// registry for a partial scan.
+    pub const fn min_requested_transactions(self) -> u64 {
+        self.min_requested_transactions
     }
 }
 
@@ -165,9 +187,13 @@ pub struct CompactV2ParallelScanConfig {
     pub workers: usize,
     /// Largest complete registry that can be shared by all workers. Zero
     /// keeps the sparse worker-local cache. A nonzero limit applies to full
-    /// scans and partial scans with at least one million requested
-    /// transactions.
+    /// scans and partial scans with at least `full_registry_min_transactions`
+    /// requested transactions.
     pub max_full_registry_bytes: u64,
+    /// Smallest requested-transaction count for which a partial scan loads
+    /// one shared complete registry. Full scans ignore this value. The
+    /// default is [`COMPACT_V2_PARTIAL_REGISTRY_PREFETCH_MIN_TRANSACTIONS`].
+    pub full_registry_min_transactions: u64,
 }
 
 impl CompactV2ParallelScanConfig {
@@ -180,11 +206,24 @@ impl CompactV2ParallelScanConfig {
                 max_buffer_bytes: 256 * 1024 * 1024,
             }),
             max_full_registry_bytes: DEFAULT_COMPACT_V2_FULL_REGISTRY_BYTES,
+            full_registry_min_transactions: COMPACT_V2_PARTIAL_REGISTRY_PREFETCH_MIN_TRANSACTIONS,
         }
     }
 
     pub const fn with_full_registry_limit(mut self, bytes: u64) -> Self {
         self.max_full_registry_bytes = bytes;
+        self
+    }
+
+    /// Load one shared complete registry for a partial scan with at least
+    /// `transactions` requested transactions.
+    ///
+    /// A lower value lets a bounded indexer range read the registry once,
+    /// instead of many sparse chunk reads in each worker. The registry must
+    /// still fit [`Self::max_full_registry_bytes`] and the request must
+    /// resolve public keys.
+    pub const fn with_full_registry_min_transactions(mut self, transactions: u64) -> Self {
+        self.full_registry_min_transactions = transactions;
         self
     }
 }
@@ -220,6 +259,86 @@ pub struct CompactV2ParallelScanReceipt {
     pub signature_assign_wall_time: Duration,
     /// Canonical validation and the application sink, excluding signature reads.
     pub publish_wall_time: Duration,
+    /// Wall time of the complete scan call, from the request checks to the
+    /// final receipt. It includes registry and query-key setup reads.
+    pub elapsed_wall_time: Duration,
+}
+
+impl CompactV2ParallelScanReceipt {
+    /// Return the pipeline stage that most likely limited this scan.
+    ///
+    /// A stage is saturated when its busy time is at least two thirds of
+    /// [`Self::elapsed_wall_time`]. The rule checks the stages in this order:
+    ///
+    /// 1. [`CompactV2PipelineStage::OrderedConsumer`] when
+    ///    `signature_read_wall_time + signature_assign_wall_time +
+    ///    publish_wall_time` is saturated. This sum includes the application
+    ///    sink. The ordered thread is checked first, because more workers
+    ///    cannot make it faster.
+    /// 2. [`CompactV2PipelineStage::DecodeProject`] when the worker busy sum
+    ///    `pipeline.worker_decompress_decode_sum_time +
+    ///    pipeline.worker_projection_sum_time`, divided by
+    ///    `effective_workers`, is saturated.
+    /// 3. [`CompactV2PipelineStage::Input`] in all other cases. The scan then
+    ///    waited mostly for source reads or setup reads. A scan with zero
+    ///    elapsed time also gives `Input`. With no used worker, rule 2 does
+    ///    not apply.
+    ///
+    /// This is a heuristic from coarse wall-time counters. It does not
+    /// measure queue waits directly.
+    pub fn limiting_stage(&self) -> CompactV2PipelineStage {
+        let elapsed = self.elapsed_wall_time.as_nanos();
+        // busy / lanes >= elapsed * 2 / 3, without a division.
+        let saturated = |busy: u128, lanes: u128| {
+            elapsed != 0
+                && busy.saturating_mul(LIMITING_STAGE_BUSY_DENOMINATOR)
+                    >= elapsed
+                        .saturating_mul(LIMITING_STAGE_BUSY_NUMERATOR)
+                        .saturating_mul(lanes)
+        };
+        let consumer_busy = self
+            .signature_read_wall_time
+            .as_nanos()
+            .saturating_add(self.signature_assign_wall_time.as_nanos())
+            .saturating_add(self.publish_wall_time.as_nanos());
+        if saturated(consumer_busy, 1) {
+            return CompactV2PipelineStage::OrderedConsumer;
+        }
+        let worker_busy = self
+            .pipeline
+            .worker_decompress_decode_sum_time
+            .as_nanos()
+            .saturating_add(self.pipeline.worker_projection_sum_time.as_nanos());
+        if self.effective_workers != 0 && saturated(worker_busy, self.effective_workers as u128) {
+            return CompactV2PipelineStage::DecodeProject;
+        }
+        CompactV2PipelineStage::Input
+    }
+}
+
+/// One stage of the ordered parallel Compact V2 pipeline.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[non_exhaustive]
+pub enum CompactV2PipelineStage {
+    /// Source reads and setup reads. This is also the result when no stage
+    /// is saturated.
+    Input,
+    /// Parallel zstd expansion, block decode, canonical projection, and the
+    /// caller's parallel map callback.
+    DecodeProject,
+    /// The one ordered thread: signature reads and assignment, publication
+    /// checks, and the application sink or consume callback.
+    OrderedConsumer,
+}
+
+impl std::fmt::Display for CompactV2PipelineStage {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Input => formatter.write_str("input"),
+            Self::DecodeProject => formatter.write_str("decode-project"),
+            Self::OrderedConsumer => formatter.write_str("ordered-consumer"),
+        }
+    }
 }
 
 #[derive(Debug, Error)]
@@ -415,12 +534,105 @@ impl<S: RangeSource> CompactV2InstructionSource<S> {
     /// and vote-hash sidecars; the sequential scan keeps one bounded copy of
     /// that state. The USDC, Pump.fun, and user-program-index reference workloads all
     /// request `InstructionDataRequirement::None` and can use this path.
+    ///
+    /// A complete registry that this scan loads stays in this source, as for
+    /// [`Self::scan_ordered_with_registry_policy`]. Later sequential scans use
+    /// it. A later parallel scan uses it when the request resolves public keys
+    /// and the registry fits `config.max_full_registry_bytes`. Then the
+    /// registry receipt shows `SharedFull` with zero prefetch reads. Use
+    /// [`Self::release_full_registry`] or [`Self::release_full_registry_above`]
+    /// to release it.
+    ///
+    /// The ordered thread runs the sink. When the sink is the limit (see
+    /// [`CompactV2ParallelScanReceipt::limiting_stage`]), move per-block
+    /// work to [`Self::scan_ordered_parallel_map`].
     pub fn scan_ordered_parallel(
         &mut self,
         request: &ScanRequest,
         sink: &mut dyn BlockSink,
         config: CompactV2ParallelScanConfig,
     ) -> blockzilla_model::Result<CompactV2ParallelScanReceipt> {
+        self.scan_ordered_parallel_inner::<(), fn(BlockView<'_>) -> blockzilla_model::Result<()>>(
+            request, sink, config, None,
+        )
+    }
+
+    /// Run `map` on the parallel workers, then run `consume` on the ordered
+    /// thread in exact source order.
+    ///
+    /// Use this method when the sink of [`Self::scan_ordered_parallel`] is the
+    /// limit. Put the work that needs only one block (filter, parse, encode)
+    /// in `map`. Keep the work that needs source order or shared state in
+    /// `consume`.
+    ///
+    /// Each worker calls `map` with the projected block right after its
+    /// projection and keeps the result with that block. The ordered thread
+    /// does all steps of [`Self::scan_ordered_parallel`] in the same order,
+    /// including all publication checks, gates, and receipt counts. `consume`
+    /// runs at the point where the plain sink runs: only for blocks that pass
+    /// all checks, in exact block order. An error from `map` is returned at
+    /// that same point. Thus the output and the first error are the same as
+    /// for a plain sink that calls `map` and then `consume`.
+    ///
+    /// `map` can run for blocks that the publisher rejects later, and for
+    /// blocks after an error. The scan discards those results. Thus `map`
+    /// must not have external side effects. With `panic = "unwind"`, a panic in
+    /// `map` ends the scan with an error; with `panic = "abort"` it stops the
+    /// process, as a panic in a plain sink does.
+    ///
+    /// Workers call `map` before the ordered thread assigns primary
+    /// signatures. A request that includes primary signatures returns
+    /// [`blockzilla_model::Error::InvalidRequest`]. Use
+    /// [`ScanRequest::without_primary_signatures`], or use
+    /// [`Self::scan_ordered_parallel`] when the output needs signatures.
+    ///
+    /// Time in `map` is in `pipeline.worker_projection_sum_time`. Time in
+    /// `consume` is in `publish_wall_time`. The receipt byte bounds do not
+    /// include `T`. The rolling window of projected blocks limits the number
+    /// of `T` values in memory.
+    pub fn scan_ordered_parallel_map<T, M, C>(
+        &mut self,
+        request: &ScanRequest,
+        config: CompactV2ParallelScanConfig,
+        map: M,
+        consume: C,
+    ) -> blockzilla_model::Result<CompactV2ParallelScanReceipt>
+    where
+        T: Send,
+        M: Fn(BlockView<'_>) -> blockzilla_model::Result<T> + Sync,
+        C: FnMut(T) -> blockzilla_model::Result<()>,
+    {
+        if request.include_primary_signatures {
+            return Err(QueryError::InvalidRequest(
+                "scan_ordered_parallel_map runs map before the ordered thread assigns primary signatures; use ScanRequest::without_primary_signatures() or scan_ordered_parallel".into(),
+            ));
+        }
+        let mapped = Cell::new(None);
+        let mut sink = MappedBlockSink {
+            mapped: &mapped,
+            consume,
+        };
+        self.scan_ordered_parallel_inner(request, &mut sink, config, Some((&map, &mapped)))
+    }
+
+    /// Shared body of the ordered parallel scans.
+    ///
+    /// With `map`, each worker runs the map callback on its projected block.
+    /// The ordered thread puts the result in the cell just before
+    /// publication, where [`MappedBlockSink`] takes it.
+    fn scan_ordered_parallel_inner<T, M>(
+        &mut self,
+        request: &ScanRequest,
+        sink: &mut dyn BlockSink,
+        config: CompactV2ParallelScanConfig,
+        map: Option<(&M, &Cell<Option<blockzilla_model::Result<T>>>)>,
+    ) -> blockzilla_model::Result<CompactV2ParallelScanReceipt>
+    where
+        T: Send,
+        M: Fn(BlockView<'_>) -> blockzilla_model::Result<T> + Sync,
+    {
+        let scan_started = Instant::now();
+        let (map, mapped_output) = map.unzip();
         if !matches!(request.instruction_data, InstructionDataRequirement::None) {
             return Err(source_error(CompactV2InstructionSourceError::Invalid(
                 "parallel Compact V2 scans require InstructionDataRequirement::None; use scan_ordered when exact instruction payload bytes are required".into(),
@@ -457,31 +669,40 @@ impl<S: RangeSource> CompactV2InstructionSource<S> {
                 })?;
         let requested_transactions =
             requested_transaction_count(&self.reader, start..end).map_err(source_error)?;
-        let query_keys = Arc::new(
-            BoundQueryKeys::bind(
-                self.reader.source(),
-                self.reader.registry_entries(),
-                request,
-            )
-            .map_err(|error| {
-                source_error(CompactV2InstructionSourceError::Invalid(error.to_string()))
-            })?,
-        );
-        let (shared_registry, mut registry_receipt) = prepare_parallel_registry(
-            &self.reader,
-            start,
-            end,
-            request,
-            requested_transactions,
-            config,
-        )
-        .map_err(source_error)?;
+        // Reuse bound keys that cover this request, as the sequential path
+        // does. The binding depends only on the registry and the requested
+        // keys, so lookups are the same; a reused binding reads nothing. A
+        // registry kept from an earlier scan also serves a new binding.
+        let (query_keys, key_read_calls, key_read_bytes) =
+            if self.context.query_keys.covers(request) {
+                (Arc::clone(&self.context.query_keys), 0, 0)
+            } else {
+                let keys = BoundQueryKeys::bind_with_registry(
+                    self.reader.source(),
+                    self.reader.registry_entries(),
+                    request,
+                    self.context
+                        .shared_registry
+                        .as_ref()
+                        .map(|registry| registry.bytes.as_slice()),
+                )
+                .map_err(|error| {
+                    source_error(CompactV2InstructionSourceError::Invalid(error.to_string()))
+                })?;
+                let (calls, bytes) = (keys.read_calls, keys.read_bytes);
+                let keys = Arc::new(keys);
+                self.context.query_keys = Arc::clone(&keys);
+                (keys, calls, bytes)
+            };
+        let (shared_registry, mut registry_receipt) = self
+            .parallel_registry_for_scan(start, end, request, requested_transactions, config)
+            .map_err(source_error)?;
         let read_signatures = request.include_primary_signatures;
         let mut signature_scan =
             ContiguousSignatureScan::new(&self.reader, start..end, read_signatures);
         let mut context_io = ContextIo {
-            calls: registry_receipt.prefetch_read_calls + query_keys.read_calls,
-            bytes: registry_receipt.prefetch_read_bytes + query_keys.read_bytes,
+            calls: registry_receipt.prefetch_read_calls + key_read_calls,
+            bytes: registry_receipt.prefetch_read_bytes + key_read_bytes,
         };
         let reader = &self.reader;
         let projected_bytes_current = AtomicU64::new(0);
@@ -533,7 +754,7 @@ impl<S: RangeSource> CompactV2InstructionSource<S> {
                                 CompactV2InstructionSourceError::Invalid(error.to_string())
                             })?;
                         }
-                        return Ok(ParallelProjectedBlock {
+                        let mut projected = ParallelProjectedBlock {
                             canonical: CanonicalBlock {
                                 counts: Some(counts),
                                 header: BlockHeader {
@@ -547,7 +768,11 @@ impl<S: RangeSource> CompactV2InstructionSource<S> {
                             context_io: ContextIo::default(),
                             owned_payload_bytes: 0,
                             recycle: None,
-                        });
+                            mapped: None,
+                            precheck: None,
+                        };
+                        map_parallel_block(map, request, &mut projected);
+                        return Ok(projected);
                     }
                     let context_io_before = worker.context.io;
                     for mut block in worker
@@ -603,7 +828,7 @@ impl<S: RangeSource> CompactV2InstructionSource<S> {
                     )?;
                     max_projected_batch_bytes.fetch_max(current, Ordering::Relaxed);
                     let context_io = worker.context.io.difference(context_io_before)?;
-                    Ok(ParallelProjectedBlock {
+                    let mut projected = ParallelProjectedBlock {
                         recycle: Some(Arc::clone(&worker.recycle)),
                         canonical: CanonicalBlock {
                             counts: None,
@@ -617,7 +842,11 @@ impl<S: RangeSource> CompactV2InstructionSource<S> {
                         signature_counts,
                         context_io,
                         owned_payload_bytes,
-                    })
+                        mapped: None,
+                        precheck: None,
+                    };
+                    map_parallel_block(map, request, &mut projected);
+                    Ok(projected)
                 },
                 |row_number, mut projected| {
                     let source_row = reader.index().rows.get(row_number).ok_or_else(|| {
@@ -643,8 +872,17 @@ impl<S: RangeSource> CompactV2InstructionSource<S> {
                     )?;
                     signature_assign_wall_time += started.elapsed();
                     context_io.checked_add(projected.context_io)?;
+                    // The map sink takes this value only when publish accepts the block.
+                    if let (Some(output), Some(mapped)) = (mapped_output, projected.mapped.take()) {
+                        output.set(Some(mapped));
+                    }
                     let started = Instant::now();
-                    publisher.publish(&projected.canonical)?;
+                    match projected.precheck.take() {
+                        Some(precheck) => {
+                            publisher.publish_prechecked(&projected.canonical, precheck)?
+                        }
+                        None => publisher.publish(&projected.canonical)?,
+                    }
                     publish_wall_time += started.elapsed();
                     let previous = projected_bytes_current
                         .fetch_sub(projected.owned_payload_bytes, Ordering::AcqRel);
@@ -725,7 +963,59 @@ impl<S: RangeSource> CompactV2InstructionSource<S> {
             max_projected_block_bytes: max_projected_block_bytes.load(Ordering::Relaxed),
             max_projected_batch_bytes: max_projected_batch_bytes.load(Ordering::Relaxed),
             registry: registry_receipt,
+            elapsed_wall_time: scan_started.elapsed(),
         })
+    }
+
+    /// Select the complete registry for one parallel scan.
+    ///
+    /// A retained registry is used when the request resolves public keys and
+    /// the registry fits the call limit. Otherwise the prefetch policy
+    /// applies, and this source keeps a newly loaded registry for later scans.
+    fn parallel_registry_for_scan(
+        &mut self,
+        start: usize,
+        end: usize,
+        request: &ScanRequest,
+        requested_transactions: u64,
+        config: CompactV2ParallelScanConfig,
+    ) -> CompactV2InstructionSourceResult<(
+        Option<Arc<SharedRegistry>>,
+        CompactV2ParallelRegistryReceipt,
+    )> {
+        if let Some(registry) = &self.context.shared_registry {
+            let registry_bytes = u64::try_from(registry.bytes.len()).map_err(|_| {
+                CompactV2InstructionSourceError::Invalid(
+                    "retained registry size exceeds u64".into(),
+                )
+            })?;
+            if request_needs_registry(request)
+                && config.max_full_registry_bytes != 0
+                && registry_bytes <= config.max_full_registry_bytes
+            {
+                return Ok((
+                    Some(Arc::clone(registry)),
+                    CompactV2ParallelRegistryReceipt {
+                        mode: CompactV2ParallelRegistryMode::SharedFull,
+                        prefetch_read_calls: 0,
+                        prefetch_read_bytes: 0,
+                        resident_bound_bytes: registry_bytes,
+                    },
+                ));
+            }
+        }
+        let (shared_registry, receipt) = prepare_parallel_registry(
+            &self.reader,
+            start,
+            end,
+            request,
+            requested_transactions,
+            config,
+        )?;
+        if let Some(registry) = &shared_registry {
+            self.context.retain_shared_registry(Arc::clone(registry));
+        }
+        Ok((shared_registry, receipt))
     }
 
     fn scan_inner(
@@ -1958,12 +2248,60 @@ impl<S: RangeSource> ArchiveInstructionSource for CompactV2InstructionSource<S> 
     }
 }
 
-struct ParallelProjectedBlock {
+struct ParallelProjectedBlock<T> {
     recycle: Option<Arc<Mutex<Vec<CanonicalBlock>>>>,
     canonical: CanonicalBlock,
     signature_counts: Option<Vec<u8>>,
     context_io: ContextIo,
     owned_payload_bytes: u64,
+    /// Worker map result for `scan_ordered_parallel_map`; `None` otherwise.
+    mapped: Option<blockzilla_model::Result<T>>,
+    /// Order-independent publication checks, done on the worker so the
+    /// ordered thread keeps only constant work per block.
+    precheck: Option<BlockPrecheck>,
+}
+
+/// Finish one projected block on its worker: run the publication prechecks,
+/// then the optional map, and keep both results.
+///
+/// The prechecks read no primary signature, so the later signature
+/// assignment on the ordered thread does not change their result.
+fn map_parallel_block<T, M>(
+    map: Option<&M>,
+    request: &ScanRequest,
+    projected: &mut ParallelProjectedBlock<T>,
+) where
+    M: Fn(BlockView<'_>) -> blockzilla_model::Result<T>,
+{
+    projected.precheck = Some(BlockPrecheck::check(request, &projected.canonical));
+    if let Some(map) = map {
+        projected.mapped = Some(map(projected.canonical.as_view()));
+    }
+}
+
+/// Publisher sink for [`CompactV2InstructionSource::scan_ordered_parallel_map`].
+///
+/// The ordered thread puts the worker map result in `mapped` just before
+/// publication. The publisher calls `visit_block` only after all of its
+/// checks pass. Thus `consume` runs at the same point as a plain sink.
+struct MappedBlockSink<'a, T, C> {
+    mapped: &'a Cell<Option<blockzilla_model::Result<T>>>,
+    consume: C,
+}
+
+impl<T, C> BlockSink for MappedBlockSink<'_, T, C>
+where
+    C: FnMut(T) -> blockzilla_model::Result<()>,
+{
+    fn visit_block(&mut self, block: BlockView<'_>) -> blockzilla_model::Result<()> {
+        let mapped = self.mapped.take().ok_or_else(|| {
+            source_error(CompactV2InstructionSourceError::Invalid(format!(
+                "parallel map output is missing for block {}",
+                block.header.block_ordinal
+            )))
+        })?;
+        (self.consume)(mapped?)
+    }
 }
 
 struct ParallelProjectionWorker {
@@ -2216,7 +2554,7 @@ fn should_prefetch_parallel_registry(
 ) -> bool {
     should_prefetch_registry(
         config.max_full_registry_bytes,
-        COMPACT_V2_PARTIAL_REGISTRY_PREFETCH_MIN_TRANSACTIONS,
+        config.full_registry_min_transactions,
         full_scan,
         requested_transactions,
         request_needs_registry,
@@ -2964,10 +3302,15 @@ impl ExactContext {
             return Ok(());
         };
         self.io.checked_add(prefetch_io)?;
+        self.retain_shared_registry(registry);
+        Ok(())
+    }
+
+    /// Keep one complete registry for later scans and release sparse chunks.
+    fn retain_shared_registry(&mut self, registry: Arc<SharedRegistry>) {
         self.registry_chunks.clear();
         self.registry_lru.clear();
         self.shared_registry = Some(registry);
-        Ok(())
     }
 
     fn prepare_query_keys<S: RangeSource>(
@@ -3254,7 +3597,7 @@ impl ExactContext {
 }
 
 #[cfg(test)]
-mod tests {
+pub(crate) mod tests {
     use std::{
         fs,
         num::NonZeroU32,
@@ -3298,9 +3641,9 @@ mod tests {
         reconstruct_instruction_data_candidates, serialize_signed_message,
     };
 
-    const EPOCH: u64 = 1;
-    const FIRST_SLOT: u64 = 100;
-    const SLOTS_PER_EPOCH: u64 = 100;
+    pub(crate) const EPOCH: u64 = 1;
+    pub(crate) const FIRST_SLOT: u64 = 100;
+    pub(crate) const SLOTS_PER_EPOCH: u64 = 100;
     const TOKEN_PROGRAM: [u8; 32] = [2; 32];
     const VOTE_PROGRAM: [u8; 32] = [3; 32];
     const CPI_PROGRAM: [u8; 32] = [4; 32];
@@ -3310,8 +3653,8 @@ mod tests {
     const OTHER_MINT: [u8; 32] = [8; 32];
     const TOKEN_OWNER: [u8; 32] = [9; 32];
 
-    struct Fixture {
-        directory: TempDir,
+    pub(crate) struct Fixture {
+        pub(crate) directory: TempDir,
         signer: [u8; 32],
         signatures: Vec<[u8; 64]>,
         decoded_bytes: u64,
@@ -7007,5 +7350,788 @@ mod tests {
             .map(|chunk| chunk.len() * REGISTRY_KEY_BYTES)
             .sum::<usize>();
         assert!(retained <= COMPACT_V2_QUERY_REGISTRY_RETAINED_KEY_BYTES);
+    }
+
+    /// Indexer-shaped blocks: registry keys, token balances, failed rows, and
+    /// empty blocks. Every block with rows resolves registry keys.
+    pub(crate) fn indexer_fixture(blocks: usize) -> Fixture {
+        let signer = SigningKey::from_bytes(&[71; 32]).verifying_key().to_bytes();
+        let balances = |amount| {
+            let mut value = metadata(2, None, Some(Vec::new()), vec![], vec![]);
+            value.pre_token_balances = vec![CompactTokenBalance {
+                account_index: 1,
+                mint: Some(CompactPubkey::Id(3)),
+                owner: Some(CompactPubkey::Id(4)),
+                program_id: Some(CompactPubkey::Id(2)),
+                amount,
+                decimals: 6,
+            }];
+            value
+        };
+        let blocks = (0..blocks)
+            .map(|block| {
+                if block % 4 == 2 {
+                    return Vec::new();
+                }
+                let mut transactions = vec![TxFixture::exact(
+                    legacy_message(vec![raw_instruction(1, &[0], &[block as u8])]),
+                    balances(block as u64 + 10),
+                    ARCHIVE_V2_TX_FLAG_HAS_INNER_IX,
+                )];
+                if block % 3 == 1 {
+                    let mut failed = balances(1);
+                    failed.err = Some(CompactTransactionError::InstructionError(
+                        0,
+                        CompactInstructionError::Custom(7),
+                    ));
+                    transactions.push(TxFixture::exact(
+                        legacy_message(vec![raw_instruction(1, &[0], &[0xee])]),
+                        failed,
+                        ARCHIVE_V2_TX_FLAG_HAS_ERROR | ARCHIVE_V2_TX_FLAG_HAS_INNER_IX,
+                    ));
+                }
+                transactions
+            })
+            .collect();
+        Fixture::build(
+            vec![signer, TOKEN_PROGRAM, TARGET_MINT, TOKEN_OWNER],
+            blocks,
+            None,
+        )
+    }
+
+    /// Exact text bytes of one published block and all of its fields.
+    pub(crate) fn block_bytes(block: BlockView<'_>) -> Vec<u8> {
+        format!("{block:?}").into_bytes()
+    }
+
+    /// Plain path: the ordered sink encodes and appends each block.
+    fn plain_scan_bytes<S: RangeSource>(
+        source: &mut CompactV2InstructionSource<S>,
+        request: &ScanRequest,
+        config: CompactV2ParallelScanConfig,
+    ) -> (
+        Vec<u8>,
+        blockzilla_model::Result<CompactV2ParallelScanReceipt>,
+    ) {
+        let mut bytes = Vec::new();
+        let mut sink = blockzilla_model::FnBlockSink::new(|block: BlockView<'_>| {
+            bytes.extend_from_slice(&block_bytes(block));
+            Ok(())
+        });
+        let result = source.scan_ordered_parallel(request, &mut sink, config);
+        (bytes, result)
+    }
+
+    /// Map path: workers encode each block, and the ordered thread appends.
+    fn map_scan_bytes<S: RangeSource>(
+        source: &mut CompactV2InstructionSource<S>,
+        request: &ScanRequest,
+        config: CompactV2ParallelScanConfig,
+    ) -> (
+        Vec<u8>,
+        blockzilla_model::Result<CompactV2ParallelScanReceipt>,
+    ) {
+        let mut bytes = Vec::new();
+        let result = source.scan_ordered_parallel_map(
+            request,
+            config,
+            |block| Ok(block_bytes(block)),
+            |mapped: Vec<u8>| {
+                bytes.extend_from_slice(&mapped);
+                Ok(())
+            },
+        );
+        (bytes, result)
+    }
+
+    fn bounded_request(mut request: ScanRequest, first_block: u32, blocks: u32) -> ScanRequest {
+        request.range = Some(ScanRange {
+            first_block,
+            block_count: NonZeroU32::new(blocks).unwrap(),
+        });
+        request
+    }
+
+    #[test]
+    fn parallel_map_output_matches_the_plain_sink_bytes() {
+        let main = Fixture::main();
+        let indexer = indexer_fixture(12);
+        let relaxed = ScanRequest::all()
+            .allow_unverified_source()
+            .allow_incomplete_instructions()
+            .allow_incomplete_cpi()
+            .allow_unknown_execution()
+            .without_instruction_data()
+            .without_primary_signatures();
+        let strict = ScanRequest::all()
+            .allow_unverified_source()
+            .without_instruction_data()
+            .without_primary_signatures();
+        let cases = [
+            (&main, relaxed.clone(), 2),
+            (
+                &main,
+                relaxed.clone().without_failed_transaction_details(),
+                2,
+            ),
+            (
+                &main,
+                relaxed
+                    .clone()
+                    .with_instruction_programs_for([TOKEN_PROGRAM]),
+                2,
+            ),
+            (&main, relaxed.clone().without_instruction_accounts(), 2),
+            (
+                &main,
+                ScanRequest::all()
+                    .allow_unverified_source()
+                    .allow_incomplete_instructions()
+                    .allow_incomplete_cpi()
+                    .count_instructions_only(),
+                2,
+            ),
+            (&main, bounded_request(relaxed.clone(), 1, 1), 1),
+            (&indexer, strict.clone().with_token_balances(), 12),
+            (
+                &indexer,
+                strict
+                    .clone()
+                    .without_instructions()
+                    .without_required_signers()
+                    .with_token_balances_for([TARGET_MINT]),
+                12,
+            ),
+            (
+                &indexer,
+                strict
+                    .clone()
+                    .with_token_balances()
+                    .without_failed_transaction_details(),
+                12,
+            ),
+            (
+                &indexer,
+                bounded_request(strict.clone().with_token_balances(), 3, 7),
+                7,
+            ),
+        ];
+        for (fixture, request, blocks) in cases {
+            for workers in [1, 3] {
+                let config = CompactV2ParallelScanConfig::new(workers);
+                let mut plain_source =
+                    CompactV2InstructionSource::new(fixture.trusted_reader(), FIRST_SLOT).unwrap();
+                let (expected, plain) = plain_scan_bytes(&mut plain_source, &request, config);
+                let plain = plain.unwrap();
+                let mut map_source =
+                    CompactV2InstructionSource::new(fixture.trusted_reader(), FIRST_SLOT).unwrap();
+                let (actual, mapped) = map_scan_bytes(&mut map_source, &request, config);
+                let mapped = mapped.unwrap();
+
+                assert!(!expected.is_empty());
+                assert_eq!(actual, expected, "{request:?} with {workers} workers");
+                let mut comparable = mapped.scan;
+                if workers > 1
+                    && plain.registry.mode == CompactV2ParallelRegistryMode::SparseWorkerCache
+                {
+                    // Each used worker reads its own sparse chunks. The number
+                    // of used workers depends on thread timing in both paths.
+                    comparable.io = plain.scan.io;
+                }
+                assert_eq!(comparable, plain.scan, "{request:?} with {workers} workers");
+                assert_eq!(mapped.scan.blocks, blocks);
+                assert_eq!(mapped.registry.mode, plain.registry.mode);
+                assert_eq!(
+                    (
+                        mapped.registry.prefetch_read_calls,
+                        mapped.registry.prefetch_read_bytes
+                    ),
+                    (
+                        plain.registry.prefetch_read_calls,
+                        plain.registry.prefetch_read_bytes
+                    )
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn parallel_map_returns_the_plain_sink_error_at_the_same_block() {
+        use std::sync::atomic::AtomicUsize;
+
+        let fixture = Fixture::main();
+        let relaxed = ScanRequest::all()
+            .allow_unverified_source()
+            .allow_incomplete_instructions()
+            .allow_incomplete_cpi()
+            .allow_unknown_execution()
+            .without_instruction_data()
+            .without_primary_signatures();
+        // Block 1 transaction 3 has unknown CPI coverage. This gate rejects it.
+        let gated = ScanRequest::all()
+            .allow_unverified_source()
+            .allow_incomplete_instructions()
+            .allow_unknown_execution()
+            .without_instruction_data()
+            .without_primary_signatures();
+        let stop = |block: BlockView<'_>, failing_block: Option<u32>| {
+            if Some(block.header.block_ordinal) == failing_block {
+                return Err(QueryError::sink(std::io::Error::other(format!(
+                    "injected stop at block {}",
+                    block.header.block_ordinal
+                ))));
+            }
+            Ok(block_bytes(block))
+        };
+        // (request, map failure block, consume failure block, expected text)
+        let cases = [
+            (gated.clone(), None, None, "incomplete CPI coverage"),
+            (gated.clone(), Some(1), None, "incomplete CPI coverage"),
+            (relaxed.clone(), Some(1), None, "injected stop at block 1"),
+            (relaxed.clone(), None, Some(0), "injected stop at block 0"),
+        ];
+        for (request, map_failure, consume_failure, expected_text) in cases {
+            for workers in [1, 3] {
+                let config = CompactV2ParallelScanConfig::new(workers);
+                // The plain sink calls the same map and consume steps in order.
+                let mut plain_source =
+                    CompactV2InstructionSource::new(fixture.trusted_reader(), FIRST_SLOT).unwrap();
+                let mut expected = Vec::new();
+                let mut sink = blockzilla_model::FnBlockSink::new(|block: BlockView<'_>| {
+                    let bytes = stop(block, map_failure)?;
+                    if Some(block.header.block_ordinal) == consume_failure {
+                        return Err(QueryError::sink(std::io::Error::other(format!(
+                            "injected stop at block {}",
+                            block.header.block_ordinal
+                        ))));
+                    }
+                    expected.extend_from_slice(&bytes);
+                    Ok(())
+                });
+                let plain_error = plain_source
+                    .scan_ordered_parallel(&request, &mut sink, config)
+                    .unwrap_err();
+
+                let mut map_source =
+                    CompactV2InstructionSource::new(fixture.trusted_reader(), FIRST_SLOT).unwrap();
+                let map_calls = AtomicUsize::new(0);
+                let mut consume_calls = 0;
+                let mut actual = Vec::new();
+                let map_error = map_source
+                    .scan_ordered_parallel_map(
+                        &request,
+                        config,
+                        |block| {
+                            map_calls.fetch_add(1, Ordering::Relaxed);
+                            Ok((block.header.block_ordinal, stop(block, map_failure)?))
+                        },
+                        |(ordinal, bytes): (u32, Vec<u8>)| {
+                            consume_calls += 1;
+                            if Some(ordinal) == consume_failure {
+                                return Err(QueryError::sink(std::io::Error::other(format!(
+                                    "injected stop at block {ordinal}"
+                                ))));
+                            }
+                            actual.extend_from_slice(&bytes);
+                            Ok(())
+                        },
+                    )
+                    .unwrap_err();
+
+                assert_eq!(format!("{map_error:?}"), format!("{plain_error:?}"));
+                assert!(
+                    format!("{map_error:?}").contains(expected_text),
+                    "{map_error:?}"
+                );
+                assert_eq!(actual, expected);
+                // Block 0 is empty and is always published first.
+                assert_eq!(actual.is_empty(), consume_failure == Some(0));
+                // `consume` ran only for block 0. It never ran for a rejected
+                // block or for a block with a map error.
+                assert_eq!(consume_calls, 1);
+                if consume_failure.is_none() {
+                    // The ordered thread reached block 1, so a worker mapped it
+                    // before the publisher rejected it or returned its error.
+                    assert_eq!(map_calls.load(Ordering::Relaxed), 2);
+                } else {
+                    // A worker can map block 1 after the block 0 error, or not.
+                    assert!((1..=2).contains(&map_calls.load(Ordering::Relaxed)));
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn parallel_map_rejects_primary_signatures_before_any_callback() {
+        use std::sync::atomic::AtomicUsize;
+
+        let fixture = Fixture::main();
+        let request = ScanRequest::all()
+            .allow_unverified_source()
+            .allow_incomplete_instructions()
+            .allow_incomplete_cpi()
+            .allow_unknown_execution()
+            .without_instruction_data();
+        let calls = AtomicUsize::new(0);
+        let mut source =
+            CompactV2InstructionSource::new(fixture.trusted_reader(), FIRST_SLOT).unwrap();
+        let error = source
+            .scan_ordered_parallel_map(
+                &request,
+                CompactV2ParallelScanConfig::new(2),
+                |_block| {
+                    calls.fetch_add(1, Ordering::Relaxed);
+                    Ok(())
+                },
+                |()| {
+                    calls.fetch_add(1, Ordering::Relaxed);
+                    Ok(())
+                },
+            )
+            .unwrap_err();
+        assert!(
+            matches!(
+                &error,
+                QueryError::InvalidRequest(message)
+                    if message.contains("without_primary_signatures()")
+                        && message.contains("scan_ordered_parallel")
+            ),
+            "{error:?}"
+        );
+        assert_eq!(calls.load(Ordering::Relaxed), 0);
+
+        let receipt = source
+            .scan_ordered_parallel_map(
+                &request.without_primary_signatures(),
+                CompactV2ParallelScanConfig::new(2),
+                |_block| {
+                    calls.fetch_add(1, Ordering::Relaxed);
+                    Ok(())
+                },
+                |()| Ok(()),
+            )
+            .unwrap();
+        assert_eq!(receipt.scan.blocks, 2);
+        assert_eq!(calls.load(Ordering::Relaxed), 2);
+    }
+
+    fn timed_receipt(
+        elapsed_ms: u64,
+        consumer_ms: [u64; 3],
+        worker_ms: [u64; 2],
+        effective_workers: usize,
+    ) -> CompactV2ParallelScanReceipt {
+        CompactV2ParallelScanReceipt {
+            scan: ScanReceipt::default(),
+            pipeline: OrderedParallelBlockStats {
+                effective_workers,
+                worker_decompress_decode_sum_time: Duration::from_millis(worker_ms[0]),
+                worker_projection_sum_time: Duration::from_millis(worker_ms[1]),
+                ..OrderedParallelBlockStats::default()
+            },
+            requested_workers: effective_workers.max(1),
+            effective_workers,
+            max_active_workers: effective_workers,
+            compressed_buffer_count: 0,
+            max_projected_block_bytes: 0,
+            max_projected_batch_bytes: 0,
+            registry: CompactV2ParallelRegistryReceipt {
+                mode: CompactV2ParallelRegistryMode::SparseWorkerCache,
+                prefetch_read_calls: 0,
+                prefetch_read_bytes: 0,
+                resident_bound_bytes: 0,
+            },
+            signature_read_wall_time: Duration::from_millis(consumer_ms[0]),
+            signature_assign_wall_time: Duration::from_millis(consumer_ms[1]),
+            publish_wall_time: Duration::from_millis(consumer_ms[2]),
+            elapsed_wall_time: Duration::from_millis(elapsed_ms),
+        }
+    }
+
+    #[test]
+    fn limiting_stage_uses_the_two_thirds_rule_in_documented_order() {
+        use CompactV2PipelineStage::{DecodeProject, Input, OrderedConsumer};
+
+        // Two thirds of 300 ms is 200 ms. The limit is inclusive.
+        let cases = [
+            (
+                timed_receipt(300, [50, 50, 100], [0, 0], 8),
+                OrderedConsumer,
+            ),
+            (
+                timed_receipt(300, [0, 0, 199], [800, 800], 8),
+                DecodeProject,
+            ),
+            (timed_receipt(300, [0, 0, 199], [799, 800], 8), Input),
+            // Both stages are saturated: the ordered thread is checked first.
+            (
+                timed_receipt(300, [0, 0, 250], [1200, 1200], 8),
+                OrderedConsumer,
+            ),
+            // The measured 8-worker token dumps: sink time of the scan time.
+            (
+                timed_receipt(160, [0, 0, 122], [300, 300], 8),
+                OrderedConsumer,
+            ),
+            (
+                timed_receipt(360, [0, 0, 257], [600, 600], 8),
+                OrderedConsumer,
+            ),
+            // No used worker, or no elapsed time, gives no evidence.
+            (timed_receipt(300, [0, 0, 10], [900, 900], 0), Input),
+            (timed_receipt(0, [0, 0, 10], [900, 900], 8), Input),
+            (timed_receipt(0, [0, 0, 0], [0, 0], 0), Input),
+        ];
+        for (receipt, expected) in cases {
+            assert_eq!(receipt.limiting_stage(), expected, "{receipt:?}");
+        }
+        assert_eq!(OrderedConsumer.to_string(), "ordered-consumer");
+        assert_eq!(DecodeProject.to_string(), "decode-project");
+        assert_eq!(Input.to_string(), "input");
+    }
+
+    #[test]
+    fn measured_scans_report_the_slow_stage() {
+        const BLOCKS: u64 = 16;
+        // 160 ms of pause per scan keeps the result clear of startup time.
+        let pause = Duration::from_millis(10);
+        let fixture = indexer_fixture(BLOCKS as usize);
+        let request = ScanRequest::all()
+            .allow_unverified_source()
+            .without_instruction_data()
+            .without_primary_signatures();
+
+        // A slow ordered consume callback.
+        let mut source =
+            CompactV2InstructionSource::new(fixture.trusted_reader(), FIRST_SLOT).unwrap();
+        let receipt = source
+            .scan_ordered_parallel_map(
+                &request,
+                CompactV2ParallelScanConfig::new(4),
+                |block| Ok(block.header.block_ordinal),
+                |_ordinal| {
+                    thread::sleep(pause);
+                    Ok(())
+                },
+            )
+            .unwrap();
+        assert_eq!(receipt.scan.blocks, BLOCKS);
+        assert!(receipt.publish_wall_time >= pause * BLOCKS as u32);
+        assert!(
+            receipt.elapsed_wall_time
+                >= receipt.signature_read_wall_time
+                    + receipt.signature_assign_wall_time
+                    + receipt.publish_wall_time
+        );
+        assert_eq!(
+            receipt.limiting_stage(),
+            CompactV2PipelineStage::OrderedConsumer,
+            "{receipt:?}"
+        );
+
+        // A slow map callback on one worker.
+        let mut source =
+            CompactV2InstructionSource::new(fixture.trusted_reader(), FIRST_SLOT).unwrap();
+        let receipt = source
+            .scan_ordered_parallel_map(
+                &request,
+                CompactV2ParallelScanConfig::new(1),
+                |block| {
+                    thread::sleep(pause);
+                    Ok(block.header.block_ordinal)
+                },
+                |_ordinal| Ok(()),
+            )
+            .unwrap();
+        assert!(receipt.pipeline.worker_projection_sum_time >= pause * BLOCKS as u32);
+        assert!(receipt.elapsed_wall_time >= receipt.pipeline.worker_projection_sum_time);
+        assert_eq!(
+            receipt.limiting_stage(),
+            CompactV2PipelineStage::DecodeProject,
+            "{receipt:?}"
+        );
+    }
+
+    #[test]
+    fn parallel_scans_keep_a_loaded_registry_for_later_scans() {
+        let fixture = indexer_fixture(12);
+        let counted = CountingSource::new(LocalRangeSource::new(fixture.directory.path()));
+        let observed = counted.clone();
+        let mut source =
+            CompactV2InstructionSource::new(open_trusted_test_reader(counted), FIRST_SLOT).unwrap();
+        observed.clear();
+        let registry_bytes = 4 * REGISTRY_KEY_BYTES as u64;
+        let request = ScanRequest::all()
+            .allow_unverified_source()
+            .without_instruction_data()
+            .without_primary_signatures();
+        let config = CompactV2ParallelScanConfig::new(3);
+
+        let (first_bytes, first) = plain_scan_bytes(&mut source, &request, config);
+        let first = first.unwrap();
+        assert_eq!(
+            first.registry,
+            CompactV2ParallelRegistryReceipt {
+                mode: CompactV2ParallelRegistryMode::SharedFull,
+                prefetch_read_calls: 1,
+                prefetch_read_bytes: registry_bytes,
+                resident_bound_bytes: registry_bytes,
+            }
+        );
+        assert_eq!(
+            observed.reads_for(REGISTRY_FILE),
+            vec![(0, registry_bytes as usize)]
+        );
+        assert!(source.context.shared_registry.is_some());
+
+        // Later parallel, map, and sequential scans read no registry bytes.
+        observed.clear();
+        let (second_bytes, second) = plain_scan_bytes(&mut source, &request, config);
+        let second = second.unwrap();
+        assert_eq!(second_bytes, first_bytes);
+        assert_eq!(
+            second.registry,
+            CompactV2ParallelRegistryReceipt {
+                mode: CompactV2ParallelRegistryMode::SharedFull,
+                prefetch_read_calls: 0,
+                prefetch_read_bytes: 0,
+                resident_bound_bytes: registry_bytes,
+            }
+        );
+        let mut comparable = second.scan;
+        comparable.io = first.scan.io;
+        assert_eq!(comparable, first.scan);
+        assert_eq!(
+            second.scan.io.source_read_calls,
+            first.scan.io.source_read_calls.map(|calls| calls - 1)
+        );
+        assert_eq!(
+            second.scan.io.source_read_bytes,
+            first
+                .scan
+                .io
+                .source_read_bytes
+                .map(|bytes| bytes - registry_bytes)
+        );
+        let (map_bytes, mapped) = map_scan_bytes(&mut source, &request, config);
+        assert_eq!(map_bytes, first_bytes);
+        assert_eq!(mapped.unwrap().registry.prefetch_read_calls, 0);
+        let mut sequential = Vec::new();
+        source
+            .for_each_block(&request, |block| {
+                sequential.extend_from_slice(&block_bytes(block));
+                Ok(())
+            })
+            .unwrap();
+        assert_eq!(sequential, first_bytes);
+        assert!(observed.reads_for(REGISTRY_FILE).is_empty());
+
+        // A call limit below the kept registry uses the sparse caches for
+        // that call and keeps the registry.
+        let (sparse_bytes, sparse) = plain_scan_bytes(
+            &mut source,
+            &request,
+            config.with_full_registry_limit(registry_bytes - 1),
+        );
+        assert_eq!(sparse_bytes, first_bytes);
+        assert_eq!(
+            sparse.unwrap().registry.mode,
+            CompactV2ParallelRegistryMode::SparseWorkerCache
+        );
+        assert!(source.context.shared_registry.is_some());
+
+        // A request without key resolution keeps the sparse mode.
+        let mut ignore = blockzilla_model::FnBlockSink::new(|_: BlockView<'_>| Ok(()));
+        let counts = source
+            .scan_ordered_parallel(
+                &ScanRequest::all()
+                    .allow_unverified_source()
+                    .count_instructions_only(),
+                &mut ignore,
+                config,
+            )
+            .unwrap();
+        assert_eq!(
+            counts.registry.mode,
+            CompactV2ParallelRegistryMode::SparseWorkerCache
+        );
+
+        // After a release, the next scan loads and keeps the registry again.
+        assert!(source.release_full_registry());
+        observed.clear();
+        let (reloaded_bytes, reloaded) = plain_scan_bytes(&mut source, &request, config);
+        assert_eq!(reloaded_bytes, first_bytes);
+        assert_eq!(reloaded.unwrap().registry.prefetch_read_calls, 1);
+        assert_eq!(
+            observed.reads_for(REGISTRY_FILE),
+            vec![(0, registry_bytes as usize)]
+        );
+        assert!(!source.release_full_registry_above(registry_bytes));
+        assert!(source.release_full_registry_above(registry_bytes - 1));
+        assert!(source.context.shared_registry.is_none());
+    }
+
+    #[test]
+    fn indexed_token_scans_keep_and_reuse_a_loaded_registry() {
+        let fixture = indexer_fixture(12);
+        let counted = CountingSource::new(LocalRangeSource::new(fixture.directory.path()));
+        let observed = counted.clone();
+        let mut source =
+            CompactV2InstructionSource::new(open_trusted_test_reader(counted), FIRST_SLOT).unwrap();
+        observed.clear();
+        let request = ScanRequest::all()
+            .without_instructions()
+            .without_primary_signatures()
+            .without_required_signers()
+            .with_token_balances();
+        let config = CompactV2ParallelScanConfig::new(2);
+
+        let mut first = ReconstructedIndexedTokens::default();
+        let receipt = source
+            .scan_token_balances_indexed_parallel(&request, &mut first, config)
+            .unwrap();
+        assert_eq!(
+            receipt.registry.mode,
+            CompactV2ParallelRegistryMode::SharedFull
+        );
+        assert_eq!(receipt.registry.prefetch_read_calls, 1);
+        assert!(receipt.elapsed_wall_time > Duration::ZERO);
+        assert!(receipt.elapsed_wall_time >= receipt.publish_wall_time);
+        assert!(source.context.shared_registry.is_some());
+
+        observed.clear();
+        let mut second = ReconstructedIndexedTokens::default();
+        let receipt = source
+            .scan_token_balances_indexed_parallel(&request, &mut second, config)
+            .unwrap();
+        assert_eq!(
+            receipt.registry,
+            CompactV2ParallelRegistryReceipt {
+                mode: CompactV2ParallelRegistryMode::SharedFull,
+                prefetch_read_calls: 0,
+                prefetch_read_bytes: 0,
+                resident_bound_bytes: 4 * REGISTRY_KEY_BYTES as u64,
+            }
+        );
+        assert!(observed.reads_for(REGISTRY_FILE).is_empty());
+        assert_eq!(second.blocks, first.blocks);
+        assert_eq!(second.token_accounts, first.token_accounts);
+        assert!(!second.token_accounts.is_empty());
+    }
+
+    #[test]
+    fn full_registry_threshold_is_configurable_and_keeps_the_output() {
+        // Defaults stay unchanged.
+        assert_eq!(
+            CompactV2ParallelScanConfig::new(2).full_registry_min_transactions,
+            COMPACT_V2_PARTIAL_REGISTRY_PREFETCH_MIN_TRANSACTIONS
+        );
+        assert_eq!(
+            CompactV2ParallelScanConfig::default().full_registry_min_transactions,
+            COMPACT_V2_PARTIAL_REGISTRY_PREFETCH_MIN_TRANSACTIONS
+        );
+        for policy in [
+            CompactV2RegistryReadPolicy::sparse_only(),
+            CompactV2RegistryReadPolicy::with_full_registry_limit(1 << 20),
+        ] {
+            assert_eq!(
+                policy.min_requested_transactions(),
+                COMPACT_V2_PARTIAL_REGISTRY_PREFETCH_MIN_TRANSACTIONS
+            );
+        }
+        let policy = CompactV2RegistryReadPolicy::with_full_registry_limit(1 << 20)
+            .with_min_requested_transactions(10);
+        assert_eq!(
+            (
+                policy.max_full_registry_bytes(),
+                policy.min_requested_transactions()
+            ),
+            (1 << 20, 10)
+        );
+        assert!(should_prefetch_sequential_registry(
+            policy, false, 10, true, 64
+        ));
+        assert!(!should_prefetch_sequential_registry(
+            policy, false, 9, true, 64
+        ));
+        let config = CompactV2ParallelScanConfig::new(2).with_full_registry_min_transactions(10);
+        assert!(should_prefetch_parallel_registry(
+            config, false, 10, true, 64
+        ));
+        assert!(!should_prefetch_parallel_registry(
+            config, false, 9, true, 64
+        ));
+        assert!(!should_prefetch_parallel_registry(
+            config.with_full_registry_limit(63),
+            false,
+            10,
+            true,
+            64
+        ));
+
+        let fixture = indexer_fixture(12);
+        let request = bounded_request(
+            ScanRequest::all()
+                .allow_unverified_source()
+                .without_instruction_data()
+                .without_primary_signatures()
+                .with_token_balances(),
+            2,
+            8,
+        );
+        let fresh =
+            || CompactV2InstructionSource::new(fixture.trusted_reader(), FIRST_SLOT).unwrap();
+
+        // Parallel: sparse worker caches by default, one shared registry with
+        // a low threshold.
+        let (sparse_bytes, sparse) =
+            plain_scan_bytes(&mut fresh(), &request, CompactV2ParallelScanConfig::new(3));
+        let sparse = sparse.unwrap();
+        assert_eq!(
+            sparse.registry.mode,
+            CompactV2ParallelRegistryMode::SparseWorkerCache
+        );
+        let shared_config =
+            CompactV2ParallelScanConfig::new(3).with_full_registry_min_transactions(1);
+        let (shared_bytes, shared) = plain_scan_bytes(&mut fresh(), &request, shared_config);
+        let shared = shared.unwrap();
+        assert_eq!(
+            shared.registry.mode,
+            CompactV2ParallelRegistryMode::SharedFull
+        );
+        assert_eq!(shared.registry.prefetch_read_calls, 1);
+        assert_eq!(shared_bytes, sparse_bytes);
+        let mut comparable = shared.scan;
+        comparable.io = sparse.scan.io;
+        assert_eq!(comparable, sparse.scan);
+        let (map_bytes, mapped) = map_scan_bytes(&mut fresh(), &request, shared_config);
+        assert_eq!(map_bytes, sparse_bytes);
+        assert_eq!(
+            mapped.unwrap().registry.mode,
+            CompactV2ParallelRegistryMode::SharedFull
+        );
+
+        // Sequential: the same threshold in the read policy.
+        let sequential = |policy| {
+            let mut source = fresh();
+            let mut bytes = Vec::new();
+            let mut sink = blockzilla_model::FnBlockSink::new(|block: BlockView<'_>| {
+                bytes.extend_from_slice(&block_bytes(block));
+                Ok(())
+            });
+            source
+                .scan_ordered_with_registry_policy(&request, policy, &mut sink)
+                .unwrap();
+            (bytes, source.context.shared_registry.is_some())
+        };
+        let default_policy = CompactV2RegistryReadPolicy::with_full_registry_limit(
+            DEFAULT_COMPACT_V2_FULL_REGISTRY_BYTES,
+        );
+        assert_eq!(sequential(default_policy), (sparse_bytes.clone(), false));
+        assert_eq!(
+            sequential(default_policy.with_min_requested_transactions(1)),
+            (sparse_bytes, true)
+        );
     }
 }

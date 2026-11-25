@@ -56,7 +56,7 @@ pub use compact_query::{
     COMPACT_V2_REGISTRY_PREFETCH_READ_BYTES, CompactV2InstructionSource,
     CompactV2InstructionSourceError, CompactV2InstructionSourceResult,
     CompactV2ParallelRegistryMode, CompactV2ParallelRegistryReceipt, CompactV2ParallelScanConfig,
-    CompactV2ParallelScanReceipt, CompactV2RegistryReadPolicy,
+    CompactV2ParallelScanReceipt, CompactV2PipelineStage, CompactV2RegistryReadPolicy,
     DEFAULT_COMPACT_V2_FULL_REGISTRY_BYTES,
 };
 pub use cursor::{BlockCursor, BlockCursorIoStats, CursorBlock};
@@ -69,7 +69,8 @@ pub use finalized_block::FinalizedArchiveBlock;
 #[cfg(feature = "http")]
 pub use http::{
     HttpObjectIdentity, HttpObjectPathLayout, HttpRangeSource, HttpRangeSourceOptions,
-    HttpRangeSourceStats,
+    HttpRangeSourceStats, HttpRequestSigner, HttpRequestToSign, HttpRetryPolicy, HttpRetryStats,
+    S3Credentials, S3PayloadHash, S3SigV4Signer,
 };
 #[cfg(feature = "http")]
 pub use http_cache::{
@@ -112,15 +113,16 @@ pub use reader::{
     ArchiveGenerationDescriptor, ArchiveReader, ArchiveReaderSourceKind, BlockIterator,
     BorrowedBlockStream, BorrowedBlockStreamIoStats, BorrowedDecodedBlock,
     BorrowedDecodedTxRowIter, BorrowedTransaction, CompiledPubkeyFilter, DecodedBlock,
-    GenerationBinding, HashVerification, IndeterminateReason,
-    MAX_ORDERED_PARALLEL_BLOCKS_PER_BATCH, MAX_ORDERED_PARALLEL_COMPRESSED_BUFFERS,
-    MAX_ORDERED_PARALLEL_DECODE_WORKERS, MAX_ORDERED_PARALLEL_RETAINED_DECOMPRESSED_BYTES,
-    MAX_ORDERED_PARALLEL_TRANSACTIONS_PER_BATCH, MAX_ORDERED_PARALLEL_UNCOMPRESSED_BATCH_BYTES,
-    MetadataState, NetworkInputConfig, OpenOptions, OrderedParallelBlockConfig,
-    OrderedParallelBlockStats, ProgramInvocationMatch, PubkeyReferenceMatch, RecycledBlockScratch,
-    RecycledBlockStats, ScanIterator, ScannedBlock, ScannedTransaction,
-    SelectorIndeterminateReason, SelectorOutcome, SignatureReference, TokenBalanceMatch,
-    TransactionMatch, ValidatedGeneration, compact_v2_first_slot, validate_generation_structure,
+    GenerationBinding, HashVerification, IndeterminateReason, MAX_NETWORK_INPUT_BUFFER_BYTES,
+    MAX_NETWORK_INPUT_WORKERS, MAX_ORDERED_PARALLEL_BLOCKS_PER_BATCH,
+    MAX_ORDERED_PARALLEL_COMPRESSED_BUFFERS, MAX_ORDERED_PARALLEL_DECODE_WORKERS,
+    MAX_ORDERED_PARALLEL_RETAINED_DECOMPRESSED_BYTES, MAX_ORDERED_PARALLEL_TRANSACTIONS_PER_BATCH,
+    MAX_ORDERED_PARALLEL_UNCOMPRESSED_BATCH_BYTES, MetadataState, NetworkInputConfig, OpenOptions,
+    OrderedParallelBlockConfig, OrderedParallelBlockStats, ProgramInvocationMatch,
+    PubkeyReferenceMatch, RecycledBlockScratch, RecycledBlockStats, ScanIterator, ScannedBlock,
+    ScannedTransaction, SelectorIndeterminateReason, SelectorOutcome, SignatureReference,
+    TokenBalanceMatch, TransactionMatch, ValidatedGeneration, compact_v2_first_slot,
+    validate_generation_structure,
 };
 pub use registry_filter_cache::RegistryFilterCacheStats;
 pub use signed_message::{
