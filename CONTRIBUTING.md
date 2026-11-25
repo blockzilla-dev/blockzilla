@@ -12,6 +12,10 @@ Use Rust for native tools and process-test helpers. Do not add Python files or
 Python interpreter calls. SSH adapters, key provisioning, deployment probes,
 operator notifications and full benchmark tools belong in private infrastructure
 repositories. Keep self-contained public tests and the fixed sample benchmark.
+CI rejects deployment directories, private research records, Python files,
+host service definitions and direct Rust calls to administration programs.
+Public clients use HTTP or local sockets. Keep credentials and host-specific
+launchers in the private infrastructure repository.
 
 The core workspace builds without access to a private repository. Agave host
 work is optional and has separate [compatibility instructions](zillastream/agave-compatibility/README.md).
