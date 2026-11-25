@@ -5,11 +5,12 @@ locally. It runs the same Rust decoder in Node.js and browsers through
 `decoder.wasm`. There are no JavaScript package dependencies or generated
 Wasm bindings. This package is private and has not been published to npm.
 
-Start with [Live stream](../../../docs/start/live-stream.md) for connection and
-transport examples, or [Program dumper](../../../docs/start/program-dumper.md)
-for a program watch list. The separate [token indexer](../../../docs/start/token-indexer.md)
-provides a SQLite writer for finalized history. It rejects the processed live
-feed until it can undo invalidated banks.
+Use the connection example below or the [Rust client probe](../examples/rust-consumer/README.md).
+The [small archive examples](../../../examples/README.md) show program and
+account filters for finalized data. Specialized application indexers live in
+[blockzilla-indexers](https://github.com/blockzilla-dev/blockzilla-indexers).
+A finalized-only indexer must reject processed data until it can undo invalidated
+banks.
 
 The current live source is the native, operator-trusted processed projection.
 `canonical=false` and `publicationReady=false` remain visible. The decoder
@@ -93,7 +94,8 @@ modes, local program/account filters, checkpoint restart, and stable memory on
 repeated reads. `../tests/sdk_rpc_oracle.py` compares every transaction ID,
 signature, result, and program reference with the local validator's finalized
 `getBlock` response. It also compares the selected program/account transaction
-sets. Receipts are under `../evidence/`.
+sets. Historical receipts are in the private
+[records repository](https://github.com/blockzilla-dev/blockzilla-private).
 
 The processed profile is `native-processed-compact-v1`. `batch.kind` is `block`,
 `root`, or `invalidate`. A block contains one bank, with `bankId` and

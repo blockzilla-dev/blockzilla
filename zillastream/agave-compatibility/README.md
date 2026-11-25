@@ -8,21 +8,21 @@ identifies source files and regression tests by repository and path.
 
 ## Repository boundary
 
-The [Agave fork](../../../agave)
+The [Agave fork](https://github.com/blockzilla-dev/agave)
 owns validator source, patch implementation, and Agave regression tests.
 Blockzilla contains this compatibility metadata and its own client, format,
 and integration tests. Do not copy Agave patches or patched validator source
 into the final Blockzilla tree.
 
-The local fork source has been extracted. Its imported changes have not yet
-been assigned a checked fork commit or a remote URL in this record. Record
-those values after the source is checked and committed. The current checkout
-HEAD alone does not identify the uncommitted imported changes. This extraction
-is not a new host build, plugin load, or deployment acceptance.
+The imported native changes are committed as
+[`5ae64ceb26f78c6e7a6b78932627e5978521c0ae`](https://github.com/blockzilla-dev/agave/commit/5ae64ceb26f78c6e7a6b78932627e5978521c0ae).
+The native integration profile is on `main`; the separate RC1 ledger profile is
+on `codex/ledger-read-v4.4.0-rc.1`. The manifest records their source identities.
+Publication is not a new host build, plugin load, or deployment acceptance.
 
 Historical patch bundle hashes remain in the manifest. Their bytes and the
 long deployment records belong to the private repository. The [accepted host
-record](../../../blockzilla-private/records/.codex/reports/car-epochs-1056-1057/hybrid-1056-20261119/native-deploy-20261121/FINAL-REPORT.md)
+record](https://github.com/blockzilla-dev/blockzilla-private/blob/main/records/.codex/reports/car-epochs-1056-1057/hybrid-1056-20261119/native-deploy-20261121/FINAL-REPORT.md)
 records the earlier deployment. The private migration archive preserves the
 original source bundles; do not apply those older bundles again on top of the
 combined fork.
@@ -105,9 +105,11 @@ live upgrade or certify a new host/plugin pair.
 ## Ledger-read profile
 
 The ledger helper keeps the exact Agave RC1 API in the separate fork branch
-`codex/ledger-read-v4.4.0-rc.1`. Its optional file-cache cap, implementation
+[`codex/ledger-read-v4.4.0-rc.1`](https://github.com/blockzilla-dev/agave/tree/codex/ledger-read-v4.4.0-rc.1). Its optional file-cache cap, implementation
 and tests are in that fork. The helper uses the sibling `agave-ledger` worktree.
-This does not change the native-validator profile or deploy a new host.
+Use the [sibling source setup](../../README.md#sibling-source-setup) to create
+that worktree. This does not change the native-validator profile or deploy a
+new host.
 
 The source default for native capture follows newer main at Agave `a2033000`
 (interface 4.3.2). Recorded deployed 4.4.0 evidence remains historical; run the

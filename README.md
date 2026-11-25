@@ -25,11 +25,55 @@ cargo run -p blockzilla -- --help
 The native capture worker uses Linux filesystem notifications. Test and deploy
 it with the matching Agave fork and plugin; a macOS build is not a host-load test.
 
-The CAR reader/import tools, runtime experiments, infrastructure, application
-indexers and full research records have separate repositories. Archive V3
-continues on `codex/archive-v3`. The compatibility record under
-`zillastream/agave-compatibility` contains revision pins and change reasons;
-Agave source changes and host regression tests belong in the Agave fork.
+## Repositories and branches
+
+`codex/1.0-core` is the lean Blockzilla candidate. The existing `main` stays in
+place until review and integration checks pass. Archive V3 continues on
+[`codex/archive-v3`](https://github.com/blockzilla-dev/blockzilla/tree/codex/archive-v3).
+
+The separate repositories are private and require organization access:
+
+| Repository | Contents |
+| --- | --- |
+| [old-faithful-tools](https://github.com/blockzilla-dev/old-faithful-tools) | CAR readers, imports and CAR sample benchmark |
+| [zilla-runtime](https://github.com/blockzilla-dev/zilla-runtime) | Existing native replay experiments |
+| [zillanode](https://github.com/blockzilla-dev/zillanode) | Stream consumers and application services |
+| [hivezilla](https://github.com/blockzilla-dev/hivezilla) | Internal archive resilience and infrastructure |
+| [blockzilla-indexers](https://github.com/blockzilla-dev/blockzilla-indexers) | Specialized indexes and applications |
+| [agave](https://github.com/blockzilla-dev/agave) | Validator source, patches and host regression tests |
+| [blockzilla-private](https://github.com/blockzilla-dev/blockzilla-private) | Documents, research, results and migration records |
+
+The [Agave compatibility record](zillastream/agave-compatibility/README.md)
+contains revision pins, change reasons and removal checks. Zillastream stays
+inside Blockzilla.
+
+## Sibling source setup
+
+The core workspace can build alone. The extracted projects currently use
+relative Cargo paths to the core. Clone the repositories you need into one
+parent directory, with these directory names:
+
+```sh
+git clone --branch codex/1.0-core git@github.com:blockzilla-dev/blockzilla.git blockzilla
+git clone git@github.com:blockzilla-dev/old-faithful-tools.git old-faithful-tools
+git clone git@github.com:blockzilla-dev/zilla-runtime.git zilla-runtime
+git clone git@github.com:blockzilla-dev/zillanode.git zillanode
+git clone git@github.com:blockzilla-dev/hivezilla.git hivezilla
+git clone git@github.com:blockzilla-dev/blockzilla-indexers.git blockzilla-indexers
+git clone git@github.com:blockzilla-dev/agave.git agave
+git clone git@github.com:blockzilla-dev/blockzilla-private.git blockzilla-private
+```
+
+Only the optional ledger reader needs the separate `agave-ledger` worktree.
+From the same parent directory, run:
+
+```sh
+git -C agave worktree add --detach ../agave-ledger origin/codex/ledger-read-v4.4.0-rc.1
+```
+
+`agave/main` contains the native integration profile. The `agave-ledger`
+worktree contains the exact RC1 ledger profile. Keep their source and test
+results separate. Neither profile is a new deployment acceptance.
 
 The combined live plus archive token dump remains an acceptance target. The
 small archive examples do not claim to implement live reconciliation or resume.

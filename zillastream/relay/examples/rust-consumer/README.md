@@ -40,7 +40,8 @@ connection reset; a new probe passed. This is not a sustained capacity test.
 Three parser/URL tests cover SSE boundaries and URL admission. Network failures
 stop this probe. A durable application must retry from its saved cursor.
 
-See [the live stream guide](../../../../docs/start/live-stream.md).
+See the [relay README](../../README.md) and
+[JavaScript SDK](../../client/README.md) for the shared delivery contract.
 
 The processed profile is `native-processed-compact-v1`. The probe prints the typed
 `event` field. `block` includes one complete compact bank; `root` and `invalidate`
@@ -80,5 +81,5 @@ runs in bounded blocking jobs; SQLite applies the results in event order. It
 retries wrapped response-body resets and 429/5xx without changing the saved
 cursor. Source, identity, digest, and replay admission errors stop it. The public
 probe restarts this example with the same database and checks consecutive event
-positions without duplicates. See `hivezilla/deploy/bank-stream-v2/ACCEPTANCE.md`
-for the provider deployment and measured limits.
+positions without duplicates. Historical provider deployment checks and measured limits are in the private
+[Hivezilla acceptance record](https://github.com/blockzilla-dev/hivezilla/blob/main/hivezilla/deploy/bank-stream-v2/ACCEPTANCE.md).

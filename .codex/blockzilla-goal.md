@@ -23,10 +23,11 @@ repository. Previous goal history is preserved there.
 - blockzilla-indexers: specialized indexes, query applications and audits.
 - blockzilla-private: full documents, research and dated evidence.
 
-The local extraction repositories are under the sibling
-`blockzilla-repositories` directory. No new remote repository or deployment has
-been created by this cleanup. Agave compatibility notes stay here; patch code
-must not be copied into core.
+The repositories use the `blockzilla-dev` GitHub organization. The seven new
+repositories are private; Blockzilla remains public. Local checkouts use sibling
+directory names listed in the root README. Agave compatibility notes stay here;
+patch code must not be copied into core. Repository publication does not deploy
+a service or approve a validator build.
 
 ## Branches
 
@@ -69,8 +70,9 @@ The exported CAR reader passed 63 tests; runtime compact tests passed 17.
 
 The fixed Compact V2 sample preserves 2,969 transactions and 3,035 signatures
 from its source CAR, with matching reconstructed signed bytes. It is a checked
-benchmark input, not proof of chain-wide coverage. No live validator, public
-service, remote repository or default branch was changed by this work.
+benchmark input, not proof of chain-wide coverage. The repository split does
+not change a live validator or public service. The existing Blockzilla `main`
+remains unchanged until review and the required integration checks pass.
 Linux worker, matched host/plugin and combined live/backfill acceptance remain
 required before promotion to main. The separate Agave RC1 ledger profile has
 resolved dependency metadata; its full Linux/RocksDB build is still required.

@@ -5,12 +5,12 @@
   "scope": "Maintenance record for existing source; not a live host audit or upgrade acceptance.",
   "repository_policy": {
     "blockzilla_and_zillastream": "same repository",
-    "agave_fork": "separate repository; locally committed; remote publication pending",
+    "agave_fork": "separate private repository in blockzilla-dev; native main and separate exact RC1 ledger branch",
     "agave_patch_code_and_regressions": "Agave fork only; no patch copies in the final Blockzilla tree",
     "blockzilla_agave_record": "compatibility metadata only: tested revision, change reasons, source/test links, upstream status and removal criteria",
     "hivezilla": "separate internal archive-resilience and infrastructure repository"
   },
-  "migration_note": "The Blockzilla tree contains compatibility metadata only. Validator source and regression tests are in the Agave fork. Historical source bundle bytes are retained in the private migration archive. Record the imported fork commit after it is checked and committed; no new build or deployment is claimed.",
+  "migration_note": "The Blockzilla tree contains compatibility metadata only. Validator source and regression tests are committed in the private Agave fork. Historical source bundles are retained in the private migration archive. Publication does not certify a new build or deployment.",
   "recorded_host": {
     "upstream_tag": "v4.4.0",
     "upstream_commit": "9ef63128134af559561f6a91a641ec01e665c70d",
@@ -377,9 +377,9 @@
       "location": "this repository"
     },
     "agave": {
-      "remote_url": null,
+      "remote_url": "https://github.com/blockzilla-dev/agave",
       "imported_fork_commit": "5ae64ceb26f78c6e7a6b78932627e5978521c0ae",
-      "status": "Imported and committed locally; no fork remote created and no deployment performed.",
+      "status": "Imported changes committed in the separate private fork; no new host build or deployment acceptance.",
       "sibling_path": "../agave",
       "ledger_read_profile": {
         "branch": "codex/ledger-read-v4.4.0-rc.1",
@@ -387,14 +387,19 @@
         "commit": "e98c50da300c3df0d9178d72478c528dfd695d41",
         "sibling_worktree": "../agave-ledger",
         "validation": "Patch applied and dependency metadata resolved; full Agave/Linux suite not run."
+      },
+      "native_profile": {
+        "branch": "main",
+        "commit": "065267325581da1552f33d68381e2158a2f79bfc",
+        "validation": "Imported source and extraction checks only; matched host/plugin and full Linux validation remain required."
       }
     },
     "hivezilla": {
-      "remote_url": null,
+      "remote_url": "https://github.com/blockzilla-dev/hivezilla",
       "sibling_path": "../hivezilla"
     },
     "blockzilla-private": {
-      "remote_url": null,
+      "remote_url": "https://github.com/blockzilla-dev/blockzilla-private",
       "sibling_path": "../blockzilla-private"
     }
   },
@@ -442,7 +447,7 @@
   ],
   "local_extraction": {
     "fork_commit": "5ae64ceb26f78c6e7a6b78932627e5978521c0ae",
-    "remote_url": null,
+    "remote_url": "https://github.com/blockzilla-dev/agave",
     "host_build_and_deployment": "not performed"
   },
   "source_build_profile": {
