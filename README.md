@@ -47,6 +47,8 @@ https://pub-97348740d6ef467aa2f1b4b62daa98dc.r2.dev/compact-v2/blockzilla-202610
 
 ## Project status
 
+This is the experimental `format/v3` branch. See the [V3 guide](crates/archive-v3/README.md).
+
 The 1.0 release is in preparation. [Release requirements](RELEASE.md) track the
 remaining checks. The combined live token dump and archive backfill is still a
 development target. Experimental V3 work stays on [its own branch](https://github.com/blockzilla-dev/blockzilla/tree/format/v3).

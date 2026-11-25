@@ -382,6 +382,67 @@ dependencies = [
 ]
 
 [[package]]
+name = "blockzilla-archive-v3"
+version = "0.2.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "thiserror",
+ "wincode 0.6.1",
+]
+
+[[package]]
+name = "blockzilla-archive-v3-convert"
+version = "0.2.0"
+dependencies = [
+ "anyhow",
+ "blockzilla-archive-v2",
+ "blockzilla-archive-v3",
+ "blockzilla-archive-v3-reader",
+ "blockzilla-compact",
+ "blockzilla-compact-v2-reader",
+ "blockzilla-primitives",
+ "blockzilla-program-logs",
+ "blockzilla-registry",
+ "clap 4.6.6",
+ "serde",
+ "serde_json",
+ "sha2 0.11.0",
+ "solana-pubkey",
+ "solana-signature",
+ "tempfile",
+ "wincode 0.6.1",
+ "zstd 0.14.0",
+]
+
+[[package]]
+name = "blockzilla-archive-v3-reader"
+version = "0.2.0"
+dependencies = [
+ "anyhow",
+ "blockzilla-archive-v2",
+ "blockzilla-archive-v3",
+ "blockzilla-compact",
+ "blockzilla-compact-v2-reader",
+ "blockzilla-model",
+ "blockzilla-primitives",
+ "blockzilla-registry",
+ "blockzilla-source",
+ "blockzilla-source-cache",
+ "blockzilla-source-http",
+ "blockzilla-source-local",
+ "ed25519-dalek 3.0.0",
+ "serde",
+ "serde_json",
+ "sha2 0.11.0",
+ "tempfile",
+ "thiserror",
+ "url",
+ "wincode 0.6.1",
+ "zstd 0.14.0",
+]
+
+[[package]]
 name = "blockzilla-bank-stream-v2"
 version = "0.1.0"
 dependencies = [

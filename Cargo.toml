@@ -20,7 +20,10 @@ members = [
     "crates/reader/blockzilla-read-sdk",
     "blockzilla/cli",
     "blockzilla/archive-gateway",
-    "blockzilla/get-block"
+    "blockzilla/get-block",
+    "crates/archive-v3/blockzilla-archive-v3",
+    "crates/archive-v3/blockzilla-archive-v3-reader",
+    "crates/archive-v3/blockzilla-archive-v3-convert"
 ]
 exclude = [
     "blockzilla/builder",
