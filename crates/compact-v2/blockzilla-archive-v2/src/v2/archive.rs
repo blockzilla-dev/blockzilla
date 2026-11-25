@@ -196,6 +196,119 @@ pub fn write_archive_v2_hot_block_index(
     Ok(())
 }
 
+/// Write `blockhash_index_v3.bin`.
+///
+/// The 20-byte header is the magic, version 3, the 48-byte row length, and the
+/// row count. Each row is a slot, a blockhash, and a Unix block time. A time
+/// of zero means the block had no stored block time.
+pub fn write_archive_v2_blockhash_index_v3(
+    path: &Path,
+    rows: &[ArchiveV2BlockhashIndexV3Row],
+) -> Result<()> {
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent)
+            .with_context(|| format!("create output dir {}", parent.display()))?;
+    }
+    let tmp_path = path.with_file_name(format!(
+        "{}.tmp",
+        path.file_name()
+            .and_then(|name| name.to_str())
+            .unwrap_or(ARCHIVE_V2_BLOCKHASH_INDEX_V3_FILE)
+    ));
+    let result = (|| {
+        let file =
+            File::create(&tmp_path).with_context(|| format!("create {}", tmp_path.display()))?;
+        let mut writer = BufWriter::with_capacity(8 << 20, file);
+        let row_len = u16::try_from(ARCHIVE_V2_BLOCKHASH_INDEX_V3_ROW_LEN)
+            .context("blockhash index row length exceeds u16")?;
+        writer.write_all(ARCHIVE_V2_BLOCKHASH_INDEX_V3_MAGIC)?;
+        writer.write_all(&ARCHIVE_V2_BLOCKHASH_INDEX_V3_VERSION.to_le_bytes())?;
+        writer.write_all(&row_len.to_le_bytes())?;
+        writer.write_all(&(rows.len() as u64).to_le_bytes())?;
+        for row in rows {
+            writer.write_all(&row.slot.to_le_bytes())?;
+            writer.write_all(&row.blockhash)?;
+            writer.write_all(&row.block_time.to_le_bytes())?;
+        }
+        writer
+            .flush()
+            .with_context(|| format!("flush {}", tmp_path.display()))?;
+        std::fs::rename(&tmp_path, path)
+            .with_context(|| format!("rename {} to {}", tmp_path.display(), path.display()))?;
+        Ok(())
+    })();
+    if result.is_err() {
+        let _ = std::fs::remove_file(&tmp_path);
+    }
+    result
+}
+
+pub fn read_archive_v2_blockhash_index_v3(
+    path: &Path,
+) -> Result<Vec<ArchiveV2BlockhashIndexV3Row>> {
+    let file = File::open(path).with_context(|| format!("open {}", path.display()))?;
+    let actual_len = file
+        .metadata()
+        .with_context(|| format!("stat {}", path.display()))?
+        .len();
+    let mut reader = BufReader::with_capacity(8 << 20, file);
+    let mut header = [0u8; ARCHIVE_V2_BLOCKHASH_INDEX_V3_HEADER_LEN];
+    reader
+        .read_exact(&mut header)
+        .with_context(|| format!("read {}", path.display()))?;
+    anyhow::ensure!(
+        &header[..8] == ARCHIVE_V2_BLOCKHASH_INDEX_V3_MAGIC,
+        "{} is not an Archive V2 blockhash index",
+        path.display()
+    );
+    let version = u16::from_le_bytes(header[8..10].try_into().unwrap());
+    anyhow::ensure!(
+        version == ARCHIVE_V2_BLOCKHASH_INDEX_V3_VERSION,
+        "{} has unsupported blockhash index version {version}",
+        path.display()
+    );
+    let row_len = u16::from_le_bytes(header[10..12].try_into().unwrap());
+    anyhow::ensure!(
+        usize::from(row_len) == ARCHIVE_V2_BLOCKHASH_INDEX_V3_ROW_LEN,
+        "{} has blockhash index row length {row_len}",
+        path.display()
+    );
+    let row_count = u64::from_le_bytes(header[12..20].try_into().unwrap());
+    let row_count_usize =
+        usize::try_from(row_count).context("blockhash index row count exceeds usize")?;
+    let rows_len = row_count
+        .checked_mul(ARCHIVE_V2_BLOCKHASH_INDEX_V3_ROW_LEN as u64)
+        .context("blockhash index row bytes overflow u64")?;
+    let expected_len = (ARCHIVE_V2_BLOCKHASH_INDEX_V3_HEADER_LEN as u64)
+        .checked_add(rows_len)
+        .context("blockhash index length overflows u64")?;
+    anyhow::ensure!(
+        actual_len == expected_len,
+        "{} has size {}, expected {} for {} rows",
+        path.display(),
+        actual_len,
+        expected_len,
+        row_count
+    );
+    let mut rows = Vec::new();
+    rows.try_reserve_exact(row_count_usize)
+        .context("allocate blockhash index rows")?;
+    let mut row_buf = [0u8; ARCHIVE_V2_BLOCKHASH_INDEX_V3_ROW_LEN];
+    for _ in 0..row_count_usize {
+        reader
+            .read_exact(&mut row_buf)
+            .with_context(|| format!("read row from {}", path.display()))?;
+        let mut blockhash = [0u8; 32];
+        blockhash.copy_from_slice(&row_buf[8..40]);
+        rows.push(ArchiveV2BlockhashIndexV3Row {
+            slot: u64::from_le_bytes(row_buf[0..8].try_into().unwrap()),
+            blockhash,
+            block_time: i64::from_le_bytes(row_buf[40..48].try_into().unwrap()),
+        });
+    }
+    Ok(rows)
+}
+
 pub fn write_archive_v2_block_access_index(
     path: &Path,
     blob_file_bytes: u64,
@@ -725,6 +838,37 @@ mod tests {
         let error = read_archive_v2_get_block_index(&get_block_path).unwrap_err();
         assert!(error.to_string().contains("exceeding the shared"));
         std::fs::remove_file(&get_block_path).unwrap();
+    }
+
+    #[test]
+    fn blockhash_index_v3_roundtrips_slots_hashes_and_times() {
+        let path = std::env::temp_dir().join(format!(
+            "blockzilla-blockhash-index-v3-{}-{}.bin",
+            std::process::id(),
+            unique_suffix()
+        ));
+        let rows = [
+            ArchiveV2BlockhashIndexV3Row {
+                slot: 470_880_000,
+                blockhash: [0x11; 32],
+                block_time: 1_794_993_088,
+            },
+            ArchiveV2BlockhashIndexV3Row {
+                slot: 470_880_001,
+                blockhash: [0x22; 32],
+                block_time: 0,
+            },
+        ];
+        write_archive_v2_blockhash_index_v3(&path, &rows).unwrap();
+        let decoded = read_archive_v2_blockhash_index_v3(&path).unwrap();
+        std::fs::remove_file(&path).unwrap();
+        assert_eq!(decoded.len(), 2);
+        assert_eq!(decoded[0].slot, rows[0].slot);
+        assert_eq!(decoded[0].blockhash, rows[0].blockhash);
+        assert_eq!(decoded[0].block_time, rows[0].block_time);
+        assert_eq!(decoded[1].slot, rows[1].slot);
+        assert_eq!(decoded[1].blockhash, rows[1].blockhash);
+        assert_eq!(decoded[1].block_time, 0);
     }
 
     fn unique_suffix() -> u128 {

@@ -5,7 +5,8 @@ use std::path::{Path, PathBuf};
 
 use anyhow::{Context, Result, bail};
 use blockzilla_archive_v2::{
-    ARCHIVE_V2_BLOCK_INDEX_FILE, ARCHIVE_V2_BLOCKHASH_REGISTRY_FILE, ARCHIVE_V2_BLOCKS_FILE,
+    ARCHIVE_V2_BLOCK_INDEX_FILE, ARCHIVE_V2_BLOCKHASH_INDEX_V3_FILE,
+    ARCHIVE_V2_BLOCKHASH_REGISTRY_FILE, ARCHIVE_V2_BLOCKS_FILE, ARCHIVE_V2_META_FILE,
     ARCHIVE_V2_POH_FILE, ARCHIVE_V2_PREV_BLOCKHASH_TAIL_FILE,
     ARCHIVE_V2_PUBKEY_REGISTRY_COUNTS_FILE, ARCHIVE_V2_PUBKEY_REGISTRY_FILE,
     ARCHIVE_V2_PUBKEY_REGISTRY_INDEX_FILE, ARCHIVE_V2_SHREDDING_FILE, ARCHIVE_V2_SIGNATURES_FILE,
@@ -14,12 +15,15 @@ use blockzilla_archive_v2::{
     ARCHIVE_V2_TX_FLAG_HAS_METADATA, ARCHIVE_V2_TX_FLAG_HAS_RETURN_DATA,
     ARCHIVE_V2_TX_FLAG_HAS_TOKEN_BALANCES, ARCHIVE_V2_TX_FLAG_MESSAGE_V0,
     ARCHIVE_V2_VOTE_HASH_REGISTRY_FILE, ArchiveV2BlockAccessBlob, ArchiveV2BlockAccessBlockhash,
-    ArchiveV2BlockAccessPubkey, ArchiveV2HotBlockBlob, ArchiveV2HotBlockHeader,
-    ArchiveV2HotBlockIndexRow, ArchiveV2HotInstruction, ArchiveV2HotInstructionData,
-    ArchiveV2HotLegacyMessage, ArchiveV2HotMessagePayload, ArchiveV2HotRewards, ArchiveV2HotTxRow,
-    ArchiveV2HotV0Message, ArchiveV2HotV1Message, BlockzillaGetBlockBlobEncoding,
-    BlockzillaGetBlockBundleV1, WINCODE_ARCHIVE_V2_BLOCK_ACCESS_VERSION, WincodeArchiveV2PohRecord,
-    WincodeArchiveV2ShreddingRecord, write_archive_v2_hot_block_index,
+    ArchiveV2BlockAccessPubkey, ArchiveV2BlockhashIndexV3Row, ArchiveV2HotBlockBlob,
+    ArchiveV2HotBlockHeader, ArchiveV2HotBlockIndexRow, ArchiveV2HotInstruction,
+    ArchiveV2HotInstructionData, ArchiveV2HotLegacyMessage, ArchiveV2HotMessagePayload,
+    ArchiveV2HotMetaRecord, ArchiveV2HotRewards, ArchiveV2HotTxRow, ArchiveV2HotV0Message,
+    ArchiveV2HotV1Message, BlockzillaGetBlockBlobEncoding, BlockzillaGetBlockBundleV1,
+    WINCODE_ARCHIVE_V2_BLOCK_ACCESS_VERSION, WINCODE_ARCHIVE_V2_FLAG_LEB128,
+    WINCODE_ARCHIVE_V2_HOT_BLOCK_VERSION, WincodeArchiveV2Footer, WincodeArchiveV2Header,
+    WincodeArchiveV2PohRecord, WincodeArchiveV2ShreddingRecord, read_archive_v2_blockhash_index_v3,
+    write_archive_v2_blockhash_index_v3, write_archive_v2_hot_block_index,
 };
 use blockzilla_compact::parse_logs_with_compactor;
 use blockzilla_compact::{
@@ -327,6 +331,7 @@ struct ArchiveWriter {
     poh: WincodeLeb128FramedWriter<BufWriter<File>>,
     shredding: WincodeLeb128FramedWriter<BufWriter<File>>,
     blockhashes: Vec<u8>,
+    block_times: Vec<i64>,
     vote_hashes: Vec<u8>,
     tail: Vec<PreviousBlockhash>,
     rolling: RollingBlockhashes,
@@ -336,6 +341,9 @@ struct ArchiveWriter {
     compressed_offset: u64,
     next_tx_ordinal: u64,
     next_signature_ordinal: u64,
+    entries: u64,
+    rewards: u64,
+    nonce_recent_blockhashes: u64,
     key_index: KeyIndex,
     paths: ArchivePaths,
 }
@@ -368,6 +376,7 @@ impl ArchiveWriter {
                     .with_context(|| format!("create {}", temps.shredding.display()))?,
             )),
             blockhashes: Vec::new(),
+            block_times: Vec::new(),
             vote_hashes: Vec::new(),
             tail,
             rolling,
@@ -377,6 +386,9 @@ impl ArchiveWriter {
             compressed_offset: 0,
             next_tx_ordinal: 0,
             next_signature_ordinal: 0,
+            entries: 0,
+            rewards: 0,
+            nonce_recent_blockhashes: 0,
             key_index,
             paths: ArchivePaths {
                 blocks: temps.blocks.clone(),
@@ -411,6 +423,19 @@ impl ArchiveWriter {
         }
         self.rolling.prune_for_slot(slot)?;
         let uncompressed = encode_hot_block(block, block_id, &self.key_index, &self.rolling)?;
+        let raw_recent_blockhashes = count_raw_recent_blockhashes(block, &self.rolling)?;
+        self.entries = self
+            .entries
+            .checked_add(u64::try_from(block.entries.len()).context("entry count exceeds u64")?)
+            .context("archive entry count exceeds u64")?;
+        self.rewards = self
+            .rewards
+            .checked_add(u64::try_from(block.rewards.len()).context("reward count exceeds u64")?)
+            .context("archive reward count exceeds u64")?;
+        self.nonce_recent_blockhashes = self
+            .nonce_recent_blockhashes
+            .checked_add(raw_recent_blockhashes)
+            .context("raw recent blockhash count exceeds u64")?;
         let compressed = zstd::bulk::compress(&uncompressed, self.zstd_level)
             .with_context(|| format!("compress slot {slot}"))?;
         let compressed_len =
@@ -422,6 +447,7 @@ impl ArchiveWriter {
             .with_context(|| format!("write slot {slot}"))?;
         let signature_count = append_signatures(&mut self.signatures, block)?;
         self.blockhashes.extend(block.blockhash);
+        self.block_times.push(block.block_time.unwrap_or(0));
         self.rolling.insert(
             block.blockhash,
             i32::try_from(block_id).context("blockhash id exceeds i32")?,
@@ -533,7 +559,107 @@ impl ArchiveWriter {
             INDEX_FLAGS,
             &self.rows,
         )?;
+        write_archive_v2_blockhash_index_v3(
+            &output.join(ARCHIVE_V2_BLOCKHASH_INDEX_V3_FILE),
+            &blockhash_index_rows(&self.rows, &self.blockhashes, &self.block_times)?,
+        )?;
+        // The metadata file is the publication marker. Write it after every
+        // other object so a stopped build cannot look complete.
+        write_metadata_receipt(
+            output,
+            u64::try_from(self.rows.len()).context("archive block count exceeds u64")?,
+            self.next_tx_ordinal,
+            self.entries,
+            self.rewards,
+            self.nonce_recent_blockhashes,
+        )?;
         Ok(())
+    }
+}
+
+fn blockhash_index_rows(
+    rows: &[ArchiveV2HotBlockIndexRow],
+    blockhashes: &[u8],
+    block_times: &[i64],
+) -> Result<Vec<ArchiveV2BlockhashIndexV3Row>> {
+    let hash_bytes = rows
+        .len()
+        .checked_mul(32)
+        .context("blockhash registry length overflows")?;
+    anyhow::ensure!(
+        blockhashes.len() == hash_bytes && block_times.len() == rows.len(),
+        "blockhash index inputs do not match the written blocks"
+    );
+    Ok(rows
+        .iter()
+        .enumerate()
+        .map(|(index, row)| {
+            let start = index * 32;
+            let mut blockhash = [0u8; 32];
+            blockhash.copy_from_slice(&blockhashes[start..start + 32]);
+            ArchiveV2BlockhashIndexV3Row {
+                slot: row.slot,
+                blockhash,
+                block_time: block_times[index],
+            }
+        })
+        .collect())
+}
+
+fn write_metadata_receipt(
+    output: &Path,
+    blocks: u64,
+    transactions: u64,
+    entries: u64,
+    rewards: u64,
+    nonce_recent_blockhashes: u64,
+) -> Result<()> {
+    let path = output.join(ARCHIVE_V2_META_FILE);
+    let temporary = output.join(format!("{ARCHIVE_V2_META_FILE}.tmp"));
+    let result = (|| {
+        let file =
+            File::create(&temporary).with_context(|| format!("create {}", temporary.display()))?;
+        let mut writer = WincodeLeb128FramedWriter::new(BufWriter::new(file));
+        writer.write(&ArchiveV2HotMetaRecord::Header(WincodeArchiveV2Header {
+            version: WINCODE_ARCHIVE_V2_HOT_BLOCK_VERSION,
+            flags: WINCODE_ARCHIVE_V2_FLAG_LEB128,
+        }))?;
+        writer.write(&ArchiveV2HotMetaRecord::Footer(WincodeArchiveV2Footer {
+            blocks,
+            transactions,
+            entries,
+            rewards,
+            nonce_recent_blockhashes,
+            ..WincodeArchiveV2Footer::default()
+        }))?;
+        writer.flush()?;
+        rename_finished(&temporary, &path)
+    })();
+    if result.is_err() {
+        let _ = fs::remove_file(&temporary);
+    }
+    result
+}
+
+fn count_raw_recent_blockhashes(block: &SlotData, rolling: &RollingBlockhashes) -> Result<u64> {
+    let mut count = 0u64;
+    for (tx_index, tx) in block.transactions.iter().enumerate() {
+        let resolved =
+            rolling.resolve(&message_recent_blockhash(&tx.message), block.slot, tx_index)?;
+        if matches!(resolved, OwnedCompactRecentBlockhash::Nonce(_)) {
+            count = count
+                .checked_add(1)
+                .context("raw recent blockhash count exceeds u64")?;
+        }
+    }
+    Ok(count)
+}
+
+fn message_recent_blockhash(message: &SourceMessage) -> [u8; 32] {
+    match message {
+        SourceMessage::Legacy(body) => body.recent_blockhash,
+        SourceMessage::V0(body) => body.recent_blockhash,
+        SourceMessage::V1(body) => body.recent_blockhash,
     }
 }
 
@@ -1019,12 +1145,7 @@ fn encode_message(
     slot: u64,
     tx_index: usize,
 ) -> Result<(ArchiveV2HotMessagePayload, u32)> {
-    let recent_blockhash = match message {
-        SourceMessage::Legacy(body) => body.recent_blockhash,
-        SourceMessage::V0(body) => body.recent_blockhash,
-        SourceMessage::V1(body) => body.recent_blockhash,
-    };
-    let recent_blockhash = rolling.resolve(&recent_blockhash, slot, tx_index)?;
+    let recent_blockhash = rolling.resolve(&message_recent_blockhash(message), slot, tx_index)?;
     match message {
         SourceMessage::Legacy(body) => Ok((
             ArchiveV2HotMessagePayload::Legacy(ArchiveV2HotLegacyMessage {
@@ -1807,6 +1928,59 @@ mod tests {
             panic!("expected a legacy message");
         };
         body.recent_blockhash = hash;
+    }
+
+    #[test]
+    fn the_archive_writes_a_metadata_receipt() {
+        let mut block = block_with_keys(vec![vec![[1; 32]]]);
+        block.block_time = Some(1_700_000_000);
+        block.rewards.push(SourceReward {
+            pubkey: [1; 32],
+            lamports: 10,
+            post_balance: 20,
+            reward_type: 0,
+            commission: None,
+        });
+        let view = LedgerView {
+            start_slot: 10,
+            end_slot: 10,
+            slots: [(block.slot, block.clone())].into_iter().collect(),
+        };
+        let inspected = inspect(&view).unwrap();
+        let dir = tempfile::tempdir().unwrap();
+        write_archive(dir.path(), &inspected, ZSTD_LEVEL, |_| Ok(block.clone())).unwrap();
+
+        let file = std::fs::File::open(dir.path().join(ARCHIVE_V2_META_FILE)).unwrap();
+        let mut reader = WincodeLeb128FramedReader::new(file);
+        let header = match reader.read::<ArchiveV2HotMetaRecord>().unwrap() {
+            Some((_, ArchiveV2HotMetaRecord::Header(header))) => header,
+            other => panic!("expected a metadata header, found {other:?}"),
+        };
+        let footer = match reader.read::<ArchiveV2HotMetaRecord>().unwrap() {
+            Some((_, ArchiveV2HotMetaRecord::Footer(footer))) => footer,
+            other => panic!("expected a metadata footer, found {other:?}"),
+        };
+        assert!(reader.read::<ArchiveV2HotMetaRecord>().unwrap().is_none());
+        assert_eq!(header.version, WINCODE_ARCHIVE_V2_HOT_BLOCK_VERSION);
+        assert_eq!(header.flags, WINCODE_ARCHIVE_V2_FLAG_LEB128);
+        assert_eq!(footer.blocks, 1);
+        assert_eq!(footer.transactions, 1);
+        assert_eq!(footer.entries, 1);
+        assert_eq!(footer.rewards, 1);
+        assert_eq!(footer.nonce_recent_blockhashes, 1);
+        assert_eq!(footer.car_entries, 0);
+        assert_eq!(footer.tx_source_bytes, 0);
+        assert_eq!(footer.tx_raw_fallbacks, 0);
+        assert!(footer.decode_errors.is_empty());
+
+        let blockhashes = read_archive_v2_blockhash_index_v3(
+            &dir.path().join(ARCHIVE_V2_BLOCKHASH_INDEX_V3_FILE),
+        )
+        .unwrap();
+        assert_eq!(blockhashes.len(), 1);
+        assert_eq!(blockhashes[0].slot, block.slot);
+        assert_eq!(blockhashes[0].blockhash, block.blockhash);
+        assert_eq!(blockhashes[0].block_time, 1_700_000_000);
     }
 
     #[test]
