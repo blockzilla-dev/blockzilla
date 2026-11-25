@@ -499,12 +499,19 @@ impl BankClient {
     }
 
     async fn response(&self, path: &str, after: Option<&str>) -> Result<Response> {
+        match after {
+            Some(after) => self.response_query(path, &[("after", after)]).await,
+            None => self.response_query(path, &[]).await,
+        }
+    }
+
+    async fn response_query(&self, path: &str, query: &[(&str, &str)]) -> Result<Response> {
         let mut url = self
             .base
             .join(path)
             .map_err(|_| protocol("invalid_relative_url"))?;
-        if let Some(after) = after {
-            url.query_pairs_mut().append_pair("after", after);
+        if !query.is_empty() {
+            url.query_pairs_mut().extend_pairs(query.iter().copied());
         }
         let response = self
             .http

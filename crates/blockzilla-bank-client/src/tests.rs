@@ -63,6 +63,7 @@ struct Modes {
     beam_truncated: bool,
     beam_delayed: bool,
     beam_gap: bool,
+    legacy_recovery_reply: bool,
 }
 struct ServerState {
     frames: Vec<Frame>,
@@ -314,6 +315,7 @@ async fn get_head(State(state): State<Arc<ServerState>>, headers: HeaderMap) -> 
 #[derive(serde::Deserialize)]
 struct Position {
     after: String,
+    recovery: Option<String>,
 }
 async fn get_events(
     State(state): State<Arc<ServerState>>,
@@ -329,6 +331,7 @@ async fn get_events(
         connections.len()
     };
     let h = head(&state.frames, selected(&state));
+    let recovery = position.recovery.as_deref() == Some("1") && !state.modes.legacy_recovery_reply;
     if state.modes.http_gap {
         return (
             StatusCode::GONE,
@@ -358,10 +361,21 @@ async fn get_events(
             if state.modes.short_notice {
                 notice.bytes = 17;
             }
+            let data = if recovery {
+                if state.modes.short_notice && f.envelope.event.kind != "block" {
+                    notice.bytes = v2::MAX_FRAME;
+                }
+                serde_json::to_string(&v2::RecoveryStreamNotice {
+                    notice,
+                    event: f.envelope.event.clone(),
+                })
+            } else {
+                serde_json::to_string(&notice)
+            }
+            .unwrap();
             events.push_str(&format!(
                 "event: chunk\nid: {}\ndata: {}\n\n",
-                f.cursor,
-                serde_json::to_string(&notice).unwrap()
+                f.cursor, data
             ));
             if state.modes.first_connection_one_bank && connection == 1 {
                 break;
@@ -373,14 +387,112 @@ async fn get_events(
     } else {
         &position.after
     };
-    (
+    let mut response = (
         [
             ("content-type", "text/event-stream"),
             ("x-blockzilla-start-cursor", boundary),
         ],
         Body::from(events),
     )
-        .into_response()
+        .into_response();
+    if recovery {
+        response.headers_mut().insert(
+            "x-blockzilla-notice-format",
+            v2::RECOVERY_NOTICE_FORMAT.parse().unwrap(),
+        );
+    }
+    response
+}
+
+#[tokio::test]
+async fn public_recovery_pages_use_notice_only_blocks_and_original_controls() {
+    let first = fresh(block(1, 10, 1, 9, 100));
+    let control = control(&first, 2, "confirmed", now_ms());
+    let second = fresh(block(3, 11, 2, 10, 100));
+    let server = server(
+        vec![first.clone(), control.clone(), second.clone()],
+        Modes::default(),
+        BTreeMap::new(),
+        0,
+    )
+    .await;
+    let first_page = server
+        .client
+        .recovery_plan(&base_cursor(), &second.cursor, 2)
+        .await
+        .unwrap();
+    assert_eq!(first_page.len(), 2);
+    assert!(first_page[0].control.is_none());
+    first_page[0].notice.validate_frame(&first).unwrap();
+    assert_eq!(first_page[1].control.as_ref().unwrap().wire, control.wire);
+    let last_page = server
+        .client
+        .recovery_plan(&control.cursor, &second.cursor, 2)
+        .await
+        .unwrap();
+    assert_eq!(last_page.len(), 1);
+    assert!(last_page[0].control.is_none());
+    last_page[0].notice.validate_frame(&second).unwrap();
+    assert_eq!(server.state.chunk_hits.load(Ordering::SeqCst), 1);
+}
+
+#[tokio::test]
+async fn public_recovery_rejects_an_old_format_wrong_boundary_and_large_control_before_get() {
+    let first = fresh(block(1, 10, 1, 9, 100));
+    let control = control(&first, 2, "confirmed", now_ms());
+    for (modes, expected) in [
+        (
+            Modes {
+                legacy_recovery_reply: true,
+                ..Default::default()
+            },
+            "recovery_stream_headers_mismatch",
+        ),
+        (
+            Modes {
+                wrong_start: true,
+                ..Default::default()
+            },
+            "recovery_stream_headers_mismatch",
+        ),
+        (
+            Modes {
+                short_notice: true,
+                ..Default::default()
+            },
+            "recovery_control_too_large",
+        ),
+    ] {
+        let server = server(
+            vec![first.clone(), control.clone()],
+            modes,
+            BTreeMap::new(),
+            0,
+        )
+        .await;
+        let error = server
+            .client
+            .recovery_plan(&base_cursor(), &control.cursor, 2)
+            .await
+            .unwrap_err();
+        assert!(
+            matches!(error, ClientError::Protocol(ref reason) if reason == expected),
+            "{error}"
+        );
+        assert_eq!(server.state.chunk_hits.load(Ordering::SeqCst), 0);
+    }
+    let server = server(vec![first, control], Modes::default(), BTreeMap::new(), 0).await;
+    let wrong_target = v2::cursor("fixture-session", 2, &"1".repeat(64));
+    let error = server
+        .client
+        .recovery_plan(&base_cursor(), &wrong_target, 2)
+        .await
+        .unwrap_err();
+    assert!(
+        matches!(error, ClientError::Protocol(ref reason) if reason == "recovery_target_mismatch"),
+        "{error}"
+    );
+    assert_eq!(server.state.chunk_hits.load(Ordering::SeqCst), 0);
 }
 async fn get_chunk(
     State(state): State<Arc<ServerState>>,

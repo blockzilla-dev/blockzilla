@@ -38,12 +38,12 @@ async fn server(frame: Frame, mode: &'static str) -> Server {
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
     let mut config = WorkerRecoveryConfig::new(
         format!("http://{}/", listener.local_addr().unwrap()),
-        KEY,
+        if mode == "public" { "" } else { KEY },
         source(),
     );
     config.retry.initial_delay = Duration::from_millis(1);
     config.retry.max_delay = Duration::from_millis(2);
-    let client = WorkerRecoveryClient::build(config, true).unwrap();
+    let client = WorkerRecoveryClient::build(config, true, mode != "public").unwrap();
     let router = Router::new()
         .route("/block/{slot}", get(read))
         .with_state(state.clone());
@@ -66,10 +66,14 @@ async fn read(
     let frame = &state.frame;
     let bank = &frame.envelope.event.bank;
     assert_eq!(slot, format!("{}.compact", bank.slot));
-    assert_eq!(
-        headers.get("authorization").unwrap(),
-        format!("Bearer {KEY}").as_str()
-    );
+    if state.mode == "public" {
+        assert!(headers.get("authorization").is_none());
+    } else {
+        assert_eq!(
+            headers.get("authorization").unwrap(),
+            format!("Bearer {KEY}").as_str()
+        );
+    }
     assert!(headers.get("range").is_none());
     assert_eq!(
         query,
@@ -182,6 +186,28 @@ async fn native_worker_read_preserves_original_bytes_and_reuses_client_without_s
         assert_eq!(got.envelope.event, frame.envelope.event);
     }
     assert_eq!(server.state.calls.load(Ordering::SeqCst), 2);
+}
+
+#[tokio::test]
+async fn public_worker_read_sends_no_authorization_header() {
+    let frame = block(1, 12, 3, 11, 100);
+    assert!(WorkerRecoveryClient::new_public("https://archive.blockzilla.dev/", source()).is_ok());
+    assert!(
+        WorkerRecoveryClient::new(WorkerRecoveryConfig::new(
+            "https://archive.blockzilla.dev/",
+            "",
+            source()
+        ))
+        .is_err()
+    );
+    let server = server(frame.clone(), "public").await;
+    let returned = server
+        .client
+        .fetch(&RecoveryNotice::from_frame(&frame))
+        .await
+        .unwrap();
+    assert_eq!(returned.wire, frame.wire);
+    assert_eq!(server.state.calls.load(Ordering::SeqCst), 1);
 }
 
 #[tokio::test]

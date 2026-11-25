@@ -116,6 +116,43 @@ fn frame_digest_is_not_a_reserialized_marker_digest() {
     assert_eq!(decode(f.wire.clone()).unwrap().sha256, f.sha256);
 }
 
+#[test]
+fn recovery_notice_checks_sequence_slot_and_exact_event() {
+    let block = block(1, 17, 7, 3, 10);
+    for frame in [&block, &control(&block, 2, "confirmed", 1000)] {
+        let notice = RecoveryStreamNotice::from_frame(frame);
+        let sequence = frame.envelope.event.sequence;
+        notice
+            .preflight(&frame.cursor, sequence, &source())
+            .unwrap();
+        notice
+            .validate(&frame.cursor, frame, sequence, &source())
+            .unwrap();
+        let mut wrong_sequence = notice.clone();
+        wrong_sequence.event.sequence += 1;
+        assert!(
+            wrong_sequence
+                .preflight(&frame.cursor, sequence, &source())
+                .is_err()
+        );
+        let mut wrong_slot = notice.clone();
+        wrong_slot.notice.start_slot += 1;
+        wrong_slot.notice.end_slot += 1;
+        assert!(
+            wrong_slot
+                .preflight(&frame.cursor, sequence, &source())
+                .is_err()
+        );
+        let mut wrong_bank = notice;
+        wrong_bank.event.bank.bank_id += 1;
+        assert!(
+            wrong_bank
+                .validate(&frame.cursor, frame, sequence, &source())
+                .is_err()
+        );
+    }
+}
+
 fn rooted_three_banks() -> (chain::Chain, Frame, Frame, Frame) {
     let anchor = block(1, 10, 1, 9, 100);
     let middle = block(3, 17, 2, 10, 101);

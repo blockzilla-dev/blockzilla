@@ -654,6 +654,56 @@ impl Notice {
     }
 }
 
+/// Opt-in SSE notice format for exact native frame recovery.
+pub const RECOVERY_NOTICE_FORMAT: &str = "recovery-v1";
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct RecoveryStreamNotice {
+    pub notice: Notice,
+    pub event: BankEvent,
+}
+
+impl RecoveryStreamNotice {
+    pub fn from_frame(frame: &Frame) -> Self {
+        Self {
+            notice: Notice::from_frame(frame),
+            event: frame.envelope.event.clone(),
+        }
+    }
+
+    pub fn preflight(
+        &self,
+        id: &str,
+        expected_sequence: u64,
+        source: &SourceIdentity,
+    ) -> Result<()> {
+        self.notice.preflight(id, expected_sequence, source)?;
+        self.event.validate()?;
+        ensure!(
+            self.event.sequence == expected_sequence
+                && self.event.bank.slot == self.notice.start_slot,
+            "invalid_recovery_notice"
+        );
+        Ok(())
+    }
+
+    pub fn validate(
+        &self,
+        id: &str,
+        frame: &Frame,
+        expected_sequence: u64,
+        source: &SourceIdentity,
+    ) -> Result<()> {
+        self.notice.validate(id, frame, expected_sequence, source)?;
+        ensure!(
+            self.event == frame.envelope.event,
+            "invalid_recovery_notice"
+        );
+        Ok(())
+    }
+}
+
 #[cfg(not(target_arch = "wasm32"))]
 pub mod artifact;
 pub mod chain;

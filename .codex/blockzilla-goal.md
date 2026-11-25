@@ -76,3 +76,11 @@ remains unchanged until review and the required integration checks pass.
 Linux worker, matched host/plugin and combined live/backfill acceptance remain
 required before promotion to main. The separate Agave RC1 ledger profile has
 resolved dependency metadata; its full Linux/RocksDB build is still required.
+
+A follow-up source audit preserved the previously unpushed 22 November public
+Worker recovery change from `d4d603f0`. Recovery notices and original controls
+still use the authenticated stream; public Worker block reads do not receive
+the stream key. Source, Bank, frame and cursor checks remain required. Missing
+relay deployment helpers were restored in Hivezilla, and exact main deployment
+records were saved in the private repository. Other unfinished worktrees and
+the new wallet indexer remain separate from this core candidate.

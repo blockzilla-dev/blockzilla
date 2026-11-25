@@ -13,8 +13,7 @@ use tokio::{
 const FINALIZED_READ_TIMEOUT: Duration = Duration::from_secs(30);
 pub const MAX_FINALIZED_PATH_BLOCKS: usize = 1024;
 pub const MAX_FINALIZED_PATH_BYTES: usize = 192 * 1024 * 1024;
-pub const MAX_RECOVERY_PLAN_EVENTS: usize = 128;
-pub const MAX_RECOVERY_PLAN_BYTES: usize = 4 * 1024 * 1024;
+pub use crate::recovery::{MAX_RECOVERY_PLAN_BYTES, MAX_RECOVERY_PLAN_EVENTS};
 static FINALIZED_READS: Semaphore = Semaphore::const_new(2);
 #[cfg(test)]
 #[path = "ssh_finalized_tests.rs"]

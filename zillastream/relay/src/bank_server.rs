@@ -276,6 +276,20 @@ async fn coverage_gaps(
 pub(crate) struct Position {
     after: Option<String>,
 }
+
+#[derive(Deserialize)]
+enum RecoveryFormat {
+    #[serde(rename = "1")]
+    V1,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct EventsPosition {
+    after: Option<String>,
+    recovery: Option<RecoveryFormat>,
+}
+
 pub(crate) fn requested_after(p: Position, h: &HeaderMap) -> Result<Option<String>> {
     ensure!(
         h.get_all("last-event-id").iter().count() <= 1,
@@ -475,7 +489,7 @@ async fn beam(
 }
 async fn events(
     State(api): State<Api>,
-    p: std::result::Result<Query<Position>, QueryRejection>,
+    p: std::result::Result<Query<EventsPosition>, QueryRejection>,
     headers: HeaderMap,
 ) -> Response {
     let banks = api.banks.unwrap();
@@ -484,7 +498,8 @@ async fn events(
         Ok(Query(p)) => p,
         Err(_) => return replay_failure(StatusCode::BAD_REQUEST, "invalid_cursor", &banks).await,
     };
-    let mut after = match accepted_replay(&banks, p, &headers).await {
+    let recovery = p.recovery.is_some();
+    let mut after = match accepted_replay(&banks, Position { after: p.after }, &headers).await {
         Ok(v) => v,
         Err(e) => {
             let c = code(&e);
@@ -526,7 +541,11 @@ async fn events(
             match replay_after(&banks,&after).await {
                 Ok(Some(f))=>{
                     after=f.cursor.clone();
-                    let notice=serde_json::to_string(&Notice::from_frame(&f)).unwrap();
+                    let notice = if recovery {
+                        serde_json::to_string(&v2::RecoveryStreamNotice::from_frame(&f))
+                    } else {
+                        serde_json::to_string(&Notice::from_frame(&f))
+                    }.unwrap();
                     // Hold only the notice while a slow SSE reader waits.
                     drop(f);yield Ok(format!("id: {after}\nevent: chunk\ndata: {notice}\n\n").into());
                 }
@@ -544,6 +563,12 @@ async fn events(
     );
     r.headers_mut()
         .insert("x-blockzilla-start-cursor", start.parse().unwrap());
+    if recovery {
+        r.headers_mut().insert(
+            "x-blockzilla-notice-format",
+            header::HeaderValue::from_static(v2::RECOVERY_NOTICE_FORMAT),
+        );
+    }
     r
 }
 async fn chunk(State(api): State<Api>, Path(sha): Path<String>) -> Response {
@@ -1159,6 +1184,91 @@ mod tests {
         );
         task.abort();
     }
+
+    #[tokio::test]
+    async fn direct_recovery_notices_require_auth_and_preserve_the_old_format() {
+        let temp = tempfile::tempdir().unwrap();
+        let (mut api, frames, _db) = replay_fixture(temp.path());
+        api.banks.as_mut().unwrap().direct_beam = true;
+        let (url, task) = ack_listener(api).await;
+        let http = reqwest::Client::builder()
+            .timeout(Duration::from_secs(3))
+            .build()
+            .unwrap();
+        let base = v2::cursor(&source().session_id, 0, "-");
+        let events = format!("{url}/v2/banks/events?after={base}");
+        let key = "k".repeat(32);
+        let response = http
+            .get(format!("{events}&recovery=1"))
+            .send()
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+        let response = http
+            .get(format!("{events}&recovery=2"))
+            .bearer_auth(&key)
+            .send()
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+
+        for recovery in [false, true] {
+            let request = http.get(&events).bearer_auth(&key);
+            let request = if recovery {
+                request.query(&[("recovery", "1")])
+            } else {
+                request
+            };
+            let mut response = request.send().await.unwrap().error_for_status().unwrap();
+            assert_eq!(response.headers()["x-blockzilla-start-cursor"], base);
+            assert_eq!(response.headers()[header::CACHE_CONTROL], "no-store");
+            let format = response.headers().get("x-blockzilla-notice-format");
+            assert_eq!(
+                format.map(|value| value.to_str().unwrap()),
+                recovery.then_some(v2::RECOVERY_NOTICE_FORMAT)
+            );
+
+            let mut bytes = Vec::new();
+            let mut consumed = 0;
+            let mut checked = 0;
+            while checked < frames.len() {
+                bytes.extend_from_slice(&response.chunk().await.unwrap().unwrap());
+                assert!(bytes.len() < 128 * 1024);
+                let text = std::str::from_utf8(&bytes).unwrap();
+                while let Some(end) = text[consumed..].find("\n\n") {
+                    let packet = &text[consumed..consumed + end];
+                    consumed += end + 2;
+                    let Some(id) = packet.lines().find_map(|line| line.strip_prefix("id: ")) else {
+                        assert!(packet.starts_with("event: status\n"));
+                        continue;
+                    };
+                    let frame = &frames[checked];
+                    let raw = packet
+                        .lines()
+                        .find_map(|line| line.strip_prefix("data: "))
+                        .unwrap();
+                    assert!(packet.lines().any(|line| line == "event: chunk"));
+                    if recovery {
+                        let notice: v2::RecoveryStreamNotice = serde_json::from_str(raw).unwrap();
+                        notice
+                            .preflight(id, frame.envelope.event.sequence, &source())
+                            .unwrap();
+                        notice
+                            .validate(id, frame, frame.envelope.event.sequence, &source())
+                            .unwrap();
+                    } else {
+                        let notice: Notice = serde_json::from_str(raw).unwrap();
+                        notice
+                            .validate(id, frame, frame.envelope.event.sequence, &source())
+                            .unwrap();
+                    }
+                    checked += 1;
+                }
+            }
+        }
+        task.abort();
+    }
+
     #[tokio::test]
     async fn origin_replays_exact_retained_source_before_spool_without_jump_or_ack() {
         use futures_util::StreamExt;

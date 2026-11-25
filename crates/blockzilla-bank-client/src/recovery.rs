@@ -11,6 +11,11 @@ use serde::{Deserialize, Serialize};
 use std::{sync::Arc, time::Duration};
 use tokio::sync::Semaphore;
 
+mod public;
+
+pub const MAX_RECOVERY_PLAN_EVENTS: usize = 128;
+pub const MAX_RECOVERY_PLAN_BYTES: usize = 4 * 1024 * 1024;
+
 /// Metadata from the pinned native feed. Slot numbers alone cannot identify a
 /// frame, fork, control, skipped slot or an exact stream resume position.
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -119,20 +124,32 @@ pub struct WorkerRecoveryClient {
 }
 impl WorkerRecoveryClient {
     pub fn new(config: WorkerRecoveryConfig) -> Result<Self> {
-        Self::build(config, false)
+        Self::build(config, false, true)
     }
-    fn build(config: WorkerRecoveryConfig, local_test: bool) -> Result<Self> {
+
+    /// Fetch exact processed blocks from a public Worker without an Authorization
+    /// header. The separate stream key belongs only to `BankClient`.
+    pub fn new_public(url: impl Into<String>, source: SourceIdentity) -> Result<Self> {
+        Self::build(WorkerRecoveryConfig::new(url, "", source), false, false)
+    }
+
+    fn build(config: WorkerRecoveryConfig, local_test: bool, authenticated: bool) -> Result<Self> {
         let base = Url::parse(&config.url)
             .map_err(|_| ClientError::Configuration("invalid_recovery_worker_url"))?;
+        let valid_credential = if authenticated {
+            (32..=256).contains(&config.api_key.len())
+                && reqwest::header::HeaderValue::from_str(&format!("Bearer {}", config.api_key))
+                    .is_ok()
+        } else {
+            config.api_key.is_empty()
+        };
         if !(base.scheme() == "https" || (local_test && base.scheme() == "http"))
             || base.path() != "/"
             || base.query().is_some()
             || base.fragment().is_some()
             || !base.username().is_empty()
             || base.password().is_some()
-            || !(32..=256).contains(&config.api_key.len())
-            || reqwest::header::HeaderValue::from_str(&format!("Bearer {}", config.api_key))
-                .is_err()
+            || !valid_credential
             || config.retry.max_retries > 4
             || config.retry.initial_delay > config.retry.max_delay
             || config.retry.max_delay > Duration::from_secs(5)
@@ -200,13 +217,13 @@ impl WorkerRecoveryClient {
             .append_pair("cursor", &expected.cursor)
             .append_pair("bank_id", &bank.bank_id.to_string())
             .append_pair("source_session", &expected.source.session_id);
-        let mut response = self
-            .http
-            .get(url)
-            .bearer_auth(&self.config.api_key)
-            .send()
-            .await
-            .map_err(network)?;
+        let request = self.http.get(url);
+        let request = if self.config.api_key.is_empty() {
+            request
+        } else {
+            request.bearer_auth(&self.config.api_key)
+        };
+        let mut response = request.send().await.map_err(network)?;
         match response.status().as_u16() {
             200 => {}
             status @ (401 | 403) => return Err(ClientError::Authentication(status)),
