@@ -10,6 +10,17 @@ jobs:
       RUSTUP_TOOLCHAIN: 1.98.1
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Check public source scope
+        shell: bash
+        run: |
+          if git ls-files | grep -E '(^|/)(deploy|infra|operations|research|reports)/|\.(py|pyc|pyw|service|timer|tf|tfvars|pem|key)$'; then
+            echo 'Keep host administration and private records outside the public core.' >&2
+            exit 1
+          fi
+          if git grep -n -E 'Command::new\("(ssh|scp|rsync|sudo|systemctl|rclone|python[0-9]*)"' -- '*.rs'; then
+            echo 'Use public transports; keep host administration in the private infrastructure repository.' >&2
+            exit 1
+          fi
       - run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt
       - run: cargo fmt --all -- --check
       - run: cargo test --locked --workspace --all-targets
