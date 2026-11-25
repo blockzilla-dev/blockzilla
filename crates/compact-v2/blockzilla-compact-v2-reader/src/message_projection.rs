@@ -90,6 +90,41 @@ impl CompactV2MessageProjector {
     ) -> CompactV2MessageProjectionResult<ProjectedCompactV2Message<'_>> {
         self.project_with_policy(bytes, None, InstructionDataPolicy::Counts)
     }
+
+    /// Visit static message keys as compact references, without retaining
+    /// keys, instructions or lookup descriptors. Pass the returned limits
+    /// to the metadata projector to check loaded keys and token owners.
+    ///
+    /// The visitor does not receive lookup-table references. Discard any
+    /// visitor results if the complete message fails validation.
+    pub fn visit_static_account_keys(
+        self,
+        bytes: &[u8],
+        visit: impl FnMut(CompactPubkey),
+    ) -> CompactV2MessageProjectionResult<crate::CompactV2MetadataProjectionLimits> {
+        self.project_visiting(bytes, None, InstructionDataPolicy::Counts, visit)
+            .map(|message| message.count_limits())
+    }
+
+    /// Return validated message geometry for a miss. A static key hit returns
+    /// no geometry and leaves the remaining bytes for the owned decoder.
+    pub(crate) fn nonmatching_message_limits(
+        self,
+        bytes: &[u8],
+        matches: impl FnMut(CompactPubkey) -> bool,
+    ) -> CompactV2MessageProjectionResult<Option<(bool, crate::CompactV2MetadataProjectionLimits)>>
+    {
+        Ok(self
+            .project_visiting_until_match(bytes, None, InstructionDataPolicy::Counts, matches)?
+            .map(|message| {
+                let is_v0 = matches!(
+                    message.version(),
+                    ProjectedCompactV2MessageVersion::V0 { .. }
+                );
+                (is_v0, message.count_limits())
+            }))
+    }
+
     /// Bind one projector to the schema and public-key registry admitted by an
     /// [`crate::ArchiveReader`].
     pub const fn new(schema: CompactV2MessageSchema, registry_entries: u32) -> Self {
@@ -232,6 +267,30 @@ impl CompactV2MessageProjector {
         vote_hashes: Option<&dyn VoteHashResolver>,
         data_policy: InstructionDataPolicy<'_>,
     ) -> CompactV2MessageProjectionResult<ProjectedCompactV2Message<'de>> {
+        self.project_visiting(bytes, vote_hashes, data_policy, |_| {})
+    }
+
+    fn project_visiting<'de>(
+        self,
+        bytes: &'de [u8],
+        vote_hashes: Option<&dyn VoteHashResolver>,
+        data_policy: InstructionDataPolicy<'_>,
+        mut visit: impl FnMut(CompactPubkey),
+    ) -> CompactV2MessageProjectionResult<ProjectedCompactV2Message<'de>> {
+        self.project_visiting_until_match(bytes, vote_hashes, data_policy, |key| {
+            visit(key);
+            false
+        })
+        .map(|message| message.expect("visitor requests full validation"))
+    }
+
+    fn project_visiting_until_match<'de>(
+        self,
+        bytes: &'de [u8],
+        vote_hashes: Option<&dyn VoteHashResolver>,
+        data_policy: InstructionDataPolicy<'_>,
+        matches: impl FnMut(CompactPubkey) -> bool,
+    ) -> CompactV2MessageProjectionResult<Option<ProjectedCompactV2Message<'de>>> {
         let mut cursor = bytes;
         let projected = match self.schema {
             CompactV2MessageSchema::Current => decode_message::<false>(
@@ -239,15 +298,17 @@ impl CompactV2MessageProjector {
                 self.registry_entries,
                 vote_hashes,
                 data_policy,
+                matches,
             )?,
             CompactV2MessageSchema::May24PreUnknownFallbacks => decode_message::<true>(
                 &mut cursor,
                 self.registry_entries,
                 vote_hashes,
                 data_policy,
+                matches,
             )?,
         };
-        if !cursor.is_empty() {
+        if projected.is_some() && !cursor.is_empty() {
             return Err(CompactV2MessageProjectionError::TrailingBytes(cursor.len()));
         }
         Ok(projected)
@@ -498,7 +559,8 @@ fn decode_message<'de, const MAY24: bool>(
     registry_entries: u32,
     vote_hashes: Option<&dyn VoteHashResolver>,
     data_policy: InstructionDataPolicy<'_>,
-) -> CompactV2MessageProjectionResult<ProjectedCompactV2Message<'de>> {
+    mut matches: impl FnMut(CompactPubkey) -> bool,
+) -> CompactV2MessageProjectionResult<Option<ProjectedCompactV2Message<'de>>> {
     let count_only = matches!(data_policy, InstructionDataPolicy::Counts);
     let kind = match get::<u32>(cursor)? {
         0 => MessageKind::Legacy,
@@ -537,6 +599,9 @@ fn decode_message<'de, const MAY24: bool>(
         });
     for _ in 0..static_account_count {
         let key = validate_pubkey(get::<CompactPubkey>(cursor)?, registry_entries)?;
+        if matches(key) {
+            return Ok(None);
+        }
         if !count_only {
             static_account_keys.push(key);
         }
@@ -584,10 +649,8 @@ fn decode_message<'de, const MAY24: bool>(
             }
         }
         if count_only {
-            for &index in instruction.accounts {
-                maximum_account_index =
-                    Some(maximum_account_index.map_or(index, |value| value.max(index)));
-            }
+            maximum_account_index =
+                maximum_account_index.max(instruction.accounts.iter().copied().max());
         } else {
             instructions.push(instruction);
         }
@@ -686,7 +749,7 @@ fn decode_message<'de, const MAY24: bool>(
         .into());
     }
 
-    Ok(ProjectedCompactV2Message {
+    Ok(Some(ProjectedCompactV2Message {
         static_account_count,
         instruction_count,
         version,
@@ -696,7 +759,7 @@ fn decode_message<'de, const MAY24: bool>(
         instructions,
         expected_loaded_writable,
         expected_loaded_readonly,
-    })
+    }))
 }
 
 fn read_instruction<'de, const MAY24: bool>(
@@ -1248,6 +1311,44 @@ mod tests {
         assert_eq!(address_table_lookups[0].account_key(), key(3));
         assert_eq!(address_table_lookups[0].writable_indexes(), [4, 5]);
         assert_eq!(address_table_lookups[0].readonly_indexes(), [6]);
+
+        let bytes = wincode::config::serialize(&message, wincode_leb128_config()).unwrap();
+        let projector = CompactV2MessageProjector::new(CompactV2MessageSchema::Current, 0);
+        let mut visited = Vec::new();
+        let limits = projector
+            .visit_static_account_keys(&bytes, |key| visited.push(key))
+            .unwrap();
+        assert_eq!(visited, projected.static_account_keys());
+        assert_eq!(limits, projected.count_limits());
+        for end in 0..bytes.len() {
+            assert!(
+                projector
+                    .visit_static_account_keys(&bytes[..end], |_| {})
+                    .is_err()
+            );
+        }
+
+        let miss = projector
+            .nonmatching_message_limits(&bytes, |_| false)
+            .unwrap();
+        assert_eq!(miss, Some((true, limits)));
+
+        let mut malformed = bytes;
+        malformed.push(0);
+        assert_eq!(
+            projector
+                .nonmatching_message_limits(&malformed, |candidate| candidate == key(1))
+                .unwrap(),
+            None
+        );
+        assert!(matches!(
+            projector.nonmatching_message_limits(&malformed, |_| false),
+            Err(CompactV2MessageProjectionError::TrailingBytes(1))
+        ));
+        assert!(matches!(
+            projector.visit_static_account_keys(&malformed, |_| {}),
+            Err(CompactV2MessageProjectionError::TrailingBytes(1))
+        ));
     }
 
     #[test]

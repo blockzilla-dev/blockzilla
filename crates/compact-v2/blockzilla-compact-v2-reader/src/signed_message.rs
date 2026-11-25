@@ -398,7 +398,21 @@ pub fn verify_ed25519_signatures(
             signatures: signatures.len(),
         });
     }
-    for (signer_index, (signer, signature)) in signer_pubkeys.iter().zip(signatures).enumerate() {
+    verify_ed25519_signatures_from(signed_message, signer_pubkeys, signatures, 0)
+}
+
+fn verify_ed25519_signatures_from(
+    signed_message: &[u8],
+    signer_pubkeys: &[[u8; 32]],
+    signatures: &[[u8; 64]],
+    first_unverified: usize,
+) -> Result<(), SignedMessageError> {
+    for (signer_index, (signer, signature)) in signer_pubkeys
+        .iter()
+        .zip(signatures)
+        .enumerate()
+        .skip(first_unverified)
+    {
         if !Signature::from(*signature).verify(signer, signed_message) {
             return Err(SignedMessageError::SignatureVerificationFailed { signer_index });
         }
@@ -406,11 +420,11 @@ pub fn verify_ed25519_signatures(
     Ok(())
 }
 
-/// Select with the first signer, then verify every required signature.
+/// Select with the first signer, then verify the remaining signatures.
 ///
 /// The first signature is the candidate oracle because one valid signer is
 /// enough to prove the exact signed bytes. After it selects one unique byte
-/// form, every required signer is checked against those same bytes. Missing,
+/// form, the remaining signers are checked against those same bytes. Missing,
 /// extra, invalid, absent, and non-unique proofs are errors.
 pub fn select_signed_message_candidate_ed25519(
     message: &SignedMessageCandidates<'_>,
@@ -438,7 +452,7 @@ pub fn select_signed_message_candidate_ed25519(
     let selected = select_signed_message_candidate(message, max_combinations, |signed_message| {
         first_signature.verify(first_signer, signed_message)
     })?;
-    verify_ed25519_signatures(&selected.signed_message, signer_pubkeys, signatures)?;
+    verify_ed25519_signatures_from(&selected.signed_message, signer_pubkeys, signatures, 1)?;
     Ok(selected)
 }
 

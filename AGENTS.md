@@ -1,10 +1,10 @@
-# Project memory
+# Project instructions
 
-- Before architecture, roadmap, or pipeline work, read
-  [the current Blockzilla goal](.codex/blockzilla-goal.md).
-- Use that file as the owner's current architecture direction. Keep target
-  behavior separate from implemented and tested behavior.
-- For the native validator deployment, read
-  [the deployment record](hivezilla/deploy/direct-agave/README.md). Check live
-  reports when current machine status is needed. Older handoff files are history.
-- Use ASD-STE100 Simplified Technical English when communicating with the user.
+- Use ASD-STE100 Simplified Technical English with the user.
+- Before architecture or pipeline work, read `.codex/blockzilla-goal.md`.
+- Keep implemented/tested behavior separate from product targets.
+- Preserve exact format bytes, source identity, native cursors and fork controls.
+- Agave changes and host tests belong in the separate Agave fork. Read
+  `zillastream/agave-compatibility/README.md` before an Agave upgrade.
+- Do not add CAR adapters, application indexers, infrastructure records or
+  full benchmark result sets to this core repository.

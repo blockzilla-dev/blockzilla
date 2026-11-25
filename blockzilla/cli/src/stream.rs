@@ -27,6 +27,9 @@ pub(crate) struct EpochSourceArgs {
     /// Compatible HTTPS archive origin. Defaults to the public sample source.
     #[arg(long, env = "BLOCKZILLA_ORIGIN", conflicts_with = "archive_dir")]
     pub origin: Option<String>,
+    /// Public HTTPS epoch directory, such as a Foundation bucket epoch-N path.
+    #[arg(long, env = "BLOCKZILLA_ARCHIVE_URL", conflicts_with_all = ["origin", "archive_dir"])]
+    pub archive_url: Option<String>,
     /// Cache directory. Relative paths are resolved from the current directory.
     #[arg(long, default_value = ".blockzilla-cache")]
     pub cache_root: PathBuf,
@@ -111,10 +114,16 @@ pub(crate) fn open(args: &EpochSourceArgs) -> Result<CompactV2Archive> {
         } else {
             std::env::current_dir()?.join(&args.cache_root)
         };
-        let origin = args.origin.as_deref().unwrap_or(DEFAULT_ORIGIN);
-        eprintln!("Source: {origin}\nPreparing archive index and key registry...");
-        CompactV2Archive::open(origin, args.epoch, cache_root)
-            .with_context(|| format!("Cannot open epoch {} at {origin}", args.epoch))?
+        if let Some(epoch_url) = &args.archive_url {
+            eprintln!("Source: {epoch_url}\nPreparing archive index and key registry...");
+            CompactV2Archive::open_epoch_url(epoch_url, args.epoch, cache_root)
+                .with_context(|| format!("Cannot open epoch {} at {epoch_url}", args.epoch))?
+        } else {
+            let origin = args.origin.as_deref().unwrap_or(DEFAULT_ORIGIN);
+            eprintln!("Source: {origin}\nPreparing archive index and key registry...");
+            CompactV2Archive::open(origin, args.epoch, cache_root)
+                .with_context(|| format!("Cannot open epoch {} at {origin}", args.epoch))?
+        }
     };
     Ok(archive)
 }

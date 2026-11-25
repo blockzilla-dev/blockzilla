@@ -1,124 +1,41 @@
 # Blockzilla CLI
 
-Read historical compact blocks from Blockzilla through Cloudflare. Use
-`stream` for ordered JSON block summaries and `dump-tokens` for recorded token
-balances. `index-tokens` reads a private live relay or Blockzilla history into
-SQLite. `token-db` queries that file while indexing continues. These commands
-are implemented in this checkout; crates.io publication and the public live
-stream remain unfinished.
-
-Start with the [user quick start](../../docs/start/quick-start.md).
-
-```bash
-blockzilla stream --epoch 0 --max-blocks 10
-blockzilla dump-tokens --epoch 900 --max-blocks 100 > token-balances.jsonl
-blockzilla index-tokens --epoch 900 --max-blocks 3 --db ./tokens.sqlite
-blockzilla token-db --db ./tokens.sqlite --status
-```
-
-See [Live token index in SQLite](../../docs/start/token-indexer.md) for the live
-command, local queries, restart behavior, and archive backfill requirements.
-The [live stream guide](../../docs/start/live-stream.md) covers browser/Node
-clients. The [token dumper guide](../../docs/start/token-dumper.md) defines JSON
-exports. The [program dumper guide](../../docs/start/program-dumper.md) covers
-live local filters and the separate `blockzilla-dump program` executable.
-
-The CLI also contains archive production and maintenance tools. The following
-sections describe those contributor commands.
-
-## Try it
-
-The repository [quick start](../../README.md#quick-start-build-and-read-the-fixture)
-builds and reads a one-block fixture without network access.
-
-```bash
-cargo run --locked -p blockzilla -- --help
-```
-
-The main commands are:
+Read Compact V2 archives and build compact blocks from native Agave capture.
+The core command tree contains:
 
 | Command | Purpose |
 | --- | --- |
-| `stream` | Read ordered JSON block summaries from a fixed historical archive. |
-| `dump-tokens` | Export recorded historical token balances as JSON Lines. |
-| `index-tokens` | Store live or historical token balances in SQLite with saved progress. |
-| `token-db` | Query that SQLite file while indexing continues. |
-| `scheduler` | Observe archive inventory and optionally schedule finite build, repair, and finalization jobs. |
-| `acquire-car` | Supervise resumable `aria2c` transfer, structural preflight, and durable no-clobber CAR publication. |
-| `preflight-car` | Verify that a CAR can be streamed to clean EOF. |
-| `seed-previous-blockhash-tails` | Discover and atomically publish verified predecessor tails with durable receipts. |
-| `build-block-time-gaps` | Build a sparse local slot-gap and block-time sidecar without RPC. |
-| `build-archive-v2-hot-blocks` | Build compressed blocks, indexes, metadata, and serving sidecars. |
-| `bench-archive-v2-hot-blocks` | Read and decode indexed blocks. |
+| `stream` | Read an archive epoch as ordered JSON block summaries. |
+| `dump-tokens` | Export recorded token balances as JSON Lines. |
+| `inspect` | Show an archive's admitted identity and range. |
+| `build-direct-agave-compact` | Build compact blocks from a complete native callback batch. |
 
-Other commands are advanced repair, analysis, migration, or benchmark tools;
-use `--help` as the authoritative command reference.
-
-### Scheduler
-
-The scheduler requires explicit CAR, archive, and live roots and starts in
-observer mode. Its status and SSE endpoints are read-only and bind to
-`127.0.0.1:8787` by default. Add `--execute` only after reviewing the detected
-inventory and resource settings.
-
-```bash
-blockzilla scheduler \
-  --car-root ./cars \
-  --archive-root ./archive-v2 \
-  --live-root ./live
+```sh
+cargo run --locked -p blockzilla -- --help
+blockzilla stream --epoch 900 --max-blocks 5
+blockzilla dump-tokens --epoch 900 --max-blocks 100 > token-balances.jsonl
+blockzilla inspect --epoch 900
 ```
 
-Mutation routes are absent unless `--management-bind` is supplied. That bind is
-restricted to a loopback address; expose the read-only status API, never the
-management listener, to a separate watcher or reverse proxy. Scheduler state
-defaults to the relative `blockzilla-scheduler-state/` directory. Existing
-durable ownership markers keep their historical filename so upgraded
-deployments can adopt work safely.
+For a local archive, supply `--archive-dir /absolute/archive/path` and a stable
+`--source-id`. The `stream`, `dump-tokens` and `inspect` commands use the same
+archive source options. Output goes to stdout; progress goes to stderr.
 
-### CAR acquisition
+The native worker uses this unchanged command contract:
 
-`acquire-car` keeps `aria2c` as the resumable byte-transfer engine while Rust
-owns retries, the epoch lock, the memory gate, structural preflight, receipt
-durability, and no-clobber publication. Supply `--expected-bytes` only from a
-trusted catalog or manifest; when present, the final object must match it
-exactly and runtime telemetry can report percentage and ETA. The scheduler
-currently omits this option because its URL template is not an authoritative
-size catalog.
-
-### Block-time gap sidecars
-
-For an Archive V2 epoch that contains `blockhash_index_v3.bin`, build a
-`block-time-gaps.bin` sidecar entirely from local archive data:
-
-```bash
-cargo run --locked -p blockzilla -- build-block-time-gaps \
-  /archive-v2/epoch-842 --epoch 842
+```sh
+blockzilla build-direct-agave-compact /normalized/input /fresh/output --level 1
 ```
 
-The sidecar stores each run of absent slots together with the archived block
-time immediately before and after it. It also preserves consecutive-slot time
-discontinuities above the recorded whole-second threshold. These are archive
-observations, not an automatic claim that Solana was unavailable: a slot gap
-can also reveal incomplete archive input. The header retains the source
-SHA-256, threshold, and first/last block so adjacent epoch results can be joined
-safely.
+The builder checks its source receipt, complete block geometry and source
+files before publishing its output. It preserves the source session, Bank and
+parent identities. Its output does not claim independent consensus, signature
+verification, or complete shred evidence. Use the matching native producer and
+source revision.
 
-Complete `build-archive-v2-hot-blocks` runs now publish
-`blockhash_index_v3.bin` and `block-time-gaps.bin` by default during their
-existing CAR pass. This includes the normal, first-seen, and PreHot builders.
-Bounded `--max-blocks` runs are intentionally partial and publish neither file.
-`build-blockhash-registry` also creates or repairs the gap sidecar whenever it
-publishes or reuses a complete V3 index.
-Deferred first-seen scans written by the new builder persist this requirement;
-pre-upgrade scan candidates remain finalizable as an explicit legacy exception.
+CAR import, migration, scheduler and application indexing commands belong to
+their separate tools. Archive integrity and signature checks remain available
+through the reader SDK.
 
-## Archive format
-
-An Archive V2 directory contains compressed blocks plus indexes, registries,
-metadata, and optional serving sidecars. The implemented layout is documented
-in the [Archive V2 format reference](../../docs/reference/archive-v2-hot-block-format.md)
-and shared types live in [`blockzilla-archive-v2`](../../crates/compact-v2/blockzilla-archive-v2/src/v2/mod.rs).
-
-Use a fresh output directory, keep source CAR files immutable, and budget ample
-space for full epochs. For private reporting, use the maintainer reporting
-process.
+The combined live-capture and archive-backfill token example is a product
+acceptance target. The current `dump-tokens` command reads archives only.

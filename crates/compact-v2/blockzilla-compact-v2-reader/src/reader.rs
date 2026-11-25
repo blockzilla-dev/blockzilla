@@ -500,6 +500,16 @@ pub struct BorrowedDecodedBlock<'a> {
     block: BorrowedDecodedBlockPayload<'a>,
 }
 
+/// One transaction's compact row and byte lanes, borrowed from a decoded block.
+#[derive(Debug, Clone, Copy)]
+pub struct BorrowedTransaction<'a> {
+    pub row: ArchiveV2HotTxRow,
+    pub message_bytes: &'a [u8],
+    /// Empty when the transaction has no metadata. Use the row flags to check coverage.
+    pub metadata_bytes: &'a [u8],
+    pub first_signature_ordinal: u64,
+}
+
 #[derive(Debug)]
 enum BorrowedDecodedBlockPayload<'a> {
     Current(BorrowedArchiveV2HotBlockBlob<'a>),
@@ -566,6 +576,48 @@ impl BorrowedDecodedBlock<'_> {
             BorrowedDecodedBlockPayload::CurrentWithoutRewards(block) => block.metadata_bytes,
             BorrowedDecodedBlockPayload::OwnedFallback(block) => &block.metadata_bytes,
         }
+    }
+
+    /// Lend each compact transaction without decoding its message, metadata, or signatures.
+    pub fn transactions(
+        &self,
+    ) -> impl ExactSizeIterator<Item = Result<BorrowedTransaction<'_>>> + '_ {
+        let mut ordinal = self.index_row.first_signature_ordinal;
+        let slot = self.index_row.slot;
+        let messages = self.message_bytes();
+        let metadata = self.metadata_bytes();
+        self.tx_rows().map(move |row| {
+            let first_signature_ordinal = ordinal;
+            ordinal = ordinal
+                .checked_add(u64::from(row.signature_count))
+                .ok_or(Error::Overflow("borrowed transaction signature ordinal"))?;
+            let message_bytes = checked_region(
+                messages,
+                row.message_offset,
+                row.message_len,
+                "message",
+                row.tx_index,
+                slot,
+            )?;
+            let metadata_bytes = if row.metadata_len == 0 {
+                &[]
+            } else {
+                checked_region(
+                    metadata,
+                    row.metadata_offset,
+                    row.metadata_len,
+                    "metadata",
+                    row.tx_index,
+                    slot,
+                )?
+            };
+            Ok(BorrowedTransaction {
+                row,
+                message_bytes,
+                metadata_bytes,
+                first_signature_ordinal,
+            })
+        })
     }
 
     /// Return the exact encoded `Option<ArchiveV2HotRewards>` field from the source block.
@@ -1002,6 +1054,49 @@ impl<S: RangeSource> ArchiveReader<S> {
         &self.source
     }
 
+    /// Stream exact CAR metadata in compact block order, with full index/EOF
+    /// validation. `false` means a legacy/native source has no admitted sidecar;
+    /// it is not a claim that those source blocks had no Alpenglow fields.
+    pub fn visit_car_slot_meta(
+        &self,
+        mut visit: impl FnMut(&blockzilla_archive_v2::CarSlotMetaRecord) -> Result<()>,
+    ) -> Result<bool> {
+        use blockzilla_archive_v2::{CAR_SLOT_META_FILE, CarSlotMetaReader};
+        let Some(size) = self.file_size(CAR_SLOT_META_FILE) else {
+            return Ok(false);
+        };
+        let source = RangeSourceReader::new(
+            &self.source,
+            CAR_SLOT_META_FILE,
+            size,
+            self.options.io_chunk_size,
+        );
+        let invalid =
+            |error: anyhow::Error| Error::InvalidMetadata(format!("CAR SlotMeta: {error:#}"));
+        let mut reader = CarSlotMetaReader::new(source).map_err(invalid)?;
+        if reader.rows != self.index.rows.len() as u64 {
+            return Err(Error::InvalidMetadata(
+                "CAR SlotMeta count differs from block index".into(),
+            ));
+        }
+        for row in &self.index.rows {
+            let meta = reader
+                .read_record()
+                .map_err(invalid)?
+                .ok_or_else(|| Error::InvalidMetadata("CAR SlotMeta row missing".into()))?;
+            if meta.ordinal != u64::from(row.block_id) || meta.slot != row.slot {
+                return Err(Error::InvalidMetadata(
+                    "CAR SlotMeta differs from block index".into(),
+                ));
+            }
+            visit(&meta)?;
+        }
+        if reader.read_record().map_err(invalid)?.is_some() {
+            return Err(Error::InvalidMetadata("CAR SlotMeta has extra rows".into()));
+        }
+        Ok(true)
+    }
+
     /// Return the opaque runtime identifier for this reader instance.
     pub const fn reader_id(&self) -> u64 {
         self.reader_id
@@ -1190,46 +1285,63 @@ impl<S: RangeSource> ArchiveReader<S> {
         pubkeys: impl IntoIterator<Item = [u8; 32]>,
     ) -> Result<CompiledPubkeyFilter> {
         let raw_pubkeys: HashSet<[u8; 32]> = pubkeys.into_iter().collect();
-        let mut registry_ids = HashSet::with_capacity(raw_pubkeys.len());
+        if raw_pubkeys.is_empty() || self.registry_entries == 0 {
+            return Ok(self.bind_pubkey_filter(raw_pubkeys, HashMap::new()));
+        }
+        self.scan_pubkey_filter(raw_pubkeys, usize::MAX, |_| {})
+    }
+
+    pub(crate) fn scan_pubkey_filter(
+        &self,
+        raw_pubkeys: HashSet<[u8; 32]>,
+        max_chunk_size: usize,
+        mut observe: impl FnMut(&[u8]),
+    ) -> Result<CompiledPubkeyFilter> {
         let mut resolved_ids = HashMap::with_capacity(raw_pubkeys.len());
-        if !raw_pubkeys.is_empty() && self.registry_entries != 0 {
-            let mut offset = 0u64;
-            let registry_size = self.required_file_size(REGISTRY_FILE)?;
-            let chunk_size = (self.options.io_chunk_size / 32).max(1) * 32;
-            while offset < registry_size {
-                let length = usize::try_from((registry_size - offset).min(chunk_size as u64))
-                    .expect("registry chunk is bounded by usize");
-                let bytes = self.source.read_range(REGISTRY_FILE, offset, length)?;
-                if bytes.len() % 32 != 0 {
-                    return Err(Error::InvalidRegistry(
-                        "range source split registry on a partial pubkey".into(),
-                    ));
-                }
-                for (position, key_bytes) in bytes.chunks_exact(32).enumerate() {
-                    let mut key = [0u8; 32];
-                    key.copy_from_slice(key_bytes);
-                    if raw_pubkeys.contains(&key) {
-                        let zero_based = offset / 32 + position as u64;
-                        let id = u32::try_from(zero_based + 1)
-                            .map_err(|_| Error::InvalidRegistry("registry id overflow".into()))?;
-                        if resolved_ids.insert(key, id).is_some() {
-                            return Err(Error::InvalidRegistry(
-                                "a requested pubkey occurs more than once in registry.bin".into(),
-                            ));
-                        }
-                        registry_ids.insert(id);
+        let mut offset = 0u64;
+        let registry_size = self.required_file_size(REGISTRY_FILE)?;
+        let chunk_size = (self.options.io_chunk_size.min(max_chunk_size) / 32).max(1) * 32;
+        let mut bytes = Vec::new();
+        while offset < registry_size {
+            let length = usize::try_from((registry_size - offset).min(chunk_size as u64))
+                .expect("registry chunk is bounded by usize");
+            self.source
+                .read_range_into(REGISTRY_FILE, offset, length, &mut bytes)?;
+            if bytes.len() != length || bytes.len() % 32 != 0 {
+                return Err(Error::InvalidRegistry(
+                    "range source gave an invalid registry chunk length".into(),
+                ));
+            }
+            observe(&bytes);
+            for (position, key) in bytes.as_chunks::<32>().0.iter().enumerate() {
+                if raw_pubkeys.contains(key) {
+                    let zero_based = offset / 32 + position as u64;
+                    let id = u32::try_from(zero_based + 1)
+                        .map_err(|_| Error::InvalidRegistry("registry id overflow".into()))?;
+                    if resolved_ids.insert(*key, id).is_some() {
+                        return Err(Error::InvalidRegistry(
+                            "a requested pubkey occurs more than once in registry.bin".into(),
+                        ));
                     }
                 }
-                offset += length as u64;
             }
+            offset += length as u64;
         }
-        Ok(CompiledPubkeyFilter {
+        Ok(self.bind_pubkey_filter(raw_pubkeys, resolved_ids))
+    }
+
+    pub(crate) fn bind_pubkey_filter(
+        &self,
+        raw_pubkeys: HashSet<[u8; 32]>,
+        resolved_ids: HashMap<[u8; 32], u32>,
+    ) -> CompiledPubkeyFilter {
+        CompiledPubkeyFilter {
             reader_id: self.reader_id,
             binding: self.binding,
-            registry_ids,
+            registry_ids: resolved_ids.values().copied().collect(),
             raw_pubkeys,
             resolved_ids,
-        })
+        }
     }
 
     /// Resolve one compact pubkey with one exact bounded registry read.
@@ -1246,9 +1358,9 @@ impl<S: RangeSource> ArchiveReader<S> {
                 let offset = u64::from(*id - 1)
                     .checked_mul(32)
                     .ok_or(Error::Overflow("registry pubkey offset"))?;
-                let bytes = self.source.read_range(REGISTRY_FILE, offset, 32)?;
                 let mut pubkey = [0u8; 32];
-                pubkey.copy_from_slice(&bytes);
+                self.source
+                    .read_range_into_slice(REGISTRY_FILE, offset, &mut pubkey)?;
                 Ok(pubkey)
             }
         }
@@ -1377,6 +1489,11 @@ impl<S: RangeSource> ArchiveReader<S> {
             decompressed: Vec::new(),
             io_stats: BorrowedBlockStreamIoStats::default(),
         })
+    }
+
+    /// Open a seekable cursor over absolute index rows. It omits current-schema rewards.
+    pub fn block_cursor(&self, range: Range<usize>) -> Result<crate::BlockCursor<'_, S>> {
+        crate::BlockCursor::new(self, range)
     }
 
     /// Lend a bounded row range while decoding and validating, but not retaining, current-schema
@@ -2042,10 +2159,44 @@ impl<S: RangeSource> ArchiveReader<S> {
         filter: &CompiledPubkeyFilter,
         decoded: DecodedBlock,
     ) -> Result<ScannedBlock> {
+        self.scan_decoded_block_inner(filter, &decoded, false)
+    }
+
+    /// Return matches and indeterminate rows in original transaction order.
+    /// A validated compact-key miss does not need an owned message or metadata.
+    /// All other rows use the same decoder and outcome rules as `scan_decoded_block`.
+    pub fn scan_matching_decoded_block(
+        &self,
+        filter: &CompiledPubkeyFilter,
+        decoded: &DecodedBlock,
+    ) -> Result<ScannedBlock> {
+        self.scan_decoded_block_inner(filter, decoded, true)
+    }
+
+    fn scan_decoded_block_inner(
+        &self,
+        filter: &CompiledPubkeyFilter,
+        decoded: &DecodedBlock,
+        matching_only: bool,
+    ) -> Result<ScannedBlock> {
         self.ensure_filter_binding(filter)?;
         let DecodedBlock { index_row, block } = decoded;
+        let schemas = SelectedCompactV2Schemas {
+            message: self.message_schema,
+            metadata: self.metadata_schema,
+        };
+        let projectors = matching_only.then(|| {
+            (
+                crate::CompactV2MessageProjector::new(schemas.message, self.registry_entries),
+                crate::CompactV2MetadataProjector::new(schemas.metadata, self.registry_entries),
+            )
+        });
         let mut first_signature_ordinal = index_row.first_signature_ordinal;
-        let mut transactions = Vec::with_capacity(block.tx_rows.len());
+        let mut transactions = if matching_only {
+            Vec::new()
+        } else {
+            Vec::with_capacity(block.tx_rows.len())
+        };
         for row in block.tx_rows.iter().copied() {
             let signatures = SignatureReference {
                 reader_id: self.reader_id,
@@ -2055,18 +2206,30 @@ impl<S: RangeSource> ArchiveReader<S> {
             first_signature_ordinal = first_signature_ordinal
                 .checked_add(u64::from(row.signature_count))
                 .ok_or(Error::Overflow("transaction signature ordinal"))?;
-            transactions.push(scan_transaction(
+            if let Some((message, metadata)) = projectors
+                && compact_keys_prove_no_match(
+                    index_row.slot,
+                    &row,
+                    block,
+                    filter,
+                    message,
+                    metadata,
+                )?
+            {
+                continue;
+            }
+            let scanned = scan_transaction(
                 index_row.slot,
                 row,
-                &block,
+                block,
                 filter,
                 self.registry_entries,
-                SelectedCompactV2Schemas {
-                    message: self.message_schema,
-                    metadata: self.metadata_schema,
-                },
+                schemas,
                 signatures,
-            )?);
+            )?;
+            if !matching_only || scanned.outcome != TransactionMatch::NoMatch {
+                transactions.push(scanned);
+            }
         }
         Ok(ScannedBlock {
             block_id: index_row.block_id,
@@ -2101,6 +2264,36 @@ impl<S: RangeSource> ArchiveReader<S> {
         &self,
         reference: SignatureReference,
     ) -> Result<Vec<[u8; 64]>> {
+        let offset = self.transaction_signature_offset(reference)?;
+        let length = usize::from(reference.count) * 64;
+        let bytes = self.source.read_range(SIGNATURES_FILE, offset, length)?;
+        Ok(bytes
+            .chunks_exact(64)
+            .map(|bytes| {
+                let mut signature = [0u8; 64];
+                signature.copy_from_slice(bytes);
+                signature
+            })
+            .collect())
+    }
+
+    /// Read the first signature after validating the complete transaction signature range.
+    /// A valid reference with no signatures returns `None` without a range read.
+    pub fn read_first_transaction_signature(
+        &self,
+        reference: SignatureReference,
+    ) -> Result<Option<[u8; 64]>> {
+        let offset = self.transaction_signature_offset(reference)?;
+        if reference.count == 0 {
+            return Ok(None);
+        }
+        let mut signature = [0u8; 64];
+        self.source
+            .read_range_into_slice(SIGNATURES_FILE, offset, &mut signature)?;
+        Ok(Some(signature))
+    }
+
+    fn transaction_signature_offset(&self, reference: SignatureReference) -> Result<u64> {
         if reference.reader_id != self.reader_id {
             return Err(Error::FilterBindingMismatch);
         }
@@ -2117,20 +2310,10 @@ impl<S: RangeSource> ArchiveReader<S> {
                 reference.first_ordinal, end, self.total_signatures
             )));
         }
-        let offset = reference
+        reference
             .first_ordinal
             .checked_mul(64)
-            .ok_or(Error::Overflow("signature byte offset"))?;
-        let length = usize::from(reference.count) * 64;
-        let bytes = self.source.read_range(SIGNATURES_FILE, offset, length)?;
-        Ok(bytes
-            .chunks_exact(64)
-            .map(|bytes| {
-                let mut signature = [0u8; 64];
-                signature.copy_from_slice(bytes);
-                signature
-            })
-            .collect())
+            .ok_or(Error::Overflow("signature byte offset"))
     }
 
     fn ensure_filter_binding(&self, filter: &CompiledPubkeyFilter) -> Result<()> {
@@ -3212,6 +3395,11 @@ impl<S: RangeSource> BorrowedBlockStream<'_, S> {
         self.io_stats
     }
 
+    pub(crate) fn seek_row(&mut self, row: usize) {
+        debug_assert!(row <= self.end);
+        self.next = row;
+    }
+
     /// Decode and lend the next block. The returned value must be dropped before this method can
     /// be called again, which makes reuse of the decompression buffer safe without self-references.
     pub fn next_block(&mut self) -> Option<Result<BorrowedDecodedBlock<'_>>> {
@@ -3295,6 +3483,7 @@ impl<S: RangeSource> BorrowedBlockStream<'_, S> {
 
     fn refill(&mut self) -> Result<()> {
         self.batch_first = self.next;
+        self.batch_end = self.next;
         let first = self.archive.index.rows[self.next];
         let mut end = self.next + 1;
         let mut length = first.compressed_len as usize;
@@ -4320,6 +4509,61 @@ fn validate_decoded_block_parts(
     Ok(())
 }
 
+fn compact_keys_prove_no_match(
+    slot: u64,
+    row: &ArchiveV2HotTxRow,
+    block: &ArchiveV2HotBlockBlob,
+    filter: &CompiledPubkeyFilter,
+    message: crate::CompactV2MessageProjector,
+    metadata: crate::CompactV2MetadataProjector,
+) -> Result<bool> {
+    if row.flags & ARCHIVE_V2_TX_FLAG_TX_RAW_FALLBACK != 0 {
+        return Ok(false);
+    }
+    let matches = |key| match key {
+        CompactPubkey::Id(id) => filter.registry_ids.contains(&id),
+        CompactPubkey::Raw(key) => filter.raw_pubkeys.contains(&key),
+    };
+    let message_bytes = checked_region(
+        &block.message_bytes,
+        row.message_offset,
+        row.message_len,
+        "message",
+        row.tx_index,
+        slot,
+    )?;
+    // A static match leaves full validation to the existing owned decoder.
+    // A miss needs a complete geometry and registry check before it can be skipped.
+    let Ok(Some((is_v0, limits))) = message.nonmatching_message_limits(message_bytes, matches)
+    else {
+        return Ok(false);
+    };
+    if is_v0 != (row.flags & ARCHIVE_V2_TX_FLAG_MESSAGE_V0 != 0) {
+        return Ok(false);
+    }
+    if !is_v0 || row.flags & ARCHIVE_V2_TX_FLAG_HAS_LOADED_ADDRESSES == 0 {
+        return Ok(true);
+    }
+    if row.flags & ARCHIVE_V2_TX_FLAG_HAS_METADATA == 0
+        || row.flags & ARCHIVE_V2_TX_FLAG_METADATA_RAW_FALLBACK != 0
+        || row.metadata_len == 0
+    {
+        return Ok(false);
+    }
+    let metadata_bytes = checked_region(
+        &block.metadata_bytes,
+        row.metadata_offset,
+        row.metadata_len,
+        "metadata",
+        row.tx_index,
+        slot,
+    )?;
+    Ok(matches!(
+        metadata.match_wallet_accounts(metadata_bytes, limits, false, matches),
+        Ok(false)
+    ))
+}
+
 fn scan_transaction(
     slot: u64,
     row: ArchiveV2HotTxRow,
@@ -4761,7 +5005,8 @@ mod tests {
 
     use super::*;
     use crate::{
-        LocalRangeSource, SourceError, SourceResult,
+        LocalRangeSource, PinnedLocalRangeSource, RegistryFilterCacheStats, SourceError,
+        SourceResult,
         manifest::{GenerationFile, compute_generation_digest},
     };
 
@@ -5143,6 +5388,153 @@ mod tests {
         }
     }
 
+    #[test]
+    fn compact_key_scan_filters_misses_and_keeps_original_signature_ordinals() {
+        let fixture = Fixture::build();
+        let archive = ArchiveReader::open(fixture.source()).unwrap();
+        let replacement = wincode::config::serialize(
+            &selector_message(
+                vec![CompactPubkey::Id(2), CompactPubkey::Raw([9; 32])],
+                vec![],
+            ),
+            wincode_leb128_config(),
+        )
+        .unwrap();
+        for key in [REGISTRY_KEY_ONE, RAW_KEY] {
+            let filter = archive.compile_pubkey_filter([key]).unwrap();
+            let mut decoded = archive.blocks_range(0..1).unwrap().next().unwrap().unwrap();
+            let len = decoded.block.tx_rows[0].message_len as usize;
+            assert_eq!(replacement.len(), len);
+            decoded.block.message_bytes[..len].copy_from_slice(&replacement);
+
+            let scanned = archive
+                .scan_matching_decoded_block(&filter, &decoded)
+                .unwrap();
+            let [transaction] = scanned.transactions.as_slice() else {
+                panic!("expected one matched transaction");
+            };
+            assert_eq!(transaction.tx_index, 1);
+            assert_eq!(transaction.signatures.first_ordinal, 2);
+            assert_eq!(transaction.signatures.count, 1);
+            assert_eq!(
+                transaction.outcome,
+                TransactionMatch::Match {
+                    static_account: true,
+                    loaded_address: false
+                }
+            );
+        }
+    }
+
+    #[test]
+    fn compact_key_scan_checks_v0_loaded_keys_and_fails_on_malformed_metadata() {
+        let fixture = Fixture::build();
+        let archive = ArchiveReader::open(fixture.source()).unwrap();
+        let message = ArchiveV2HotMessagePayload::V0(ArchiveV2HotV0Message {
+            header: message_header(),
+            account_keys: vec![CompactPubkey::Id(1)],
+            recent_blockhash: OwnedCompactRecentBlockhash::Id(1),
+            instructions: Vec::new(),
+            address_table_lookups: vec![blockzilla_compact::OwnedCompactAddressTableLookup {
+                account_key: CompactPubkey::Raw(RAW_KEY),
+                writable_indexes: vec![0],
+                readonly_indexes: Vec::new(),
+            }],
+        });
+        let message = wincode::config::serialize(&message, wincode_leb128_config()).unwrap();
+        let mut metadata = selector_metadata();
+        metadata.loaded_writable_addresses = vec![CompactPubkey::Id(2)];
+        let metadata = wincode::config::serialize(&metadata, wincode_leb128_config()).unwrap();
+        let flags = ARCHIVE_V2_TX_FLAG_MESSAGE_V0 | ARCHIVE_V2_TX_FLAG_HAS_LOADED_ADDRESSES;
+        let loaded_filter = archive.compile_pubkey_filter([REGISTRY_KEY_TWO]).unwrap();
+        let scanned = archive
+            .scan_matching_decoded_block(
+                &loaded_filter,
+                &decoded_single_transaction(
+                    message.clone(),
+                    metadata.clone(),
+                    flags | ARCHIVE_V2_TX_FLAG_HAS_METADATA,
+                ),
+            )
+            .unwrap();
+        assert_eq!(
+            scanned.transactions[0].outcome,
+            TransactionMatch::Match {
+                static_account: false,
+                loaded_address: true
+            }
+        );
+
+        // A key used only to identify the lookup table does not match.
+        let miss_filter = archive.compile_pubkey_filter([RAW_KEY]).unwrap();
+        let scanned = archive
+            .scan_matching_decoded_block(
+                &miss_filter,
+                &decoded_single_transaction(
+                    message.clone(),
+                    metadata,
+                    flags | ARCHIVE_V2_TX_FLAG_HAS_METADATA,
+                ),
+            )
+            .unwrap();
+        assert!(scanned.transactions.is_empty());
+        let scanned = archive
+            .scan_matching_decoded_block(
+                &miss_filter,
+                &decoded_single_transaction(message.clone(), Vec::new(), flags),
+            )
+            .unwrap();
+        assert_eq!(
+            scanned.transactions[0].outcome,
+            TransactionMatch::Indeterminate(IndeterminateReason::V0LoadedAddressesUnavailable)
+        );
+        assert!(matches!(
+            archive.scan_matching_decoded_block(
+                &miss_filter,
+                &decoded_single_transaction(
+                    message,
+                    vec![0xff],
+                    flags | ARCHIVE_V2_TX_FLAG_HAS_METADATA
+                ),
+            ),
+            Err(Error::InvalidBlock { .. })
+        ));
+    }
+
+    #[test]
+    fn compact_key_scan_keeps_invalid_references_and_checks_nonmatching_message_tail() {
+        let fixture = Fixture::build();
+        let archive = ArchiveReader::open(fixture.source()).unwrap();
+        let filter = archive.compile_pubkey_filter([RAW_KEY]).unwrap();
+        let encode = |id| {
+            wincode::config::serialize(
+                &selector_message(vec![CompactPubkey::Id(id)], Vec::new()),
+                wincode_leb128_config(),
+            )
+            .unwrap()
+        };
+        let invalid = archive
+            .scan_matching_decoded_block(
+                &filter,
+                &decoded_single_transaction(encode(3), Vec::new(), 0),
+            )
+            .unwrap();
+        assert_eq!(
+            invalid.transactions[0].outcome,
+            TransactionMatch::Indeterminate(IndeterminateReason::InvalidRegistryReference)
+        );
+
+        let mut malformed = encode(1);
+        malformed.push(0);
+        assert!(matches!(
+            archive.scan_matching_decoded_block(
+                &filter,
+                &decoded_single_transaction(malformed, Vec::new(), 0),
+            ),
+            Err(Error::InvalidBlock { .. })
+        ));
+    }
+
     fn decode_hex(value: &str) -> Vec<u8> {
         value
             .as_bytes()
@@ -5399,6 +5791,167 @@ mod tests {
     }
 
     #[test]
+    fn cursor_seeks_and_skips_rejected_payloads() {
+        let fixture = Fixture::build();
+        let source = CountingSource::new(fixture.source());
+        let observed = source.clone();
+        let archive = ArchiveReader::open(source).unwrap();
+        let rows = &archive.index().rows;
+        observed.clear();
+
+        assert!(archive.block_cursor(0..3).is_err());
+        let mut cursor = archive.block_cursor(1..2).unwrap();
+        assert!(cursor.seek_row(0).is_err());
+        assert_eq!(cursor.seek_slot(rows[0].slot), 1);
+        assert_eq!(cursor.seek_slot(rows[1].slot + 1), 2);
+        assert!(cursor.next_block().unwrap().is_none());
+        assert_eq!(cursor.next_row(), 2);
+        assert!(observed.reads_for(BLOCKS_FILE).is_empty());
+
+        let mut cursor = archive.block_cursor(0..2).unwrap();
+        assert!(cursor.next_matching_block(|_| false).unwrap().is_none());
+        assert!(observed.reads_for(BLOCKS_FILE).is_empty());
+        cursor.seek_row(0).unwrap();
+        let entry = cursor
+            .next_matching_block(|row| row.slot == rows[1].slot)
+            .unwrap()
+            .unwrap();
+        assert_eq!(entry.row, 1);
+        assert_eq!(entry.block.index_row.slot, rows[1].slot);
+        let transaction = entry.block.transactions().next().unwrap().unwrap();
+        assert_eq!(transaction.message_bytes, entry.block.message_bytes());
+        assert_eq!(transaction.metadata_bytes, entry.block.metadata_bytes());
+        assert_eq!(
+            transaction.first_signature_ordinal,
+            rows[1].first_signature_ordinal
+        );
+        assert!(cursor.next_block().unwrap().is_none());
+        assert_eq!(
+            observed.reads_for(BLOCKS_FILE),
+            [(rows[1].compressed_offset, rows[1].compressed_len as usize)]
+        );
+    }
+
+    #[test]
+    fn cursor_reuses_a_prefetch_across_seeks_and_lends_transaction_slices() {
+        let fixture = Fixture::build();
+        let source = CountingSource::new(fixture.source());
+        let observed = source.clone();
+        let archive = ArchiveReader::open(source).unwrap();
+        observed.clear();
+        let mut cursor = archive.block_cursor(0..2).unwrap();
+        let entry = cursor.next_block().unwrap().unwrap();
+        assert_eq!(entry.row, 0);
+        assert_eq!(entry.block.transactions().len(), 2);
+        for (transaction, signature_ordinal) in entry.block.transactions().zip([0, 2]) {
+            let transaction = transaction.unwrap();
+            assert_eq!(transaction.first_signature_ordinal, signature_ordinal);
+            assert!(transaction.metadata_bytes.is_empty());
+            let start = transaction.row.message_offset as usize;
+            let end = start + transaction.row.message_len as usize;
+            assert_eq!(
+                transaction.message_bytes,
+                &entry.block.message_bytes()[start..end]
+            );
+        }
+        cursor.seek_row(1).unwrap();
+        assert_eq!(cursor.next_block().unwrap().unwrap().row, 1);
+        cursor.seek_row(0).unwrap();
+        assert_eq!(cursor.next_block().unwrap().unwrap().row, 0);
+        assert_eq!(observed.reads_for(BLOCKS_FILE).len(), 1);
+    }
+
+    #[test]
+    fn cursor_leaves_a_read_error_available_for_retry() {
+        let fixture = Fixture::build();
+        let source = FailingBlocksSource {
+            inner: fixture.source(),
+        };
+        let archive = ArchiveReader::open_with_options(
+            source,
+            OpenOptions {
+                hash_verification: HashVerification::SizesOnly,
+                ..OpenOptions::default()
+            },
+        )
+        .unwrap();
+        let mut cursor = archive.block_cursor(0..2).unwrap();
+        assert!(cursor.next_block().is_err());
+        assert_eq!(cursor.next_row(), 0);
+        assert!(cursor.next_matching_block(|row| row.slot == 102).is_err());
+        assert_eq!(cursor.next_row(), 0);
+        assert!(cursor.next_block().is_err());
+    }
+
+    #[test]
+    fn cursor_discovers_before_processing_the_same_decode() {
+        let fixture = Fixture::build();
+        let source = CountingSource::new(fixture.source());
+        let observed = source.clone();
+        let archive = ArchiveReader::open(source).unwrap();
+        observed.clear();
+        let mut cursor = archive.block_cursor(0..1).unwrap();
+
+        let count = cursor
+            .next_block_with_discovery(
+                |entry| {
+                    let last = entry.block.transactions().last().unwrap()?;
+                    Ok((last.message_bytes.as_ptr(), last.first_signature_ordinal))
+                },
+                |entry, (message, ordinal)| {
+                    let last = entry.block.transactions().last().unwrap()?;
+                    assert_eq!(message, last.message_bytes.as_ptr());
+                    assert_eq!(ordinal, 2);
+                    Ok::<_, Error>(entry.block.tx_count())
+                },
+            )
+            .unwrap();
+        assert_eq!(count, Some(2));
+        assert_eq!(cursor.next_row(), 1);
+        assert_eq!(
+            cursor.io_stats().sequential.decoded_bytes,
+            u64::from(archive.index().rows[0].uncompressed_len)
+        );
+        assert_eq!(observed.reads_for(BLOCKS_FILE).len(), 1);
+        assert!(
+            cursor
+                .next_block_with_discovery::<(), (), Error>(
+                    |_| unreachable!("discovery at EOF"),
+                    |_, ()| unreachable!("processing at EOF"),
+                )
+                .unwrap()
+                .is_none()
+        );
+    }
+
+    #[test]
+    fn cursor_leaves_failed_discovery_or_processing_available_for_retry() {
+        let fixture = Fixture::build();
+        let archive = ArchiveReader::open(fixture.source()).unwrap();
+        let mut cursor = archive.block_cursor(0..2).unwrap();
+
+        assert!(
+            cursor
+                .next_block_with_discovery::<(), (), Error>(
+                    |_| Err(Error::InvalidIndex("discovery failed".into())),
+                    |_, ()| unreachable!("processing after failed discovery"),
+                )
+                .is_err()
+        );
+        assert_eq!(cursor.next_row(), 0);
+        assert!(
+            cursor
+                .next_block_with_discovery::<(), (), Error>(
+                    |_| Ok(()),
+                    |_, ()| Err(Error::InvalidIndex("processing failed".into())),
+                )
+                .is_err()
+        );
+        assert_eq!(cursor.next_row(), 0);
+        assert_eq!(cursor.next_block().unwrap().unwrap().row, 0);
+    }
+
+    #[test]
     fn compact_pubkey_resolution_uses_one_exact_bounded_registry_read() {
         let fixture = Fixture::build();
         let source = CountingSource::new(fixture.source());
@@ -5426,6 +5979,164 @@ mod tests {
             Error::InvalidRegistry(_)
         ));
         assert!(observed.reads_for(REGISTRY_FILE).is_empty());
+    }
+
+    fn private_registry_filter_cache() -> TempDir {
+        use std::os::unix::fs::PermissionsExt;
+        tempfile::Builder::new()
+            .permissions(fs::Permissions::from_mode(0o700))
+            .tempdir()
+            .unwrap()
+    }
+
+    #[test]
+    fn cached_pubkey_filter_rebinds_exact_positives_and_keeps_raw_and_negative_keys() {
+        let fixture = Fixture::build();
+        let root = fixture.directory.path();
+        let digest = Sha256::digest(fs::read(root.join(REGISTRY_FILE)).unwrap()).into();
+        let cache = private_registry_filter_cache();
+        let options = OpenOptions {
+            io_chunk_size: 32,
+            hash_verification: HashVerification::SizesOnly,
+            ..OpenOptions::default()
+        };
+        let archive =
+            ArchiveReader::open_with_options(PinnedLocalRangeSource::new(root), options).unwrap();
+        let (cold, cold_stats) = archive
+            .compile_pubkey_filter_cached(
+                [RAW_KEY, REGISTRY_KEY_TWO, RAW_KEY],
+                cache.path(),
+                digest,
+            )
+            .unwrap();
+        assert_eq!(
+            cold_stats,
+            RegistryFilterCacheStats {
+                cache_hit: false,
+                registry_read_calls: 2,
+                registry_read_bytes: 64,
+            }
+        );
+        let reopened = ArchiveReader::open(PinnedLocalRangeSource::new(root)).unwrap();
+        let (warm, warm_stats) = reopened
+            .compile_pubkey_filter_cached([REGISTRY_KEY_TWO, RAW_KEY], cache.path(), digest)
+            .unwrap();
+        assert_eq!(
+            warm_stats,
+            RegistryFilterCacheStats {
+                cache_hit: true,
+                registry_read_calls: 1,
+                registry_read_bytes: 32,
+            }
+        );
+        assert!(reopened.ensure_filter_binding(&warm).is_ok());
+        assert!(matches!(
+            reopened.ensure_filter_binding(&cold),
+            Err(Error::FilterBindingMismatch)
+        ));
+        for filter in [cold, warm] {
+            assert_eq!(filter.pubkey_count(), 2);
+            assert_eq!(filter.registry_id_count(), 1);
+            assert_eq!(filter.registry_id_for(&REGISTRY_KEY_TWO), Some(2));
+            assert_eq!(filter.registry_id_for(&RAW_KEY), None);
+            assert!(filter.matches_reference(&CompactPubkey::Raw(RAW_KEY), &RAW_KEY));
+            assert!(filter.matches_reference(&CompactPubkey::Id(2), &REGISTRY_KEY_TWO));
+            assert!(!filter.matches_reference(&CompactPubkey::Id(1), &RAW_KEY));
+        }
+
+        let (_, different_key_set) = reopened
+            .compile_pubkey_filter_cached([RAW_KEY], cache.path(), digest)
+            .unwrap();
+        assert!(!different_key_set.cache_hit);
+        assert_eq!(different_key_set.registry_read_bytes, 64);
+        let (_, negative_only) = reopened
+            .compile_pubkey_filter_cached([RAW_KEY], cache.path(), digest)
+            .unwrap();
+        assert!(negative_only.cache_hit);
+        assert_eq!(negative_only.registry_read_bytes, 0);
+    }
+
+    #[test]
+    fn cached_pubkey_filter_rebuilds_corruption_and_rejects_source_drift() {
+        let fixture = Fixture::build();
+        let root = fixture.directory.path();
+        let registry = root.join(REGISTRY_FILE);
+        let registry_bytes = fs::read(&registry).unwrap();
+        let digest = Sha256::digest(&registry_bytes).into();
+        let cache = private_registry_filter_cache();
+        let archive = ArchiveReader::open(PinnedLocalRangeSource::new(root)).unwrap();
+        let compile =
+            || archive.compile_pubkey_filter_cached([REGISTRY_KEY_TWO], cache.path(), digest);
+        assert!(!compile().unwrap().1.cache_hit);
+        assert!(matches!(
+            archive.compile_pubkey_filter_cached([REGISTRY_KEY_TWO], cache.path(), [0; 32]),
+            Err(Error::FileHash { .. })
+        ));
+        let mut entries = fs::read_dir(cache.path()).unwrap();
+        let entry = entries.next().unwrap().unwrap().path();
+        assert!(entries.next().is_none());
+        let mut corrupted = fs::read(&entry).unwrap();
+        *corrupted.last_mut().unwrap() ^= 1;
+        fs::write(&entry, corrupted).unwrap();
+        let (filter, rebuilt) = compile().unwrap();
+        assert!(!rebuilt.cache_hit);
+        assert_eq!(rebuilt.registry_read_bytes, 64);
+        assert_eq!(filter.registry_id_for(&REGISTRY_KEY_TWO), Some(2));
+
+        let mut wrong_positive = fs::read(&entry).unwrap();
+        let id_offset = wrong_positive
+            .windows(32)
+            .position(|bytes| bytes == REGISTRY_KEY_TWO)
+            .unwrap()
+            + 32;
+        wrong_positive[id_offset..id_offset + 4].copy_from_slice(&1u32.to_le_bytes());
+        let checksum_offset = wrong_positive.len() - 32;
+        let checksum = Sha256::digest(&wrong_positive[..checksum_offset]);
+        wrong_positive[checksum_offset..].copy_from_slice(&checksum);
+        fs::write(&entry, wrong_positive).unwrap();
+        let (filter, rebuilt) = compile().unwrap();
+        assert!(!rebuilt.cache_hit);
+        assert_eq!(rebuilt.registry_read_bytes, 32 + 64);
+        assert_eq!(filter.registry_id_for(&REGISTRY_KEY_TWO), Some(2));
+
+        let replacement = root.join("replacement-registry.bin");
+        fs::write(&replacement, registry_bytes).unwrap();
+        fs::rename(replacement, &registry).unwrap();
+        let reopened = ArchiveReader::open(PinnedLocalRangeSource::new(root)).unwrap();
+        let (_, replaced) = reopened
+            .compile_pubkey_filter_cached([REGISTRY_KEY_TWO], cache.path(), digest)
+            .unwrap();
+        assert!(!replaced.cache_hit);
+        assert_eq!(replaced.registry_read_bytes, 64);
+        fs::write(&registry, [0u8; 64]).unwrap();
+        assert!(matches!(
+            reopened.compile_pubkey_filter_cached([REGISTRY_KEY_TWO], cache.path(), digest),
+            Err(Error::Source(_))
+        ));
+    }
+
+    #[test]
+    fn cached_pubkey_filter_keeps_exact_semantics_above_the_cache_size_limit() {
+        let fixture = Fixture::build();
+        let root = fixture.directory.path();
+        let digest = Sha256::digest(fs::read(root.join(REGISTRY_FILE)).unwrap()).into();
+        let cache = private_registry_filter_cache();
+        let archive = ArchiveReader::open(PinnedLocalRangeSource::new(root)).unwrap();
+        let pubkeys = (0..65_536u32)
+            .map(|id| {
+                let mut key = [0; 32];
+                key[..4].copy_from_slice(&id.to_le_bytes());
+                key
+            })
+            .chain([REGISTRY_KEY_TWO]);
+        let (filter, stats) = archive
+            .compile_pubkey_filter_cached(pubkeys, cache.path(), digest)
+            .unwrap();
+        assert_eq!(filter.pubkey_count(), 65_537);
+        assert_eq!(filter.registry_id_for(&REGISTRY_KEY_TWO), Some(2));
+        assert!(!stats.cache_hit);
+        assert_eq!(stats.registry_read_bytes, 64);
+        assert!(fs::read_dir(cache.path()).unwrap().next().is_none());
     }
 
     #[test]
@@ -5640,6 +6351,46 @@ mod tests {
             MetadataState::Decoded(_)
         ));
         assert_eq!(archive.read_signature_ordinal(3).unwrap(), [8u8; 64]);
+    }
+
+    #[test]
+    fn first_transaction_signature_reads_one_signature_and_validates_the_full_reference() {
+        let fixture = Fixture::build();
+        let source = CountingSource::new(fixture.source());
+        let archive = ArchiveReader::open(source.clone()).unwrap();
+        let filter = archive.compile_pubkey_filter([RAW_KEY]).unwrap();
+        let first = archive.scan(&filter).unwrap().next().unwrap().unwrap();
+        let reference = first.transactions[0].signatures;
+        assert_eq!(reference.count, 2);
+        source.clear();
+
+        assert_eq!(
+            archive.read_first_transaction_signature(reference).unwrap(),
+            Some([7; 64]),
+        );
+        let empty = SignatureReference {
+            first_ordinal: archive.total_signatures,
+            count: 0,
+            ..reference
+        };
+        assert_eq!(
+            archive.read_first_transaction_signature(empty).unwrap(),
+            None
+        );
+        let past_end = SignatureReference {
+            first_ordinal: archive.total_signatures - 1,
+            ..reference
+        };
+        assert!(matches!(
+            archive.read_first_transaction_signature(past_end),
+            Err(Error::InvalidIndex(_))
+        ));
+        let other_reader = ArchiveReader::open(fixture.source()).unwrap();
+        assert!(matches!(
+            other_reader.read_first_transaction_signature(reference),
+            Err(Error::FilterBindingMismatch)
+        ));
+        assert_eq!(source.reads_for(SIGNATURES_FILE), vec![(0, 64)]);
     }
 
     #[test]
@@ -6777,6 +7528,52 @@ mod tests {
         assert!(matches!(
             archive.blocks_range(0..3),
             Err(Error::InvalidIndex(_))
+        ));
+    }
+
+    #[test]
+    fn finalized_lookup_reads_one_exact_block_and_leaves_absence_unresolved() {
+        use crate::{BlockhashResolver, PreviousBlockhashTail, PreviousBlockhashTailSchema};
+
+        let fixture = Fixture::build();
+        let source = CountingSource::new(fixture.source());
+        let archive = ArchiveReader::open(source.clone()).unwrap();
+        let blockhashes = BlockhashResolver::from_bytes(
+            &[[0; 32], [1; 32], [2; 32]].concat(),
+            PreviousBlockhashTail {
+                schema: PreviousBlockhashTailSchema::CurrentHashAndSlot,
+                entries: Vec::new(),
+            },
+        )
+        .unwrap();
+
+        source.clear();
+        let result = archive
+            .read_finalized_block(102, [2; 32], &blockhashes)
+            .unwrap()
+            .unwrap();
+        assert_eq!(result.decoded.block.header.slot, 102);
+        assert_eq!(result.decoded.block.header.parent_slot, 101);
+        assert_eq!(result.blockhash, [2; 32]);
+        assert_eq!(result.parent_blockhash, Some([1; 32]));
+        assert_eq!(result.block_height, 1001);
+        let row = result.decoded.index_row;
+        assert_eq!(
+            source.reads_for(BLOCKS_FILE),
+            vec![(row.compressed_offset, row.compressed_len as usize)]
+        );
+
+        source.clear();
+        assert!(
+            archive
+                .read_finalized_block(100, [2; 32], &blockhashes)
+                .unwrap()
+                .is_none()
+        );
+        assert!(source.reads_for(BLOCKS_FILE).is_empty());
+        assert!(matches!(
+            archive.read_finalized_block(102, [1; 32], &blockhashes),
+            Err(Error::InvalidBlock { slot: 102, .. })
         ));
     }
 

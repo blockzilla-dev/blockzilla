@@ -1,0 +1,413 @@
+{
+  "schema": "blockzilla-agave-patch-register-v2",
+  "reviewed_on": "2026-11-25",
+  "paths_relative_to": "The repository identified by each source, test, or evidence reference.",
+  "scope": "Maintenance record for existing source; not a live host audit or upgrade acceptance.",
+  "repository_policy": {
+    "blockzilla_and_zillastream": "same repository",
+    "agave_fork": "separate repository; locally committed; remote publication pending",
+    "agave_patch_code_and_regressions": "Agave fork only; no patch copies in the final Blockzilla tree",
+    "blockzilla_agave_record": "compatibility metadata only: tested revision, change reasons, source/test links, upstream status and removal criteria",
+    "hivezilla": "separate internal archive-resilience and infrastructure repository"
+  },
+  "migration_note": "The Blockzilla tree contains compatibility metadata only. Validator source and regression tests are in the Agave fork. Historical source bundle bytes are retained in the private migration archive. Record the imported fork commit after it is checked and committed; no new build or deployment is claimed.",
+  "recorded_host": {
+    "upstream_tag": "v4.4.0",
+    "upstream_commit": "9ef63128134af559561f6a91a641ec01e665c70d",
+    "native_hooks_base_commit": "10d5b0c72511750d4349824ec5816bd67526a803",
+    "prepared_source_sha256": "251b5d923155da2673dadaeed777994cbfe2f5176b33948d19b608be94686b6d",
+    "rust_toolchain": "1.98.0",
+    "evidence": {
+      "repository": "blockzilla-private",
+      "path": "records/.codex/reports/car-epochs-1056-1057/hybrid-1056-20261119/native-deploy-20261121/FINAL-REPORT.md"
+    },
+    "identity_note": "The prepared source hash is not a Git commit. These are recorded build identities, not a fresh live reading."
+  },
+  "stock_review": {
+    "agave_tag": "v4.4.1",
+    "geyser_interface": "5.0.0",
+    "interface_source_commit": "549c41429dc8705e9c4eb5f540db66463ec45bd6",
+    "interface_source_url": "https://github.com/anza-xyz/agave-sdk/blob/549c41429dc8705e9c4eb5f540db66463ec45bd6/geyser-plugin-interface/src/geyser_plugin_interface.rs",
+    "scope": "Source review and two isolated stock-interface callback tests; no validator or ABI acceptance."
+  },
+  "patch_groups": [
+    {
+      "id": "native-bank-state",
+      "owner": "Zillastream native Agave integration",
+      "decision": "keep_for_current_contract",
+      "purpose": "Bind the selected Bank and parent, native blockhash expiry and actual confirmation to one source observation.",
+      "remove_when": [
+        "The selected upstream release provides the same Bank-bound native expiry and confirmation data without inferred slot or time rules.",
+        "The native tuple, deferred confirmation, actual host/plugin load and stream-control tests pass with the replacement."
+      ],
+      "required_regressions": [
+        {
+          "repository": "agave",
+          "path": "geyser-plugin-manager/src/geyser_plugin_manager.rs",
+          "names": [
+            "native_bank_v2_actual_plugin_load"
+          ],
+          "selection": "named tests"
+        },
+        {
+          "repository": "agave",
+          "path": "native-bank-observer/src/optimistically_confirmed_bank_tracker.rs",
+          "names": [
+            "test_hivezilla_native_bank_tuple_v2",
+            "test_deferred_confirmed_notification_survives_overtake",
+            "test_walk_delivery_unparks_deferred_confirmation"
+          ],
+          "selection": "named tests"
+        },
+        {
+          "path": "crates/blockzilla-bank-stream-v2/src/tests.rs",
+          "names": [
+            "controls_require_the_exact_bank_payload_and_native_expiry",
+            "processed_is_not_confirmation_and_late_root_cannot_renew_head"
+          ],
+          "selection": "named tests",
+          "repository": "blockzilla"
+        }
+      ],
+      "upstream_status": "No equivalent native-expiry callback was verified in the reviewed Geyser 5.0.0 interface.",
+      "source_bundles": [
+        "native-hooks-4.4.0"
+      ],
+      "source_references": [
+        {
+          "repository": "agave",
+          "path": "geyser-plugin-interface/src/geyser_plugin_interface.rs"
+        },
+        {
+          "repository": "agave",
+          "path": "geyser-plugin-manager/src/slot_status_notifier.rs"
+        },
+        {
+          "repository": "agave",
+          "path": "native-bank-observer/src/optimistically_confirmed_bank_tracker.rs"
+        }
+      ]
+    },
+    {
+      "id": "bank-dead-id",
+      "owner": "Zillastream native Agave integration",
+      "decision": "keep_until_selected_release_has_equivalent_fix",
+      "purpose": "Identify the exact failed Bank when a slot has competing or replacement Banks.",
+      "remove_when": [
+        "The selected supported release includes the Bank-aware Dead dispatch; a merge into master alone is insufficient.",
+        "Two Banks at one slot remain distinct and only the failed Bank and its affected descendants are invalidated."
+      ],
+      "required_regressions": [
+        {
+          "repository": "agave",
+          "path": "geyser-plugin-manager/src/slot_status_notifier.rs",
+          "names": [
+            "test_notify_slot_status_bank_id"
+          ],
+          "selection": "named tests"
+        },
+        {
+          "path": "crates/blockzilla-bank-stream-v2/src/tests.rs",
+          "names": [
+            "invalidation_removes_descendants_and_rooted_invalidation_fails"
+          ],
+          "selection": "named tests",
+          "repository": "blockzilla"
+        }
+      ],
+      "upstream_status": {
+        "url": "https://github.com/anza-xyz/agave/pull/16156",
+        "state_at_review": "merged into master",
+        "merged_on": "2026-11-04",
+        "selected_release_coverage": "Absent from the reviewed v4.4.1 notifier."
+      },
+      "source_bundles": [
+        "native-account-bridge"
+      ],
+      "source_references": [
+        {
+          "repository": "agave",
+          "path": "geyser-plugin-manager/src/slot_status_notifier.rs"
+        },
+        {
+          "repository": "agave",
+          "path": "core/src/replay_stage/dead_slots.rs"
+        }
+      ]
+    },
+    {
+      "id": "rpc-independent-observer",
+      "owner": "Agave native integration",
+      "decision": "keep_for_current_no_rpc_contract",
+      "purpose": "Run Bank observation and persist execution metadata while RPC listeners are disabled.",
+      "remove_when": [
+        "Upstream initialization supplies processed, confirmed and rooted observations in the required order with no RPC listener.",
+        "Configured full execution metadata persists without requiring an installed Geyser plugin.",
+        "Dependency, shutdown, restart and metadata checks pass on the replacement."
+      ],
+      "required_regressions": [
+        {
+          "repository": "agave",
+          "path": "native-bank-observer/src/optimistically_confirmed_bank_tracker.rs",
+          "names": [
+            "native_thread_delivers_bank_state_and_roots_without_rpc"
+          ],
+          "selection": "named tests"
+        },
+        {
+          "repository": "agave",
+          "path": "core/src/validator.rs",
+          "names": [
+            "native_history_does_not_require_rpc_or_a_plugin"
+          ],
+          "selection": "named tests"
+        },
+        {
+          "repository": "agave",
+          "path": "native-bank-observer/src/transaction_status_service.rs",
+          "names": [
+            "native_history_persists_full_execution_metadata_without_notifier"
+          ],
+          "selection": "named tests"
+        }
+      ],
+      "upstream_status": {
+        "url": "https://github.com/anza-xyz/agave/pull/16978",
+        "state_at_review": "open; related local-leader notification work only",
+        "replacement_verified": false
+      },
+      "source_bundles": [
+        "native-account-bridge"
+      ],
+      "source_references": [
+        {
+          "repository": "agave",
+          "path": "native-bank-observer/src/lib.rs"
+        },
+        {
+          "repository": "agave",
+          "path": "native-bank-observer/src/transaction_status_service.rs"
+        },
+        {
+          "repository": "agave",
+          "path": "core/src/validator.rs"
+        }
+      ]
+    },
+    {
+      "id": "native-read-completeness",
+      "owner": "Agave native read integration",
+      "decision": "keep_while_exact_native_read_api_is_required",
+      "purpose": "Read exact retained Bank accounts and complete finalized ledger blocks through existing Agave handles, with bounded reads and explicit incomplete-data errors.",
+      "includes": [
+        "Exact-Bank account selection and cleanup guards",
+        "Ledger metadata completion records and invalidation on writes/purge",
+        "Transaction count captured before asynchronous Bank squash",
+        "Execution metadata persistence and explicit empty rewards"
+      ],
+      "remove_when": [
+        "An equivalent replacement preserves exact Bank/source selection, coherent batches, finalized block identity, complete metadata and read limits.",
+        "Completion-marker, partial-write, cleanup, fork, failed-transaction and before-squash count regressions pass.",
+        "Alternatively, the owner explicitly retires the native read API and all consumers migrate; ordinary commitment-selected RPC is not silently substituted."
+      ],
+      "required_regressions": [
+        {
+          "repository": "agave",
+          "path": "ledger/src/native_block_reader.rs",
+          "names": [
+            "native_finalized_read_requires_marker_all_statuses_and_count",
+            "native_completion_proof_invalidates_atomically_with_new_batch"
+          ],
+          "selection": "named tests"
+        },
+        {
+          "repository": "agave",
+          "path": "native-bank-observer/src/transaction_status_service.rs",
+          "names": [
+            "native_history_persists_full_execution_metadata_without_notifier"
+          ],
+          "selection": "named tests"
+        },
+        {
+          "repository": "agave",
+          "path": "runtime/src/transaction_execution.rs",
+          "names": [
+            "native_freeze_count_is_captured_before_async_bank_squash",
+            "native_freeze_does_not_invent_count_for_already_squashed_root"
+          ],
+          "selection": "named tests"
+        },
+        {
+          "repository": "agave",
+          "path": "accounts-db/src/native_account_reader/tests.rs",
+          "names": [
+            "native_account_batch_removed_bank_never_returns_partial_or_same_slot_replacement",
+            "native_account_batch_rechecks_root_lineage_during_the_batch"
+          ],
+          "selection": "named tests"
+        },
+        {
+          "repository": "agave",
+          "path": "native-account-bridge/src/tests.rs",
+          "names": [
+            "native_bridge_client_reads_single_and_multiple_from_the_same_real_bank",
+            "native_ledger_bridge_rejects_incomplete_wrong_hash_and_over_budget_reads"
+          ],
+          "selection": "named tests"
+        }
+      ],
+      "upstream_status": "No equivalent complete native account/ledger socket contract was verified. Public finalized getBlock can use the separate helper and is not proof that all native API consumers have migrated.",
+      "source_bundles": [
+        "native-account-bridge"
+      ],
+      "source_references": [
+        {
+          "repository": "agave",
+          "path": "native-account-bridge/src/lib.rs"
+        },
+        {
+          "repository": "agave",
+          "path": "native-account-bridge/src/ledger_reader.rs"
+        },
+        {
+          "repository": "agave",
+          "path": "accounts-db/src/native_account_reader.rs"
+        },
+        {
+          "repository": "agave",
+          "path": "ledger/src/native_block_reader.rs"
+        },
+        {
+          "repository": "agave",
+          "path": "runtime/src/transaction_execution.rs"
+        }
+      ]
+    },
+    {
+      "id": "raw-shred-tap",
+      "owner": "Hivezilla internal archive resilience",
+      "decision": "conditional_on_exact_ingress_capture_requirement",
+      "purpose": "Copy original UDP ingress and accepted-repair observations without taking packets away from Agave.",
+      "remove_when": [
+        "No active recovery policy needs original raw ingress observations, or a replacement proves the same required coverage and provenance.",
+        "If retained, verify exact packet bytes, duplicates, repair nonce data, bounded queues, explicit loss reporting and unchanged Agave packet delivery."
+      ],
+      "required_regressions": [
+        {
+          "path": "hivezilla/shred-hook/src/wire.rs",
+          "names": [],
+          "selection": "all tests in the file",
+          "repository": "hivezilla"
+        },
+        {
+          "path": "hivezilla/shred-hook/src/writer.rs",
+          "names": [],
+          "selection": "all tests in the file",
+          "repository": "hivezilla"
+        },
+        {
+          "path": "hivezilla/shred-hook/src/lib.rs",
+          "names": [],
+          "selection": "all tests in the file",
+          "repository": "hivezilla"
+        }
+      ],
+      "upstream_status": "Stock Geyser does not expose the original UDP/accepted-repair callback. This hook is not required by the compact block stream.",
+      "source_bundles": [
+        "native-hooks-4.4.0"
+      ],
+      "source_references": [
+        {
+          "repository": "agave",
+          "path": "core/src/hivezilla_shred_hook.rs"
+        },
+        {
+          "repository": "agave",
+          "path": "core/src/shred_fetch_stage.rs"
+        }
+      ]
+    }
+  ],
+  "upgrade_decision_fields": [
+    "reviewed_on",
+    "selected_upstream_tag",
+    "selected_upstream_commit",
+    "decision_per_group",
+    "replacement_commit_or_release",
+    "tests_and_results",
+    "performance_evidence",
+    "evidence_location"
+  ],
+  "product_acceptance": {
+    "target": "Token dump starts live capture and backfills an archive range through the same reader/filter path.",
+    "status": "planned; not established by the current archive-only dump command",
+    "specification": ".codex/blockzilla-goal.md#acceptance-target"
+  },
+  "test_selection_note": "Paths are relative to the named repository. An empty names array never means zero tests: use the explicit selection of all tests in the file.",
+  "repositories": {
+    "blockzilla": {
+      "location": "this repository"
+    },
+    "agave": {
+      "remote_url": null,
+      "imported_fork_commit": "5ae64ceb26f78c6e7a6b78932627e5978521c0ae",
+      "status": "Imported and committed locally; no fork remote created and no deployment performed.",
+      "sibling_path": "../agave"
+    },
+    "hivezilla": {
+      "remote_url": null,
+      "sibling_path": "../hivezilla"
+    },
+    "blockzilla-private": {
+      "remote_url": null,
+      "sibling_path": "../blockzilla-private"
+    }
+  },
+  "source_bundles": [
+    {
+      "id": "native-hooks-4.4.0",
+      "sha256": "43c51a8d61f75509f605a9b003b2fa1416c49c61c7c7faa4024bccceb7d97ef5",
+      "role": "current bundled source changes",
+      "historical_evidence": {
+        "repository": "blockzilla-private",
+        "path": "migration/20261125-baseline/source.tar",
+        "archive_member": "hivezilla/deploy/agave-upgrade/evidence/20261101-4.4.0-preparation/native-hooks-4.4.0.patch"
+      }
+    },
+    {
+      "id": "native-account-bridge",
+      "sha256": "03ebd68b8fe2aa97e3bbebda5b2ba1d32c98041cd4d88890de23b81d2f53786a",
+      "role": "current bundled source changes",
+      "historical_evidence": {
+        "repository": "blockzilla-private",
+        "path": "migration/20261125-baseline/source.tar",
+        "archive_member": "hivezilla/deploy/native-account-bridge/native-account-bridge.patch"
+      }
+    },
+    {
+      "id": "historical-bank-hook",
+      "sha256": "07e5535174d08ef8a468aabcb7de9b41db7a1249070e905fa44785efe7e5d9f7",
+      "role": "historical reference; do not apply again on the combined fork base",
+      "historical_evidence": {
+        "repository": "blockzilla-private",
+        "path": "migration/20261125-baseline/source.tar",
+        "archive_member": "hivezilla/deploy/bank-stream-v2/bank-hook.patch"
+      }
+    },
+    {
+      "id": "historical-shred-hook",
+      "sha256": "f41f5cc077b0c9f29668e8eb00d8c1d44f9a30a13e2dfff9eea9e7023dd71e6f",
+      "role": "historical reference; do not apply again on the combined fork base",
+      "historical_evidence": {
+        "repository": "blockzilla-private",
+        "path": "migration/20261125-baseline/source.tar",
+        "archive_member": "hivezilla/deploy/agave-shred-hook/integration.patch"
+      }
+    }
+  ],
+  "local_extraction": {
+    "fork_commit": "5ae64ceb26f78c6e7a6b78932627e5978521c0ae",
+    "remote_url": null,
+    "host_build_and_deployment": "not performed"
+  }
+}

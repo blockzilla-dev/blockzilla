@@ -1,0 +1,61 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "blockzilla-get-block-native-full-test",
+  "account_id": "8df0426c80fcd1a04ed439f441db9ff8",
+  "main": "build/index.js",
+  "compatibility_date": "2026-11-21",
+  "workers_dev": true,
+  "preview_urls": false,
+  "build": {
+    "command": "worker-build --release . --no-default-features --features worker"
+  },
+  "vars": {
+    "BZ_ARCHIVE_SOURCE": "r2",
+    "BZ_ARCHIVE_PREFIX": "compact-v2/native-r2-full-1089-20261122",
+    "BZ_ARCHIVE_LAYOUT": "stored",
+    "BZ_ARCHIVE_GENERATION": "owner-native-full1089-20261122-v1",
+    "BZ_METADATA_SCHEMA": "current",
+    "BZ_MESSAGE_SCHEMA_OVERRIDES": "{\"0\":\"may24\",\"1\":\"may24\",\"2\":\"may24\"}",
+    "BZ_SLOT_INDEX": "sparse",
+    "BZ_HTTP_GET_ONLY": "true",
+    "BZ_AUTH_CACHE_SCOPE": "4a84b9e29a65488ca474ac05e896b626",
+    "BZ_RESOLUTION_PREFIX": "serving/owner-native-full1089-20261122-v1",
+    "BZ_RESOLUTION_GENERATION": "owner-native-full1089-20261122-v1",
+    "BZ_RESOLUTION_SLOTS": "470555971,470663944,470771932,470879999",
+    "BZ_R2_BUCKET_BINDING": "BZ_ARCHIVE_BUCKET"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "BZ_RPC_API_KEYS",
+      "id": "4a84b9e29a65488ca474ac05e896b626"
+    }
+  ],
+  "analytics_engine_datasets": [
+    {
+      "binding": "BZ_RPC_METRICS",
+      "dataset": "blockzilla_rpc_metrics"
+    }
+  ],
+  "limits": {
+    "cpu_ms": 30000,
+    "subrequests": 10000
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 0.01,
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true
+    }
+  },
+  "r2_buckets": [
+    {
+      "binding": "BZ_ARCHIVE_BUCKET",
+      "bucket_name": "blockzilla-get-block-native-test"
+    },
+    {
+      "binding": "BZ_RESOLUTION",
+      "bucket_name": "blockzilla-get-block-native-test"
+    }
+  ]
+}

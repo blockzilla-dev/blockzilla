@@ -145,6 +145,12 @@ pub struct MetadataCounts {
     pub inner: Option<(u64, u64)>, // groups, instructions; None means not recorded
 }
 
+#[derive(Clone, Copy)]
+enum LamportBalancePolicy {
+    ResolvedMessageAccounts,
+    OpaqueHistorical,
+}
+
 impl CompactV2MetadataProjector {
     pub const fn new(schema: CompactV2MetadataSchema, registry_entries: u32) -> Self {
         Self {
@@ -167,7 +173,97 @@ impl CompactV2MetadataProjector {
         bytes: &'de [u8],
         limits: CompactV2MetadataProjectionLimits,
     ) -> CompactV2MetadataProjectionResult<ProjectedCompactV2Metadata<'de>> {
-        self.project_impl(bytes, limits, None)
+        self.project_impl(
+            bytes,
+            limits,
+            None,
+            LamportBalancePolicy::ResolvedMessageAccounts,
+        )
+    }
+
+    /// Project execution, CPI, and loaded keys for activity counts, without
+    /// interpreting lamport-balance positions as message account positions.
+    ///
+    /// Historical records can contain more lamport balances than message
+    /// accounts (for example mainnet slot 24005334, transaction 70: five
+    /// balances and three legacy message accounts). Both complete vectors
+    /// remain wire-validated, capped at 256 entries and by remaining input,
+    /// and must have matching lengths. Their values are never retained or
+    /// assigned to keys. Every other field keeps the strict message-derived
+    /// limits, registry checks, and full-record exhaustion checks.
+    ///
+    /// Use [`Self::project`] when exact balance/account correspondence is
+    /// required. This method does not establish that correspondence.
+    pub fn project_for_activity<'de>(
+        self,
+        bytes: &'de [u8],
+        limits: CompactV2MetadataProjectionLimits,
+    ) -> CompactV2MetadataProjectionResult<ProjectedCompactV2Metadata<'de>> {
+        self.project_impl(bytes, limits, None, LamportBalancePolicy::OpaqueHistorical)
+    }
+
+    /// Test loaded keys and, when requested, token owners as compact
+    /// references. Validate the complete record without retaining any
+    /// instructions, logs, balances, or addresses.
+    ///
+    /// When token owners are requested, require the exact lamport-balance
+    /// counts used by [`Self::project_token_balances`]. Otherwise use the
+    /// opaque historical policy from [`Self::project_for_activity`]. Use
+    /// the two detailed projectors on error if a caller needs independent
+    /// loaded-key and token-balance results. An error is not a negative match.
+    pub fn match_wallet_accounts(
+        self,
+        bytes: &[u8],
+        limits: CompactV2MetadataProjectionLimits,
+        match_token_owners: bool,
+        mut matches: impl FnMut(CompactPubkey) -> bool,
+    ) -> CompactV2MetadataProjectionResult<bool> {
+        let mut cursor = bytes;
+        let balance_policy = if match_token_owners {
+            LamportBalancePolicy::ResolvedMessageAccounts
+        } else {
+            LamportBalancePolicy::OpaqueHistorical
+        };
+        self.read_prefix(&mut cursor, limits, balance_policy)?;
+        skip_inner_instruction_groups(&mut cursor, limits)?;
+        skip_logs(&mut cursor, self.registry_entries)?;
+        let mut matched = false;
+        for _ in 0..2 {
+            visit_token_owners(
+                &mut cursor,
+                limits.total_message_accounts,
+                self.registry_entries,
+                |key| {
+                    matched = matched || (match_token_owners && matches(key));
+                },
+            )?;
+        }
+        skip_rewards(&mut cursor, self.registry_entries)?;
+        for count in [
+            limits.expected_loaded_writable,
+            limits.expected_loaded_readonly,
+        ] {
+            visit_loaded_addresses(&mut cursor, count, self.registry_entries, |key| {
+                matched = matched || matches(key);
+            })?;
+        }
+        finish_metadata(&mut cursor, self.registry_entries)?;
+        Ok(matched)
+    }
+
+    /// Validate the ranges, table references and UTF-8 required to render the
+    /// log stream without allocating or formatting it. Other metadata fields
+    /// after the log stream do not affect this validation.
+    pub fn validate_log_render_bounds(
+        self,
+        bytes: &[u8],
+        limits: CompactV2MetadataProjectionLimits,
+    ) -> CompactV2MetadataProjectionResult<()> {
+        let mut cursor = bytes;
+        self.read_prefix(&mut cursor, limits, LamportBalancePolicy::OpaqueHistorical)?;
+        skip_inner_instruction_groups(&mut cursor, limits)?;
+        skip_logs(&mut cursor, self.registry_entries)?;
+        Ok(())
     }
 
     pub fn count(
@@ -176,7 +272,12 @@ impl CompactV2MetadataProjector {
         limits: CompactV2MetadataProjectionLimits,
     ) -> CompactV2MetadataProjectionResult<MetadataCounts> {
         let mut inner = None;
-        let metadata = self.project_impl(bytes, limits, Some(&mut inner))?;
+        let metadata = self.project_impl(
+            bytes,
+            limits,
+            Some(&mut inner),
+            LamportBalancePolicy::ResolvedMessageAccounts,
+        )?;
         Ok(MetadataCounts {
             execution_status: metadata.execution_status,
             inner,
@@ -188,30 +289,11 @@ impl CompactV2MetadataProjector {
         bytes: &'de [u8],
         limits: CompactV2MetadataProjectionLimits,
         counts: Option<&mut Option<(u64, u64)>>,
+        balance_policy: LamportBalancePolicy,
     ) -> CompactV2MetadataProjectionResult<ProjectedCompactV2Metadata<'de>> {
         let count_only = counts.is_some();
-        validate_limits(limits)?;
         let mut cursor = bytes;
-        let execution_status = match self.schema {
-            CompactV2MetadataSchema::CurrentTypedError => {
-                read_current_execution_status(&mut cursor, limits)?
-            }
-            CompactV2MetadataSchema::LegacyRawError => {
-                read_legacy_execution_status(&mut cursor, limits)?
-            }
-        };
-
-        get::<u64>(&mut cursor)?; // fee
-        let pre_balance_count = skip_balances(&mut cursor, limits.total_message_accounts)?;
-        let post_balance_count = skip_balances(&mut cursor, limits.total_message_accounts)?;
-        if pre_balance_count != limits.total_message_accounts
-            || post_balance_count != limits.total_message_accounts
-        {
-            return Err(wincode::error::invalid_value(
-                "pre- and post-balance counts do not equal resolved message accounts",
-            )
-            .into());
-        }
+        let execution_status = self.read_prefix(&mut cursor, limits, balance_policy)?;
 
         let inner_instructions = if let Some(counts) = counts {
             *counts = skip_inner_instruction_groups(&mut cursor, limits)?;
@@ -261,15 +343,7 @@ impl CompactV2MetadataProjector {
             )?
         };
 
-        skip_return_data(&mut cursor, self.registry_entries)?;
-        get::<Option<u64>>(&mut cursor)?; // compute_units_consumed
-        get::<Option<u64>>(&mut cursor)?; // cost_units
-
-        if !cursor.is_empty() {
-            return Err(CompactV2MetadataProjectionError::TrailingBytes(
-                cursor.len(),
-            ));
-        }
+        finish_metadata(&mut cursor, self.registry_entries)?;
 
         Ok(ProjectedCompactV2Metadata {
             execution_status,
@@ -277,6 +351,47 @@ impl CompactV2MetadataProjector {
             loaded_writable_addresses,
             loaded_readonly_addresses,
         })
+    }
+
+    fn read_prefix(
+        self,
+        cursor: &mut &[u8],
+        limits: CompactV2MetadataProjectionLimits,
+        balance_policy: LamportBalancePolicy,
+    ) -> ReadResult<CompactV2ExecutionStatus> {
+        validate_limits(limits)?;
+        let status = match self.schema {
+            CompactV2MetadataSchema::CurrentTypedError => {
+                read_current_execution_status(cursor, limits)?
+            }
+            CompactV2MetadataSchema::LegacyRawError => {
+                read_legacy_execution_status(cursor, limits)?
+            }
+        };
+        get::<u64>(cursor)?; // fee
+        let balance_limit = match balance_policy {
+            LamportBalancePolicy::ResolvedMessageAccounts => limits.total_message_accounts,
+            LamportBalancePolicy::OpaqueHistorical => MAX_COMPACT_V2_METADATA_ACCOUNTS,
+        };
+        let pre = skip_balances(cursor, balance_limit)?;
+        let post = skip_balances(cursor, balance_limit)?;
+        match balance_policy {
+            LamportBalancePolicy::ResolvedMessageAccounts
+                if pre != limits.total_message_accounts
+                    || post != limits.total_message_accounts =>
+            {
+                return Err(wincode::error::invalid_value(
+                    "pre- and post-balance counts do not equal resolved message accounts",
+                ));
+            }
+            LamportBalancePolicy::OpaqueHistorical if pre != post => {
+                return Err(wincode::error::invalid_value(
+                    "opaque historical pre- and post-balance counts differ",
+                ));
+            }
+            _ => {}
+        }
+        Ok(status)
     }
 
     /// Project only recorded pre- and post-token balances from one complete
@@ -317,28 +432,12 @@ impl CompactV2MetadataProjector {
     ) -> CompactV2MetadataProjectionResult<MetadataCounts> {
         output.pre.clear();
         output.post.clear();
-        validate_limits(limits)?;
         let mut cursor = bytes;
-        let execution_status = match self.schema {
-            CompactV2MetadataSchema::CurrentTypedError => {
-                read_current_execution_status(&mut cursor, limits)?
-            }
-            CompactV2MetadataSchema::LegacyRawError => {
-                read_legacy_execution_status(&mut cursor, limits)?
-            }
-        };
-
-        get::<u64>(&mut cursor)?; // fee
-        let pre_balance_count = skip_balances(&mut cursor, limits.total_message_accounts)?;
-        let post_balance_count = skip_balances(&mut cursor, limits.total_message_accounts)?;
-        if pre_balance_count != limits.total_message_accounts
-            || post_balance_count != limits.total_message_accounts
-        {
-            return Err(wincode::error::invalid_value(
-                "pre- and post-balance counts do not equal resolved message accounts",
-            )
-            .into());
-        }
+        let execution_status = self.read_prefix(
+            &mut cursor,
+            limits,
+            LamportBalancePolicy::ResolvedMessageAccounts,
+        )?;
 
         let inner = skip_inner_instruction_groups(&mut cursor, limits)?;
         skip_logs(&mut cursor, self.registry_entries)?;
@@ -378,15 +477,7 @@ impl CompactV2MetadataProjector {
             limits.expected_loaded_readonly,
             self.registry_entries,
         )?;
-        skip_return_data(&mut cursor, self.registry_entries)?;
-        get::<Option<u64>>(&mut cursor)?; // compute_units_consumed
-        get::<Option<u64>>(&mut cursor)?; // cost_units
-
-        if !cursor.is_empty() {
-            return Err(CompactV2MetadataProjectionError::TrailingBytes(
-                cursor.len(),
-            ));
-        }
+        finish_metadata(&mut cursor, self.registry_entries)?;
         Ok(MetadataCounts {
             execution_status,
             inner,
@@ -985,6 +1076,15 @@ fn skip_token_balances(
     maximum: usize,
     registry_entries: u32,
 ) -> ReadResult<()> {
+    visit_token_owners(cursor, maximum, registry_entries, |_| {})
+}
+
+fn visit_token_owners(
+    cursor: &mut &[u8],
+    maximum: usize,
+    registry_entries: u32,
+    mut visit: impl FnMut(CompactPubkey),
+) -> ReadResult<()> {
     // Six fields have a minimum one-byte representation.
     let count = read_bounded_len(
         cursor,
@@ -999,9 +1099,11 @@ fn skip_token_balances(
                 "token-balance account index is outside resolved message accounts",
             ));
         }
-        get_optional_pubkey(cursor, registry_entries)?;
-        get_optional_pubkey(cursor, registry_entries)?;
-        get_optional_pubkey(cursor, registry_entries)?;
+        get_optional_pubkey(cursor, registry_entries)?; // mint
+        if let Some(owner) = get_optional_pubkey(cursor, registry_entries)? {
+            visit(owner);
+        }
+        get_optional_pubkey(cursor, registry_entries)?; // program
         get::<u64>(cursor)?;
         get::<u8>(cursor)?;
     }
@@ -1086,6 +1188,15 @@ fn skip_loaded_addresses(
     expected: usize,
     registry_entries: u32,
 ) -> ReadResult<()> {
+    visit_loaded_addresses(cursor, expected, registry_entries, |_| {})
+}
+
+fn visit_loaded_addresses(
+    cursor: &mut &[u8],
+    expected: usize,
+    registry_entries: u32,
+    mut visit: impl FnMut(CompactPubkey),
+) -> ReadResult<()> {
     let count = read_bounded_len(
         cursor,
         expected.min(cursor.len()),
@@ -1097,7 +1208,22 @@ fn skip_loaded_addresses(
         ));
     }
     for _ in 0..count {
-        get_pubkey(cursor, registry_entries)?;
+        visit(get_pubkey(cursor, registry_entries)?);
+    }
+    Ok(())
+}
+
+fn finish_metadata(
+    cursor: &mut &[u8],
+    registry_entries: u32,
+) -> CompactV2MetadataProjectionResult<()> {
+    skip_return_data(cursor, registry_entries)?;
+    get::<Option<u64>>(cursor)?; // compute_units_consumed
+    get::<Option<u64>>(cursor)?; // cost_units
+    if !cursor.is_empty() {
+        return Err(CompactV2MetadataProjectionError::TrailingBytes(
+            cursor.len(),
+        ));
     }
     Ok(())
 }
@@ -1895,6 +2021,198 @@ mod tests {
         CompactV2MetadataProjector::new(schema, 100)
     }
 
+    #[test]
+    fn wallet_projection_checks_loaded_keys_and_token_owners_only() {
+        let reader = projector(CompactV2MetadataSchema::CurrentTypedError);
+        let mut metadata = full_metadata(None, Some(Vec::new()));
+        metadata.post_token_balances[0].owner = Some(CompactPubkey::Id(11));
+        let bytes = current_bytes(&metadata);
+        for (key, include_owners, expected) in [
+            (CompactPubkey::Id(6), false, true),        // loaded writable
+            (CompactPubkey::Raw([7; 32]), false, true), // loaded readonly
+            (CompactPubkey::Raw([3; 32]), true, true),  // pre-balance owner
+            (CompactPubkey::Id(11), true, true),        // post-balance owner
+            (CompactPubkey::Id(11), false, false),
+            (CompactPubkey::Id(2), true, false), // mint
+            (CompactPubkey::Id(4), true, false), // token program
+            (CompactPubkey::Id(5), true, false), // reward
+        ] {
+            assert_eq!(
+                reader
+                    .match_wallet_accounts(&bytes, LIMITS, include_owners, |value| value == key)
+                    .unwrap(),
+                expected,
+            );
+        }
+        for end in 0..bytes.len() {
+            // Finding an owner early cannot hide invalid fields after it.
+            assert!(
+                reader
+                    .match_wallet_accounts(&bytes[..end], LIMITS, true, |_| true)
+                    .is_err()
+            );
+        }
+        metadata.pre_balances.pop();
+        metadata.post_balances.pop();
+        let bytes = current_bytes(&metadata);
+        assert!(
+            reader
+                .match_wallet_accounts(&bytes, LIMITS, true, |_| true)
+                .is_err()
+        );
+        assert!(
+            reader
+                .match_wallet_accounts(&bytes, LIMITS, false, |_| true)
+                .unwrap()
+        );
+    }
+
+    #[test]
+    fn activity_projection_reads_real_epoch55_metadata_without_mapping_its_extra_balances() {
+        // Exact public source: epoch55, slot24005334, tx70. Message SHA256
+        // 3db5b74e5f1760a82b58790d3cd9fcee388faefe56acc4b93c03e18dd6897e2e;
+        // metadata SHA256
+        // b3161ee6aef131da3cbd41503a3a84ca5b12cdc48c619c239d9ee2fb2629c252.
+        let message = [
+            0, 1, 0, 1, 3, 236, 2, 138, 3, 146, 2, 0, 242, 171, 28, 1, 2, 2, 0, 1, 4, 2, 128, 158,
+            138, 154, 3,
+        ];
+        let metadata = [
+            0, 136, 39, 5, 176, 235, 166, 217, 186, 11, 144, 169, 231, 12, 1, 1, 1, 5, 168, 196,
+            166, 217, 186, 11, 144, 169, 231, 12, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        ];
+        assert_eq!(message.len(), 27);
+        assert_eq!(metadata.len(), 41);
+        let message =
+            crate::CompactV2MessageProjector::new(crate::CompactV2MessageSchema::Current, 933)
+                .project_with_instruction_data_for_programs(&message, &[], None)
+                .unwrap();
+        let limits = message.count_limits();
+        assert_eq!(limits.total_message_accounts, 3);
+        for schema in [
+            CompactV2MetadataSchema::CurrentTypedError,
+            CompactV2MetadataSchema::LegacyRawError,
+        ] {
+            let reader = CompactV2MetadataProjector::new(schema, 933);
+            let owned = crate::decode_compact_v2_metadata(schema, &metadata).unwrap();
+            assert_eq!(owned.pre_balances.len(), 5);
+            assert_eq!(owned.post_balances.len(), 5);
+            assert!(reader.project(&metadata, limits).is_err());
+            assert!(reader.count(&metadata, limits).is_err());
+            let activity = reader.project_for_activity(&metadata, limits).unwrap();
+            assert!(activity.execution_status.is_success());
+            assert!(activity.inner_instructions.is_none());
+            assert!(activity.loaded_writable_addresses.is_empty());
+            assert!(activity.loaded_readonly_addresses.is_empty());
+            // Pad either each balance count or the first balance value.
+            for offset in [0, 1] {
+                let padded = [
+                    metadata[..3].to_vec(),
+                    padded_integer_field(&owned.pre_balances, offset),
+                    padded_integer_field(&owned.post_balances, offset),
+                    metadata[31..].to_vec(),
+                ]
+                .concat();
+                assert_eq!(
+                    reader.project_for_activity(&padded, limits).unwrap(),
+                    activity
+                );
+            }
+            for end in 0..metadata.len() {
+                assert!(
+                    reader
+                        .project_for_activity(&metadata[..end], limits)
+                        .is_err(),
+                    "accepted prefix {end}"
+                );
+            }
+            let mut trailing = metadata.to_vec();
+            trailing.push(0);
+            assert!(reader.project_for_activity(&trailing, limits).is_err());
+        }
+    }
+
+    #[test]
+    fn activity_projection_bounds_opaque_balances_and_preserves_execution_status() {
+        let reader = projector(CompactV2MetadataSchema::CurrentTypedError);
+        let mut value = full_metadata(None, None);
+        value.pre_balances = vec![1; MAX_COMPACT_V2_METADATA_ACCOUNTS];
+        value.post_balances = value.pre_balances.clone();
+        assert!(
+            reader
+                .project_for_activity(&current_bytes(&value), LIMITS)
+                .unwrap()
+                .execution_status
+                .is_success()
+        );
+        value.err = Some(CompactTransactionError::AccountInUse);
+        assert!(
+            !reader
+                .project_for_activity(&current_bytes(&value), LIMITS)
+                .unwrap()
+                .execution_status
+                .is_success()
+        );
+        value.post_balances.pop();
+        assert!(
+            reader
+                .project_for_activity(&current_bytes(&value), LIMITS)
+                .is_err()
+        );
+        value.pre_balances.push(1);
+        value.post_balances = value.pre_balances.clone();
+        assert!(
+            reader
+                .project_for_activity(&current_bytes(&value), LIMITS)
+                .is_err()
+        );
+    }
+
+    #[test]
+    fn activity_projection_keeps_message_bounds_for_cpi_token_and_loaded_references() {
+        let reader = projector(CompactV2MetadataSchema::CurrentTypedError);
+        let fixture = || {
+            let mut value = full_metadata(None, Some(cpi_groups()));
+            value.pre_balances.push(1);
+            value.post_balances.push(1);
+            value
+        };
+        let valid = fixture();
+        assert!(
+            reader
+                .project_for_activity(&current_bytes(&valid), LIMITS)
+                .is_ok()
+        );
+        let mut invalid = fixture();
+        invalid.inner_instructions.as_mut().unwrap()[0].instructions[0].program_id_index = 4;
+        assert!(
+            reader
+                .project_for_activity(&current_bytes(&invalid), LIMITS)
+                .is_err()
+        );
+        let mut invalid = fixture();
+        invalid.inner_instructions.as_mut().unwrap()[0].instructions[0].accounts = vec![4];
+        assert!(
+            reader
+                .project_for_activity(&current_bytes(&invalid), LIMITS)
+                .is_err()
+        );
+        let mut invalid = fixture();
+        invalid.pre_token_balances[0].account_index = 4;
+        assert!(
+            reader
+                .project_for_activity(&current_bytes(&invalid), LIMITS)
+                .is_err()
+        );
+        let mut invalid = fixture();
+        invalid.loaded_writable_addresses.push(CompactPubkey::Id(9));
+        assert!(
+            reader
+                .project_for_activity(&current_bytes(&invalid), LIMITS)
+                .is_err()
+        );
+    }
+
     fn cpi_groups() -> Vec<CompactInnerInstructions> {
         vec![
             CompactInnerInstructions {
@@ -2665,6 +2983,38 @@ mod tests {
                 .unwrap_err(),
             CompactV2MetadataProjectionError::TrailingBytes(1)
         ));
+    }
+
+    #[test]
+    fn validates_log_render_bounds_without_projecting_later_metadata() {
+        let projector = projector(CompactV2MetadataSchema::CurrentTypedError);
+        let mut value = full_metadata(None, None);
+        value.rewards[0].pubkey = CompactPubkey::Id(101);
+        assert!(
+            projector
+                .validate_log_render_bounds(&current_bytes(&value), LIMITS)
+                .is_ok()
+        );
+        assert!(projector.project(&current_bytes(&value), LIMITS).is_err());
+
+        value
+            .logs
+            .as_mut()
+            .unwrap()
+            .events
+            .push(LogEvent::Plain { text: 1 });
+        assert!(
+            projector
+                .validate_log_render_bounds(&current_bytes(&value), LIMITS)
+                .is_err()
+        );
+        value.logs.as_mut().unwrap().events.pop();
+        value.logs.as_mut().unwrap().data.bytes.pop();
+        assert!(
+            projector
+                .validate_log_render_bounds(&current_bytes(&value), LIMITS)
+                .is_err()
+        );
     }
 
     #[test]

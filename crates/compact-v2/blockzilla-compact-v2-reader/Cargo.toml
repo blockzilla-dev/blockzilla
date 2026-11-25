@@ -29,7 +29,6 @@ blockzilla-source-local = { version = "0.2.0", path = "../../source/blockzilla-s
 blockzilla-source-http = { version = "0.2.0", path = "../../source/blockzilla-source-http", optional = true }
 blockzilla-source-cache = { version = "0.2.0", path = "../../source/blockzilla-source-cache", optional = true }
 anyhow = "1.0.104"
-blockzilla-archive-v3 = { version = "0.2.0", path = "../../archive-v3/blockzilla-archive-v3" }
 blockzilla-model = { version = "0.2.0", path = "../../blockzilla-model" }
 rayon = "1.12.0"
 serde = { version = "1.0.229", features = ["derive"] }

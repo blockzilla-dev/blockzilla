@@ -151,8 +151,225 @@ impl Chain {
     pub fn can_confirm(&self, bank: &BankIdentity) -> Result<()> {
         self.resolved(bank).map(|_| ())
     }
+    /// Return the complete captured path after a caller's committed anchor.
+    /// The root is backed by an exact native root control. Both endpoints must
+    /// remain known, and every intervening parent and native height must match.
+    /// Existing rooted nodes and partial capture boundaries do not skip history.
+    /// This does not establish coverage before the anchor or select a new head.
+    pub fn rooted_path_after(
+        &self,
+        root: &BankIdentity,
+        anchor: &BankIdentity,
+        anchor_height: u64,
+    ) -> Result<Vec<BankState>> {
+        root.validate()?;
+        anchor.validate()?;
+        ensure!(
+            self.banks.len() <= MAX_BANKS && anchor_height <= SAFE,
+            "invalid_chain_state"
+        );
+        let mut current = self
+            .banks
+            .get(&key(root))
+            .context("root_bank_unavailable")?;
+        ensure!(
+            current.bank == *root && current.rooted && current.confirmed && !current.invalidated,
+            "root_not_admitted"
+        );
+        let anchor_state = self
+            .banks
+            .get(&key(anchor))
+            .context("anchor_bank_unavailable")?;
+        ensure!(
+            anchor_state.bank == *anchor
+                && !anchor_state.invalidated
+                && anchor_state.block_height == anchor_height,
+            "anchor_bank_mismatch"
+        );
+        let mut reverse = Vec::new();
+        let mut visited = BTreeSet::new();
+        loop {
+            ensure!(visited.insert(key(&current.bank)), "parent_cycle");
+            Self::path_state(current)?;
+            if current.bank == *anchor {
+                ensure!(
+                    current.block_height == anchor_height,
+                    "anchor_height_mismatch"
+                );
+                reverse.reverse();
+                return Ok(reverse);
+            }
+            ensure!(
+                current.bank.slot > anchor.slot && current.block_height > anchor_height,
+                "root_not_descendant_of_anchor"
+            );
+            reverse.push(current.clone());
+            current = self
+                .known_parent(current)?
+                .context("dependency_unavailable")?;
+        }
+    }
+    /// Return captured banks after an explicitly admitted bootstrap parent.
+    /// Unlike `rooted_path_after`, the excluded parent need not be captured.
+    /// No history or rooted status is asserted for that parent or its prefix.
+    pub fn rooted_path_from_boundary(
+        &self,
+        root: &BankIdentity,
+        boundary_slot: u64,
+        boundary_hash: [u8; 32],
+        boundary_height: u64,
+    ) -> Result<Vec<BankState>> {
+        root.validate()?;
+        ensure!(
+            self.banks.len() <= MAX_BANKS && boundary_slot <= SAFE && boundary_height <= SAFE,
+            "invalid_capture_boundary"
+        );
+        let mut current = self
+            .banks
+            .get(&key(root))
+            .context("root_bank_unavailable")?;
+        ensure!(
+            current.bank == *root && current.rooted && current.confirmed && !current.invalidated,
+            "root_not_admitted"
+        );
+        if root.slot == boundary_slot {
+            Self::path_state(current)?;
+            ensure!(
+                root.blockhash == boundary_hash && current.block_height == boundary_height,
+                "capture_boundary_root_mismatch"
+            );
+            return Ok(Vec::new());
+        }
+        let mut reverse = Vec::new();
+        let mut visited = BTreeSet::new();
+        loop {
+            ensure!(visited.insert(key(&current.bank)), "parent_cycle");
+            Self::path_state(current)?;
+            ensure!(
+                current.bank.slot > boundary_slot && current.block_height > boundary_height,
+                "root_before_capture_boundary"
+            );
+            reverse.push(current.clone());
+            let parent = self.known_parent(current)?;
+            if current.bank.parent_slot == boundary_slot
+                && current.bank.parent_blockhash == boundary_hash
+            {
+                ensure!(
+                    boundary_height.checked_add(1) == Some(current.block_height),
+                    "parent_height_mismatch"
+                );
+                reverse.reverse();
+                return Ok(reverse);
+            }
+            current = parent.context("dependency_unavailable")?;
+        }
+    }
+    fn path_state(state: &BankState) -> Result<()> {
+        state.bank.validate()?;
+        ensure!(!state.invalidated, "invalidated_ancestry");
+        ensure!(
+            state.block_height <= SAFE
+                && is_digest(&state.payload_sha256)
+                && is_digest(&state.payload_frame_sha256),
+            "invalid_chain_state"
+        );
+        Ok(())
+    }
+    fn known_parent(&self, state: &BankState) -> Result<Option<&BankState>> {
+        let mut parents = self
+            .banks
+            .values()
+            .filter(|p| state.bank.parent_matches(&p.bank) && !p.invalidated);
+        let parent = parents.next();
+        ensure!(parents.next().is_none(), "ambiguous_parent_bank");
+        if let Some(parent) = parent {
+            ensure!(
+                parent.block_height.checked_add(1) == Some(state.block_height),
+                "parent_height_mismatch"
+            );
+        } else {
+            ensure!(
+                !self
+                    .banks
+                    .values()
+                    .any(|p| state.bank.parent_matches(&p.bank) && p.invalidated),
+                "invalidated_ancestry"
+            );
+        }
+        Ok(parent)
+    }
+    /// An exact native control before the retained/captured prefix admits only
+    /// its own bank. It does not connect the missing prefix, select a head, or
+    /// advance the boundary. A confirmed control does not establish a root.
+    fn control_before_boundary(&self, bank: &BankIdentity) -> Result<bool> {
+        let Some((slot, hash)) = self.boundary else {
+            return Ok(false);
+        };
+        let capture_height = match &self.latest {
+            Some(latest) => latest.block_height,
+            None => {
+                // A processed capture starts replay before its confirmed control.
+                // Its exact parent boundary and native child height admit only
+                // separate older controls, without selecting a confirmed head.
+                let mut children = self.banks.values().filter(|b| {
+                    !b.invalidated && b.bank.parent_slot == slot && b.bank.parent_blockhash == hash
+                });
+                let Some(child) = children.next() else {
+                    return Ok(false);
+                };
+                Self::path_state(child)?;
+                for other in children {
+                    Self::path_state(other)?;
+                    ensure!(
+                        other.block_height == child.block_height,
+                        "capture_boundary_height_mismatch"
+                    );
+                }
+                child.block_height
+            }
+        };
+        let state = self
+            .banks
+            .get(&key(bank))
+            .context("control_bank_unavailable")?;
+        if bank.slot > slot || state.block_height >= capture_height {
+            return Ok(false);
+        }
+        ensure!(
+            state.bank == *bank && !state.invalidated,
+            "invalidated_ancestry"
+        );
+        if bank.slot == slot {
+            ensure!(bank.blockhash == hash, "capture_boundary_root_mismatch");
+            for child in self
+                .banks
+                .values()
+                .filter(|b| b.bank.parent_slot == slot && b.bank.parent_blockhash == hash)
+            {
+                ensure!(
+                    state.block_height.checked_add(1) == Some(child.block_height),
+                    "parent_height_mismatch"
+                );
+            }
+        }
+        let mut current = state;
+        let mut visited = BTreeSet::new();
+        loop {
+            ensure!(visited.insert(key(&current.bank)), "parent_cycle");
+            Self::path_state(current)?;
+            if current.rooted {
+                return Ok(true);
+            }
+            match self.known_parent(current)? {
+                Some(parent) => current = parent,
+                // Native evidence admits this bank, not uncaptured parents.
+                None => return Ok(true),
+            }
+        }
+    }
     pub fn apply_control(&mut self, frame: &Frame, payload: &Frame) -> Result<()> {
         let e = &frame.envelope.event;
+        e.validate()?;
         e.matches_payload(payload)?;
         ensure!(frame.source == payload.source, "source_changed");
         self.add_payload(payload)?;
@@ -199,7 +416,11 @@ impl Chain {
         if e.kind == "root" && self.latest.is_none() && self.boundary.is_none() {
             self.boundary = Some((e.bank.parent_slot, e.bank.parent_blockhash));
         }
-        self.resolved(&e.bank)?;
+        let detached = matches!(e.kind.as_str(), "root" | "confirmed")
+            && self.control_before_boundary(&e.bank)?;
+        if !detached {
+            self.resolved(&e.bank)?;
+        }
         let state = self.banks.get_mut(&k).unwrap();
         ensure!(
             state.block_height == e.block_height.context("missing_height")?,
@@ -208,10 +429,11 @@ impl Chain {
         state.confirmed = true;
         state.rooted |= e.kind == "root";
         let next = ConfirmedObservation::from_frame(frame)?;
-        if self
-            .latest
-            .as_ref()
-            .is_none_or(|old| next.block_height > old.block_height)
+        if !detached
+            && self
+                .latest
+                .as_ref()
+                .is_none_or(|old| next.block_height > old.block_height)
         {
             self.latest = Some(next);
         }
@@ -241,7 +463,8 @@ impl Chain {
                     .any(|k| self.banks[k].confirmed && !self.banks[k].invalidated),
                 "competing_confirmed_root"
             );
-            if self.banks.len() > MAX_BANKS / 2 {
+            // A detached older root cannot move the newer capture boundary.
+            if self.banks.len() > MAX_BANKS / 2 && !detached {
                 let floor = root_height.saturating_sub(4096);
                 self.banks.retain(|_, b| b.block_height >= floor);
                 if let Some(first) = self.banks.values().min_by_key(|b| b.block_height) {

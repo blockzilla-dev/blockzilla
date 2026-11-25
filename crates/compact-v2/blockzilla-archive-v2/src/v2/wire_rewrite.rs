@@ -331,17 +331,26 @@ fn normalize_metadata_owned_with_config<C: wincode::config::Config + Copy>(
     );
     let current =
         wincode::config::deserialize_exact::<blockzilla_compact::CompactMetaV1, _>(input, config);
-    let legacy =
-        wincode::config::deserialize_exact::<LegacyArchiveV2CompactMetaV1, _>(input, config)
-            .map_err(anyhow::Error::from)
-            .and_then(LegacyArchiveV2CompactMetaV1::into_current);
-    let current_error = current.as_ref().err().map(ToString::to_string);
-    let legacy_error = legacy.as_ref().err().map(ToString::to_string);
+    // A present legacy error is a length-prefixed stored error. A current
+    // error can look like such a length while leaving a misaligned metadata
+    // tail. Check the borrowed prefix with the same decoder as into_current
+    // before the wrong grammar can allocate vectors from that tail.
+    // Keep the complete legacy attempt if the prefix could decode, or if
+    // the current parse failed and callers need both original diagnostics.
+    let legacy = if current.is_ok() && !possible_owned_legacy_error::<C>(input) {
+        None
+    } else {
+        Some(
+            wincode::config::deserialize_exact::<LegacyArchiveV2CompactMetaV1, _>(input, config)
+                .map_err(anyhow::Error::from)
+                .and_then(LegacyArchiveV2CompactMetaV1::into_current),
+        )
+    };
 
-    let (value, schema) = match (current.ok(), legacy.ok()) {
-        (Some(current), None) => (current, ArchiveV2WireMetadataErrorSchema::Current),
-        (None, Some(legacy)) => (legacy, ArchiveV2WireMetadataErrorSchema::Legacy),
-        (Some(current), Some(legacy)) => {
+    let (value, schema) = match (current, legacy) {
+        (Ok(current), None | Some(Err(_))) => (current, ArchiveV2WireMetadataErrorSchema::Current),
+        (Err(_), Some(Ok(legacy))) => (legacy, ArchiveV2WireMetadataErrorSchema::Legacy),
+        (Ok(current), Some(Ok(legacy))) => {
             let current_bytes = wincode::config::serialize(
                 &current,
                 blockzilla_primitives::wincode_leb128_config(),
@@ -356,13 +365,12 @@ fn normalize_metadata_owned_with_config<C: wincode::config::Config + Copy>(
             );
             return Ok((current_bytes, ArchiveV2WireMetadataErrorSchema::Current));
         }
-        (None, None) => {
+        (Err(current), Some(Err(legacy))) => {
             return Err(anyhow!(
-                "compact metadata is neither current nor legacy: current={}; legacy={}",
-                current_error.as_deref().unwrap_or("unknown error"),
-                legacy_error.as_deref().unwrap_or("unknown error")
+                "compact metadata is neither current nor legacy: current={current}; legacy={legacy}"
             ));
         }
+        (Err(_), None) => unreachable!("legacy probe is skipped only for valid current metadata"),
     };
     let output =
         wincode::config::serialize(&value, blockzilla_primitives::wincode_leb128_config())?;
@@ -371,6 +379,18 @@ fn normalize_metadata_owned_with_config<C: wincode::config::Config + Copy>(
         "canonical metadata output exceeds the Archive V2 owned-fallback limit"
     );
     Ok((output, schema))
+}
+
+fn possible_owned_legacy_error<C: wincode::config::Config>(input: &[u8]) -> bool {
+    let Some((&1, mut tail)) = input.split_first() else {
+        return true;
+    };
+    let Ok(len) = C::LengthEncoding::read_prealloc_check::<u8>(&mut tail) else {
+        return false;
+    };
+    tail.get(..len).is_some_and(|stored| {
+        blockzilla_compact::CompactTransactionError::from_stored_wincode_bytes(stored).is_ok()
+    })
 }
 
 /// Transform one current-schema `ArchiveV2HotMessagePayload` wire value.
@@ -2108,7 +2128,7 @@ mod tests {
     };
     use blockzilla_primitives::{StringTable, wincode_leb128_config};
     use blockzilla_program_logs::{ProgramLog, system_program, token_2022};
-    use of_car_reader::stored_transaction::{
+    use blockzilla_solana_wire::stored_transaction::{
         InstructionError as StoredInstructionError, StoredTransactionError,
     };
 
@@ -3295,6 +3315,35 @@ mod tests {
         let mut overflow = vec![1, 8, 0, 25];
         overflow.extend([0xff; 5]);
         assert!(read(&overflow, usize::MAX).is_err());
+    }
+
+    #[test]
+    fn current_error_checks_the_stored_legacy_prefix_before_decoding_its_tail() {
+        let mut value = metadata_fixture(0);
+        value.err = Some(
+            blockzilla_compact::CompactTransactionError::InstructionError(
+                1,
+                blockzilla_compact::CompactInstructionError::Custom(42),
+            ),
+        );
+        let current = wincode::config::serialize(&value, wincode_leb128_config()).unwrap();
+        assert!(!possible_owned_legacy_error::<ArchiveV2WireBoundedConfig>(
+            &current
+        ));
+        assert_eq!(
+            normalize_archive_v2_historical_source_metadata_owned(&current).unwrap(),
+            (current, ArchiveV2WireMetadataErrorSchema::Current)
+        );
+
+        let stored = wincode::serialize(&StoredTransactionError::AccountInUse).unwrap();
+        let legacy_prefix =
+            wincode::config::serialize(&Some(stored), wincode_leb128_config()).unwrap();
+        assert!(possible_owned_legacy_error::<ArchiveV2WireBoundedConfig>(
+            &legacy_prefix
+        ));
+        let error = normalize_archive_v2_historical_source_metadata_owned(&[1]).unwrap_err();
+        assert!(error.to_string().contains("current="));
+        assert!(error.to_string().contains("legacy="));
     }
 
     #[test]

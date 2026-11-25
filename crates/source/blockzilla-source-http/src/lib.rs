@@ -114,6 +114,8 @@ pub enum HttpObjectPathLayout {
     GatewayV1,
     /// Simple sample route: `<epoch>/<object>`.
     FlatEpoch,
+    /// Direct epoch directory: `<object>`.
+    FlatObjects,
 }
 
 impl Default for HttpRangeSourceOptions {
@@ -427,7 +429,8 @@ impl HttpRangeSource {
         }))
     }
 
-    fn object_url(&self, object: &str) -> SourceResult<Url> {
+    /// Return the validated object URL under the selected path layout.
+    pub fn object_url(&self, object: &str) -> SourceResult<Url> {
         validate_object_name(object).map_err(|_| SourceError::InvalidName(object.to_owned()))?;
         let mut url = self.base_url.clone();
         {
@@ -449,6 +452,9 @@ impl HttpRangeSource {
                 }
                 HttpObjectPathLayout::FlatEpoch => {
                     path.push(&self.epoch.to_string());
+                    path.push(object);
+                }
+                HttpObjectPathLayout::FlatObjects => {
                     path.push(object);
                 }
             }
@@ -1011,6 +1017,60 @@ mod tests {
         .unwrap();
 
         assert_eq!(source.size("thing.bin").unwrap(), Some(4));
+        server.join().unwrap();
+    }
+
+    #[test]
+    fn flat_objects_layout_keeps_direct_paths_and_pinned_range_checks() {
+        let (base_url, server) = serve_once(
+            vec![
+                "HEAD /gateway/compact-v2/build-v1/epoch-200/thing.bin HTTP/1.1",
+                "GET /gateway/compact-v2/build-v1/epoch-200/thing.bin HTTP/1.1",
+                "GET /gateway/compact-v2/build-v1/epoch-200/thing.bin HTTP/1.1",
+                "GET /gateway/compact-v2/build-v1/epoch-200/thing.bin HTTP/1.1",
+            ],
+            vec![
+                b"HTTP/1.1 200 OK\r\nContent-Length: 4\r\nETag: \"v1\"\r\nConnection: close\r\n\r\n",
+                b"HTTP/1.1 206 Partial Content\r\nContent-Length: 2\r\nContent-Range: bytes 1-2/4\r\nETag: \"v1\"\r\nConnection: close\r\n\r\nbc",
+                b"HTTP/1.1 206 Partial Content\r\nContent-Length: 2\r\nContent-Range: bytes 0-1/4\r\nETag: \"v1\"\r\nConnection: close\r\n\r\nab",
+                b"HTTP/1.1 206 Partial Content\r\nContent-Length: 2\r\nContent-Range: bytes 1-2/4\r\nETag: \"v2\"\r\nConnection: close\r\n\r\nbc",
+            ],
+        );
+        let source = HttpRangeSource::with_options(
+            format!("{base_url}/compact-v2/build-v1/epoch-200"),
+            200,
+            None,
+            HttpRangeSourceOptions {
+                allow_insecure_http: true,
+                object_path_layout: HttpObjectPathLayout::FlatObjects,
+                ..HttpRangeSourceOptions::default()
+            },
+        )
+        .unwrap();
+
+        assert_eq!(
+            source.strong_identity("thing.bin").unwrap(),
+            HttpObjectIdentity {
+                length: 4,
+                strong_etag: "\"v1\"".into(),
+            }
+        );
+        assert_eq!(source.read_range("thing.bin", 1, 2).unwrap(), b"bc");
+        assert!(
+            source
+                .read_range("thing.bin", 1, 2)
+                .unwrap_err()
+                .to_string()
+                .contains("unexpected Content-Range")
+        );
+        assert!(
+            source
+                .read_range("thing.bin", 1, 2)
+                .unwrap_err()
+                .to_string()
+                .contains("changed strong ETag")
+        );
+        assert_eq!(source.stats().returned_body_bytes, 2);
         server.join().unwrap();
     }
 

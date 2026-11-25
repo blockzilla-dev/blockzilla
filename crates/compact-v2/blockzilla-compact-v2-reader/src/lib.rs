@@ -12,8 +12,10 @@ pub mod archive_signatures;
 pub mod blockhash;
 mod compact_query;
 pub mod count_projection;
+mod cursor;
 pub mod descriptor;
 mod error;
+mod finalized_block;
 #[cfg(feature = "http")]
 mod http;
 #[cfg(feature = "http")]
@@ -26,9 +28,12 @@ mod metadata_schema;
 pub mod poh;
 pub mod query_keys;
 mod reader;
+mod registry_filter_cache;
+pub mod retained_poh;
 pub mod signed_message;
 mod source;
 pub mod source_decode;
+mod transaction_lookup;
 
 pub use account_references::CompactV2AccountReferences;
 pub use archive_signatures::{
@@ -54,11 +59,13 @@ pub use compact_query::{
     CompactV2ParallelScanReceipt, CompactV2RegistryReadPolicy,
     DEFAULT_COMPACT_V2_FULL_REGISTRY_BYTES,
 };
+pub use cursor::{BlockCursor, BlockCursorIoStats, CursorBlock};
 pub use descriptor::{
     ArchiveDescriptor, ArchiveIdentity, ArchiveObject, ArchiveSourceBinding,
     COMPACT_V2_OPTIONAL_OBJECTS, COMPACT_V2_REQUIRED_OBJECTS, mainnet_identity_for_slot,
 };
 pub use error::{Error, Result, SourceError};
+pub use finalized_block::FinalizedArchiveBlock;
 #[cfg(feature = "http")]
 pub use http::{
     HttpObjectIdentity, HttpObjectPathLayout, HttpRangeSource, HttpRangeSourceOptions,
@@ -104,17 +111,18 @@ pub use metadata_schema::{
 pub use reader::{
     ArchiveGenerationDescriptor, ArchiveReader, ArchiveReaderSourceKind, BlockIterator,
     BorrowedBlockStream, BorrowedBlockStreamIoStats, BorrowedDecodedBlock,
-    BorrowedDecodedTxRowIter, CompiledPubkeyFilter, DecodedBlock, GenerationBinding,
-    HashVerification, IndeterminateReason, MAX_ORDERED_PARALLEL_BLOCKS_PER_BATCH,
-    MAX_ORDERED_PARALLEL_COMPRESSED_BUFFERS, MAX_ORDERED_PARALLEL_DECODE_WORKERS,
-    MAX_ORDERED_PARALLEL_RETAINED_DECOMPRESSED_BYTES, MAX_ORDERED_PARALLEL_TRANSACTIONS_PER_BATCH,
-    MAX_ORDERED_PARALLEL_UNCOMPRESSED_BATCH_BYTES, MetadataState, NetworkInputConfig, OpenOptions,
-    OrderedParallelBlockConfig, OrderedParallelBlockStats, ProgramInvocationMatch,
-    PubkeyReferenceMatch, RecycledBlockScratch, RecycledBlockStats, ScanIterator, ScannedBlock,
-    ScannedTransaction, SelectorIndeterminateReason, SelectorOutcome, SignatureReference,
-    TokenBalanceMatch, TransactionMatch, ValidatedGeneration, compact_v2_first_slot,
-    validate_generation_structure,
+    BorrowedDecodedTxRowIter, BorrowedTransaction, CompiledPubkeyFilter, DecodedBlock,
+    GenerationBinding, HashVerification, IndeterminateReason,
+    MAX_ORDERED_PARALLEL_BLOCKS_PER_BATCH, MAX_ORDERED_PARALLEL_COMPRESSED_BUFFERS,
+    MAX_ORDERED_PARALLEL_DECODE_WORKERS, MAX_ORDERED_PARALLEL_RETAINED_DECOMPRESSED_BYTES,
+    MAX_ORDERED_PARALLEL_TRANSACTIONS_PER_BATCH, MAX_ORDERED_PARALLEL_UNCOMPRESSED_BATCH_BYTES,
+    MetadataState, NetworkInputConfig, OpenOptions, OrderedParallelBlockConfig,
+    OrderedParallelBlockStats, ProgramInvocationMatch, PubkeyReferenceMatch, RecycledBlockScratch,
+    RecycledBlockStats, ScanIterator, ScannedBlock, ScannedTransaction,
+    SelectorIndeterminateReason, SelectorOutcome, SignatureReference, TokenBalanceMatch,
+    TransactionMatch, ValidatedGeneration, compact_v2_first_slot, validate_generation_structure,
 };
+pub use registry_filter_cache::RegistryFilterCacheStats;
 pub use signed_message::{
     InstructionDataCandidate, InstructionDataEncoding, MAX_SIGNED_MESSAGE_CANDIDATE_COMBINATIONS,
     MAX_VOTE_HASH_REGISTRY_BYTES, ResolvedAddressTableLookup, SelectedSignedMessage,
@@ -128,6 +136,7 @@ pub use source::{
     LocalRangeSource, OverlayRangeSource, PinnedLocalObjectIdentity, PinnedLocalRangeSource,
     PinnedLocalRangeSourceStats, RangeSource, SourceResult,
 };
+pub use transaction_lookup::LocatedArchiveTransaction;
 
 #[cfg(feature = "http")]
 pub use archive::{

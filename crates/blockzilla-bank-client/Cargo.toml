@@ -1,0 +1,30 @@
+[package]
+name = "blockzilla-bank-client"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.98"
+license = "MIT"
+publish = false
+
+[workspace]
+
+[dependencies]
+anyhow = "1.0.104"
+async-stream = "0.3.6"
+base64 = "0.22.1"
+blockzilla-bank-stream-v2 = { path = "../blockzilla-bank-stream-v2" }
+bs58 = "0.5.1"
+bytes = "1.11"
+futures-util = "0.3.34"
+libc = "0.2.191"
+reqwest = { version = "0.13.4", default-features = false, features = ["rustls", "stream", "http2", "json"] }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"
+thiserror = "2.0"
+tokio = { version = "1.53.1", features = ["rt", "sync", "time", "signal", "process", "io-util", "macros"] }
+
+[dev-dependencies]
+tempfile = "3.27.0"
+axum = "0.8.8"
+blockzilla-bank-stream-v2 = { path = "../blockzilla-bank-stream-v2", features = ["test-fixtures"] }
+tokio = { version = "1.53.1", features = ["macros", "rt-multi-thread", "net"] }

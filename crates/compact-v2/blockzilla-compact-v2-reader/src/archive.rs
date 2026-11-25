@@ -209,7 +209,7 @@ impl CompactV2TransportReceipt {
 /// Errors from Compact V2 network setup and range selection.
 #[derive(Debug, Error)]
 pub enum Error {
-    #[error("invalid Worker origin: {0}")]
+    #[error("invalid archive URL: {0}")]
     InvalidOrigin(String),
     #[error("invalid archive range: {0}")]
     InvalidRange(String),
@@ -456,17 +456,38 @@ impl CompactV2Archive {
         cache_root: impl AsRef<Path>,
         options: CompactV2OpenOptions,
     ) -> Result<Self> {
-        let worker = WorkerEndpoint::parse(origin, options.allow_insecure_http)?;
+        let endpoint = ArchiveEndpoint::parse_origin(origin, options.allow_insecure_http)?;
+        Self::open_endpoint(endpoint, epoch, cache_root, options)
+    }
+
+    /// Open a public HTTPS epoch directory, with each object directly below it.
+    /// For example: `https://bucket.example/compact-v2/build/epoch-200`.
+    /// The caller supplies the expected mainnet epoch; normal admission checks apply.
+    pub fn open_epoch_url(
+        epoch_url: &str,
+        epoch: u64,
+        cache_root: impl AsRef<Path>,
+    ) -> Result<Self> {
+        let endpoint = ArchiveEndpoint::parse_epoch_url(epoch_url)?;
+        Self::open_endpoint(endpoint, epoch, cache_root, CompactV2OpenOptions::default())
+    }
+
+    fn open_endpoint(
+        endpoint: ArchiveEndpoint,
+        epoch: u64,
+        cache_root: impl AsRef<Path>,
+        options: CompactV2OpenOptions,
+    ) -> Result<Self> {
         let cache_root = cache_root.as_ref();
         create_http_cache_directory(cache_root).map_err(Error::RangeSource)?;
 
         let http = HttpRangeSource::with_options(
-            &worker.compact_v2_base,
+            &endpoint.base_url,
             epoch,
             None,
             HttpRangeSourceOptions {
                 allow_insecure_http: options.allow_insecure_http,
-                object_path_layout: HttpObjectPathLayout::FlatEpoch,
+                object_path_layout: endpoint.layout,
                 ..HttpRangeSourceOptions::default()
             },
         )
@@ -477,7 +498,7 @@ impl CompactV2Archive {
         let first_slot = mainnet_first_slot(epoch)?;
 
         let generation_cache = cache_root
-            .join(cache_namespace(&worker.normalized_origin))
+            .join(cache_namespace(&endpoint.cache_key))
             .join("compact-v2")
             .join(format!("epoch-{epoch}"))
             .join(&object_set_id);
@@ -730,8 +751,7 @@ impl CompactV2Archive {
                 (
                     source.reader().registry_entries(),
                     indexed_network_registry_admission(
-                        object_set.cache.http().base_url(),
-                        object_set.cache.http().epoch(),
+                        object_set.cache.http(),
                         &object_set.inventory,
                     )?,
                 )
@@ -834,8 +854,7 @@ fn indexed_local_registry_admission(
 }
 
 fn indexed_network_registry_admission(
-    base_url: &Url,
-    epoch: u64,
+    http: &HttpRangeSource,
     inventory: &NetworkObjectInventory,
 ) -> QueryResult<serde_json::Value> {
     let registry = blockzilla_archive_v2::ARCHIVE_V2_PUBKEY_REGISTRY_FILE;
@@ -845,9 +864,8 @@ fn indexed_network_registry_admission(
             SourceError::Protocol("indexed registry was not admitted by the HTTP inventory".into()),
         )
     })?;
-    // CompactV2Archive constructs this source with the fixed FlatEpoch layout.
-    let url = base_url
-        .join(&format!("{epoch}/{registry}"))
+    let url = http
+        .object_url(registry)
         .map_err(|error| QueryError::source(ArchiveFormat::CompactV2, error))?;
     Ok(serde_json::json!({
         "kind": "strong-etag-object-metadata",
@@ -889,13 +907,37 @@ impl ArchiveInstructionSource for CompactV2Archive {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-struct WorkerEndpoint {
-    normalized_origin: String,
-    compact_v2_base: String,
+struct ArchiveEndpoint {
+    base_url: String,
+    cache_key: String,
+    layout: HttpObjectPathLayout,
 }
 
-impl WorkerEndpoint {
-    fn parse(origin: &str, allow_insecure_http: bool) -> Result<Self> {
+impl ArchiveEndpoint {
+    fn parse_epoch_url(epoch_url: &str) -> Result<Self> {
+        let parsed = Self::validated_url(epoch_url, false)?;
+        let base_url = parsed.as_str().trim_end_matches('/').to_owned();
+        Ok(Self {
+            cache_key: format!("epoch-url:{base_url}"),
+            base_url,
+            layout: HttpObjectPathLayout::FlatObjects,
+        })
+    }
+
+    fn parse_origin(origin: &str, allow_insecure_http: bool) -> Result<Self> {
+        let parsed = Self::validated_url(origin, allow_insecure_http)?;
+        if !matches!(parsed.path(), "" | "/") {
+            return Err(Error::InvalidOrigin("URL contains a path".into()));
+        }
+        let normalized_origin = parsed.as_str().trim_end_matches('/').to_owned();
+        Ok(Self {
+            base_url: format!("{normalized_origin}/compact-v2"),
+            cache_key: normalized_origin,
+            layout: HttpObjectPathLayout::FlatEpoch,
+        })
+    }
+
+    fn validated_url(origin: &str, allow_insecure_http: bool) -> Result<Url> {
         let parsed = Url::parse(origin)
             .map_err(|error| Error::InvalidOrigin(format!("URL parse failed: {error}")))?;
         match parsed.scheme() {
@@ -919,15 +961,7 @@ impl WorkerEndpoint {
                 "URL contains a query or fragment".into(),
             ));
         }
-        if !matches!(parsed.path(), "" | "/") {
-            return Err(Error::InvalidOrigin("URL contains a path".into()));
-        }
-
-        let normalized_origin = parsed.as_str().trim_end_matches('/').to_owned();
-        Ok(Self {
-            compact_v2_base: format!("{normalized_origin}/compact-v2"),
-            normalized_origin,
-        })
+        Ok(parsed)
     }
 }
 
@@ -1082,36 +1116,50 @@ mod tests {
     fn indexed_network_registry_scope_binds_origin_length_and_etag_without_io() {
         let registry = blockzilla_archive_v2::ARCHIVE_V2_PUBKEY_REGISTRY_FILE;
         let first_inventory = inventory(&[(registry, identity(32, "\"first\""))]);
-        let first_url = Url::parse("https://one.example/compact-v2/").unwrap();
-        let second_url = Url::parse("https://two.example/compact-v2/").unwrap();
-        let first = indexed_network_registry_admission(&first_url, 900, &first_inventory).unwrap();
+        let first_http = HttpRangeSource::with_options(
+            "https://one.example/compact-v2/",
+            900,
+            None,
+            HttpRangeSourceOptions {
+                object_path_layout: HttpObjectPathLayout::FlatEpoch,
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        let second_http = HttpRangeSource::with_options(
+            "https://one.example/compact-v2/build/epoch-900",
+            900,
+            None,
+            HttpRangeSourceOptions {
+                object_path_layout: HttpObjectPathLayout::FlatObjects,
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        let first = indexed_network_registry_admission(&first_http, &first_inventory).unwrap();
         assert_eq!(
             first["url"],
             "https://one.example/compact-v2/900/registry.bin"
         );
-        assert_ne!(
-            first,
-            indexed_network_registry_admission(&second_url, 900, &first_inventory).unwrap()
+        assert_eq!(
+            indexed_network_registry_admission(&second_http, &first_inventory).unwrap()["url"],
+            "https://one.example/compact-v2/build/epoch-900/registry.bin"
         );
         for changed in [identity(64, "\"first\""), identity(32, "\"second\"")] {
             assert_ne!(
                 first,
-                indexed_network_registry_admission(
-                    &first_url,
-                    900,
-                    &inventory(&[(registry, changed)])
-                )
-                .unwrap()
+                indexed_network_registry_admission(&first_http, &inventory(&[(registry, changed)]))
+                    .unwrap()
             );
         }
-        assert!(indexed_network_registry_admission(&first_url, 900, &inventory(&[])).is_err());
+        assert!(indexed_network_registry_admission(&first_http, &inventory(&[])).is_err());
     }
 
     #[test]
     fn derives_only_the_public_compact_route() {
-        let endpoint = WorkerEndpoint::parse("https://example.test/", false).unwrap();
-        assert_eq!(endpoint.normalized_origin, "https://example.test");
-        assert_eq!(endpoint.compact_v2_base, "https://example.test/compact-v2");
+        let endpoint = ArchiveEndpoint::parse_origin("https://example.test/", false).unwrap();
+        assert_eq!(endpoint.cache_key, "https://example.test");
+        assert_eq!(endpoint.base_url, "https://example.test/compact-v2");
 
         for invalid in [
             "http://example.test",
@@ -1120,9 +1168,12 @@ mod tests {
             "https://example.test?query=1",
             "file:///tmp/archive",
         ] {
-            assert!(WorkerEndpoint::parse(invalid, false).is_err(), "{invalid}");
+            assert!(
+                ArchiveEndpoint::parse_origin(invalid, false).is_err(),
+                "{invalid}"
+            );
         }
-        assert!(WorkerEndpoint::parse("http://127.0.0.1:1234", true).is_ok());
+        assert!(ArchiveEndpoint::parse_origin("http://127.0.0.1:1234", true).is_ok());
     }
 
     #[test]

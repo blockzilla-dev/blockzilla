@@ -1,0 +1,35 @@
+[package]
+name = "zillastream-capture-core"
+version = "0.2.0"
+edition = "2024"
+rust-version = "1.97.1"
+license = "MIT"
+publish = false
+description = "Bounded native Agave capture journal shared by Zillastream and Blockzilla"
+
+[dependencies]
+anyhow = "1.0.104"
+blockzilla-archive-v2 = { path = "../../crates/compact-v2/blockzilla-archive-v2", default-features = false }
+blockzilla-bank-stream-v2 = { path = "../../crates/blockzilla-bank-stream-v2" }
+crossbeam-channel = "0.5.15"
+five8 = "1.0.0"
+libc = "0.2.189"
+rusqlite = { version = "=0.40.2", features = ["bundled", "fallible_uint"] }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = { version = "1.0.151", features = ["raw_value"] }
+sha2 = "0.11.0"
+zstd = "0.13.3"
+
+[dev-dependencies]
+tempfile = "3.27.0"
+
+[lints.rust]
+unexpected_cfgs = "deny"
+
+[workspace]
+
+[profile.release]
+lto = "thin"
+codegen-units = 4
+panic = "abort"
+strip = "debuginfo"

@@ -1,9 +1,9 @@
 use anyhow::{Context, Result};
-use of_car_reader::metadata_decoder::{
+use blockzilla_solana_wire::metadata_decoder::{
     InnerInstructionVisit, ReturnDataVisit, TokenBalanceVisit, TransactionStatusMetaVisitor,
     visit_protobuf_transaction_status_meta,
 };
-use of_car_reader::stored_transaction::{
+use blockzilla_solana_wire::stored_transaction::{
     InstructionError as StoredInstructionError, StoredTransactionError,
 };
 use prost::Message;
@@ -598,7 +598,7 @@ fn meta_vec_pool_bytes<T>(pool: &Vec<Vec<T>>) -> usize {
 }
 
 pub fn compact_meta_from_proto(
-    meta: &of_car_reader::confirmed_block::TransactionStatusMeta,
+    meta: &blockzilla_solana_wire::confirmed_block::TransactionStatusMeta,
     index: &KeyIndex,
 ) -> Result<CompactMetaV1> {
     let err = meta
@@ -1103,7 +1103,7 @@ impl<'index, 'metadata, 'reuse> TransactionStatusMetaVisitor<'metadata>
     #[inline]
     fn reward_raw(&mut self, bytes: &'metadata [u8]) {
         reserve_on_first(&mut self.rewards, REWARDS_RESERVE);
-        match of_car_reader::confirmed_block::Reward::decode(bytes)
+        match blockzilla_solana_wire::confirmed_block::Reward::decode(bytes)
             .map_err(anyhow::Error::from)
             .and_then(|reward| compact_reward(&reward, self.index))
         {
@@ -1186,7 +1186,7 @@ fn compact_pubkey_optional(index: &KeyIndex, s: &str) -> Option<CompactPubkey> {
 }
 
 fn compact_token_balance(
-    tb: &of_car_reader::confirmed_block::TokenBalance,
+    tb: &blockzilla_solana_wire::confirmed_block::TokenBalance,
     index: &KeyIndex,
 ) -> Result<CompactTokenBalance> {
     let mint = compact_pubkey_optional(index, &tb.mint);
@@ -1244,7 +1244,7 @@ fn compact_token_balance_visit(
 }
 
 fn compact_reward(
-    rw: &of_car_reader::confirmed_block::Reward,
+    rw: &blockzilla_solana_wire::confirmed_block::Reward,
     index: &KeyIndex,
 ) -> Result<CompactReward> {
     let pk = Pubkey::from_str(&rw.pubkey)
@@ -1264,7 +1264,7 @@ fn compact_reward(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use of_car_reader::confirmed_block::{
+    use blockzilla_solana_wire::confirmed_block::{
         InnerInstruction, InnerInstructions, ReturnData, Reward, TokenBalance,
         TransactionStatusMeta, UiTokenAmount,
     };

@@ -28,7 +28,8 @@ pub const COMPACT_V2_REQUIRED_OBJECTS: [&str; 4] =
 ///
 /// Readers probe only this fixed list. A directory listing or a separately
 /// published inventory is not part of admission.
-pub const COMPACT_V2_OPTIONAL_OBJECTS: [&str; 14] = [
+pub const COMPACT_V2_OPTIONAL_OBJECTS: [&str; 15] = [
+    blockzilla_archive_v2::CAR_SLOT_META_FILE,
     SIGNATURES_FILE,
     ARCHIVE_V2_BLOCKHASH_REGISTRY_FILE,
     ARCHIVE_V2_BLOCKHASH_INDEX_V3_FILE,

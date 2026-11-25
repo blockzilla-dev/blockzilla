@@ -15,12 +15,12 @@ use std::{
 };
 
 use crate::poh::{MAX_POH_NUM_HASHES_PER_ENTRY, SignatureMixinBuilder};
+use crate::retained_poh::{
+    DecodedPohFrame, PohWireProfile, decode_payload as decode_retained_poh_payload,
+};
 use blockzilla_archive_v2::{
     ARCHIVE_V2_BLOCKHASH_REGISTRY_FILE, ARCHIVE_V2_POH_FILE, ARCHIVE_V2_PREV_BLOCKHASH_TAIL_FILE,
     ARCHIVE_V2_SIGNATURES_FILE, ArchiveV2HotBlockIndexRow, WincodeArchiveV2PohRecord,
-};
-use blockzilla_archive_v3::sidecars::poh::{
-    DecodedPohFrame, PohWireProfile, decode_payload as decode_retained_poh_payload,
 };
 use blockzilla_compact::CompactPohEntry;
 use rayon::prelude::*;
@@ -2705,6 +2705,9 @@ fn duration_millis(duration: Duration) -> u64 {
 mod tests {
     use super::*;
     use crate::poh::{SignatureMixinBuilder, derive_entry_hash};
+    use crate::retained_poh::{
+        self as archive_wire, CurrentPohEntry, CurrentPohRecord, LegacyPohEntry, LegacyPohRecord,
+    };
     use blockzilla_archive_v2::{
         ARCHIVE_V2_BLOCK_INDEX_FILE, ARCHIVE_V2_BLOCKS_FILE, ARCHIVE_V2_GENESIS_BIN_FILE,
         ARCHIVE_V2_META_FILE, ARCHIVE_V2_PUBKEY_REGISTRY_FILE, ArchiveV2HotBlockBlob,
@@ -2714,10 +2717,6 @@ mod tests {
         WincodeArchiveV2GenesisFeeParams, WincodeArchiveV2GenesisInflationParams,
         WincodeArchiveV2GenesisPohParams, WincodeArchiveV2GenesisRentParams,
         WincodeArchiveV2Header, write_archive_v2_hot_block_index,
-    };
-    use blockzilla_archive_v3::{
-        sidecars::poh::{CurrentPohEntry, CurrentPohRecord, LegacyPohEntry, LegacyPohRecord},
-        wincode as archive_wire,
     };
     use blockzilla_primitives::{framed::write_u32_varint, wincode_leb128_config};
     use std::{fs, io::Cursor, path::Path};

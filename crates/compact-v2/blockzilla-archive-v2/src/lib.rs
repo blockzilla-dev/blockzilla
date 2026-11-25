@@ -1,6 +1,8 @@
+pub mod car_slot_meta;
 pub mod skipped_slots;
 pub mod v2;
 
+pub use car_slot_meta::*;
 pub use skipped_slots::*;
 pub use v2::*;
 
