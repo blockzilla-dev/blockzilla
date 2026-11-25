@@ -2,6 +2,8 @@ mod check;
 mod convert;
 mod ledger;
 mod markers;
+mod notify;
+mod publish;
 mod slot_compact;
 mod source;
 
@@ -63,6 +65,23 @@ enum Command {
         #[arg(long, default_value_t = 1)]
         read_threads: u8,
     },
+    /// Send one archived epoch to Cloudflare R2.
+    ///
+    /// The files in `EPOCH_ARCHIVE_FILES` go to s3://R2_BUCKET/R2_PREFIX/epoch-N/.
+    /// R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET, R2_PREFIX, and
+    /// R2_ENDPOINT or R2_S3_ENDPOINT come from the environment. A missing
+    /// archive file stops the command before the first upload. An object of
+    /// the same size stays in place. A different size stops the command.
+    /// One Telegram line is sent after every object is confirmed when
+    /// TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID are set. A Telegram failure
+    /// still exits 0.
+    #[command(name = "public-epoch-to-cf")]
+    PublicEpochToCf {
+        /// Parent directory. The archive is read from epoch-N inside it.
+        output: PathBuf,
+        #[arg(long)]
+        epoch: u64,
+    },
 }
 
 fn main() {
@@ -113,6 +132,16 @@ fn run() -> Result<()> {
             println!("Output: {}", output.display());
             Ok(())
         }
+        Command::PublicEpochToCf { output, epoch } => {
+            let settings = publish::resolve_settings(&|name| std::env::var(name).ok())?;
+            let output = ledger::epoch_output_dir(&output, epoch);
+            let files = publish::require_epoch_files(&output)?;
+            publish::upload_epoch(&settings, epoch, &files)?;
+            notify::notify_sent_to_cf(epoch, &output)?;
+            let folder = publish::epoch_folder(&settings.prefix, epoch);
+            println!("Output: s3://{}/{folder}", settings.bucket);
+            Ok(())
+        }
     }
 }
 
@@ -156,4 +185,23 @@ fn read_slot_compact_accepts_only_explicit_ledger_and_slot() {
         ])
         .is_err()
     );
+}
+
+#[test]
+fn public_epoch_to_cf_accepts_the_epoch_directory() {
+    let cli = Cli::try_parse_from([
+        "hivezilla-ledger-archive",
+        "public-epoch-to-cf",
+        "/home/sol/ledger-archive-out",
+        "--epoch",
+        "1084",
+    ])
+    .unwrap();
+    match cli.command {
+        Command::PublicEpochToCf { epoch, output } => {
+            assert_eq!(epoch, 1084);
+            assert_eq!(output, PathBuf::from("/home/sol/ledger-archive-out"));
+        }
+        _ => panic!("wrong command"),
+    }
 }
