@@ -1,0 +1,65 @@
+[workspace]
+resolver = "2"
+members = [
+    "bench/sample-block",
+    "examples",
+    "crates/blockzilla-primitives",
+    "crates/blockzilla-model",
+    "crates/blockzilla-solana-wire",
+    "crates/blockzilla-live-format",
+    "crates/source/blockzilla-source",
+    "crates/source/blockzilla-source-local",
+    "crates/source/blockzilla-source-http",
+    "crates/source/blockzilla-source-cache",
+    "crates/parser/blockzilla-log-parser",
+    "crates/parser/blockzilla-program-logs",
+    "crates/compact-v2/blockzilla-registry",
+    "crates/compact-v2/blockzilla-compact",
+    "crates/compact-v2/blockzilla-archive-v2",
+    "crates/compact-v2/blockzilla-compact-v2-reader",
+    "crates/reader/blockzilla-read-sdk",
+    "blockzilla/cli",
+    "blockzilla/archive-gateway",
+    "blockzilla/get-block"
+]
+exclude = [
+    "blockzilla/builder",
+    "blockzilla/ledger-archive",
+    "blockzilla/get-block/resolver",
+    "crates/blockzilla-account-bridge-protocol",
+    "crates/blockzilla-account-client",
+    "crates/blockzilla-bank-client",
+    "crates/blockzilla-bank-stream-v2",
+    "zillastream/capture-core",
+    "zillastream/geyser-plugin",
+    "zillastream/relay",
+    "zillastream/relay/decoder"
+]
+
+[workspace.package]
+version = "0.2.0"
+edition = "2024"
+rust-version = "1.98"
+license = "MIT"
+repository = "https://github.com/blockzilla-dev/blockzilla"
+
+[workspace.lints.rust]
+unexpected_cfgs = "deny"
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[profile.dev]
+debug = 0
+incremental = false
+
+[profile.test]
+debug = 0
+incremental = false
+
+[profile.release.package.blockzilla-get-block]
+strip = "debuginfo"

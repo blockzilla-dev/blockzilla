@@ -1,0 +1,21 @@
+{
+  "bank_hash_hex": "c512cdbd4355a9c06d96696f63057b7fde6b113dac7a7b444a52c69d507ca5da",
+  "carrier_bank_id": 23,
+  "carrier_slot": 460170404,
+  "finalization_target_slot": 460170403,
+  "fixture_kind": "synthetic_metadata_with_native_certificate_fields",
+  "native_footer_bytes": 524,
+  "native_footer_sha256": "a6558ffd423892537409bfb73dd5e8d2190a6c5746b3534e6f9ec234015eb56e",
+  "producer_time_nanos": "1234567890123456789",
+  "source": {
+    "agave_revision": "87167f3906bdf5111e99ead64d8f4098b7874e33",
+    "genesis_hash": "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d",
+    "node_identity": "11111111111111111111111111111111",
+    "session_id": "synthetic-session-1"
+  },
+  "source_coverage": "Synthetic node identity, session, event binding, producer time, and user agent. Agave revision pins the decoder schema; native certificate fields retain public ledger values.",
+  "source_event_sequence": 123,
+  "source_event_sha256": "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+  "user_agent_hex": "626c6f636b7a696c6c612d73796e7468657469632d746573742d6167656e74",
+  "verification": "captured_not_verified"
+}

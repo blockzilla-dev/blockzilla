@@ -1,0 +1,49 @@
+name = "blockzilla-get-block-local"
+main = "build/index.js"
+compatibility_date = "2026-11-21"
+workers_dev = false
+
+[build]
+command = "worker-build --release . --no-default-features --features worker"
+
+[vars]
+BZ_ARCHIVE_SOURCE = "r2"
+BZ_ARCHIVE_PREFIX = "compact-v2/blockzilla-20261004"
+BZ_ARCHIVE_LAYOUT = "stored"
+# Use a new generation before replacing any archive object or derived index.
+BZ_ARCHIVE_GENERATION = "example-archive-v1"
+# Set dense only after the derived index exists for every served epoch.
+BZ_SLOT_INDEX = "sparse"
+BZ_R2_BUCKET_BINDING = "BZ_ARCHIVE_BUCKET"
+# Optional five-second positive auth cache on GET routes. Set this to the
+# actual API-key KV namespace ID; change it whenever that binding changes.
+# BZ_AUTH_CACHE_SCOPE = "replace-with-api-key-kv-namespace-id"
+# Optional authenticated native R2 reader in the storage provider's account. Set the
+# matching BZ_NATIVE_READER_SECRET with Wrangler secrets. Cross-account HTTP
+# also needs global_fetch_strictly_public in compatibility_flags.
+# BZ_NATIVE_READER_URL = "https://reader.example.workers.dev/v1/range"
+# Enable getTransaction only after its catalog and per-epoch generation
+# manifests are published. Supply BZ_SIGNATURE_INDEX_TOKEN as a Worker secret.
+# BZ_HTTP_GET_ONLY must be absent or false for the POST route.
+# BZ_SIGNATURE_INDEX_URL = "https://signature-index.example.com"
+# BZ_SIGNATURE_CATALOG_DIGEST = "replace-with-lowercase-64-character-sha256"
+
+[[r2_buckets]]
+binding = "BZ_ARCHIVE_BUCKET"
+bucket_name = "replace-with-archive-bucket"
+
+[[kv_namespaces]]
+binding = "BZ_RPC_API_KEYS"
+id = "00000000000000000000000000000000" # Replace with the API-key KV namespace ID.
+
+[[analytics_engine_datasets]]
+binding = "BZ_RPC_METRICS"
+dataset = "blockzilla_rpc_metrics"
+
+[observability]
+enabled = true
+head_sampling_rate = 0.01
+
+[observability.logs]
+enabled = true
+invocation_logs = true

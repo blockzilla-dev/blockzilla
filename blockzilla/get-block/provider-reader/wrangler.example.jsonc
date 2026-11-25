@@ -1,0 +1,15 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "blockzilla-provider-reader",
+  "account_id": "REPLACE_WITH_PROVIDER_ACCOUNT_ID",
+  "main": "src/worker.mjs",
+  "compatibility_date": "2026-11-22",
+  "workers_dev": true,
+  "preview_urls": false,
+  "upload_source_maps": true,
+  "r2_buckets": [
+    { "binding": "FOUNDATION_ARCHIVE", "bucket_name": "replace-with-archive-bucket" }
+  ],
+  "limits": { "cpu_ms": 50, "subrequests": 50 },
+  "observability": { "enabled": true, "head_sampling_rate": 0.01 }
+}

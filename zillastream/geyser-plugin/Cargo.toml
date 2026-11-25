@@ -1,0 +1,47 @@
+[package]
+name = "zillastream-geyser-plugin"
+version = "0.2.0"
+edition = "2024"
+rust-version = "1.97.1"
+license = "MIT"
+publish = false
+description = "Zillastream native Agave Geyser capture plugin"
+
+[lib]
+# Preserve the deployed library filename during the source extraction.
+name = "hivezilla_direct_agave"
+crate-type = ["cdylib"]
+
+[features]
+default = []
+bank-v2 = []
+
+[dependencies]
+anyhow = "1.0.104"
+zillastream-capture-core = { path = "../capture-core" }
+blockzilla-archive-v2 = { path = "../../crates/compact-v2/blockzilla-archive-v2", default-features = false }
+blockzilla-compact = { path = "../../crates/compact-v2/blockzilla-compact", default-features = false }
+serde_json = { version = "1.0.151", features = ["raw_value"] }
+wincode = { version = "=0.6.1", features = ["derive"] }
+agave-geyser-plugin-interface = { git = "https://github.com/anza-xyz/agave", rev = "a203300045b405f86c9c84308b2eae76af69ac3b", features = ["agave-unstable-api"] }
+solana-transaction-status = { git = "https://github.com/anza-xyz/agave", rev = "a203300045b405f86c9c84308b2eae76af69ac3b", features = ["agave-unstable-api"] }
+solana-transaction = { version = "=4.2.0", features = ["wincode"] }
+solana-transaction-error = { version = "=3.4.0", features = ["wincode"] }
+solana-message = { version = "=4.5.0", features = ["wincode"] }
+
+[dev-dependencies]
+tempfile = "3.27.0"
+
+[target.'cfg(target_os = "linux")'.dev-dependencies]
+blockzilla-native-worker = { package = "hivezilla-direct-agave", path = "../../blockzilla/builder" }
+
+[lints.rust]
+unexpected_cfgs = "deny"
+
+[workspace]
+
+[profile.release]
+lto = "thin"
+codegen-units = 4
+panic = "abort"
+strip = "debuginfo"

@@ -1,0 +1,34 @@
+{
+  "blockhash_registry": {
+    "1": "64f6d18d44b5081dd202d841f0acaaf50b8dceb3b0bae07b9512b3151dc3b11e"
+  },
+  "compressed_bytes": 822085,
+  "compressed_sha256": "bbf9a125d78acb1f046b618ce576612a019db457a6dfd07d182c6f14d9198306",
+  "decoded_bytes": 5950414,
+  "decoded_sha256": "28f341a79acbd39764c14c52bd71aca5e5e5b0d6fe8310b29db3f3117ca15d6e",
+  "expected": {
+    "failed_transactions": 1383,
+    "inner_instructions": 1504,
+    "log_events": 26767,
+    "metadata_rows": 2969,
+    "parent_slot": 355294914,
+    "signatures": 3035,
+    "signed_transactions_sha256": "bb8c362fcc5dd434fd6a4929693d6edb8f644d18ff08576a1f8ca8cb8457beeb",
+    "slot": 355294915,
+    "transactions": 2969
+  },
+  "format": "WincodeArchiveV2Block; LEB128 integers; zstd level 3",
+  "previous_blockhash": null,
+  "schema": "blockzilla-sample-block-v1",
+  "scope": "One complete fixture block with inline public keys and recent hashes. Not a full epoch or chain-continuity proof. The source fixture does not supply the previous blockhash. Existing compact log codec rules apply.",
+  "source": {
+    "bytes": 4654582,
+    "failed_transactions": 1383,
+    "file": "epoch-822-biggest.car",
+    "inner_instructions": 1504,
+    "kind": "existing Old Faithful CAR fixture",
+    "metadata_rows": 2969,
+    "original_log_lines": 26767,
+    "sha256": "7cabc9c60e146fe43b864ad860edfd29961abd70ad7cc359f767437ebea89ec7"
+  }
+}
