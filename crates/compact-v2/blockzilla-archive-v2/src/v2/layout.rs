@@ -7,7 +7,7 @@
 //!   chain, read by indexers, replay and verification, and required for every
 //!   epoch.
 //! - the **edge tier** — `archive-v2-block-access.*`, a denormalised per-block
-//!   blob that lets `edgezilla/get-block` answer one request with a
+//!   blob that lets `blockzilla/get-block` answer one request with a
 //!   single ranged read against object storage. Derived, rebuildable from the
 //!   archive, sized per *block* rather than per byte, and needed only for the
 //!   epochs we choose to serve.
@@ -54,7 +54,7 @@ pub enum StorageTier {
 /// archive's `blocks.zstd` *and* into the edge blob — and
 /// [`super::ArchiveV2GetBlockIndexRow::is_missing`] reports a block as missing
 /// when `access_len == 0`. Its only production reader is
-/// `edgezilla/get-block`. It is a serving index that happens to be
+/// `blockzilla/get-block`. It is a serving index that happens to be
 /// stored beside the archive, and leaving it in the archive tier would break
 /// the invariant below.
 pub const EDGE_TIER_FILES: &[&str] = &[

@@ -4,6 +4,16 @@ Serve Compact V2 blocks from retained native frames or immutable archives.
 The Worker adapter and native resolver share the format code. The resolver
 service is under `resolver/`.
 
+| Component | Source | Purpose |
+| --- | --- | --- |
+| getBlock Worker | [`src/worker.rs`](src/worker.rs) | Serve recent and archived blocks through the public API. |
+| Native resolver | [`resolver/`](resolver/) | Resolve block-local data and read retained native blocks. |
+| Provider range reader | [`provider-reader/`](provider-reader/) | Stream checked archive byte ranges from the storage provider. |
+
+These product services belong to Blockzilla. Account-specific deployment
+settings, monitoring and infrastructure experiments belong outside this
+repository.
+
 ```sh
 cargo run --manifest-path blockzilla/get-block/resolver/Cargo.toml -- --help
 cargo run -p blockzilla-get-block --bin build-slot-index -- --help
