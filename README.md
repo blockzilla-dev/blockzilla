@@ -44,4 +44,6 @@ The 1.0 cleanup is on `codex/1.0-core`: [draft PR #90](https://github.com/blockz
 Experimental V3 work stays on [its own branch](https://github.com/blockzilla-dev/blockzilla/tree/codex/archive-v3).
 The combined live token dump and archive backfill is still a development target.
 
+Contributions are welcome: read [CONTRIBUTING.md](CONTRIBUTING.md).
+
 For validator setup and upgrade checks, read the [Agave compatibility guide](zillastream/agave-compatibility/README.md).

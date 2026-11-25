@@ -1,0 +1,24 @@
+name: Feature request
+description: Propose a focused change to Blockzilla.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Explain the use case and the limitation you encounter.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe the result, including a small example if possible.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives and compatibility
+      description: Note other approaches and any API or format impact.
