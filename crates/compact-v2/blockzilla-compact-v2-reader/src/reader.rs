@@ -6097,11 +6097,14 @@ mod tests {
         assert_eq!(filter.registry_id_for(&REGISTRY_KEY_TWO), Some(2));
 
         let mut wrong_positive = fs::read(&entry).unwrap();
-        let id_offset = wrong_positive
-            .windows(32)
-            .position(|bytes| bytes == REGISTRY_KEY_TWO)
-            .unwrap()
-            + 32;
+        // The scope hash can end with the same byte as this repeated-byte key.
+        // Use the encoded field offset, not a byte-pattern search across fields.
+        let key_offset = b"BZPKF001".len() + 32;
+        assert_eq!(
+            &wrong_positive[key_offset..key_offset + 32],
+            &REGISTRY_KEY_TWO
+        );
+        let id_offset = key_offset + 32;
         wrong_positive[id_offset..id_offset + 4].copy_from_slice(&1u32.to_le_bytes());
         let checksum_offset = wrong_positive.len() - 32;
         let checksum = Sha256::digest(&wrong_positive[..checksum_offset]);
