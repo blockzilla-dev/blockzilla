@@ -102,6 +102,17 @@ pub struct FinalizedBlock {
     pub root: Frame,
 }
 
+#[derive(Debug)]
+pub(crate) struct FinalizedFeedUnavailable;
+
+impl std::fmt::Display for FinalizedFeedUnavailable {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter.write_str("recent_source_failed")
+    }
+}
+
+impl std::error::Error for FinalizedFeedUnavailable {}
+
 fn bounded_json(path: &Path) -> Result<serde_json::Value> {
     ensure!(
         std::fs::symlink_metadata(path)?.file_type().is_file(),
@@ -139,7 +150,10 @@ impl RecentClient {
             .map(crate::ledger_compact::Client::new)
             .transpose()?;
         let client = Self { config, ledger };
-        client.open()?;
+        ensure!(
+            client.open_checked()?.is_some() || client.ledger.is_some(),
+            "recent_source_failed"
+        );
         Ok(client)
     }
 
@@ -175,11 +189,11 @@ impl RecentClient {
     }
 
     /// Select only a unique locally rooted bank. The caller does not need to
-    /// know its hash. Absence is a miss; invalid custody or a retirement race
-    /// after selection is an error, never permission to guess an archive route.
+    /// know its hash. A failed feed at initial open can use an independent
+    /// source. Invalid custody or a retirement race remains terminal.
     pub fn read_finalized_by_slot(&self, slot: u64) -> Result<Option<FinalizedBlock>> {
         ensure!(slot <= v2::SAFE, "invalid_request");
-        let source = self.open()?;
+        let source = self.open_checked()?.ok_or(FinalizedFeedUnavailable)?;
         let db = Connection::open_with_flags(
             self.config.bank_source_root.join("feed.sqlite"),
             OpenFlags::SQLITE_OPEN_READ_ONLY | OpenFlags::SQLITE_OPEN_NO_MUTEX,
@@ -260,6 +274,12 @@ impl RecentClient {
     }
 
     fn open(&self) -> Result<BankSource> {
+        self.open_checked()?.context("recent_source_failed")
+    }
+
+    // None means that the checked source reported failed health. All source
+    // identity, authority, and integrity checks must pass before that result.
+    fn open_checked(&self) -> Result<Option<BankSource>> {
         for path in [&self.config.bank_source_root, &self.config.payload_root] {
             ensure!(
                 std::fs::symlink_metadata(path)?.is_dir() && path.canonicalize()? == *path,
@@ -287,8 +307,7 @@ impl RecentClient {
             "recent_payload_source_changed"
         );
         source.validate_beam_authority()?;
-        ensure!(source.health()? != "failed", "recent_source_failed");
-        Ok(source)
+        Ok((source.health()? != "failed").then_some(source))
     }
 
     /// All work is request-local and synchronous; the HTTP handler runs this

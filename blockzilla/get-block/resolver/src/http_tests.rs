@@ -103,6 +103,9 @@ impl ResolutionCatalog for MockCatalog {
     fn pending(&self, slot: u64) -> Result<Option<PendingLocatorV1>> {
         Ok((slot == SLOT).then(pending))
     }
+    fn has_epoch(&self, epoch: u64) -> bool {
+        epoch == SLOT / crate::catalog::SLOTS
+    }
     fn archived_blockhash(&self, slot: u64) -> Result<Option<[u8; 32]>> {
         Ok((slot == SLOT).then_some([5; 32]))
     }
@@ -175,6 +178,61 @@ fn get_request(path: &str) -> Request {
         .header("x-bz-foundation-source-prefix", PREFIX)
         .body(Body::empty())
         .unwrap()
+}
+
+#[tokio::test]
+async fn checked_archive_lookup_enqueues_only_an_unmirrored_epoch() {
+    let directory = tempfile::tempdir().unwrap();
+    let dir = directory.path().canonicalize().unwrap();
+    let app = || {
+        router_with_archive_miss(
+            Arc::new(MockCatalog {
+                calls: AtomicUsize::new(0),
+            }),
+            TOKEN,
+            0,
+            2,
+            None,
+            Some(dir.clone()),
+        )
+        .unwrap()
+    };
+    let mut wrong_token = get_request("/v1/block/864000");
+    wrong_token.headers_mut().remove("authorization");
+    let mut wrong_source = get_request("/v1/block/864000");
+    wrong_source
+        .headers_mut()
+        .remove("x-bz-foundation-generation");
+    for request in [
+        wrong_token,
+        wrong_source,
+        get_request("/v1/block/invalid"),
+        get_request("/v1/block/864000?slot=864001"),
+        get_request("/v1/block/9007199254740992"),
+        get_request("/v1/block/432003"),
+    ] {
+        let _ = app().oneshot(request).await.unwrap();
+    }
+    assert_eq!(std::fs::read_dir(&dir).unwrap().count(), 0);
+
+    let marker = dir.join("epoch-2");
+    let response = app()
+        .oneshot(get_request("/v1/block/864000"))
+        .await
+        .unwrap();
+    assert_eq!(response.status(), StatusCode::NOT_FOUND);
+    assert_eq!(response.headers()["x-bz-foundation-result"], "not_cached");
+    assert_eq!(std::fs::metadata(&marker).unwrap().len(), 0);
+
+    // Use a fresh router to prove deduplication also survives reader restarts.
+    std::fs::write(&marker, b"existing marker").unwrap();
+    let response = app()
+        .oneshot(get_request("/v1/block/864001"))
+        .await
+        .unwrap();
+    assert_eq!(response.status(), StatusCode::NOT_FOUND);
+    assert_eq!(std::fs::read(&marker).unwrap(), b"existing marker");
+    assert_eq!(std::fs::read_dir(&dir).unwrap().count(), 1);
 }
 
 fn post_request(body: Vec<u8>, mode: &str) -> Request {
@@ -436,6 +494,7 @@ async fn finalized_slot_http_returns_verified_native_locator_after_local_retirem
 fn ledger_app(
     action: &str,
     wall: u64,
+    native_failed: bool,
 ) -> (
     Router,
     crate::recent::tests::Fixture,
@@ -443,8 +502,12 @@ fn ledger_app(
     crate::ledger_compact::Config,
 ) {
     let f = crate::recent::tests::fixture();
-    f.db.execute("DELETE FROM banks", []).unwrap();
-    f.db.execute("DELETE FROM feed_events", []).unwrap();
+    if native_failed {
+        std::fs::write(f.root.path().join("STATUS.json"), br#"{"state":"FAILED"}"#).unwrap();
+    } else {
+        f.db.execute("DELETE FROM banks", []).unwrap();
+        f.db.execute("DELETE FROM feed_events", []).unwrap();
+    }
     let (directory, config) = crate::ledger_compact::tests::fixture(action, wall);
     let recent = RecentClient::new(crate::recent::RecentConfig {
         bank_source_root: f.root.path().canonicalize().unwrap(),
@@ -455,7 +518,13 @@ fn ledger_app(
         ledger_compact: Some(config.clone()),
     })
     .unwrap();
-    let app = router_with_recent(
+    let miss_dir = directory
+        .path()
+        .canonicalize()
+        .unwrap()
+        .join("epoch-misses");
+    std::fs::create_dir(&miss_dir).unwrap();
+    let app = router_with_archive_miss(
         Arc::new(MockCatalog {
             calls: AtomicUsize::new(0),
         }),
@@ -463,71 +532,144 @@ fn ledger_app(
         0,
         2,
         Some(Arc::new(recent)),
+        Some(miss_dir),
     )
     .unwrap();
     (app, f, directory, config)
 }
 
 #[tokio::test]
-async fn ledger_fallback_returns_only_bundle_provenance_after_all_checked_misses() {
-    let (app, _native, _directory, config) = ledger_app("emit", 1000);
-    let response = app
-        .clone()
-        .oneshot(get_request(&format!("/v1/finalized/{SLOT}")))
-        .await
+async fn ledger_fallback_uses_checked_sources_with_a_healthy_or_failed_feed() {
+    for native_failed in [false, true] {
+        let (app, _native, _directory, config) = ledger_app("emit", 1000, native_failed);
+        let response = app
+            .clone()
+            .oneshot(get_request(&format!("/v1/finalized/{SLOT}")))
+            .await
+            .unwrap();
+        assert_eq!(
+            response.status(),
+            StatusCode::NOT_FOUND,
+            "admitted historical archive must precede ledger work"
+        );
+        assert_eq!(
+            response.headers()["x-bz-recent-blockhash"],
+            crate::recent::encode_hash(&[5; 32])
+        );
+        let archive: serde_json::Value = serde_json::from_slice(&bytes(response).await).unwrap();
+        assert_eq!(archive["source"], serde_json::to_value(pending()).unwrap());
+        assert!(!config.ledger.join("helper.pid").exists());
+
+        let response = app.oneshot(get_request("/v1/finalized/100")).await.unwrap();
+        assert_eq!(response.status(), StatusCode::OK);
+        for (name, value) in [
+            ("x-bz-foundation-result", "ledger_compact"),
+            ("x-bz-foundation-protocol", "1"),
+            ("x-bz-foundation-generation", GEN),
+            ("x-bz-foundation-source-prefix", PREFIX),
+            ("x-bz-foundation-commitment", "finalized"),
+            ("x-bz-foundation-cache", "BYPASS"),
+            ("x-bz-ledger-generation", "ledger-compact-v1"),
+            ("content-type", crate::ledger_compact::CONTENT_TYPE),
+            ("cache-control", "no-store"),
+        ] {
+            assert_eq!(response.headers()[name], value);
+        }
+        assert_eq!(
+            response.headers()["x-bz-finalized-producer-generation"],
+            "a".repeat(64)
+        );
+        assert!(response.headers().get("x-bz-recent-metadata").is_none());
+        assert!(response.headers().get("x-bz-finalized-root").is_none());
+        let metadata: crate::ledger_compact::Metadata = serde_json::from_slice(
+            &URL_SAFE_NO_PAD
+                .decode(response.headers()["x-bz-ledger-metadata"].as_bytes())
+                .unwrap(),
+        )
         .unwrap();
-    assert_eq!(
-        response.status(),
-        StatusCode::NOT_FOUND,
-        "admitted historical archive must precede ledger work"
-    );
-    assert!(!config.ledger.join("helper.pid").exists());
-    let response = app.oneshot(get_request("/v1/finalized/100")).await.unwrap();
-    assert_eq!(response.status(), StatusCode::OK);
-    assert_eq!(
-        response.headers()["x-bz-foundation-result"],
-        "ledger_compact"
-    );
-    assert_eq!(
-        response.headers()[header::CONTENT_TYPE],
-        crate::ledger_compact::CONTENT_TYPE
-    );
-    assert_eq!(response.headers()[header::CACHE_CONTROL], "no-store");
-    assert_eq!(
-        response.headers()["x-bz-ledger-generation"],
-        "ledger-compact-v1"
-    );
-    assert!(response.headers().get("x-bz-recent-metadata").is_none());
-    assert!(response.headers().get("x-bz-finalized-root").is_none());
-    let metadata: crate::ledger_compact::Metadata = serde_json::from_slice(
-        &URL_SAFE_NO_PAD
-            .decode(response.headers()["x-bz-ledger-metadata"].as_bytes())
-            .unwrap(),
-    )
-    .unwrap();
-    let body = bytes(response).await;
-    assert_eq!(metadata.sha256, hex::encode(Sha256::digest(&body)));
-    assert_eq!(metadata.length, body.len() as u64);
-    assert!(metadata.rooted && metadata.metadata_complete);
+        let sha = response.headers()["x-bz-foundation-sha256"].clone();
+        let len = response.headers()[header::CONTENT_LENGTH].clone();
+        let body = bytes(response).await;
+        assert_eq!(metadata.slot, 100);
+        assert_eq!(metadata.sha256, hex::encode(Sha256::digest(&body)));
+        assert_eq!(metadata.length, body.len() as u64);
+        assert_eq!(sha, metadata.sha256);
+        assert_eq!(len, body.len().to_string());
+        assert!(metadata.rooted && metadata.metadata_complete);
+    }
 }
 
 #[tokio::test]
 async fn ledger_fallback_errors_do_not_become_archive_misses() {
-    for (action, code, reason) in [
-        ("absent", StatusCode::NOT_FOUND, "not_cached"),
-        ("unrooted", StatusCode::CONFLICT, "not_finalized"),
+    for (native_failed, action, code, reason) in [
+        (false, "absent", StatusCode::NOT_FOUND, "not_cached"),
         (
+            true,
+            "absent",
+            StatusCode::SERVICE_UNAVAILABLE,
+            "archive_lookup_required",
+        ),
+        (true, "unrooted", StatusCode::CONFLICT, "not_finalized"),
+        (
+            true,
             "incomplete",
             StatusCode::SERVICE_UNAVAILABLE,
             "ledger_compact_unavailable",
         ),
     ] {
-        let (app, _native, _directory, _config) = ledger_app(action, 1000);
+        let (app, _native, directory, _config) = ledger_app(action, 1000, native_failed);
         let response = app.oneshot(get_request("/v1/finalized/100")).await.unwrap();
         assert_eq!(response.status(), code);
         let value: serde_json::Value = serde_json::from_slice(&bytes(response).await).unwrap();
         assert_eq!(value["reason"], reason);
+        assert_eq!(
+            directory.path().join("epoch-misses/epoch-0").exists(),
+            action == "absent"
+        );
     }
+}
+
+#[tokio::test]
+async fn failed_feed_does_not_allow_unpinned_requests_or_native_recovery() {
+    let (app, native, _directory, config) = ledger_app("emit", 1000, true);
+    for (header, status) in [
+        ("authorization", StatusCode::UNAUTHORIZED),
+        ("x-bz-foundation-generation", StatusCode::CONFLICT),
+    ] {
+        let mut request = get_request("/v1/finalized/100");
+        request.headers_mut().remove(header);
+        assert_eq!(app.clone().oneshot(request).await.unwrap().status(), status);
+    }
+    let uri = recent_uri(&native.frame, "processed");
+    let response = app.clone().oneshot(get_request(&uri)).await.unwrap();
+    assert_eq!(response.status(), StatusCode::SERVICE_UNAVAILABLE);
+    assert_eq!(response.headers()["x-bz-foundation-result"], "unavailable");
+    assert!(response.headers().get("x-bz-ledger-generation").is_none());
+
+    let path = native.root.path().join("FEED.json");
+    let original_feed = std::fs::read(&path).unwrap();
+    let mut feed: serde_json::Value = serde_json::from_slice(&original_feed).unwrap();
+    feed["producer_generation"] = json!("b".repeat(64));
+    std::fs::write(&path, serde_json::to_vec(&feed).unwrap()).unwrap();
+    let response = app
+        .clone()
+        .oneshot(get_request("/v1/finalized/100"))
+        .await
+        .unwrap();
+    assert_eq!(response.status(), StatusCode::SERVICE_UNAVAILABLE);
+    assert_eq!(response.headers()["x-bz-foundation-result"], "unavailable");
+
+    std::fs::write(path, original_feed).unwrap();
+    std::fs::write(
+        native.root.path().join("STATUS.json"),
+        br#"{"state":"RUNNING"}"#,
+    )
+    .unwrap();
+    std::fs::write(native.artifact.join("signatures.bin"), [43]).unwrap();
+    let response = app.oneshot(get_request("/v1/finalized/100")).await.unwrap();
+    assert_eq!(response.status(), StatusCode::SERVICE_UNAVAILABLE);
+    assert_eq!(response.headers()["x-bz-foundation-result"], "unavailable");
+    assert!(!config.ledger.join("helper.pid").exists());
 }
 
 #[tokio::test]
@@ -538,7 +680,7 @@ async fn cancelling_ledger_http_holds_capacity_until_the_helper_exits() {
             let _ = std::fs::write(&self.0, []);
         }
     }
-    let (app, _native, _directory, config) = ledger_app("wait_release", 3000);
+    let (app, _native, _directory, config) = ledger_app("wait_release", 3000, false);
     let release = Release(config.ledger.join("release"));
     let task = tokio::spawn(app.clone().oneshot(get_request("/v1/finalized/100")));
     tokio::time::timeout(std::time::Duration::from_secs(2), async {

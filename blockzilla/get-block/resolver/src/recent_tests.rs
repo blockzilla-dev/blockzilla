@@ -115,6 +115,24 @@ pub(crate) fn request(frame: &Frame, commitment: &str) -> RecentRequest {
 }
 
 #[test]
+fn failed_source_requires_a_verified_ledger_helper_to_start() {
+    let f = fixture();
+    fs::write(f.root.path().join("STATUS.json"), br#"{"state":"FAILED"}"#).unwrap();
+    let mut config = f.client.config.clone();
+    assert_eq!(
+        RecentClient::new(config.clone()).err().unwrap().to_string(),
+        "recent_source_failed"
+    );
+    let (_directory, mut ledger) = crate::ledger_compact::tests::fixture("emit", 1000);
+    ledger.helper_sha256 = "b".repeat(64);
+    config.ledger_compact = Some(ledger);
+    assert_eq!(
+        RecentClient::new(config).err().unwrap().to_string(),
+        "ledger_helper_digest_changed"
+    );
+}
+
+#[test]
 fn recent_processed_and_finalized_return_original_frame_without_a_new_file() {
     let f = fixture();
     let before = fs::read(f.root.path().join("feed.sqlite")).unwrap();

@@ -31,6 +31,7 @@ reqwest = { version = "0.13.4", default-features = false, features = ["blocking"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 sha2 = "0.11.0"
+tempfile = "3.27.0"
 url = "2.5.8"
 blockzilla-solana-wire = { path = "../../crates/blockzilla-solana-wire" }
 # Agave v4.4.0-rc.1, commit b6149a719f8fa84123ac3ce1e5f201af64bca8ee.
@@ -45,9 +46,6 @@ solana-transaction-error = "=4.0.0"
 solana-transaction-status = { git = "https://github.com/anza-xyz/agave", tag = "v4.4.0-rc.1", features = ["agave-unstable-api"] }
 wincode = { version = "=0.6.1", features = ["derive"] }
 zstd = "0.13.3"
-
-[dev-dependencies]
-tempfile = "3.27.0"
 
 [workspace]
 

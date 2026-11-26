@@ -3,7 +3,7 @@ use std::fs::{self, File};
 use std::io::{BufWriter, Write};
 use std::path::{Path, PathBuf};
 
-use anyhow::{Context, Result, bail};
+use anyhow::{Context, Result, bail, ensure};
 use blockzilla_archive_v2::{
     ARCHIVE_V2_BLOCK_INDEX_FILE, ARCHIVE_V2_BLOCKHASH_INDEX_V3_FILE,
     ARCHIVE_V2_BLOCKHASH_REGISTRY_FILE, ARCHIVE_V2_BLOCKS_FILE, ARCHIVE_V2_META_FILE,
@@ -40,6 +40,7 @@ use solana_ledger::blockstore::Blockstore;
 
 use crate::check::Inspected;
 use crate::ledger::{open_read_only, scan_range};
+use crate::publication::{LocalCoverage, Sample, sample_slots};
 use crate::source::{
     SlotData, SourceInnerGroup, SourceMessage, SourceMessageBody, SourceReward, SourceStatus,
     SourceTokenBalance, SourceTx, SourceV1Message,
@@ -184,6 +185,7 @@ pub(crate) fn build_archive(
     end_slot: u64,
     zstd_level: i32,
     read_threads: u8,
+    handoff_epoch: Option<u64>,
 ) -> Result<Inspected> {
     check_zstd_level(zstd_level)?;
     let read_threads = usize::from(read_threads);
@@ -191,6 +193,26 @@ pub(crate) fn build_archive(
         bail!("read threads {read_threads} is outside 1 to 32");
     }
     let blockstore = open_read_only(ledger)?;
+    let epoch_successor = handoff_epoch
+        .map(|epoch| {
+            ensure!(
+                crate::ledger::epoch_slot_range(epoch)? == (start_slot, end_slot),
+                "GetBlock coverage requires a complete epoch"
+            );
+            ensure!(
+                blockstore.lowest_slot() <= start_slot,
+                "ledger no longer stores the start of epoch {epoch}"
+            );
+            let following_slot = end_slot
+                .checked_add(1)
+                .context("epoch boundary overflows")?;
+            let successor = blockstore
+                .rooted_slot_iterator(following_slot)?
+                .next()
+                .context("no rooted block after the epoch yet")?;
+            Sample::from_block(&crate::ledger::load_slot(&blockstore, successor)?)
+        })
+        .transpose()?;
     fs::create_dir_all(output).with_context(|| format!("create {}", output.display()))?;
     let temps = temp_paths(output);
     let result = (|| {
@@ -223,11 +245,45 @@ pub(crate) fn build_archive(
         progress(format!(
             "writing blocks for slots {start_slot} to {end_slot} at zstd level {zstd_level}"
         ));
+        let predecessor_slot = newest.slot;
         let mut writer = ArchiveWriter::create(&temps, key_index, tail, false, zstd_level)?;
-        scan_range(&blockstore, start_slot, end_slot, read_threads, |block| {
+        let selected = handoff_epoch
+            .map(|_| sample_slots(&inspected.block_slots))
+            .transpose()?;
+        let mut samples = Vec::new();
+        let written = scan_range(&blockstore, start_slot, end_slot, read_threads, |block| {
+            if selected.is_some_and(|slots| slots.contains(&block.slot)) {
+                samples.push(Sample::from_block(block)?);
+            }
             writer.write_block(block)
         })?;
+        if let Some(successor) = &epoch_successor {
+            ensure!(
+                inspected.block_slots == written.block_slots
+                    && inspected.skips == written.skips
+                    && inspected.forks == written.forks
+                    && inspected.boundary_hash == written.boundary_hash,
+                "ledger coverage changed between archive scans"
+            );
+            let first = &samples[0];
+            let last = &samples[2];
+            let predecessor = blockstore
+                .rooted_slot_iterator(first.parent_slot)?
+                .take_while(|slot| *slot < start_slot)
+                .last();
+            ensure!(
+                blockstore.is_root(first.parent_slot)
+                    && predecessor == Some(first.parent_slot)
+                    && predecessor_slot == first.parent_slot
+                    && successor.parent_slot == last.slot
+                    && successor.previous_blockhash == last.blockhash,
+                "archive parent chain does not match the epoch boundary roots"
+            );
+        }
         writer.finish(output)?;
+        if let (Some(epoch), Some(successor)) = (handoff_epoch, epoch_successor) {
+            LocalCoverage::write(output, epoch, &written, samples, successor)?;
+        }
         Ok(inspected)
     })();
     if result.is_err() {

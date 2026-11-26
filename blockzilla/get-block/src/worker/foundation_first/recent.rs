@@ -528,9 +528,10 @@ mod tests {
     }
     #[test]
     fn recent_only_configuration_skips_the_legacy_lookup_without_disabling_recovery() {
-        assert!(archive_lookup_mode(None).unwrap());
-        assert!(archive_lookup_mode(Some("all")).unwrap());
-        assert!(!archive_lookup_mode(Some("recent-only")).unwrap());
+        assert_eq!(archive_lookup_mode(None).unwrap(), ArchiveLookupMode::All);
+        assert_eq!(archive_lookup_mode(Some("all")).unwrap(), ArchiveLookupMode::All);
+        assert_eq!(archive_lookup_mode(Some("recent-only")).unwrap(), ArchiveLookupMode::RecentOnly);
+        assert_eq!(archive_lookup_mode(Some("historical")).unwrap(), ArchiveLookupMode::Historical);
         for mode in ["", "off", "recent", "RECENT-ONLY"] {
             assert!(archive_lookup_mode(Some(mode)).is_err());
         }

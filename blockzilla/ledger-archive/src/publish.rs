@@ -4,8 +4,8 @@
 //! `R2_SECRET_ACCESS_KEY`, `R2_ENDPOINT` or `R2_S3_ENDPOINT`, `R2_BUCKET`,
 //! and `R2_PREFIX`. The command uploads every file named in
 //! `EPOCH_ARCHIVE_FILES` and leaves a remote object in place when its size already
-//! matches. A different remote size stops the command. Telegram runs only
-//! after every object is confirmed.
+//! matches in legacy mode. A different remote size stops the command. A
+//! checked GetBlock publication verifies content and creates its receipt last.
 
 use std::collections::BTreeMap;
 use std::fs::File;
@@ -17,14 +17,17 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::thread;
 use std::time::Duration;
 
-use anyhow::{Context, Result, bail};
+use anyhow::{Context, Result, bail, ensure};
 use chrono::Utc;
 use reqwest::Method;
-use reqwest::blocking::{Body, Client};
+use reqwest::blocking::{Body, Client, Response};
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
 use sha2::{Digest, Sha256};
 
 use crate::ledger::EPOCH_ARCHIVE_FILES;
+use crate::publication::{
+    FileStamp, LocalCoverage, LocalObject, READY_FILE, RemoteObject, digest_exact, valid_etag,
+};
 
 pub(crate) const R2_ACCESS_KEY_ID_ENV: &str = "R2_ACCESS_KEY_ID";
 pub(crate) const R2_SECRET_ACCESS_KEY_ENV: &str = "R2_SECRET_ACCESS_KEY";
@@ -37,6 +40,8 @@ const DEFAULT_REGION: &str = "auto";
 const PART_SIZE: u64 = 128 * 1024 * 1024;
 const PARALLEL_UPLOADS: usize = 16;
 const UNSIGNED_PAYLOAD: &str = "UNSIGNED-PAYLOAD";
+const PAYLOAD_SHA256: &str = "x-amz-content-sha256";
+const OBJECT_SHA256: &str = "x-amz-meta-blockzilla-sha256";
 const MAX_RESPONSE_BYTES: u64 = 1024 * 1024;
 const ATTEMPTS: u32 = 4;
 
@@ -125,15 +130,44 @@ pub(crate) fn upload_epoch(
     settings: &PublishSettings,
     epoch: u64,
     files: &[PathBuf],
+    coverage: Option<&LocalCoverage>,
 ) -> Result<()> {
     let client = R2Client::new(settings)?;
+    let mut objects = BTreeMap::new();
     for path in files {
         let name = path
             .file_name()
             .and_then(|name| name.to_str())
             .context("archive file name is not UTF-8")?;
         let key = object_key(&settings.prefix, epoch, name);
-        client.upload_file(path, &key)?;
+        if let Some(coverage) = coverage {
+            let local = coverage
+                .objects
+                .get(name)
+                .context("file missing from checked coverage")?;
+            let identity = client.upload_verified_file(path, &key, local)?;
+            ensure!(
+                objects.insert(name.to_owned(), identity).is_none(),
+                "duplicate archive file"
+            );
+        } else {
+            client.upload_file(path, &key)?;
+        }
+    }
+    if let Some(coverage) = coverage {
+        let ready = coverage.ready_bytes(&settings.bucket, &settings.prefix, &objects)?;
+        for (name, object) in &objects {
+            let key = object_key(&settings.prefix, epoch, name);
+            let head = client
+                .head_identity(&key)?
+                .context("archive object disappeared")?;
+            ensure!(
+                head.length == object.length && head.etag == object.etag,
+                "archive object {name} changed before readiness publication"
+            );
+        }
+        client.publish_ready(&object_key(&settings.prefix, epoch, READY_FILE), &ready)?;
+        eprintln!("published {READY_FILE} for epoch {epoch}");
     }
     Ok(())
 }
@@ -232,6 +266,12 @@ pub(crate) fn complete_multipart_body(parts: &[(u32, &str)]) -> String {
     xml
 }
 
+struct RemoteHead {
+    length: u64,
+    etag: String,
+    digest: Option<String>,
+}
+
 struct R2Client {
     endpoint: String,
     host: String,
@@ -302,8 +342,8 @@ impl R2Client {
         if local == 0 {
             self.put_bytes(key, &[])?;
         } else {
-            let upload_id = self.create_multipart(key)?;
-            if let Err(err) = self.upload_parts(&file, key, &upload_id, local, name) {
+            let upload_id = self.create_multipart(key, None)?;
+            if let Err(err) = self.upload_parts(&file, key, &upload_id, local, name, false) {
                 if let Err(abort_err) = self.abort_multipart(key, &upload_id) {
                     eprintln!("abort {name}: {abort_err:#}");
                 }
@@ -328,6 +368,145 @@ impl R2Client {
         Ok(())
     }
 
+    fn upload_verified_file(
+        &self,
+        path: &Path,
+        key: &str,
+        local: &LocalObject,
+    ) -> Result<RemoteObject> {
+        let file = File::open(path).with_context(|| format!("open {}", path.display()))?;
+        let stamp = FileStamp::capture(path, &file)?;
+        ensure!(
+            digest_exact(&file, local.length)? == local.sha256,
+            "{} differs from its sealed coverage hash",
+            path.display()
+        );
+        stamp.check(path, &file)?;
+        let head = match self.head_identity(key)? {
+            Some(head) => head,
+            None => {
+                if local.length == 0 {
+                    let headers = BTreeMap::from([
+                        ("if-none-match".to_owned(), "*".to_owned()),
+                        (PAYLOAD_SHA256.to_owned(), local.sha256.clone()),
+                        (OBJECT_SHA256.to_owned(), local.sha256.clone()),
+                    ]);
+                    let result = self.request(Method::PUT, key, &BTreeMap::new(), &headers, &[])?;
+                    ensure!(
+                        result.status == 200 || result.status == 412,
+                        "PUT {key} returned HTTP {}",
+                        result.status
+                    );
+                } else {
+                    let upload_id = self.create_multipart(key, Some(&local.sha256))?;
+                    let name = path
+                        .file_name()
+                        .and_then(|value| value.to_str())
+                        .unwrap_or(key);
+                    if let Err(error) =
+                        self.upload_parts(&file, key, &upload_id, local.length, name, true)
+                    {
+                        if let Err(abort_error) = self.abort_multipart(key, &upload_id) {
+                            eprintln!("abort {name}: {abort_error:#}");
+                        }
+                        return Err(error);
+                    }
+                }
+                self.head_identity(key)?
+                    .context("verified object is missing after upload")?
+            }
+        };
+        ensure!(
+            head.length == local.length,
+            "remote {key} length differs from checked archive"
+        );
+        match &head.digest {
+            Some(digest) => ensure!(
+                digest == &local.sha256,
+                "remote {key} coverage digest differs"
+            ),
+            None => {
+                // Legacy objects have no checked uploader metadata. A matching
+                // size alone cannot authorize cleanup. Hash the existing bytes
+                // against the pinned ETag without saving another block copy.
+                self.verify_existing_object(key, &head, &local.sha256)?;
+            }
+        }
+        stamp.check(path, &file)?;
+        Ok(RemoteObject {
+            length: head.length,
+            etag: head.etag,
+            sha256: local.sha256.clone(),
+        })
+    }
+
+    fn head_identity(&self, key: &str) -> Result<Option<RemoteHead>> {
+        let response = self.request(Method::HEAD, key, &BTreeMap::new(), &BTreeMap::new(), &[])?;
+        if response.status == 404 {
+            return Ok(None);
+        }
+        ensure!(
+            response.status == 200,
+            "HEAD {key} returned HTTP {}",
+            response.status
+        );
+        let etag = header_value(&response.headers, "etag", "HEAD")?;
+        ensure!(
+            valid_etag(etag),
+            "HEAD {key} returned an invalid strong ETag"
+        );
+        let digest = if response.headers.contains_key(OBJECT_SHA256) {
+            Some(header_value(&response.headers, OBJECT_SHA256, "HEAD")?.to_owned())
+        } else {
+            None
+        };
+        Ok(Some(RemoteHead {
+            length: content_length(&response.headers, "HEAD")?,
+            etag: etag.to_owned(),
+            digest,
+        }))
+    }
+
+    fn verify_existing_object(&self, key: &str, head: &RemoteHead, sha256: &str) -> Result<()> {
+        let headers = BTreeMap::from([("if-match".to_owned(), head.etag.clone())]);
+        let response = self.send_request(Method::GET, key, &BTreeMap::new(), &headers, &[])?;
+        ensure!(
+            response.status().as_u16() == 200,
+            "GET {key} returned HTTP {}",
+            response.status()
+        );
+        ensure!(
+            content_length(response.headers(), "GET")? == head.length
+                && header_value(response.headers(), "etag", "GET")? == head.etag
+                && digest_exact(response, head.length)? == sha256,
+            "existing object {key} differs from the checked archive"
+        );
+        Ok(())
+    }
+
+    fn publish_ready(&self, key: &str, ready: &[u8]) -> Result<()> {
+        let headers = BTreeMap::from([
+            ("content-type".to_owned(), "application/json".to_owned()),
+            ("if-none-match".to_owned(), "*".to_owned()),
+            (
+                PAYLOAD_SHA256.to_owned(),
+                hex::encode(Sha256::digest(ready)),
+            ),
+        ]);
+        let response = self.request(Method::PUT, key, &BTreeMap::new(), &headers, ready)?;
+        ensure!(
+            matches!(response.status, 200 | 412),
+            "PUT {key} returned HTTP {}",
+            response.status
+        );
+        let existing = self.request(Method::GET, key, &BTreeMap::new(), &BTreeMap::new(), &[])?;
+        ensure!(
+            existing.status == 200 && existing.body == ready,
+            "readiness receipt {key} exists with different contents or could not be verified"
+        );
+        Ok(())
+    }
+
     fn upload_parts(
         &self,
         file: &File,
@@ -335,6 +514,7 @@ impl R2Client {
         upload_id: &str,
         local: u64,
         name: &str,
+        verify: bool,
     ) -> Result<()> {
         let ranges = part_ranges(local, PART_SIZE);
         let total = ranges.len();
@@ -343,7 +523,7 @@ impl R2Client {
             let part_number = u32::try_from(index + 1).context("part number overflows")?;
             eprintln!("{name}: part {part_number}/{total}");
             let bytes = read_range(file, offset, size)?;
-            let etag = self.upload_part(key, upload_id, part_number, &bytes)?;
+            let etag = self.upload_part(key, upload_id, part_number, &bytes, verify)?;
             Ok((part_number, etag))
         })?;
         let etags = ordered_part_etags(etags);
@@ -351,7 +531,7 @@ impl R2Client {
             .iter()
             .map(|(number, etag)| (*number, etag.as_str()))
             .collect::<Vec<_>>();
-        self.complete_multipart(key, upload_id, &borrowed)
+        self.complete_multipart(key, upload_id, &borrowed, verify)
     }
 
     fn head_len(&self, key: &str) -> Result<Option<u64>> {
@@ -377,9 +557,13 @@ impl R2Client {
         Ok(())
     }
 
-    fn create_multipart(&self, key: &str) -> Result<String> {
+    fn create_multipart(&self, key: &str, sha256: Option<&str>) -> Result<String> {
         let params = BTreeMap::from([("uploads".to_string(), String::new())]);
-        let headers = BTreeMap::from([("content-type".to_string(), "application/xml".to_string())]);
+        let mut headers =
+            BTreeMap::from([("content-type".to_string(), "application/xml".to_string())]);
+        if let Some(sha256) = sha256 {
+            headers.insert(OBJECT_SHA256.to_owned(), sha256.to_owned());
+        }
         let response = self.request(Method::POST, key, &params, &headers, &[])?;
         if response.status != 200 {
             bail!("create multipart {key} returned HTTP {}", response.status);
@@ -397,15 +581,22 @@ impl R2Client {
         upload_id: &str,
         part_number: u32,
         bytes: &[u8],
+        verify: bool,
     ) -> Result<String> {
         let params = BTreeMap::from([
             ("partNumber".to_string(), part_number.to_string()),
             ("uploadId".to_string(), upload_id.to_string()),
         ]);
-        let headers = BTreeMap::from([(
+        let mut headers = BTreeMap::from([(
             "content-type".to_string(),
             "application/octet-stream".to_string(),
         )]);
+        if verify {
+            headers.insert(
+                PAYLOAD_SHA256.to_owned(),
+                hex::encode(Sha256::digest(bytes)),
+            );
+        }
         let response = self.request(Method::PUT, key, &params, &headers, bytes)?;
         if response.status != 200 {
             bail!(
@@ -417,10 +608,24 @@ impl R2Client {
         Ok(quote_etag(etag))
     }
 
-    fn complete_multipart(&self, key: &str, upload_id: &str, parts: &[(u32, &str)]) -> Result<()> {
+    fn complete_multipart(
+        &self,
+        key: &str,
+        upload_id: &str,
+        parts: &[(u32, &str)],
+        verify: bool,
+    ) -> Result<()> {
         let params = BTreeMap::from([("uploadId".to_string(), upload_id.to_string())]);
-        let headers = BTreeMap::from([("content-type".to_string(), "application/xml".to_string())]);
+        let mut headers =
+            BTreeMap::from([("content-type".to_string(), "application/xml".to_string())]);
         let body = complete_multipart_body(parts);
+        if verify {
+            headers.insert("if-none-match".to_owned(), "*".to_owned());
+            headers.insert(
+                PAYLOAD_SHA256.to_owned(),
+                hex::encode(Sha256::digest(body.as_bytes())),
+            );
+        }
         let response = self.request(Method::POST, key, &params, &headers, body.as_bytes())?;
         if response.status != 200 {
             bail!("complete multipart {key} returned HTTP {}", response.status);
@@ -468,6 +673,32 @@ impl R2Client {
         headers: &BTreeMap<String, String>,
         body: &[u8],
     ) -> Result<HttpResult> {
+        let response = self.send_request(method.clone(), key, params, headers, body)?;
+        let status = response.status().as_u16();
+        let headers = response.headers().clone();
+        let mut bytes = Vec::new();
+        response
+            .take(MAX_RESPONSE_BYTES + 1)
+            .read_to_end(&mut bytes)
+            .with_context(|| format!("read {method} {key} response"))?;
+        if bytes.len() as u64 > MAX_RESPONSE_BYTES {
+            bail!("{method} {key} response is too large");
+        }
+        Ok(HttpResult {
+            status,
+            headers,
+            body: bytes,
+        })
+    }
+
+    fn send_request(
+        &self,
+        method: Method,
+        key: &str,
+        params: &BTreeMap<String, String>,
+        headers: &BTreeMap<String, String>,
+        body: &[u8],
+    ) -> Result<Response> {
         let now = Utc::now();
         let date = now.format("%Y%m%d").to_string();
         let amz_date = now.format("%Y%m%dT%H%M%SZ").to_string();
@@ -485,10 +716,7 @@ impl R2Client {
             .join("&");
         let mut signed = BTreeMap::from([
             ("host".to_string(), self.host.clone()),
-            (
-                "x-amz-content-sha256".to_string(),
-                UNSIGNED_PAYLOAD.to_string(),
-            ),
+            (PAYLOAD_SHA256.to_string(), UNSIGNED_PAYLOAD.to_string()),
             ("x-amz-date".to_string(), amz_date.clone()),
         ]);
         for (name, value) in headers {
@@ -499,8 +727,9 @@ impl R2Client {
             .map(|(name, value)| format!("{name}:{}\n", value.trim()))
             .collect::<String>();
         let signed_names = signed.keys().cloned().collect::<Vec<_>>().join(";");
+        let payload_hash = &signed[PAYLOAD_SHA256];
         let canonical_request = format!(
-            "{}\n{canonical_uri}\n{canonical_query}\n{canonical_headers}\n{signed_names}\n{UNSIGNED_PAYLOAD}",
+            "{}\n{canonical_uri}\n{canonical_query}\n{canonical_headers}\n{signed_names}\n{payload_hash}",
             method.as_str()
         );
         let scope = format!("{date}/{}/s3/aws4_request", self.region);
@@ -534,23 +763,10 @@ impl R2Client {
         request = request.header("authorization", authorization);
         let response = request.send().with_context(|| format!("{method} {key}"))?;
         let status = response.status().as_u16();
-        let headers = response.headers().clone();
         if status >= 500 || status == 429 {
             bail!("{method} {key} returned HTTP {status}");
         }
-        let mut bytes = Vec::new();
-        response
-            .take(MAX_RESPONSE_BYTES + 1)
-            .read_to_end(&mut bytes)
-            .with_context(|| format!("read {method} {key} response"))?;
-        if bytes.len() as u64 > MAX_RESPONSE_BYTES {
-            bail!("{method} {key} response is too large");
-        }
-        Ok(HttpResult {
-            status,
-            headers,
-            body: bytes,
-        })
+        Ok(response)
     }
 }
 

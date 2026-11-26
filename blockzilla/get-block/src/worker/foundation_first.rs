@@ -42,11 +42,19 @@ pub(super) struct Config {
     header_timeout_ms: u32,
     body_timeout_ms: u32,
     binary_uses_raw_block: bool,
-    archive_lookup_enabled: bool,
+    archive_lookup_mode: ArchiveLookupMode,
     finalized_source: Option<RecentSource>,
+    native_finalized_min_slot: u64,
     native_producer_generation: Option<String>,
     native_archive_prefix: Option<String>,
     ledger_generation: Option<String>,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum ArchiveLookupMode {
+    All,
+    RecentOnly,
+    Historical,
 }
 
 pub(super) enum Outcome {
@@ -176,8 +184,14 @@ enum Metadata {
 }
 
 impl Config {
-    pub(super) fn archive_lookup_enabled(&self) -> bool {
-        self.archive_lookup_enabled
+    pub(super) fn should_lookup_archive(&self, slot: u64, format: BlockResponseFormat) -> bool {
+        match self.archive_lookup_mode {
+            ArchiveLookupMode::All => true,
+            ArchiveLookupMode::RecentOnly => false,
+            ArchiveLookupMode::Historical => {
+                format == BlockResponseFormat::Wincode || slot < self.native_finalized_min_slot
+            }
+        }
     }
     pub(super) fn body_timeout_ms(&self) -> u32 {
         self.body_timeout_ms
@@ -223,9 +237,14 @@ impl Config {
         )?;
         config.binary_uses_raw_block =
             binary_mode(optional_var(env, "BZ_FOUNDATION_BINARY_RESOLVE_MODE").as_deref())?;
-        config.archive_lookup_enabled =
+        config.archive_lookup_mode =
             archive_lookup_mode(optional_var(env, "BZ_FOUNDATION_LOOKUP_MODE").as_deref())?;
         config.configure_finalized(env)?;
+        if config.archive_lookup_mode == ArchiveLookupMode::Historical
+            && config.native_finalized_min_slot == 0
+        {
+            return Err("Historical Foundation lookup requires a nonzero native slot floor".into());
+        }
         Ok(Some(config))
     }
 
@@ -292,8 +311,9 @@ impl Config {
             header_timeout_ms: timeout(header_timeout, DEFAULT_HEADER_TIMEOUT_MS)?,
             body_timeout_ms: timeout(body_timeout, DEFAULT_BODY_TIMEOUT_MS)?,
             binary_uses_raw_block: true,
-            archive_lookup_enabled: true,
+            archive_lookup_mode: ArchiveLookupMode::All,
             finalized_source: None,
+            native_finalized_min_slot: 0,
             native_producer_generation: None,
             native_archive_prefix: None,
             ledger_generation: None,
@@ -742,7 +762,11 @@ impl Config {
             locator.hot.compressed_offset,
             locator.hot.compressed_len as usize,
         )?;
-        ensure_js_safe_range(locator.signature_offset()?, locator.signature_bytes()?)?;
+        let signature_bytes = locator.signature_bytes()?;
+        // A rewards-only block has no signature range to request.
+        if signature_bytes != 0 {
+            ensure_js_safe_range(locator.signature_offset()?, signature_bytes)?;
+        }
         match result.as_str() {
             "complete"
                 if content_type == BUNDLE_TYPE
@@ -751,7 +775,7 @@ impl Config {
                     && required(&mut get, "X-BZ-Foundation-Object-Verified")? == "sha256" =>
             {
                 let minimum = (locator.hot.compressed_len as usize)
-                    .checked_add(locator.signature_bytes()?)
+                    .checked_add(signature_bytes)
                     .and_then(|n| n.checked_add(74))
                     .ok_or("Foundation complete body length overflows")?;
                 if length < minimum {
@@ -790,11 +814,12 @@ fn read_mode(source: &WorkerSource) -> &'static str {
     }
 }
 
-fn archive_lookup_mode(value: Option<&str>) -> std::result::Result<bool, String> {
+fn archive_lookup_mode(value: Option<&str>) -> std::result::Result<ArchiveLookupMode, String> {
     match value {
-        None | Some("all") => Ok(true),
-        Some("recent-only") => Ok(false),
-        _ => Err("Foundation lookup mode must be all or recent-only".into()),
+        None | Some("all") => Ok(ArchiveLookupMode::All),
+        Some("recent-only") => Ok(ArchiveLookupMode::RecentOnly),
+        Some("historical") => Ok(ArchiveLookupMode::Historical),
+        _ => Err("Foundation lookup mode must be all, recent-only, or historical".into()),
     }
 }
 
@@ -894,16 +919,18 @@ fn validate_not_cached(
             source.hot.compressed_offset,
             source.hot.compressed_len as usize,
         )?;
-        ensure_js_safe_range(
-            source
-                .hot
-                .first_signature_ordinal
-                .checked_mul(64)
-                .ok_or("Foundation signature offset overflows")?,
-            (source.hot.signature_count as usize)
-                .checked_mul(64)
-                .ok_or("Foundation signature length overflows")?,
-        )?;
+        if source.hot.signature_count != 0 {
+            ensure_js_safe_range(
+                source
+                    .hot
+                    .first_signature_ordinal
+                    .checked_mul(64)
+                    .ok_or("Foundation signature offset overflows")?,
+                (source.hot.signature_count as usize)
+                    .checked_mul(64)
+                    .ok_or("Foundation signature length overflows")?,
+            )?;
+        }
     }
     Ok(body.source)
 }
@@ -1407,6 +1434,49 @@ mod tests {
         ] {
             assert!(validate_not_cached(&cfg.prefix, &cfg.generation, 432000, bytes).is_err());
         }
+    }
+
+    #[test]
+    fn rewards_only_archive_locator_accepts_no_signature_range_but_checks_source_bounds() {
+        let cfg = config();
+        let slot = 432000;
+        let mut rewards_only = locator();
+        rewards_only.hot.tx_count = 0;
+        rewards_only.hot.signature_count = 0;
+        assert_eq!(rewards_only.signature_offset().unwrap(), 0);
+
+        let check_pending = |locator: &LocatorV1| {
+            let body = serde_json::json!({
+                "version": 1, "slot": slot, "reason": "not_cached",
+                "source": PendingLocatorV1::from_locator(locator),
+            });
+            validate_not_cached(
+                &cfg.prefix,
+                &cfg.generation,
+                slot,
+                &serde_json::to_vec(&body).unwrap(),
+            )
+        };
+        let check_complete = |locator: &LocatorV1| {
+            let mut headers = headers();
+            headers.insert(
+                "X-BZ-Foundation-Locator".into(),
+                URL_SAFE_NO_PAD.encode(locator.wincode_bytes().unwrap()),
+            );
+            cfg.metadata(200, slot, |key| headers.get(key).cloned())
+        };
+        assert_eq!(
+            check_pending(&rewards_only).unwrap(),
+            Some(PendingLocatorV1::from_locator(&rewards_only))
+        );
+        assert!(matches!(
+            check_complete(&rewards_only).unwrap(),
+            Metadata::Complete { .. }
+        ));
+
+        rewards_only.hot.first_signature_ordinal = rewards_only.signatures.length / 64 + 1;
+        assert!(check_pending(&rewards_only).is_err());
+        assert!(check_complete(&rewards_only).is_err());
     }
 
     #[test]

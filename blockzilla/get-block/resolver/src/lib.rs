@@ -22,6 +22,10 @@ pub trait ResolutionCatalog: Send + Sync + 'static {
     fn source_prefix(&self) -> &str;
     fn generation(&self) -> &str;
     fn pending(&self, slot: u64) -> Result<Option<PendingLocatorV1>>;
+    /// Distinguish an unmirrored epoch from a skipped slot in a loaded epoch.
+    fn has_epoch(&self, _epoch: u64) -> bool {
+        false
+    }
     /// Read the admitted archived block hash without reading its payload.
     fn archived_blockhash(&self, _slot: u64) -> Result<Option<[u8; 32]>> {
         Ok(None)
@@ -38,6 +42,9 @@ impl ResolutionCatalog for catalog::Catalog {
     }
     fn pending(&self, slot: u64) -> Result<Option<PendingLocatorV1>> {
         self.pending(slot)
+    }
+    fn has_epoch(&self, epoch: u64) -> bool {
+        self.has_epoch(epoch)
     }
     fn archived_blockhash(&self, slot: u64) -> Result<Option<[u8; 32]>> {
         self.archived_blockhash(slot)

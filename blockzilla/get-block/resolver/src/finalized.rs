@@ -1,7 +1,18 @@
 //! Slot-only admission for original native frames. JSON conversion stays in
 //! the Worker. A verified small root control accompanies the unchanged body.
 use super::*;
-use axum::extract::RawQuery;
+use blockzilla_get_block::foundation_protocol::ARCHIVE_LOOKUP_REQUIRED;
+
+#[derive(Debug)]
+struct ArchiveLookupRequired;
+
+impl std::fmt::Display for ArchiveLookupRequired {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter.write_str(ARCHIVE_LOOKUP_REQUIRED)
+    }
+}
+
+impl std::error::Error for ArchiveLookupRequired {}
 
 pub(super) async fn block(
     State(state): State<Arc<AppState>>,
@@ -52,7 +63,11 @@ pub(super) async fn block(
         let _permit = permit;
         let clock = Clock::start()?;
         let result = (|| -> Result<_> {
-            let found = recent.read_finalized_by_slot(slot)?;
+            let (found, native_unavailable) = match recent.read_finalized_by_slot(slot) {
+                Ok(found) => (found, false),
+                Err(error) if error.is::<recent::FinalizedFeedUnavailable>() => (None, true),
+                Err(error) => return Err(error),
+            };
             let native_archive = if found.is_none() {
                 recent.native_archive(slot)?
             } else {
@@ -84,6 +99,12 @@ pub(super) async fn block(
             } else {
                 None
             };
+            if native_unavailable && ledger.is_none() && matches!(archive, Some((None, None))) {
+                // The checked feed reported failed health, and the independently
+                // available local readers supplied no block. The archive is
+                // still a possible source. Errors above never enter this path.
+                return Err(ArchiveLookupRequired.into());
+            }
             Ok((found, native_archive, archive, ledger))
         })();
         Ok((result, clock.finish()?))
@@ -197,6 +218,9 @@ pub(super) async fn block(
         }
         Ok((None, None, Some((source, hash)), None)) => {
             state.counters.recent_misses.fetch_add(1, Ordering::Relaxed);
+            if source.is_none() {
+                state.enqueue_archive_miss(slot);
+            }
             let raw = Bytes::from(
                 serde_json::to_vec(
                     &json!({"version":1,"slot":slot,"reason":"not_cached","source":source}),
@@ -240,6 +264,17 @@ pub(super) async fn block(
         {
             state.counters.recent_errors.fetch_add(1, Ordering::Relaxed);
             unavailable(&state, slot, StatusCode::CONFLICT, "not_finalized", None)
+        }
+        Err(error) if error.is::<ArchiveLookupRequired>() => {
+            state.counters.recent_misses.fetch_add(1, Ordering::Relaxed);
+            state.enqueue_archive_miss(slot);
+            unavailable(
+                &state,
+                slot,
+                StatusCode::SERVICE_UNAVAILABLE,
+                ARCHIVE_LOOKUP_REQUIRED,
+                None,
+            )
         }
         Err(error) if error.to_string() == "ledger_compact_unavailable" => {
             state.counters.recent_errors.fetch_add(1, Ordering::Relaxed);

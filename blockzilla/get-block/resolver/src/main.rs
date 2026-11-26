@@ -20,6 +20,9 @@ struct Args {
     /// Read original retained frames through the existing read-only BankSource.
     #[arg(long)]
     recent_config: Option<PathBuf>,
+    /// Notify the background index importer about an epoch absent from the catalog.
+    #[arg(long)]
+    archive_miss_dir: Option<PathBuf>,
 }
 
 #[tokio::main]
@@ -42,12 +45,13 @@ async fn main() -> Result<()> {
         .as_deref()
         .map(RecentClient::load)
         .transpose()?;
-    let app = http::router_with_recent(
+    let app = http::router_with_archive_miss(
         catalog,
         token.trim_end(),
         args.cache_mib * 1024 * 1024,
         args.max_concurrent,
         recent.map(Arc::new),
+        args.archive_miss_dir,
     )?;
     let listener = tokio::net::TcpListener::bind(args.listen).await?;
     eprintln!("resolution service ready on {}", listener.local_addr()?);
