@@ -1,8 +1,10 @@
-//! Read blocks from the public Blockzilla archive through Cloudflare.
+//! Read blocks from the public Foundation Compact V2 archive.
 //!
 //! Run from the workspace root:
-//! cargo run --locked -p blockzilla-compact-v2-reader --features http \
+//! RUSTFLAGS='-C target-cpu=native' cargo run --locked -p blockzilla-compact-v2-reader --features http \
 //!   --example read_epoch -- <epoch> <max-blocks>
+//!
+//! The default epoch is 1094. Its first slot is 472608000.
 
 use std::{error::Error, num::NonZeroU32};
 
@@ -11,17 +13,19 @@ use blockzilla_compact_v2_reader::archive::{
 };
 use solana_signature::Signature;
 
-const ARCHIVE: &str = "https://blockzilla-archive-samples-v1.cheron-augustin.workers.dev";
+const ARCHIVE_BASE: &str =
+    "https://pub-97348740d6ef467aa2f1b4b62daa98dc.r2.dev/compact-v2/blockzilla-20261004";
 
 fn main() -> Result<(), Box<dyn Error>> {
     let mut args = std::env::args().skip(1);
-    let epoch: u64 = args.next().as_deref().unwrap_or("200").parse()?;
+    let epoch: u64 = args.next().as_deref().unwrap_or("1094").parse()?;
     let max_blocks: u32 = args.next().as_deref().unwrap_or("10").parse()?;
     let max_blocks = NonZeroU32::new(max_blocks).ok_or("max-blocks must be at least 1")?;
 
     // START read-epoch
     let cache = std::env::current_dir()?.join(".blockzilla-cache");
-    let mut archive = CompactV2Archive::open(ARCHIVE, epoch, cache)?;
+    let epoch_url = format!("{ARCHIVE_BASE}/epoch-{epoch}");
+    let mut archive = CompactV2Archive::open_epoch_url(&epoch_url, epoch, &cache)?;
 
     let range = archive.bounded_range(0, max_blocks)?;
     let request = ScanRequest::bounded(range);

@@ -6,7 +6,7 @@
 //! or, for an HTTPS epoch directory:
 //!
 //! cargo run --release -p blockzilla-compact-v2-reader --features http --example sdk_ceiling -- \
-//!   --url https://archive.example/compact-v2/build/epoch-200 --cache-dir /tmp/bz-cache --epoch 200 --max-blocks 1000
+//!   --url https://pub-97348740d6ef467aa2f1b4b62daa98dc.r2.dev/compact-v2/blockzilla-20261004/epoch-1094 --cache-dir /tmp/bz-cache --epoch 1094 --max-blocks 1000
 //!
 //! Legs, on the same block-row range:
 //! - `input`: only read the compressed bytes of the range, with the same request
