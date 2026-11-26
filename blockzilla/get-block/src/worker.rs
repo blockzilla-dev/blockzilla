@@ -1311,13 +1311,16 @@ async fn handle_authenticated_direct_block(
     // One lookup runs only after auth, response-cache lookup and fill admission.
     // The result is request-local; it is consumed by exactly one renderer.
     let mut foundation_status = "DISABLED";
+    let mut recent_archive_lookup = false;
     if let Some(config) = source.foundation_lookup.as_ref() {
-        foundation_status = if config.archive_lookup_enabled() {
+        let lookup_archive = config.should_lookup_archive(request.slot, request.format);
+        foundation_status = if lookup_archive {
             "BYPASS"
         } else {
             "RECENT_ONLY"
         };
-        if config.native_finalized_enabled()
+        // Older slots use the archive even when the recent feed is unavailable.
+        if config.should_lookup_finalized(request.slot)
             && request.format == BlockResponseFormat::Json
             && client_locator.is_none()
         {
@@ -1360,6 +1363,13 @@ async fn handle_authenticated_direct_block(
                         request_started,
                         profile.as_ref(),
                     );
+                }
+                Ok(foundation_first::Outcome::NativeUnavailable {
+                    status: 503,
+                    reason,
+                }) if reason == crate::foundation_protocol::ARCHIVE_LOOKUP_REQUIRED => {
+                    foundation_status = "ARCHIVE_FALLBACK";
+                    recent_archive_lookup = true;
                 }
                 Ok(foundation_first::Outcome::NativeUnavailable { status, reason }) => {
                     let mut response =
@@ -1429,7 +1439,8 @@ async fn handle_authenticated_direct_block(
                 }
             }
         }
-        if config.archive_lookup_enabled()
+        if lookup_archive
+            && !recent_archive_lookup
             && source.foundation_prepared.borrow().is_none()
             && mode == RouteBlockMode::Full
             && client_locator.is_none()
@@ -1595,7 +1606,7 @@ async fn handle_authenticated_direct_block(
     }
 
     let route_started = now_ms();
-    let (mut response, outcome) = match request.format {
+    let (mut response, mut outcome) = match request.format {
         BlockResponseFormat::Json => {
             let buffered_profile = profile.is_some()
                 && req
@@ -1798,6 +1809,18 @@ async fn handle_authenticated_direct_block(
             }
         }
     };
+    if recent_archive_lookup && outcome != "ok" {
+        // An unavailable recent source and a direct archive miss do not prove
+        // that a slot was skipped. Keep an uncached, retryable status.
+        response = json_error_profiled(
+            503,
+            "recent_unavailable",
+            "recent_unavailable",
+            profile.as_ref(),
+        )?;
+        outcome = "backend_error";
+        foundation_status = "UNAVAILABLE";
+    }
     let billable_backend_reads = source.billable_backend_reads();
     response
         .headers_mut()
@@ -2015,11 +2038,15 @@ fn archive_cache_generation(env: &worker::Env) -> String {
         "BZ_FOUNDATION_NATIVE_ARCHIVE_PREFIX",
         "BZ_FOUNDATION_LEDGER_GENERATION",
     ];
-    let identity = fields
+    let mut identity = fields
         .iter()
         .map(|field| format!("{field}={}", optional_var(env, field).unwrap_or_default()))
         .collect::<Vec<_>>()
         .join("\0");
+    if let Some(min_slot) = optional_var(env, "BZ_FOUNDATION_NATIVE_FINALIZED_MIN_SLOT") {
+        identity.push_str("\0BZ_FOUNDATION_NATIVE_FINALIZED_MIN_SLOT=");
+        identity.push_str(&min_slot);
+    }
     api_key_digest(&format!("direct-render-v4-base64\0{identity}"))
 }
 

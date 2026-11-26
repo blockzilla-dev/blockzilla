@@ -1,5 +1,6 @@
 //! Finalized native blocks share one compact decoder for Foundation and R2.
 use super::*;
+use crate::foundation_protocol::ARCHIVE_LOOKUP_REQUIRED;
 
 const MAX_NATIVE_FRAME_BYTES: usize = 16 + 65_536 + 16 * 1024 * 1024;
 const MAX_ROOT_BYTES: usize = 4096;
@@ -224,8 +225,8 @@ pub(crate) async fn read_native_frame(
 }
 
 impl Config {
-    pub(crate) fn native_finalized_enabled(&self) -> bool {
-        self.finalized_source.is_some()
+    pub(crate) fn should_lookup_finalized(&self, slot: u64) -> bool {
+        self.finalized_source.is_some() && slot >= self.native_finalized_min_slot
     }
 
     pub(super) fn configure_finalized(
@@ -236,6 +237,13 @@ impl Config {
             None | Some("false") => return Ok(()),
             Some("true") => {}
             _ => return Err("BZ_FOUNDATION_NATIVE_FINALIZED must be true or false".into()),
+        }
+        if let Some(value) = optional_var(env, "BZ_FOUNDATION_NATIVE_FINALIZED_MIN_SLOT") {
+            self.native_finalized_min_slot = value
+                .parse::<u64>()
+                .ok()
+                .filter(|slot| *slot <= MAX_SAFE_INTEGER && slot.to_string() == value)
+                .ok_or("BZ_FOUNDATION_NATIVE_FINALIZED_MIN_SLOT must be a canonical slot")?;
         }
         let source = RecentSource::parse(&required_var(env, "BZ_FOUNDATION_RECENT_SOURCE")?)?;
         let generation = required_var(env, "BZ_FOUNDATION_NATIVE_PRODUCER_GENERATION")?;
@@ -483,6 +491,7 @@ impl Config {
                         | "native_archive_metadata_unavailable"
                         | "archive_metadata_unavailable"
                         | "ledger_compact_unavailable"
+                        | ARCHIVE_LOOKUP_REQUIRED
                 )
             {
                 return Err("native unavailable identity or reason differs".into());

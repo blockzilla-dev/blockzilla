@@ -4,6 +4,9 @@ use crate::slot_references::SlotReferences;
 use crate::slot_resolution::{LocatorV1, ResolutionHotRow, SourceObjectIdentity};
 use serde::{Deserialize, Serialize};
 
+/// Allows an independent archive read after a checked recent-source miss.
+pub const ARCHIVE_LOOKUP_REQUIRED: &str = "archive_lookup_required";
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct PendingLocatorV1 {
