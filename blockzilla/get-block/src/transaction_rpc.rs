@@ -455,7 +455,10 @@ pub fn encode_transaction(
     let mut output = Vec::new();
     push_short_len(&mut output, signatures.len())?;
     for signature in signatures {
-        append_base58(&mut output, signature, 64)?;
+        let text = signature.as_str().ok_or_else(invalid_base58)?;
+        let mut bytes = [0; 64];
+        five8::decode_64(text, &mut bytes).map_err(|_| invalid_base58())?;
+        output.extend_from_slice(&bytes);
     }
     if version.as_u64() == Some(0) {
         output.push(0x80);
@@ -486,13 +489,11 @@ pub fn encode_transaction(
         .ok_or_else(invalid)?;
     push_short_len(&mut output, keys.len())?;
     for key in keys {
-        append_base58(&mut output, key, 32)?;
+        output.extend_from_slice(&decode_base58_key(key)?);
     }
-    append_base58(
-        &mut output,
+    output.extend_from_slice(&decode_base58_key(
         message.get("recentBlockhash").ok_or_else(invalid)?,
-        32,
-    )?;
+    )?);
     let instructions = message
         .get("instructions")
         .and_then(Value::as_array)
@@ -528,11 +529,9 @@ pub fn encode_transaction(
             .ok_or_else(invalid)?;
         push_short_len(&mut output, lookups.len())?;
         for lookup in lookups {
-            append_base58(
-                &mut output,
+            output.extend_from_slice(&decode_base58_key(
                 lookup.get("accountKey").ok_or_else(invalid)?,
-                32,
-            )?;
+            )?);
             append_indices(
                 &mut output,
                 lookup.get("writableIndexes").ok_or_else(invalid)?,
@@ -549,22 +548,15 @@ pub fn encode_transaction(
     Ok(output)
 }
 
-fn append_base58(
-    output: &mut Vec<u8>,
-    value: &Value,
-    length: usize,
-) -> Result<(), TransactionRpcError> {
-    let invalid = || TransactionRpcError::unavailable("archive contains an invalid base58 value");
-    let value = value
-        .as_str()
-        .filter(|value| value.len() <= 88)
-        .ok_or_else(invalid)?;
-    let bytes = bs58::decode(value).into_vec().map_err(|_| invalid())?;
-    if bytes.len() != length {
-        return Err(invalid());
-    }
-    output.extend(bytes);
-    Ok(())
+fn invalid_base58() -> TransactionRpcError {
+    TransactionRpcError::unavailable("archive contains an invalid base58 value")
+}
+
+fn decode_base58_key(value: &Value) -> Result<[u8; 32], TransactionRpcError> {
+    let text = value.as_str().ok_or_else(invalid_base58)?;
+    let mut bytes = [0; 32];
+    five8::decode_32(text, &mut bytes).map_err(|_| invalid_base58())?;
+    Ok(bytes)
 }
 
 fn append_indices(output: &mut Vec<u8>, value: &Value) -> Result<(), TransactionRpcError> {

@@ -21,6 +21,14 @@ pub trait RangeSource: Send + Sync {
         1
     }
 
+    /// Whether small positional reads have low overhead on this source.
+    ///
+    /// Readers can use smaller cache pages when this is true. The default
+    /// suits sources where round trips make larger ranges preferable.
+    fn prefers_small_ranges(&self) -> bool {
+        false
+    }
+
     /// Return `None` only when the object does not exist.
     fn size(&self, object: &str) -> SourceResult<Option<u64>>;
 
@@ -86,6 +94,10 @@ pub trait RangeSource: Send + Sync {
 impl<T: RangeSource + ?Sized> RangeSource for Arc<T> {
     fn recommended_read_concurrency(&self) -> usize {
         (**self).recommended_read_concurrency()
+    }
+
+    fn prefers_small_ranges(&self) -> bool {
+        (**self).prefers_small_ranges()
     }
 
     fn size(&self, object: &str) -> SourceResult<Option<u64>> {

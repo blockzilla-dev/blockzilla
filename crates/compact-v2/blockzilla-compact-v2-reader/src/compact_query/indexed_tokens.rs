@@ -225,6 +225,7 @@ impl<S: RangeSource> CompactV2InstructionSource<S> {
         let (shared_registry, mut registry_receipt) = self
             .parallel_registry_for_scan(start, end, request, requested_transactions, config)
             .map_err(source_error)?;
+        let mut context = ExactContext::with_shared_registry(shared_registry);
         if matches!(
             registry_receipt.mode,
             CompactV2ParallelRegistryMode::SparseWorkerCache
@@ -232,12 +233,13 @@ impl<S: RangeSource> CompactV2InstructionSource<S> {
             registry_receipt.mode = CompactV2ParallelRegistryMode::SparseConsumerCache;
             registry_receipt.resident_bound_bytes =
                 COMPACT_V2_QUERY_REGISTRY_RETAINED_KEY_BYTES as u64;
+            if let Some(pages) = SharedRegistryPages::for_scan(&self.reader, request) {
+                registry_receipt.resident_bound_bytes = pages.retained_key_bytes(1);
+                context.registry_pages = Some(RegistryPageResolver::new(pages));
+            }
         }
         let reader = &self.reader;
-        let mut resolver = ConsumerResolver {
-            reader,
-            context: ExactContext::with_shared_registry(shared_registry),
-        };
+        let mut resolver = ConsumerResolver { reader, context };
         let projected_bytes_current = AtomicU64::new(0);
         let max_projected_block_bytes = AtomicU64::new(0);
         let max_projected_batch_bytes = AtomicU64::new(0);

@@ -451,14 +451,11 @@ fn cursor_parts(cursor: &str) -> std::result::Result<(&str, u64, &str), String> 
 }
 
 fn hash(text: &str) -> std::result::Result<[u8; 32], String> {
-    let bytes: [u8; 32] = bs58::decode(text)
-        .into_vec()
-        .map_err(|_| "invalid compact block hash")?
-        .try_into()
-        .map_err(|_| "compact block hash must have 32 bytes")?;
-    if base58_32(&bytes) != text {
-        return Err("compact block hash is not canonical".into());
-    }
+    let mut bytes = [0; 32];
+    five8::decode_32(text, &mut bytes).map_err(|error| match error {
+        five8::DecodeError::InvalidChar(_) => "invalid compact block hash",
+        _ => "compact block hash must have 32 bytes",
+    })?;
     Ok(bytes)
 }
 

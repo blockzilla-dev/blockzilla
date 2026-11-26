@@ -58,12 +58,12 @@ pub(crate) struct LedgerCompactMetadata {
 impl LedgerCompactMetadata {
     pub(crate) fn hashes(&self) -> std::result::Result<([u8; 32], [u8; 32]), String> {
         let hash = |text: &str| -> std::result::Result<[u8; 32], String> {
-            let bytes: [u8; 32] = bs58::decode(text)
-                .into_vec()
-                .map_err(|_| "invalid ledger block hash")?
-                .try_into()
-                .map_err(|_| "invalid ledger block hash length")?;
-            if bytes == [0; 32] || bs58::encode(bytes).into_string() != text {
+            let mut bytes = [0; 32];
+            five8::decode_32(text, &mut bytes).map_err(|error| match error {
+                five8::DecodeError::InvalidChar(_) => "invalid ledger block hash",
+                _ => "invalid ledger block hash length",
+            })?;
+            if bytes == [0; 32] {
                 return Err("noncanonical ledger block hash".into());
             }
             Ok(bytes)
@@ -184,11 +184,11 @@ fn validate_metadata(
     expected_source: &RecentSource,
     sha: &[u8; 32],
 ) -> std::result::Result<(), String> {
-    let expected_hash: [u8; 32] = bs58::decode(&metadata.blockhash)
-        .into_vec()
-        .map_err(|_| "invalid finalized blockhash")?
-        .try_into()
-        .map_err(|_| "invalid finalized blockhash length")?;
+    let mut expected_hash = [0; 32];
+    five8::decode_32(&metadata.blockhash, &mut expected_hash).map_err(|error| match error {
+        five8::DecodeError::InvalidChar(_) => "invalid finalized blockhash",
+        _ => "invalid finalized blockhash length",
+    })?;
     metadata.validate(
         &RecentRequest {
             slot,

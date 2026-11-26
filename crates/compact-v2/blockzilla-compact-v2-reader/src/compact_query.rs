@@ -6,6 +6,9 @@
 //! `OrderedBlockPublisher`.
 
 mod indexed_tokens;
+mod registry_cache;
+
+use registry_cache::{RegistryPageResolver, SharedRegistryPages};
 
 use std::{
     cell::Cell,
@@ -143,7 +146,8 @@ impl CompactV2RegistryReadPolicy {
 pub enum CompactV2ParallelRegistryMode {
     /// One complete immutable registry is shared across all workers.
     SharedFull,
-    /// Each used worker has its own bounded eight-chunk LRU cache.
+    /// Each worker uses a bounded cache. Sources with cheap positional reads
+    /// also share smaller pages across workers.
     SparseWorkerCache,
     /// Indexed token output resolves keys through one bounded consumer cache.
     SparseConsumerCache,
@@ -166,9 +170,7 @@ pub struct CompactV2ParallelRegistryReceipt {
     pub prefetch_read_calls: u64,
     /// Source bytes used by the one-pass complete-registry prefetch.
     pub prefetch_read_bytes: u64,
-    /// Exact shared payload for `SharedFull`; a checked worst-case retained
-    /// worker-cache payload for `SparseWorkerCache`, or one consumer cache for
-    /// `SparseConsumerCache`.
+    /// Maximum retained registry payload across the shared and local caches.
     pub resident_bound_bytes: u64,
 }
 
@@ -696,6 +698,10 @@ impl<S: RangeSource> CompactV2InstructionSource<S> {
         let (shared_registry, mut registry_receipt) = self
             .parallel_registry_for_scan(start, end, request, requested_transactions, config)
             .map_err(source_error)?;
+        let registry_pages = shared_registry
+            .is_none()
+            .then(|| SharedRegistryPages::for_scan(&self.reader, request))
+            .flatten();
         let read_signatures = request.include_primary_signatures;
         let mut signature_scan =
             ContiguousSignatureScan::new(&self.reader, start..end, read_signatures);
@@ -718,6 +724,8 @@ impl<S: RangeSource> CompactV2InstructionSource<S> {
                 |_| {
                     let mut worker = ParallelProjectionWorker::new(shared_registry.clone());
                     worker.context.query_keys = Arc::clone(&query_keys);
+                    worker.context.registry_pages =
+                        registry_pages.clone().map(RegistryPageResolver::new);
                     Ok::<_, CompactV2ParallelScanError>(worker)
                 },
                 |worker, _row_number, block| {
@@ -910,16 +918,20 @@ impl<S: RangeSource> CompactV2InstructionSource<S> {
             registry_receipt.mode,
             CompactV2ParallelRegistryMode::SparseWorkerCache
         ) {
-            registry_receipt.resident_bound_bytes = u64::try_from(pipeline.effective_workers)
-                .ok()
-                .and_then(|workers| {
-                    workers.checked_mul(COMPACT_V2_QUERY_REGISTRY_RETAINED_KEY_BYTES as u64)
-                })
-                .ok_or_else(|| {
-                    source_error(CompactV2InstructionSourceError::Invalid(
-                        "sparse registry resident bound overflow".into(),
-                    ))
-                })?;
+            registry_receipt.resident_bound_bytes = if let Some(pages) = registry_pages {
+                pages.retained_key_bytes(pipeline.effective_workers)
+            } else {
+                u64::try_from(pipeline.effective_workers)
+                    .ok()
+                    .and_then(|workers| {
+                        workers.checked_mul(COMPACT_V2_QUERY_REGISTRY_RETAINED_KEY_BYTES as u64)
+                    })
+                    .ok_or_else(|| {
+                        source_error(CompactV2InstructionSourceError::Invalid(
+                            "sparse registry resident bound overflow".into(),
+                        ))
+                    })?
+            };
         }
 
         let signature_io = signature_scan.finish().map_err(source_error)?;
@@ -3255,6 +3267,7 @@ struct ExactContext {
     output_pool: blockzilla_model::projection_pool::ProjectionPool,
     query_keys: Arc<BoundQueryKeys>,
     shared_registry: Option<Arc<SharedRegistry>>,
+    registry_pages: Option<RegistryPageResolver>,
     registry_chunks: HashMap<u32, Vec<[u8; 32]>>,
     registry_lru: VecDeque<u32>,
     vote_hashes_loaded: bool,
@@ -3309,6 +3322,7 @@ impl ExactContext {
     fn retain_shared_registry(&mut self, registry: Arc<SharedRegistry>) {
         self.registry_chunks.clear();
         self.registry_lru.clear();
+        self.registry_pages = None;
         self.shared_registry = Some(registry);
     }
 
@@ -3374,6 +3388,9 @@ impl ExactContext {
                     "registry ID {id} is outside the shared complete registry"
                 ))
             });
+        }
+        if let Some(pages) = &mut self.registry_pages {
+            return pages.resolve(reader, id, &mut self.io);
         }
         let zero_based = usize::try_from(id - 1).map_err(|_| {
             CompactV2InstructionSourceError::Invalid("registry ID exceeds address space".into())
@@ -7849,6 +7866,35 @@ pub(crate) mod tests {
             receipt.limiting_stage(),
             CompactV2PipelineStage::DecodeProject,
             "{receipt:?}"
+        );
+    }
+
+    #[test]
+    fn parallel_local_projection_shares_registry_reads_and_preserves_output() {
+        let fixture = indexer_fixture(12);
+        let local = crate::PinnedLocalRangeSource::new(fixture.directory.path());
+        let reader = open_trusted_test_reader(local);
+        let registry_bytes = u64::from(reader.registry_entries()) * REGISTRY_KEY_BYTES as u64;
+        let mut source = CompactV2InstructionSource::new(reader, FIRST_SLOT).unwrap();
+        let mut reference =
+            CompactV2InstructionSource::new(fixture.trusted_reader(), FIRST_SLOT).unwrap();
+        let request = ScanRequest::token_balances_only().allow_unverified_source();
+        let config = CompactV2ParallelScanConfig {
+            max_full_registry_bytes: 0,
+            ..CompactV2ParallelScanConfig::new(4)
+        };
+
+        let (expected, baseline) = plain_scan_bytes(&mut reference, &request, config);
+        let baseline = baseline.unwrap();
+        let (output, receipt) = plain_scan_bytes(&mut source, &request, config);
+        let receipt = receipt.unwrap();
+        assert_eq!(output, expected);
+        assert!(
+            baseline.scan.io.source_read_bytes.unwrap() > fixture.compressed_bytes + registry_bytes
+        );
+        assert_eq!(
+            receipt.scan.io.source_read_bytes,
+            Some(fixture.compressed_bytes + registry_bytes)
         );
     }
 

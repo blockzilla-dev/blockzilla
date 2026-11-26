@@ -25,11 +25,12 @@ pub(crate) struct DumpTokensArgs {
 }
 
 fn parse_mint(value: &str) -> Result<[u8; 32], String> {
-    bs58::decode(value)
-        .into_vec()
-        .map_err(|error| format!("Invalid base58 mint: {error}"))?
-        .try_into()
-        .map_err(|_| "A mint must decode to exactly 32 bytes".into())
+    let mut mint = [0; 32];
+    five8::decode_32(value, &mut mint).map_err(|error| match error {
+        five8::DecodeError::InvalidChar(_) => format!("Invalid base58 mint: {error}"),
+        _ => "A mint must decode to exactly 32 bytes".into(),
+    })?;
+    Ok(mint)
 }
 
 /// Output buffer for standard output. The sink flushes once per accepted
@@ -391,6 +392,11 @@ mod tests {
     fn mint_parser_requires_exact_public_key_length() {
         assert!(parse_mint("bad!").is_err());
         assert!(parse_mint("1").is_err());
+        assert!(parse_mint(&"1".repeat(33)).is_err());
+        assert_eq!(
+            parse_mint(&bs58::encode([255; 32]).into_string()).unwrap(),
+            [255; 32]
+        );
         assert_eq!(
             parse_mint("11111111111111111111111111111111").unwrap(),
             [0; 32]
