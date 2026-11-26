@@ -20,7 +20,7 @@ use std::{
     path::{Component, Path, PathBuf},
 };
 
-const SLOTS: u64 = 432_000;
+pub(crate) const SLOTS: u64 = 432_000;
 const MAX_CATALOG_BYTES: u64 = 16 * 1024 * 1024;
 const MAX_EPOCHS: usize = 4096;
 const BLOCKS: &str = "archive-v2-blocks.zstd";
@@ -305,6 +305,10 @@ impl Catalog {
     }
     pub fn generation(&self) -> &str {
         &self.generation
+    }
+
+    pub fn has_epoch(&self, epoch: u64) -> bool {
+        self.epochs.contains_key(&epoch)
     }
 
     /// All lookups here use startup-checked RAM rows. No file reads or locks.

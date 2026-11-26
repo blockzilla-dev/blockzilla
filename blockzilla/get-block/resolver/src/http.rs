@@ -7,7 +7,7 @@ use anyhow::{Result, ensure};
 use axum::{
     Router,
     body::{Body, Bytes, to_bytes},
-    extract::{Path, Query, Request, State, rejection::QueryRejection},
+    extract::{Path, Query, RawQuery, Request, State, rejection::QueryRejection},
     http::{HeaderMap, StatusCode, header},
     response::{IntoResponse, Response},
     routing::{get, post},
@@ -19,6 +19,9 @@ use blockzilla_get_block::{
 use serde_json::json;
 use sha2::{Digest, Sha256};
 use std::{
+    fs::OpenOptions,
+    io::ErrorKind,
+    path::PathBuf,
     sync::{
         Arc,
         atomic::{AtomicU64, Ordering},
@@ -58,6 +61,27 @@ struct AppState {
     permits: Arc<Semaphore>,
     counters: Counters,
     recent: Option<Arc<RecentClient>>,
+    archive_miss_dir: Option<PathBuf>,
+}
+
+impl AppState {
+    fn enqueue_archive_miss(&self, slot: u64) {
+        let Some(dir) = &self.archive_miss_dir else {
+            return;
+        };
+        let epoch = slot / crate::catalog::SLOTS;
+        if slot > blockzilla_bank_stream_v2::SAFE || self.catalog.has_epoch(epoch) {
+            return;
+        }
+        let marker = dir.join(format!("epoch-{epoch}"));
+        // The marker is the entire request. The index importer owns all network
+        // and table work; an existing marker already requests this epoch.
+        if let Err(error) = OpenOptions::new().write(true).create_new(true).open(marker) {
+            if error.kind() != ErrorKind::AlreadyExists {
+                eprintln!("archive miss enqueue failed for epoch {epoch}: {error}");
+            }
+        }
+    }
 }
 
 pub fn router(
@@ -76,6 +100,23 @@ pub fn router_with_recent(
     max_concurrent: usize,
     recent: Option<Arc<RecentClient>>,
 ) -> Result<Router> {
+    router_with_archive_miss(catalog, token, cache_bytes, max_concurrent, recent, None)
+}
+
+pub fn router_with_archive_miss(
+    catalog: Arc<dyn ResolutionCatalog>,
+    token: &str,
+    cache_bytes: usize,
+    max_concurrent: usize,
+    recent: Option<Arc<RecentClient>>,
+    archive_miss_dir: Option<PathBuf>,
+) -> Result<Router> {
+    if let Some(dir) = &archive_miss_dir {
+        ensure!(
+            dir.is_absolute() && dir.is_dir() && dir.canonicalize()? == *dir,
+            "archive miss directory must be an existing canonical absolute directory"
+        );
+    }
     ensure!(
         cache_bytes == 0,
         "result caching is disabled; cache_bytes must be 0"
@@ -103,6 +144,7 @@ pub fn router_with_recent(
         permits: Arc::new(Semaphore::new(max_concurrent)),
         counters: Counters::default(),
         recent,
+        archive_miss_dir,
     });
     Ok(Router::new()
         .route("/healthz", get(|| async { "ready\n" }))
@@ -393,6 +435,7 @@ async fn block(
     State(state): State<Arc<AppState>>,
     Path(slot): Path<u64>,
     headers: HeaderMap,
+    RawQuery(query): RawQuery,
 ) -> Response {
     if !authorized(&headers, &state) {
         return plain_error(StatusCode::UNAUTHORIZED, "unauthorized");
@@ -411,6 +454,9 @@ async fn block(
         Ok(source) => source,
         Err(_) => return unavailable(&state, slot, StatusCode::CONFLICT, "incomplete", None),
     };
+    if source.is_none() && query.is_none() {
+        state.enqueue_archive_miss(slot);
+    }
     let body = Bytes::from(
         serde_json::to_vec(&json!({"version":1,"slot":slot,"reason":"not_cached","source":source}))
             .expect("pending locator JSON"),

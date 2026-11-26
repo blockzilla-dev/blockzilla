@@ -103,6 +103,9 @@ impl ResolutionCatalog for MockCatalog {
     fn pending(&self, slot: u64) -> Result<Option<PendingLocatorV1>> {
         Ok((slot == SLOT).then(pending))
     }
+    fn has_epoch(&self, epoch: u64) -> bool {
+        epoch == SLOT / crate::catalog::SLOTS
+    }
     fn archived_blockhash(&self, slot: u64) -> Result<Option<[u8; 32]>> {
         Ok((slot == SLOT).then_some([5; 32]))
     }
@@ -175,6 +178,61 @@ fn get_request(path: &str) -> Request {
         .header("x-bz-foundation-source-prefix", PREFIX)
         .body(Body::empty())
         .unwrap()
+}
+
+#[tokio::test]
+async fn checked_archive_lookup_enqueues_only_an_unmirrored_epoch() {
+    let directory = tempfile::tempdir().unwrap();
+    let dir = directory.path().canonicalize().unwrap();
+    let app = || {
+        router_with_archive_miss(
+            Arc::new(MockCatalog {
+                calls: AtomicUsize::new(0),
+            }),
+            TOKEN,
+            0,
+            2,
+            None,
+            Some(dir.clone()),
+        )
+        .unwrap()
+    };
+    let mut wrong_token = get_request("/v1/block/864000");
+    wrong_token.headers_mut().remove("authorization");
+    let mut wrong_source = get_request("/v1/block/864000");
+    wrong_source
+        .headers_mut()
+        .remove("x-bz-foundation-generation");
+    for request in [
+        wrong_token,
+        wrong_source,
+        get_request("/v1/block/invalid"),
+        get_request("/v1/block/864000?slot=864001"),
+        get_request("/v1/block/9007199254740992"),
+        get_request("/v1/block/432003"),
+    ] {
+        let _ = app().oneshot(request).await.unwrap();
+    }
+    assert_eq!(std::fs::read_dir(&dir).unwrap().count(), 0);
+
+    let marker = dir.join("epoch-2");
+    let response = app()
+        .oneshot(get_request("/v1/block/864000"))
+        .await
+        .unwrap();
+    assert_eq!(response.status(), StatusCode::NOT_FOUND);
+    assert_eq!(response.headers()["x-bz-foundation-result"], "not_cached");
+    assert_eq!(std::fs::metadata(&marker).unwrap().len(), 0);
+
+    // Use a fresh router to prove deduplication also survives reader restarts.
+    std::fs::write(&marker, b"existing marker").unwrap();
+    let response = app()
+        .oneshot(get_request("/v1/block/864001"))
+        .await
+        .unwrap();
+    assert_eq!(response.status(), StatusCode::NOT_FOUND);
+    assert_eq!(std::fs::read(&marker).unwrap(), b"existing marker");
+    assert_eq!(std::fs::read_dir(&dir).unwrap().count(), 1);
 }
 
 fn post_request(body: Vec<u8>, mode: &str) -> Request {
@@ -460,7 +518,13 @@ fn ledger_app(
         ledger_compact: Some(config.clone()),
     })
     .unwrap();
-    let app = router_with_recent(
+    let miss_dir = directory
+        .path()
+        .canonicalize()
+        .unwrap()
+        .join("epoch-misses");
+    std::fs::create_dir(&miss_dir).unwrap();
+    let app = router_with_archive_miss(
         Arc::new(MockCatalog {
             calls: AtomicUsize::new(0),
         }),
@@ -468,6 +532,7 @@ fn ledger_app(
         0,
         2,
         Some(Arc::new(recent)),
+        Some(miss_dir),
     )
     .unwrap();
     (app, f, directory, config)
@@ -552,11 +617,15 @@ async fn ledger_fallback_errors_do_not_become_archive_misses() {
             "ledger_compact_unavailable",
         ),
     ] {
-        let (app, _native, _directory, _config) = ledger_app(action, 1000, native_failed);
+        let (app, _native, directory, _config) = ledger_app(action, 1000, native_failed);
         let response = app.oneshot(get_request("/v1/finalized/100")).await.unwrap();
         assert_eq!(response.status(), code);
         let value: serde_json::Value = serde_json::from_slice(&bytes(response).await).unwrap();
         assert_eq!(value["reason"], reason);
+        assert_eq!(
+            directory.path().join("epoch-misses/epoch-0").exists(),
+            action == "absent"
+        );
     }
 }
 
