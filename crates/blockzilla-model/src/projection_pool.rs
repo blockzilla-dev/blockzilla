@@ -3,11 +3,15 @@ use crate::{CanonicalBlock, RecordedTokenBalance, ResolvedInstruction};
 
 const MAX_RETAINED_BYTES: usize = 8 << 20;
 const MAX_BUFFERS: usize = 16_384;
+// Token metadata can contain 256 rows per side. The final class also holds
+// larger buffers supplied by callers of the public projection API.
+const BALANCE_SIZE_CLASSES: usize = 10;
 
 #[derive(Debug, Default)]
 pub struct ProjectionPool {
     instructions: Vec<Vec<ResolvedInstruction>>,
-    balances: Vec<Vec<RecordedTokenBalance>>,
+    balances: [Vec<Vec<RecordedTokenBalance>>; BALANCE_SIZE_CLASSES],
+    balance_buffers: usize,
     data: Vec<Vec<u8>>,
     accounts: Vec<Vec<[u8; 32]>>,
     bytes: usize,
@@ -21,6 +25,26 @@ mod tests {
         InstructionCoordinate, InstructionCoverage, InstructionDataCoverage, TokenBalanceCoverage,
         TransactionHeader,
     };
+
+    #[test]
+    fn balance_buffer_reuse_skips_an_undersized_buffer() {
+        let mut pool = ProjectionPool::default();
+        let small = Vec::with_capacity(4);
+        let large = Vec::with_capacity(32);
+        let small_ptr = small.as_ptr();
+        let large_ptr = large.as_ptr();
+        pool.bytes = (small.capacity() + large.capacity()) * size_of::<RecordedTokenBalance>();
+        pool.balance_buffers = 2;
+        pool.balances[balance_size_class(small.capacity())].push(small);
+        pool.balances[balance_size_class(large.capacity())].push(large);
+
+        let larger_request = pool.balances_with_capacity(25).unwrap();
+        let smaller_request = pool.balances_with_capacity(3).unwrap();
+        assert_eq!(larger_request.as_ptr(), large_ptr);
+        assert_eq!(smaller_request.as_ptr(), small_ptr);
+        assert_eq!(pool.bytes, 0);
+        assert_eq!(pool.balance_buffers, 0);
+    }
 
     #[test]
     fn retains_nested_buffers_without_retaining_old_values() {
@@ -102,9 +126,30 @@ impl ProjectionPool {
     }
 
     pub fn balances(&mut self) -> Vec<RecordedTokenBalance> {
-        let value = self.balances.pop().unwrap_or_default();
+        self.take_balance_buffer(0).unwrap_or_default()
+    }
+
+    /// Prefer a recycled buffer that fits the complete transaction. This
+    /// avoids growing a small buffer while a larger one waits in the pool.
+    pub fn balances_with_capacity(
+        &mut self,
+        minimum_capacity: usize,
+    ) -> Result<Vec<RecordedTokenBalance>, std::collections::TryReserveError> {
+        let capacity = minimum_capacity
+            .checked_next_power_of_two()
+            .unwrap_or(minimum_capacity);
+        let mut value = self
+            .take_balance_buffer(balance_size_class(capacity))
+            .unwrap_or_default();
+        value.try_reserve_exact(capacity)?;
+        Ok(value)
+    }
+
+    fn take_balance_buffer(&mut self, first_class: usize) -> Option<Vec<RecordedTokenBalance>> {
+        let value = self.balances[first_class..].iter_mut().find_map(Vec::pop)?;
+        self.balance_buffers -= 1;
         self.bytes -= value.capacity() * size_of::<RecordedTokenBalance>();
-        value
+        Some(value)
     }
 
     pub fn recycle_block(&mut self, block: &mut CanonicalBlock) {
@@ -141,11 +186,17 @@ impl ProjectionPool {
             let bytes = transaction.token_balances.capacity() * size_of::<RecordedTokenBalance>();
             if bytes != 0
                 && bytes <= MAX_RETAINED_BYTES.saturating_sub(self.bytes)
-                && self.balances.len() < MAX_BUFFERS
+                && self.balance_buffers < MAX_BUFFERS
             {
                 self.bytes += bytes;
-                self.balances.push(transaction.token_balances);
+                self.balance_buffers += 1;
+                let class = balance_size_class(transaction.token_balances.capacity());
+                self.balances[class].push(transaction.token_balances);
             }
         }
     }
+}
+
+fn balance_size_class(capacity: usize) -> usize {
+    (capacity.max(1).ilog2() as usize).min(BALANCE_SIZE_CLASSES - 1)
 }
