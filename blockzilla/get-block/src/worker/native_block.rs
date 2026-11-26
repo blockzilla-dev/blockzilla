@@ -303,8 +303,7 @@ fn owned_hot_block(
             "native transaction regions or signatures have trailing or missing bytes".into(),
         );
     }
-    // The existing renderer owns these two regions. Copy each once, then move
-    // the already decoded structured header and consensus fields without clones.
+    // This renderer owns the lanes and markers. Materialize them at this boundary.
     Ok(ArchiveV2HotBlockBlob {
         tx_count: block.tx_count,
         tx_rows,
@@ -312,7 +311,7 @@ fn owned_hot_block(
         metadata_bytes: block.metadata_bytes.to_vec(),
         header: block.header,
         consensus_block_id: block.consensus_block_id,
-        block_markers: block.block_markers,
+        block_markers: block.block_markers.to_vec(),
     })
 }
 

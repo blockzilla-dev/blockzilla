@@ -14,6 +14,10 @@ use blockzilla_archive_v2::{
     ArchiveV2WireIdentityVisitor, ArchiveV2WireRewriteLimits,
     rewrite_archive_v2_successful_metadata_wire,
 };
+pub use blockzilla_archive_v2::{
+    CURRENT_TYPED_ERRORS_MARKER_BYTES, CURRENT_TYPED_ERRORS_MARKER_FILE,
+    CURRENT_TYPED_ERRORS_MARKER_SHA256, CURRENT_TYPED_ERRORS_MARKER_SIZE,
+};
 use blockzilla_compact::{
     CompactInnerInstructions, CompactLogStream, CompactMetaV1, CompactReturnData, CompactReward,
     CompactTokenBalance, CompactTransactionError,
@@ -27,15 +31,7 @@ use crate::{
     manifest::{GenerationFile, GenerationManifest},
 };
 
-/// The only metadata schema marker emitted by current producers.
-pub const CURRENT_TYPED_ERRORS_MARKER_FILE: &str =
-    "archive-v2-metadata-schema-current-typed-errors-v1.marker";
 const METADATA_SCHEMA_MARKER_PREFIX: &str = "archive-v2-metadata-schema-";
-pub const CURRENT_TYPED_ERRORS_MARKER_BYTES: &[u8] =
-    b"blockzilla/archive-v2-metadata-schema/current-typed-errors/v1\n";
-pub const CURRENT_TYPED_ERRORS_MARKER_SIZE: u64 = 62;
-pub const CURRENT_TYPED_ERRORS_MARKER_SHA256: &str =
-    "f49c05f2021856a66542da4b84e31b2567b653a113acd05e0a0791cd620f0305";
 
 /// The metadata error grammar selected for one complete generation.
 ///
