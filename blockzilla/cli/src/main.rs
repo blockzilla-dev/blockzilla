@@ -8,10 +8,10 @@ use std::path::PathBuf;
 
 mod archive_v2;
 mod compare_sdk_rpc;
-mod dump_tokens;
 mod first_seen_finalization;
 mod progress;
 mod stream;
+mod token_dump;
 use progress::{ProgressTracker, file_nonempty};
 
 pub const BUFFER_SIZE: usize = 256 << 20;
@@ -37,7 +37,11 @@ enum Commands {
     /// Stream an archive epoch as ordered JSON block summaries.
     Stream(stream::StreamArgs),
     /// Export recorded token balances from an archive epoch.
-    DumpTokens(dump_tokens::DumpTokensArgs),
+    TokenDump(token_dump::TokenDumpArgs),
+    /// Export transactions that the selected wallet signed.
+    WalletDump(blockzilla::archive_dump::Args),
+    /// Export recorded outer and inner calls of one program.
+    ProgramDump(blockzilla::archive_dump::Args),
     /// Show the admitted identity and range of an archive epoch.
     Inspect {
         #[command(flatten)]
@@ -62,7 +66,13 @@ fn main() -> Result<()> {
     match Cli::parse().command {
         Commands::CompareSdkRpc(args) => compare_sdk_rpc::run(args),
         Commands::Stream(args) => stream::run(args),
-        Commands::DumpTokens(args) => dump_tokens::run(args),
+        Commands::TokenDump(args) => token_dump::run(args),
+        Commands::WalletDump(args) => {
+            blockzilla::archive_dump::execute(blockzilla::archive_dump::Kind::Wallet, args)
+        }
+        Commands::ProgramDump(args) => {
+            blockzilla::archive_dump::execute(blockzilla::archive_dump::Kind::Program, args)
+        }
         Commands::Inspect { source } => {
             let archive = stream::open(&source)?;
             println!("{}", serde_json::to_string_pretty(archive.identity())?);
@@ -127,6 +137,43 @@ mod cli_tests {
             cli.command,
             Commands::BuildDirectAgaveCompact { level: 3, .. }
         ));
+    }
+
+    #[test]
+    fn archive_dump_commands_use_the_example_arguments() {
+        for (name, expected) in [("wallet-dump", "wallet"), ("program-dump", "program")] {
+            let cli = Cli::try_parse_from([
+                "blockzilla",
+                name,
+                "/data/epoch-900",
+                "--epoch",
+                "900",
+                "--source-id",
+                "my-generation",
+                "--key",
+                "WALLET",
+            ])
+            .unwrap_or_else(|error| panic!("{name}: {error}"));
+            let actual = match cli.command {
+                Commands::WalletDump(_) => "wallet",
+                Commands::ProgramDump(_) => "program",
+                _ => "other",
+            };
+            assert_eq!(actual, expected, "{name}");
+        }
+        assert!(Cli::try_parse_from(["blockzilla", "dump-tokens", "--epoch", "1094"]).is_err());
+        let cli = Cli::try_parse_from([
+            "blockzilla",
+            "token-dump",
+            "--epoch",
+            "1094",
+            "--max-blocks",
+            "20",
+            "--mint",
+            "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        ])
+        .unwrap();
+        assert!(matches!(cli.command, Commands::TokenDump(_)));
     }
 
     #[test]

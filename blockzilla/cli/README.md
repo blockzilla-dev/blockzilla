@@ -6,7 +6,9 @@ The core command tree contains:
 | Command | Purpose |
 | --- | --- |
 | `stream` | Read an archive epoch as ordered JSON block summaries. |
-| `dump-tokens` | Export recorded token balances as JSON Lines. |
+| `token-dump` | Export recorded token balances as JSON Lines. |
+| `wallet-dump` | Export transactions that one wallet signed. |
+| `program-dump` | Export recorded outer and inner calls of one program. |
 | `inspect` | Show an archive's admitted identity and range. |
 | `compare-sdk-rpc` | Compare a saved SDK capture with finalized RPC blocks. |
 | `build-direct-agave-compact` | Build compact blocks from a complete native callback batch. |
@@ -14,13 +16,32 @@ The core command tree contains:
 ```sh
 cargo run --locked -p blockzilla -- --help
 blockzilla stream --epoch 900 --max-blocks 5
-blockzilla dump-tokens --epoch 900 --max-blocks 100 > token-balances.jsonl
+blockzilla token-dump --epoch 200 --max-blocks 20 --mint EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v > usdc.jsonl
+blockzilla token-dump --archive-url https://pub-97348740d6ef467aa2f1b4b62daa98dc.r2.dev/compact-v2/blockzilla-20261004/epoch-1094 --epoch 1094 --mint EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v
+blockzilla wallet-dump --epoch 1094 --key WALLET
+blockzilla program-dump --epoch 1094 --key PROGRAM
 blockzilla inspect --epoch 900
 ```
 
+`token-dump` takes `--epoch`, `--origin`, `--archive-url`, `--s3-region`,
+`--cache-root`, `--archive-dir`, `--source-id`, `--read-concurrency`,
+`--threads`, `--first-block`, `--max-blocks`, and `--mint`. With no
+`--archive-url`, `--origin`, or `--archive-dir`, it reads the public Foundation
+directory
+`https://pub-97348740d6ef467aa2f1b4b62daa98dc.r2.dev/compact-v2/blockzilla-20261004/epoch-<EPOCH>`.
+It writes one JSON line per recorded token balance. Each line includes the
+transaction signature. The command stops when execution status or token data
+is missing.
+`wallet-dump` and `program-dump` take the same arguments as the example
+binaries in `examples/`. Omit `--archive-url` to read the public Foundation archive at
+`https://pub-97348740d6ef467aa2f1b4b62daa98dc.r2.dev/compact-v2/blockzilla-20261004/epoch-<EPOCH>`.
+The cache defaults to `.blockzilla-cache` in the current directory. Give a
+local epoch directory instead of `--archive-url` to read a local build. `--key`
+selects a required signer or a program. `wallet-dump` and `program-dump`
+require `--key`. These commands read archives only.
+
 For a local archive, supply `--archive-dir /absolute/archive/path` and a stable
-`--source-id`. The `stream`, `dump-tokens` and `inspect` commands use the same
-archive source options. Output goes to stdout; progress goes to stderr.
+`--source-id`. Output goes to stdout; progress goes to stderr.
 
 The native worker uses this unchanged command contract:
 
@@ -39,7 +60,7 @@ their separate tools. Archive integrity and signature checks remain available
 through the reader SDK.
 
 The combined live-capture and archive-backfill token example is a product
-acceptance target. The current `dump-tokens` command reads archives only.
+acceptance target. The current `token-dump` command reads archives only.
 
 ## Compare SDK output with RPC
 

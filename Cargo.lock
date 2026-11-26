@@ -447,13 +447,7 @@ name = "blockzilla-dump-examples"
 version = "0.2.0"
 dependencies = [
  "anyhow",
- "blockzilla-compact-v2-reader",
- "blockzilla-model",
- "bs58",
- "clap 4.6.6",
- "five8",
- "itoa",
- "serde_json",
+ "blockzilla",
 ]
 
 [[package]]

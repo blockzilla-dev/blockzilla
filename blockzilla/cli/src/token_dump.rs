@@ -2,23 +2,61 @@
 
 use std::{
     io::{self, BufWriter, Write},
+    num::NonZeroU32,
+    path::PathBuf,
     time::Instant,
 };
 
 use anyhow::{Context, Result};
 use blockzilla_compact_v2_reader::archive::{
-    ArchiveInstructionSource, BlockSink, BlockView, QueryError, QueryResult,
+    ArchiveInstructionSource, BlockSink, BlockView, CompactV2Archive, CompactV2LocalDescriptor,
+    CompactV2ParallelScanConfig, QueryError, QueryResult, ScanRequest,
 };
 use blockzilla_model::{ExecutionStatus, TokenBalanceCoverage, TokenBalanceSide};
 use clap::Args;
 use sha2::{Digest, Sha256};
 
-use crate::stream::{self, EpochSourceArgs};
-
 #[derive(Args, Debug)]
-pub(crate) struct DumpTokensArgs {
-    #[command(flatten)]
-    pub source: EpochSourceArgs,
+pub(crate) struct TokenDumpArgs {
+    /// Epoch to read from the public Foundation archive.
+    #[arg(long)]
+    pub epoch: u64,
+    /// Compatible HTTPS archive origin. Omit it to read the public Foundation bucket.
+    #[arg(long, env = "BLOCKZILLA_ORIGIN", conflicts_with = "archive_dir")]
+    pub origin: Option<String>,
+    /// Public HTTPS epoch directory. Omit `--archive-url` and `--origin` to read
+    /// `https://pub-97348740d6ef467aa2f1b4b62daa98dc.r2.dev/compact-v2/blockzilla-20261004/epoch-<EPOCH>`.
+    #[arg(long, env = "BLOCKZILLA_ARCHIVE_URL", conflicts_with_all = ["origin", "archive_dir"])]
+    pub archive_url: Option<String>,
+    /// Sign requests to --archive-url for a private S3-compatible bucket in this
+    /// region (`auto` for Cloudflare R2). Credentials come from
+    /// AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY and the optional
+    /// AWS_SESSION_TOKEN.
+    #[arg(long, requires = "archive_url")]
+    pub s3_region: Option<String>,
+    /// Cache directory. Relative paths are resolved from the current directory.
+    #[arg(long, default_value = ".blockzilla-cache")]
+    pub cache_root: PathBuf,
+    /// Read this local epoch directory instead of the HTTPS source.
+    #[arg(long, requires = "source_id")]
+    pub archive_dir: Option<PathBuf>,
+    /// Stable ID for a local archive build. Change it when you replace that build.
+    #[arg(long, requires = "archive_dir")]
+    pub source_id: Option<String>,
+    /// Concurrent block reads for --archive-dir. Use several on a NAS or disk
+    /// array; 1 reads one range at a time.
+    #[arg(long, default_value_t = 1, requires = "archive_dir", value_parser = clap::value_parser!(u16).range(1..=64))]
+    pub read_concurrency: u16,
+    /// Decode workers (1 through 64).
+    #[arg(long, default_value_t = 4, value_parser = clap::value_parser!(u16).range(1..=64))]
+    pub threads: u16,
+    /// First block row to read. Use the next row after a saved checkpoint to
+    /// resume a dump.
+    #[arg(long, default_value_t = 0)]
+    pub first_block: u32,
+    /// Read at most this many block rows. Omit to read all admitted rows.
+    #[arg(long)]
+    pub max_blocks: Option<NonZeroU32>,
     /// Select one base58 mint. Unknown mint identities remain visible as null.
     #[arg(long, value_parser = parse_mint)]
     pub mint: Option<[u8; 32]>,
@@ -67,6 +105,18 @@ impl<W: Write> TokenSink<W> {
         self.output.write_all(text.as_bytes())
     }
 
+    /// A JSON string with the base58 transaction signature, or `null`.
+    fn signature(&mut self, signature: Option<&[u8; 64]>) -> io::Result<()> {
+        let Some(signature) = signature else {
+            return self.output.write_all(b"null");
+        };
+        let mut text = [0u8; five8::BASE58_ENCODED_64_MAX_LEN];
+        let length = usize::from(five8::encode_64(signature, &mut text));
+        self.output.write_all(b"\"")?;
+        self.output.write_all(&text[..length])?;
+        self.output.write_all(b"\"")
+    }
+
     /// A JSON string with the base58 key, or `null`.
     fn key(&mut self, key: Option<&[u8; 32]>) -> io::Result<()> {
         let Some(key) = key else {
@@ -88,6 +138,7 @@ impl<W: Write> TokenSink<W> {
         block_ordinal: u32,
         slot: u64,
         tx_index: u32,
+        signature: Option<&[u8; 64]>,
         status: &'static [u8],
         balance: &blockzilla_model::RecordedTokenBalance,
     ) -> io::Result<()> {
@@ -99,6 +150,8 @@ impl<W: Write> TokenSink<W> {
         self.number(slot)?;
         self.output.write_all(b",\"tx_index\":")?;
         self.number(tx_index)?;
+        self.output.write_all(b",\"signature\":")?;
+        self.signature(signature)?;
         self.output.write_all(b",\"execution_status\":\"")?;
         self.output.write_all(status)?;
         self.output.write_all(match balance.side {
@@ -148,6 +201,7 @@ impl<W: Write> BlockSink for TokenSink<W> {
                     block.header.block_ordinal,
                     block.header.slot,
                     tx.header.tx_index,
+                    tx.primary_signature,
                     status,
                     balance,
                 )
@@ -168,12 +222,84 @@ impl<W: Write> BlockSink for TokenSink<W> {
     }
 }
 
-pub(crate) fn run(args: DumpTokensArgs) -> Result<()> {
+fn open(args: &TokenDumpArgs) -> Result<CompactV2Archive> {
+    eprintln!("Opening epoch {}...", args.epoch);
+    let archive = if let Some(root) = &args.archive_dir {
+        let root = std::fs::canonicalize(&root)
+            .with_context(|| format!("Cannot open archive directory {}", root.display()))?;
+        let source_id = args
+            .source_id
+            .as_deref()
+            .context("Local reads require --source-id")?;
+        let descriptor = CompactV2LocalDescriptor::mainnet(args.epoch, source_id)?;
+        CompactV2Archive::open_local_with_read_concurrency(
+            root,
+            descriptor,
+            usize::from(args.read_concurrency),
+        )?
+    } else {
+        let cache_root = if args.cache_root.is_absolute() {
+            args.cache_root.clone()
+        } else {
+            std::env::current_dir()?.join(&args.cache_root)
+        };
+        if let Some(epoch_url) = &args.archive_url {
+            eprintln!("Source: {epoch_url}\nPreparing archive index and key registry...");
+            match &args.s3_region {
+                Some(region) => {
+                    let signer = blockzilla_compact_v2_reader::S3SigV4Signer::new(
+                        blockzilla_compact_v2_reader::S3Credentials::from_env()?,
+                        region.as_str(),
+                    )?;
+                    CompactV2Archive::open_signed_epoch_url(
+                        epoch_url,
+                        args.epoch,
+                        cache_root,
+                        std::sync::Arc::new(signer),
+                    )
+                }
+                None => CompactV2Archive::open_epoch_url(epoch_url, args.epoch, cache_root),
+            }
+            .with_context(|| format!("Cannot open epoch {} at {epoch_url}", args.epoch))?
+        } else if let Some(origin) = args.origin.as_deref() {
+            eprintln!("Source: {origin}\nPreparing archive index and key registry...");
+            CompactV2Archive::open(origin, args.epoch, cache_root)
+                .with_context(|| format!("Cannot open epoch {} at {origin}", args.epoch))?
+        } else {
+            let epoch_url = blockzilla::public_epoch_url(args.epoch);
+            eprintln!("Source: {epoch_url}\nPreparing archive index and key registry...");
+            CompactV2Archive::open_epoch_url(&epoch_url, args.epoch, cache_root)
+                .with_context(|| format!("Cannot open epoch {} at {epoch_url}", args.epoch))?
+        }
+    };
+    Ok(archive)
+}
+
+fn parallel_config(args: &TokenDumpArgs) -> CompactV2ParallelScanConfig {
+    let mut config = CompactV2ParallelScanConfig::new(usize::from(args.threads));
+    if args.archive_dir.is_some()
+        && args.read_concurrency > 1
+        && let Some(input) = config.network_input.as_mut()
+    {
+        input.workers = usize::from(args.read_concurrency);
+    }
+    config
+}
+
+fn request(archive: &CompactV2Archive, args: &TokenDumpArgs) -> Result<ScanRequest> {
+    Ok(match (args.first_block, args.max_blocks) {
+        (0, None) => ScanRequest::all(),
+        (first_block, limit) => ScanRequest::bounded(
+            archive.bounded_range(first_block, limit.unwrap_or(NonZeroU32::MAX))?,
+        ),
+    })
+}
+
+pub(crate) fn run(args: TokenDumpArgs) -> Result<()> {
     let started = Instant::now();
-    let mut archive = stream::open(&args.source)?;
-    let request = stream::request(&archive, &args.source)?
+    let mut archive = open(&args)?;
+    let request = request(&archive, &args)?
         .without_instructions()
-        .without_primary_signatures()
         .without_required_signers();
     let request = match args.mint {
         Some(mint) => request.with_token_balances_for([mint]),
@@ -190,7 +316,7 @@ pub(crate) fn run(args: DumpTokensArgs) -> Result<()> {
         &source_id,
     );
     let receipt = archive
-        .scan_ordered_parallel(&request, &mut sink, stream::parallel_config(&args.source))
+        .scan_ordered_parallel(&request, &mut sink, parallel_config(&args))
         .context("Token dump stopped; output can contain an incomplete prefix")?;
     sink.output.flush().context("flush token dump output")?;
     archive.verify_local_unchanged()?;
@@ -226,7 +352,7 @@ mod tests {
                 ),
                 cpi_coverage: CpiCoverage::NotRecorded,
             },
-            primary_signature: None,
+            primary_signature: Some([5; 64]),
             required_signers: Vec::new(),
             instructions: Vec::new(),
             token_balance_coverage: TokenBalanceCoverage::Complete,
@@ -255,6 +381,7 @@ mod tests {
         block_ordinal: u32,
         slot: u64,
         tx_index: u32,
+        signature: Option<String>,
         execution_status: &'static str,
         side: TokenBalanceSide,
         balance_index: u32,
@@ -281,6 +408,9 @@ mod tests {
             key
         };
         let text = |key: Option<[u8; 32]>| key.map(|key| bs58::encode(key).into_string());
+        let signature_text = |signature: Option<[u8; 64]>| {
+            signature.map(|signature| bs58::encode(signature).into_string())
+        };
         for source_id in ["source-test", "a\"b\\c\u{1}"] {
             let mut sink = TokenSink::new(Vec::new(), source_id);
             let mut expected = Vec::new();
@@ -299,6 +429,12 @@ mod tests {
                     amount: [0, 1, u64::MAX, 123_456_789][index as usize % 4],
                     decimals: [0, 6, 9, u8::MAX][index as usize % 4],
                 };
+                let signature = (index % 4 != 0).then(|| {
+                    let mut signature = [0u8; 64];
+                    signature[..32].copy_from_slice(&key(index));
+                    signature[32..].copy_from_slice(&key(index + 7));
+                    signature
+                });
                 let (status, status_text) = if index % 3 == 0 {
                     (&b"failed"[..], "failed")
                 } else {
@@ -318,6 +454,7 @@ mod tests {
                         block_ordinal: ordinal,
                         slot,
                         tx_index,
+                        signature: signature_text(signature),
                         execution_status: status_text,
                         side: balance.side,
                         balance_index: balance.balance_index,
@@ -331,8 +468,16 @@ mod tests {
                 )
                 .unwrap();
                 expected.push(b'\n');
-                sink.row(epoch, ordinal, slot, tx_index, status, &balance)
-                    .unwrap();
+                sink.row(
+                    epoch,
+                    ordinal,
+                    slot,
+                    tx_index,
+                    signature.as_ref(),
+                    status,
+                    &balance,
+                )
+                .unwrap();
             }
             assert_eq!(
                 String::from_utf8(sink.output).unwrap(),
@@ -361,6 +506,7 @@ mod tests {
         let row: serde_json::Value = serde_json::from_slice(&sink.output).unwrap();
         assert_eq!(row["amount"], u64::MAX.to_string());
         assert_eq!(row["mint"], serde_json::Value::Null);
+        assert_eq!(row["signature"], bs58::encode([5; 64]).into_string());
         assert_eq!(row["execution_status"], "failed");
         assert_eq!(row["balance_index"], 9);
         assert_eq!(row["account_index"], 4);

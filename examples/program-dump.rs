@@ -1,3 +1,3 @@
 fn main() -> anyhow::Result<()> {
-    blockzilla_dump_examples::run(blockzilla_dump_examples::Kind::Program)
+    blockzilla::archive_dump::run(blockzilla::archive_dump::Kind::Program)
 }
