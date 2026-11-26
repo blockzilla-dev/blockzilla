@@ -30,7 +30,7 @@ Live source identity and control events remain distinct from finalized archive
 identity. Backfill must not invent processed events or expired native cursors.
 Missing coverage stops with an explicit gap. The acceptance criteria are in the
 [first stable release requirements](../RELEASE.md#first-stable-release).
-The existing archive-only `dump-tokens` command does not implement this target
+The existing archive-only `token-dump` command does not implement this target
 yet.
 
 The full Agave fork, patch code and Agave regression tests stay in the fork

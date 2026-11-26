@@ -1751,16 +1751,18 @@ impl<S: RangeSource> CompactV2InstructionSource<S> {
                 let output = match &mut output {
                     Some(output) => output,
                     slot @ None => {
-                        let mut buffer = context.output_pool.balances();
-                        if matches!(requirement, TokenBalanceRequirement::All) {
-                            buffer
-                                .try_reserve(pre.len().saturating_add(post.len()))
+                        let buffer = if matches!(requirement, TokenBalanceRequirement::All) {
+                            context
+                                .output_pool
+                                .balances_with_capacity(pre.len() + post.len())
                                 .map_err(|_| {
                                     CompactV2InstructionSourceError::Invalid(
                                         "failed to reserve projected token balances".into(),
                                     )
-                                })?;
-                        }
+                                })?
+                        } else {
+                            context.output_pool.balances()
+                        };
                         slot.insert(buffer)
                     }
                 };
@@ -7870,6 +7872,48 @@ pub(crate) mod tests {
     }
 
     #[test]
+    fn registry_page_replacement_preserves_other_workers_keys() {
+        // The two pages map to the same shared slot and per-worker recent slot.
+        let second_page = 1024 * 512;
+        let mut registry = vec![[0; REGISTRY_KEY_BYTES]; second_page + 1];
+        registry[0] = [1; REGISTRY_KEY_BYTES];
+        registry[second_page] = [2; REGISTRY_KEY_BYTES];
+        let fixture = Fixture::build(registry, vec![Vec::new()], None);
+        let reader =
+            open_trusted_test_reader(crate::PinnedLocalRangeSource::new(fixture.directory.path()));
+        let request = ScanRequest::token_balances_only();
+        let pages = SharedRegistryPages::for_scan(&reader, &request).unwrap();
+        let mut first = RegistryPageResolver::new(Arc::clone(&pages));
+        let mut second = RegistryPageResolver::new(pages);
+        let mut io = ContextIo::default();
+        let first_id = 1;
+        let second_id = second_page as u32 + 1;
+        assert_eq!(
+            first.resolve(&reader, first_id, &mut io).unwrap(),
+            [1; REGISTRY_KEY_BYTES]
+        );
+        assert_eq!(
+            second.resolve(&reader, first_id, &mut io).unwrap(),
+            [1; REGISTRY_KEY_BYTES]
+        );
+        assert_eq!(io.calls, 1);
+        assert_eq!(
+            first.resolve(&reader, second_id, &mut io).unwrap(),
+            [2; REGISTRY_KEY_BYTES]
+        );
+        assert_eq!(
+            second.resolve(&reader, first_id, &mut io).unwrap(),
+            [1; REGISTRY_KEY_BYTES]
+        );
+        assert_eq!(io.calls, 2);
+        assert_eq!(
+            first.resolve(&reader, first_id, &mut io).unwrap(),
+            [1; REGISTRY_KEY_BYTES]
+        );
+        assert_eq!(io.calls, 3);
+    }
+
+    #[test]
     fn parallel_local_projection_shares_registry_reads_and_preserves_output() {
         let fixture = indexer_fixture(12);
         let local = crate::PinnedLocalRangeSource::new(fixture.directory.path());
@@ -7889,8 +7933,10 @@ pub(crate) mod tests {
         let (output, receipt) = plain_scan_bytes(&mut source, &request, config);
         let receipt = receipt.unwrap();
         assert_eq!(output, expected);
+        // One worker can handle all token-bearing blocks in this small fixture.
         assert!(
-            baseline.scan.io.source_read_bytes.unwrap() > fixture.compressed_bytes + registry_bytes
+            baseline.scan.io.source_read_bytes.unwrap()
+                >= fixture.compressed_bytes + registry_bytes
         );
         assert_eq!(
             receipt.scan.io.source_read_bytes,

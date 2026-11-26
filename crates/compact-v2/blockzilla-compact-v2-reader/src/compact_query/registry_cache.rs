@@ -62,19 +62,26 @@ impl SharedRegistryPages {
         // The caller validated the ID against this reader's registry length.
         let first_key = number * KEYS_PER_PAGE;
         let count = (reader.registry_entries() as usize - first_key).min(KEYS_PER_PAGE);
-        let mut keys = slot
-            .take()
-            .and_then(Arc::into_inner)
-            .map_or_else(Vec::new, |page| page.keys);
-        keys.resize(count, [0; REGISTRY_KEY_BYTES]);
+        // A partial read must leave the slot empty. The removed page can be
+        // filled in place only when no other resolver holds a reference.
+        let mut recycled = slot.take();
+        if recycled.as_mut().and_then(Arc::get_mut).is_none() {
+            recycled = Some(Arc::new(RegistryPage {
+                number,
+                keys: Vec::new(),
+            }));
+        }
+        let mut page = recycled.expect("page supplied");
+        let page_data = Arc::get_mut(&mut page).expect("page is uniquely owned");
+        page_data.keys.resize(count, [0; REGISTRY_KEY_BYTES]);
         let offset = first_key as u64 * REGISTRY_KEY_BYTES as u64;
         reader.source().read_range_into_slice(
             crate::manifest::REGISTRY_FILE,
             offset,
-            keys.as_flattened_mut(),
+            page_data.keys.as_flattened_mut(),
         )?;
-        io.record(keys.len() * REGISTRY_KEY_BYTES)?;
-        let page = Arc::new(RegistryPage { number, keys });
+        io.record(page_data.keys.len() * REGISTRY_KEY_BYTES)?;
+        page_data.number = number;
         *slot = Some(Arc::clone(&page));
         Ok(page)
     }
@@ -108,6 +115,8 @@ impl RegistryPageResolver {
         if let Some(page) = slot.as_ref().filter(|page| page.number == number) {
             return Ok(page.keys[key % KEYS_PER_PAGE]);
         }
+        // Give the shared cache a chance to reuse this worker's old page.
+        *slot = None;
         let page = self.shared.page(reader, number, io)?;
         let resolved = page.keys[key % KEYS_PER_PAGE];
         *slot = Some(page);

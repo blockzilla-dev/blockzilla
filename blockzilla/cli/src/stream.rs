@@ -11,8 +11,6 @@ use blockzilla_compact_v2_reader::archive::{
 use clap::Args;
 use serde::Serialize;
 
-const DEFAULT_ORIGIN: &str = "https://blockzilla-archive-samples-v1.cheron-augustin.workers.dev";
-
 #[derive(Args, Debug)]
 pub(crate) struct StreamArgs {
     #[command(flatten)]
@@ -21,13 +19,14 @@ pub(crate) struct StreamArgs {
 
 #[derive(Args, Debug)]
 pub(crate) struct EpochSourceArgs {
-    /// Epoch to read. The public source supplies selected sample epochs.
+    /// Epoch to read from the public Foundation archive.
     #[arg(long)]
     pub epoch: u64,
-    /// Compatible HTTPS archive origin. Defaults to the public sample source.
+    /// Compatible HTTPS archive origin. Omit it to read the public Foundation bucket.
     #[arg(long, env = "BLOCKZILLA_ORIGIN", conflicts_with = "archive_dir")]
     pub origin: Option<String>,
-    /// Public HTTPS epoch directory, such as https://archive.example.com/epoch-N.
+    /// Public HTTPS epoch directory. Omit `--archive-url` and `--origin` to read
+    /// `https://pub-97348740d6ef467aa2f1b4b62daa98dc.r2.dev/compact-v2/blockzilla-20261004/epoch-<EPOCH>`.
     #[arg(long, env = "BLOCKZILLA_ARCHIVE_URL", conflicts_with_all = ["origin", "archive_dir"])]
     pub archive_url: Option<String>,
     /// Sign requests to --archive-url for a private S3-compatible bucket in this
@@ -150,11 +149,15 @@ pub(crate) fn open(args: &EpochSourceArgs) -> Result<CompactV2Archive> {
                 None => CompactV2Archive::open_epoch_url(epoch_url, args.epoch, cache_root),
             }
             .with_context(|| format!("Cannot open epoch {} at {epoch_url}", args.epoch))?
-        } else {
-            let origin = args.origin.as_deref().unwrap_or(DEFAULT_ORIGIN);
+        } else if let Some(origin) = args.origin.as_deref() {
             eprintln!("Source: {origin}\nPreparing archive index and key registry...");
             CompactV2Archive::open(origin, args.epoch, cache_root)
                 .with_context(|| format!("Cannot open epoch {} at {origin}", args.epoch))?
+        } else {
+            let epoch_url = blockzilla::public_epoch_url(args.epoch);
+            eprintln!("Source: {epoch_url}\nPreparing archive index and key registry...");
+            CompactV2Archive::open_epoch_url(&epoch_url, args.epoch, cache_root)
+                .with_context(|| format!("Cannot open epoch {} at {epoch_url}", args.epoch))?
         }
     };
     Ok(archive)
