@@ -282,19 +282,10 @@ async fn read_candidate(
     let mut transaction = transaction_value(&mut resolver, &message, signatures, false)
         .await
         .map_err(RpcError::internal)?;
-    match params.encoding {
-        TransactionEncoding::Json => {}
-        TransactionEncoding::Base64
-        | TransactionEncoding::Base58
-        | TransactionEncoding::LegacyBinary => {
-            let bytes =
-                transaction_rpc::encode_transaction(&transaction, &version).map_err(rpc_error)?;
-            transaction = match params.encoding {
-                TransactionEncoding::Base64 => json!([BASE64.encode(bytes), "base64"]),
-                TransactionEncoding::LegacyBinary => json!(base58_bytes(&bytes)),
-                _ => json!([base58_bytes(&bytes), "base58"]),
-            };
-        }
+    if params.encoding == TransactionEncoding::Base64 {
+        let bytes =
+            transaction_rpc::encode_transaction(&transaction, &version).map_err(rpc_error)?;
+        transaction = json!([BASE64.encode(bytes), "base64"]);
     }
     let meta = metadata_value(&mut resolver, meta.as_ref())
         .await
