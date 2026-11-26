@@ -248,7 +248,7 @@ pub(crate) fn build_archive(
         let predecessor_slot = newest.slot;
         let mut writer = ArchiveWriter::create(&temps, key_index, tail, false, zstd_level)?;
         let selected = handoff_epoch
-            .then(|| sample_slots(&inspected.block_slots))
+            .map(|_| sample_slots(&inspected.block_slots))
             .transpose()?;
         let mut samples = Vec::new();
         let written = scan_range(&blockstore, start_slot, end_slot, read_threads, |block| {
