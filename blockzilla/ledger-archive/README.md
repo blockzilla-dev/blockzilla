@@ -17,6 +17,33 @@ and `R2_SECRET_ACCESS_KEY`. An object that already has the same size stays in
 place. After the upload, one Telegram line is sent when `TELEGRAM_BOT_TOKEN`
 and `TELEGRAM_CHAT_ID` are set. A Telegram failure still exits 0.
 
+## GetBlock handoff
+
+For automatic archive admission, build the epoch with checked coverage and
+require that coverage at publication.
+
+```text
+hivezilla-ledger-archive build-epoch-archive <LEDGER> <OUTPUT-PARENT> --epoch N --getblock-handoff
+hivezilla-ledger-archive public-epoch-to-cf <OUTPUT-PARENT> --epoch N --require-getblock-handoff
+```
+
+The checked build verifies each slot in the epoch. The rooted parent chain
+must connect the preceding block to the first included block and the last
+included block to the first rooted block after the epoch. The build records
+the produced slots and SHA-256 digests for the original archive objects. It
+installs the sealed epoch directory after these checks finish.
+
+The publisher confirms the original objects by length, SHA-256, and strong
+R2 ETag. For an existing object without publisher checksum metadata, it
+checks the remote bytes in a bounded stream. It creates
+`epoch-N/GETBLOCK-EPOCH-READY.json` only after all objects pass and verifies
+the receipt by reading it back. The receipt includes the SHA-256 of the
+ordered produced slots, encoded as little-endian 64-bit integers, plus three
+block and parent hash samples and the successor. A normal upload without
+coverage still works and leaves the epoch without a GetBlock readiness
+receipt. The Foundation reader must load the indexes and pass public
+GetBlock checks before the cleanup limit can advance.
+
 The default build fetches upstream Agave tag `v4.4.0-rc.1`, commit
 `b6149a719f8fa84123ac3ce1e5f201af64bca8ee`. Cargo does not need a local
 `agave-ledger` checkout. Its lock file is separate from the main workspace.

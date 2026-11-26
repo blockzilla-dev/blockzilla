@@ -3,13 +3,14 @@ mod convert;
 mod ledger;
 mod markers;
 mod notify;
+mod publication;
 mod publish;
 mod slot_compact;
 mod source;
 
-use std::path::PathBuf;
+use std::{fs, path::PathBuf};
 
-use anyhow::Result;
+use anyhow::{Context, Result, ensure};
 use clap::{Parser, Subcommand};
 
 use crate::convert::build_archive;
@@ -64,6 +65,9 @@ enum Command {
         /// Parallel shred reads. 1 reads one slot at a time.
         #[arg(long, default_value_t = 1)]
         read_threads: u8,
+        /// Write a coverage receipt for GetBlock after checking both epoch boundaries.
+        #[arg(long)]
+        getblock_handoff: bool,
     },
     /// Send one archived epoch to Cloudflare R2.
     ///
@@ -81,6 +85,9 @@ enum Command {
         output: PathBuf,
         #[arg(long)]
         epoch: u64,
+        /// Require checked epoch coverage and a GetBlock readiness receipt.
+        #[arg(long)]
+        require_getblock_handoff: bool,
     },
 }
 
@@ -113,6 +120,7 @@ fn run() -> Result<()> {
             epoch,
             level,
             read_threads,
+            getblock_handoff,
         } => {
             let (start_slot, end_slot) = epoch_slot_range(epoch)?;
             let blockstore = open_read_only(&ledger)?;
@@ -126,17 +134,56 @@ fn run() -> Result<()> {
             drop(blockstore);
             let output = epoch_output_dir(&output, epoch);
             ensure_no_published_archive_file(&output)?;
-            let inspected =
-                build_archive(&ledger, &output, start_slot, end_slot, level, read_threads)?;
+            let inspected = if getblock_handoff {
+                ensure!(
+                    !output.exists(),
+                    "GetBlock handoff output must be a new epoch directory"
+                );
+                let parent = output.parent().context("archive output has no parent")?;
+                fs::create_dir_all(parent)?;
+                let dir = tempfile::Builder::new()
+                    .prefix(".getblock-epoch-")
+                    .tempdir_in(parent)?;
+                let inspected = build_archive(
+                    &ledger,
+                    dir.path(),
+                    start_slot,
+                    end_slot,
+                    level,
+                    read_threads,
+                    Some(epoch),
+                )?;
+                fs::rename(dir.path(), &output).context("install sealed epoch archive")?;
+                fs::File::open(parent)?.sync_all()?;
+                inspected
+            } else {
+                build_archive(
+                    &ledger,
+                    &output,
+                    start_slot,
+                    end_slot,
+                    level,
+                    read_threads,
+                    None,
+                )?
+            };
             print_report(&inspected);
             println!("Output: {}", output.display());
             Ok(())
         }
-        Command::PublicEpochToCf { output, epoch } => {
+        Command::PublicEpochToCf {
+            output,
+            epoch,
+            require_getblock_handoff,
+        } => {
             let settings = publish::resolve_settings(&|name| std::env::var(name).ok())?;
             let output = ledger::epoch_output_dir(&output, epoch);
             let files = publish::require_epoch_files(&output)?;
-            publish::upload_epoch(&settings, epoch, &files)?;
+            let coverage = publication::LocalCoverage::read(&output, epoch)?;
+            if require_getblock_handoff && coverage.is_none() {
+                anyhow::bail!("archive has no GetBlock coverage receipt");
+            }
+            publish::upload_epoch(&settings, epoch, &files, coverage.as_ref())?;
             notify::notify_sent_to_cf(epoch, &output)?;
             let folder = publish::epoch_folder(&settings.prefix, epoch);
             println!("Output: s3://{}/{folder}", settings.bucket);
@@ -198,8 +245,13 @@ fn public_epoch_to_cf_accepts_the_epoch_directory() {
     ])
     .unwrap();
     match cli.command {
-        Command::PublicEpochToCf { epoch, output } => {
+        Command::PublicEpochToCf {
+            epoch,
+            output,
+            require_getblock_handoff,
+        } => {
             assert_eq!(epoch, 1084);
+            assert!(!require_getblock_handoff);
             assert_eq!(output, PathBuf::from("/home/sol/ledger-archive-out"));
         }
         _ => panic!("wrong command"),
