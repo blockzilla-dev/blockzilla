@@ -1,18 +1,29 @@
 # Small archive examples
 
-Run one example with a local Compact V2 epoch directory, `--epoch`, and an
-immutable `--source-id`. `--key` selects a mint, required signer, or program.
-For example:
+`wallet-dump` and `program-dump` read the same archive.
+Token balances use `blockzilla token-dump`, which has the same source options
+as `stream`.
+Omit `--url` on these two commands to read the public Foundation directory for
+the selected epoch. Epoch 1094 is
+`https://pub-97348740d6ef467aa2f1b4b62daa98dc.r2.dev/compact-v2/blockzilla-20261004/epoch-1094`.
+The cache defaults to `.blockzilla-cache` in the current directory.
+`--key` selects a required signer or a program.
 
 ```sh
-cargo run --release -p blockzilla-dump-examples --bin wallet-dump -- /data/epoch-900 --epoch 900 --source-id my-generation --key WALLET
+blockzilla wallet-dump --epoch 1094 --key WALLET
+blockzilla program-dump --epoch 1094 --key PROGRAM
 ```
 
-To stream an epoch over HTTPS instead, give `--url` with the epoch directory
-and a private `--cache-dir` for the index and key registry:
+The same arguments work through the example binary:
 
 ```sh
-cargo run --release -p blockzilla-dump-examples --bin token-dump -- --url https://archive.example/compact-v2/build/epoch-200 --epoch 200 --cache-dir /var/cache/blockzilla
+cargo run --release -p blockzilla-dump-examples --bin wallet-dump -- --epoch 1094 --key WALLET
+```
+
+A local epoch directory uses a path instead of `--url`:
+
+```sh
+blockzilla wallet-dump /data/epoch-900 --epoch 900 --source-id my-generation --key WALLET
 ```
 
 For a private S3-compatible bucket, such as Cloudflare R2 through its S3 API,
@@ -22,19 +33,15 @@ signs each request with SigV4 and reads the credentials from
 `AWS_SESSION_TOKEN`. It never prints them:
 
 ```sh
-cargo run --release -p blockzilla-dump-examples --bin token-dump -- --url https://ACCOUNT.r2.cloudflarestorage.com/BUCKET/PREFIX/epoch-200 --s3-region auto --epoch 200 --cache-dir /var/cache/blockzilla
+blockzilla wallet-dump --url https://ACCOUNT.r2.cloudflarestorage.com/BUCKET/PREFIX/epoch-200 --s3-region auto --epoch 200 --cache-dir /var/cache/blockzilla --key WALLET
 ```
 
 `wallet-dump` reports transactions signed by the selected wallet. It does not
 claim all transactions that affect the wallet. `program-dump` includes recorded
-outer and inner calls and requires complete CPI coverage. `token-dump` reports
-recorded balance rows; it does not claim a complete current account snapshot.
+outer and inner calls and requires complete CPI coverage.
 
 These are archive examples. The live plus archive backfill acceptance case
 remains a separate target; these commands do not implement it yet.
-
-Token rows with unavailable mint identity remain visible as null, even when a
-mint filter is selected. They are not treated as confirmed non-matches.
 
 ## Speed options
 
@@ -55,8 +62,6 @@ mint filter is selected. They are not treated as confirmed non-matches.
 Output is written with one call per block and is flushed after each block.
 Each dump asks the reader only for the facts it prints:
 
-- `token-dump` reads no signatures and no signers
-  (`ScanRequest::token_balances_only`).
 - `wallet-dump` selects one signer (`with_required_signer`), so other signer
   keys are not resolved.
 - `program-dump` reads program identities without instruction data or

@@ -29,7 +29,7 @@ Use `--help` to see the commands, or start with the [small examples](examples).
 
 | Component | Purpose |
 | --- | --- |
-| [CLI](blockzilla/cli) | Stream, inspect, dump tokens and build archives |
+| [CLI](blockzilla/cli) | Stream, inspect, dump tokens, wallets and programs, and build archives |
 | [Compact V2](crates/compact-v2) | Block format, archive layout and readers |
 | [Zillastream](zillastream) | Capture Agave blocks and deliver a live stream |
 | [getBlock](blockzilla/get-block) | Serve recent and archived blocks |

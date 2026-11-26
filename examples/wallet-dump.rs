@@ -1,3 +1,3 @@
 fn main() -> anyhow::Result<()> {
-    blockzilla_dump_examples::run(blockzilla_dump_examples::Kind::Wallet)
+    blockzilla::archive_dump::run(blockzilla::archive_dump::Kind::Wallet)
 }
