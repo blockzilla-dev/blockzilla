@@ -1,11 +1,11 @@
 //! Measure whether the SDK or the input limits a scan on this machine.
 //!
-//! cargo run --release -p blockzilla-compact-v2-reader --features http --example sdk_ceiling -- \
+//! RUSTFLAGS='-C target-cpu=native' cargo run --release -p blockzilla-compact-v2-reader --features http --example sdk_ceiling -- \
 //!   --archive-dir /data/epoch-200 --source-id my-build --epoch 200 --first-block 150000 --max-blocks 1000
 //!
 //! or, for an HTTPS epoch directory:
 //!
-//! cargo run --release -p blockzilla-compact-v2-reader --features http --example sdk_ceiling -- \
+//! RUSTFLAGS='-C target-cpu=native' cargo run --release -p blockzilla-compact-v2-reader --features http --example sdk_ceiling -- \
 //!   --url https://pub-97348740d6ef467aa2f1b4b62daa98dc.r2.dev/compact-v2/blockzilla-20261004/epoch-1094 --cache-dir /tmp/bz-cache --epoch 1094 --max-blocks 1000
 //!
 //! Legs, on the same block-row range:
