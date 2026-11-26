@@ -545,6 +545,10 @@ impl RangeSource for PinnedLocalRangeSource {
         self.read_concurrency
     }
 
+    fn prefers_small_ranges(&self) -> bool {
+        true
+    }
+
     fn size(&self, object: &str) -> SourceResult<Option<u64>> {
         Ok(self.pinned_file(object)?.map(|file| file.identity.size))
     }
