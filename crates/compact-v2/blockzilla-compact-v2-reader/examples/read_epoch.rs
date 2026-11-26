@@ -1,10 +1,10 @@
 //! Read blocks from the public Foundation Compact V2 archive.
 //!
 //! Run from the workspace root:
-//! cargo run --locked -p blockzilla-compact-v2-reader --features http \
+//! RUSTFLAGS='-C target-cpu=native' cargo run --locked -p blockzilla-compact-v2-reader --features http \
 //!   --example read_epoch -- <epoch> <max-blocks>
 //!
-//! The default epoch is 200. Its directory is on the public Foundation bucket.
+//! The default epoch is 1094. Its first slot is 472608000.
 
 use std::{error::Error, num::NonZeroU32};
 
@@ -18,7 +18,7 @@ const ARCHIVE_BASE: &str =
 
 fn main() -> Result<(), Box<dyn Error>> {
     let mut args = std::env::args().skip(1);
-    let epoch: u64 = args.next().as_deref().unwrap_or("200").parse()?;
+    let epoch: u64 = args.next().as_deref().unwrap_or("1094").parse()?;
     let max_blocks: u32 = args.next().as_deref().unwrap_or("10").parse()?;
     let max_blocks = NonZeroU32::new(max_blocks).ok_or("max-blocks must be at least 1")?;
 
