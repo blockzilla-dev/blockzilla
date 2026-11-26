@@ -2,23 +2,61 @@
 
 use std::{
     io::{self, BufWriter, Write},
+    num::NonZeroU32,
+    path::PathBuf,
     time::Instant,
 };
 
 use anyhow::{Context, Result};
 use blockzilla_compact_v2_reader::archive::{
-    ArchiveInstructionSource, BlockSink, BlockView, QueryError, QueryResult,
+    ArchiveInstructionSource, BlockSink, BlockView, CompactV2Archive, CompactV2LocalDescriptor,
+    CompactV2ParallelScanConfig, QueryError, QueryResult, ScanRequest,
 };
 use blockzilla_model::{ExecutionStatus, TokenBalanceCoverage, TokenBalanceSide};
 use clap::Args;
 use sha2::{Digest, Sha256};
 
-use crate::stream::{self, EpochSourceArgs};
-
 #[derive(Args, Debug)]
 pub(crate) struct TokenDumpArgs {
-    #[command(flatten)]
-    pub source: EpochSourceArgs,
+    /// Epoch to read from the public Foundation archive.
+    #[arg(long)]
+    pub epoch: u64,
+    /// Compatible HTTPS archive origin. Omit it to read the public Foundation bucket.
+    #[arg(long, env = "BLOCKZILLA_ORIGIN", conflicts_with = "archive_dir")]
+    pub origin: Option<String>,
+    /// Public HTTPS epoch directory. Omit `--archive-url` and `--origin` to read
+    /// `https://pub-97348740d6ef467aa2f1b4b62daa98dc.r2.dev/compact-v2/blockzilla-20261004/epoch-<EPOCH>`.
+    #[arg(long, env = "BLOCKZILLA_ARCHIVE_URL", conflicts_with_all = ["origin", "archive_dir"])]
+    pub archive_url: Option<String>,
+    /// Sign requests to --archive-url for a private S3-compatible bucket in this
+    /// region (`auto` for Cloudflare R2). Credentials come from
+    /// AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY and the optional
+    /// AWS_SESSION_TOKEN.
+    #[arg(long, requires = "archive_url")]
+    pub s3_region: Option<String>,
+    /// Cache directory. Relative paths are resolved from the current directory.
+    #[arg(long, default_value = ".blockzilla-cache")]
+    pub cache_root: PathBuf,
+    /// Read this local epoch directory instead of the HTTPS source.
+    #[arg(long, requires = "source_id")]
+    pub archive_dir: Option<PathBuf>,
+    /// Stable ID for a local archive build. Change it when you replace that build.
+    #[arg(long, requires = "archive_dir")]
+    pub source_id: Option<String>,
+    /// Concurrent block reads for --archive-dir. Use several on a NAS or disk
+    /// array; 1 reads one range at a time.
+    #[arg(long, default_value_t = 1, requires = "archive_dir", value_parser = clap::value_parser!(u16).range(1..=64))]
+    pub read_concurrency: u16,
+    /// Decode workers (1 through 64).
+    #[arg(long, default_value_t = 4, value_parser = clap::value_parser!(u16).range(1..=64))]
+    pub threads: u16,
+    /// First block row to read. Use the next row after a saved checkpoint to
+    /// resume a dump.
+    #[arg(long, default_value_t = 0)]
+    pub first_block: u32,
+    /// Read at most this many block rows. Omit to read all admitted rows.
+    #[arg(long)]
+    pub max_blocks: Option<NonZeroU32>,
     /// Select one base58 mint. Unknown mint identities remain visible as null.
     #[arg(long, value_parser = parse_mint)]
     pub mint: Option<[u8; 32]>,
@@ -184,10 +222,83 @@ impl<W: Write> BlockSink for TokenSink<W> {
     }
 }
 
+fn open(args: &TokenDumpArgs) -> Result<CompactV2Archive> {
+    eprintln!("Opening epoch {}...", args.epoch);
+    let archive = if let Some(root) = &args.archive_dir {
+        let root = std::fs::canonicalize(&root)
+            .with_context(|| format!("Cannot open archive directory {}", root.display()))?;
+        let source_id = args
+            .source_id
+            .as_deref()
+            .context("Local reads require --source-id")?;
+        let descriptor = CompactV2LocalDescriptor::mainnet(args.epoch, source_id)?;
+        CompactV2Archive::open_local_with_read_concurrency(
+            root,
+            descriptor,
+            usize::from(args.read_concurrency),
+        )?
+    } else {
+        let cache_root = if args.cache_root.is_absolute() {
+            args.cache_root.clone()
+        } else {
+            std::env::current_dir()?.join(&args.cache_root)
+        };
+        if let Some(epoch_url) = &args.archive_url {
+            eprintln!("Source: {epoch_url}\nPreparing archive index and key registry...");
+            match &args.s3_region {
+                Some(region) => {
+                    let signer = blockzilla_compact_v2_reader::S3SigV4Signer::new(
+                        blockzilla_compact_v2_reader::S3Credentials::from_env()?,
+                        region.as_str(),
+                    )?;
+                    CompactV2Archive::open_signed_epoch_url(
+                        epoch_url,
+                        args.epoch,
+                        cache_root,
+                        std::sync::Arc::new(signer),
+                    )
+                }
+                None => CompactV2Archive::open_epoch_url(epoch_url, args.epoch, cache_root),
+            }
+            .with_context(|| format!("Cannot open epoch {} at {epoch_url}", args.epoch))?
+        } else if let Some(origin) = args.origin.as_deref() {
+            eprintln!("Source: {origin}\nPreparing archive index and key registry...");
+            CompactV2Archive::open(origin, args.epoch, cache_root)
+                .with_context(|| format!("Cannot open epoch {} at {origin}", args.epoch))?
+        } else {
+            let epoch_url = blockzilla::public_epoch_url(args.epoch);
+            eprintln!("Source: {epoch_url}\nPreparing archive index and key registry...");
+            CompactV2Archive::open_epoch_url(&epoch_url, args.epoch, cache_root)
+                .with_context(|| format!("Cannot open epoch {} at {epoch_url}", args.epoch))?
+        }
+    };
+    Ok(archive)
+}
+
+fn parallel_config(args: &TokenDumpArgs) -> CompactV2ParallelScanConfig {
+    let mut config = CompactV2ParallelScanConfig::new(usize::from(args.threads));
+    if args.archive_dir.is_some()
+        && args.read_concurrency > 1
+        && let Some(input) = config.network_input.as_mut()
+    {
+        input.workers = usize::from(args.read_concurrency);
+    }
+    config
+}
+
+fn request(archive: &CompactV2Archive, args: &TokenDumpArgs) -> Result<ScanRequest> {
+    Ok(match (args.first_block, args.max_blocks) {
+        (0, None) => ScanRequest::all(),
+        (first_block, limit) => ScanRequest::bounded(
+            archive.bounded_range(first_block, limit.unwrap_or(NonZeroU32::MAX))?,
+        ),
+    })
+}
+
 pub(crate) fn run(args: TokenDumpArgs) -> Result<()> {
     let started = Instant::now();
-    let mut archive = stream::open(&args.source)?;
-    let request = stream::request(&archive, &args.source)?
+    let mut archive = open(&args)?;
+    let request = request(&archive, &args)?
         .without_instructions()
         .without_required_signers();
     let request = match args.mint {
@@ -205,7 +316,7 @@ pub(crate) fn run(args: TokenDumpArgs) -> Result<()> {
         &source_id,
     );
     let receipt = archive
-        .scan_ordered_parallel(&request, &mut sink, stream::parallel_config(&args.source))
+        .scan_ordered_parallel(&request, &mut sink, parallel_config(&args))
         .context("Token dump stopped; output can contain an incomplete prefix")?;
     sink.output.flush().context("flush token dump output")?;
     archive.verify_local_unchanged()?;

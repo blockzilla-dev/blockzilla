@@ -23,23 +23,25 @@ blockzilla program-dump --epoch 1094 --key PROGRAM
 blockzilla inspect --epoch 900
 ```
 
-`token-dump` uses the same source options as `stream`. With no `--archive-url`,
-`--origin`, or `--archive-dir`, it reads the public Foundation directory
+`token-dump` takes `--epoch`, `--origin`, `--archive-url`, `--s3-region`,
+`--cache-root`, `--archive-dir`, `--source-id`, `--read-concurrency`,
+`--threads`, `--first-block`, `--max-blocks`, and `--mint`. With no
+`--archive-url`, `--origin`, or `--archive-dir`, it reads the public Foundation
+directory
 `https://pub-97348740d6ef467aa2f1b4b62daa98dc.r2.dev/compact-v2/blockzilla-20261004/epoch-<EPOCH>`.
 It writes one JSON line per recorded token balance. Each line includes the
 transaction signature. The command stops when execution status or token data
 is missing.
 `wallet-dump` and `program-dump` take the same arguments as the example
-binaries in `examples/`. Omit `--url` to read the public Foundation archive at
+binaries in `examples/`. Omit `--archive-url` to read the public Foundation archive at
 `https://pub-97348740d6ef467aa2f1b4b62daa98dc.r2.dev/compact-v2/blockzilla-20261004/epoch-<EPOCH>`.
 The cache defaults to `.blockzilla-cache` in the current directory. Give a
-local epoch directory instead of `--url` to read a local build. `--key`
+local epoch directory instead of `--archive-url` to read a local build. `--key`
 selects a required signer or a program. `wallet-dump` and `program-dump`
 require `--key`. These commands read archives only.
 
 For a local archive, supply `--archive-dir /absolute/archive/path` and a stable
-`--source-id`. The `stream`, `token-dump` and `inspect` commands use the same
-archive source options. Output goes to stdout; progress goes to stderr.
+`--source-id`. Output goes to stdout; progress goes to stderr.
 
 The native worker uses this unchanged command contract:
 

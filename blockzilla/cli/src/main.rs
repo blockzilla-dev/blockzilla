@@ -8,10 +8,10 @@ use std::path::PathBuf;
 
 mod archive_v2;
 mod compare_sdk_rpc;
-mod token_dump;
 mod first_seen_finalization;
 mod progress;
 mod stream;
+mod token_dump;
 use progress::{ProgressTracker, file_nonempty};
 
 pub const BUFFER_SIZE: usize = 256 << 20;

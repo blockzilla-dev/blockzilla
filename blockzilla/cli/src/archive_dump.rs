@@ -21,7 +21,7 @@ pub enum Kind {
 
 #[derive(clap::Args)]
 pub struct Args {
-    /// Local Compact V2 epoch directory. Omit it when `--url` is set.
+    /// Local Compact V2 epoch directory. Omit it when `--archive-url` is set.
     archive: Option<PathBuf>,
     #[arg(long)]
     epoch: u64,
@@ -32,7 +32,7 @@ pub struct Args {
     /// `https://pub-97348740d6ef467aa2f1b4b62daa98dc.r2.dev/compact-v2/blockzilla-20261004/epoch-<EPOCH>`
     /// for the selected epoch.
     #[arg(long)]
-    url: Option<String>,
+    archive_url: Option<String>,
     /// Cache directory for the network reader's control files. The default is
     /// `.blockzilla-cache` in the current directory. A relative path is
     /// resolved from the current directory.
@@ -41,7 +41,7 @@ pub struct Args {
     /// Sign requests for a private S3-compatible bucket in this region (`auto`
     /// for Cloudflare R2). Credentials come from AWS_ACCESS_KEY_ID,
     /// AWS_SECRET_ACCESS_KEY and the optional AWS_SESSION_TOKEN.
-    #[arg(long, requires = "url")]
+    #[arg(long, requires = "archive_url")]
     s3_region: Option<String>,
     /// First block row of the scan.
     #[arg(long, default_value_t = 0)]
@@ -64,7 +64,7 @@ pub struct Args {
     http_range_mib: Option<usize>,
     /// Concurrent block reads for a local archive. Use several on a NAS or
     /// disk array; 1 reads one range at a time.
-    #[arg(long, default_value_t = 1, conflicts_with = "url")]
+    #[arg(long, default_value_t = 1, conflicts_with = "archive_url")]
     read_concurrency: usize,
     /// Print the scan receipt with pipeline timings to standard error.
     #[arg(long)]
@@ -200,8 +200,10 @@ pub fn execute(kind: Kind, args: Args) -> Result<()> {
         .transpose()?;
     anyhow::ensure!(key.is_some(), "--key is required");
     let local = args.archive.is_some();
-    let mut archive = match (args.archive, args.url) {
-        (Some(_), Some(_)) => bail!("give either a local ARCHIVE directory or --url, not both"),
+    let mut archive = match (args.archive, args.archive_url) {
+        (Some(_), Some(_)) => {
+            bail!("give either a local ARCHIVE directory or --archive-url, not both")
+        }
         (Some(directory), None) => CompactV2Archive::open_local_with_read_concurrency(
             &directory,
             CompactV2LocalDescriptor::mainnet(
@@ -211,21 +213,21 @@ pub fn execute(kind: Kind, args: Args) -> Result<()> {
             )?,
             args.read_concurrency,
         )?,
-        (None, url) => {
-            let url = url.unwrap_or_else(|| crate::public_epoch_url(args.epoch));
+        (None, archive_url) => {
+            let archive_url = archive_url.unwrap_or_else(|| crate::public_epoch_url(args.epoch));
             let cache_dir = absolute_cache_dir(args.cache_dir)?;
-            eprintln!("Source: {url}");
+            eprintln!("Source: {archive_url}");
             match args.s3_region {
                 Some(region) => {
                     let signer = S3SigV4Signer::new(S3Credentials::from_env()?, region)?;
                     CompactV2Archive::open_signed_epoch_url(
-                        &url,
+                        &archive_url,
                         args.epoch,
                         cache_dir,
                         std::sync::Arc::new(signer),
                     )?
                 }
-                None => CompactV2Archive::open_epoch_url(&url, args.epoch, cache_dir)?,
+                None => CompactV2Archive::open_epoch_url(&archive_url, args.epoch, cache_dir)?,
             }
         }
     };
@@ -408,7 +410,7 @@ mod tests {
 
         let remote = ExampleCommand::try_parse_from([
             "wallet-dump",
-            "--url",
+            "--archive-url",
             "https://archive.example/compact-v2/build/epoch-200",
             "--epoch",
             "200",
@@ -428,7 +430,7 @@ mod tests {
         let foundation =
             ExampleCommand::try_parse_from(["wallet-dump", "--epoch", "1094"]).unwrap();
         assert!(foundation.args.archive.is_none());
-        assert!(foundation.args.url.is_none());
+        assert!(foundation.args.archive_url.is_none());
         assert!(foundation.args.cache_dir.is_none());
         assert_eq!(
             crate::public_epoch_url(1094),
@@ -439,7 +441,7 @@ mod tests {
             ExampleCommand::try_parse_from([
                 "wallet-dump",
                 "/data/epoch-200",
-                "--url",
+                "--archive-url",
                 "https://archive.example/epoch-200",
                 "--epoch",
                 "200",

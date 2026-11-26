@@ -1,9 +1,8 @@
 # Small archive examples
 
 `wallet-dump` and `program-dump` read the same archive.
-Token balances use `blockzilla token-dump`, which has the same source options
-as `stream`.
-Omit `--url` on these two commands to read the public Foundation directory for
+Token balances use `blockzilla token-dump`.
+Omit `--archive-url` on these two commands to read the public Foundation directory for
 the selected epoch. Epoch 1094 is
 `https://pub-97348740d6ef467aa2f1b4b62daa98dc.r2.dev/compact-v2/blockzilla-20261004/epoch-1094`.
 The cache defaults to `.blockzilla-cache` in the current directory.
@@ -20,7 +19,7 @@ The same arguments work through the example binary:
 cargo run --release -p blockzilla-dump-examples --bin wallet-dump -- --epoch 1094 --key WALLET
 ```
 
-A local epoch directory uses a path instead of `--url`:
+A local epoch directory uses a path instead of `--archive-url`:
 
 ```sh
 blockzilla wallet-dump /data/epoch-900 --epoch 900 --source-id my-generation --key WALLET
@@ -33,7 +32,7 @@ signs each request with SigV4 and reads the credentials from
 `AWS_SESSION_TOKEN`. It never prints them:
 
 ```sh
-blockzilla wallet-dump --url https://ACCOUNT.r2.cloudflarestorage.com/BUCKET/PREFIX/epoch-200 --s3-region auto --epoch 200 --cache-dir /var/cache/blockzilla --key WALLET
+blockzilla wallet-dump --archive-url https://ACCOUNT.r2.cloudflarestorage.com/BUCKET/PREFIX/epoch-200 --s3-region auto --epoch 200 --cache-dir /var/cache/blockzilla --key WALLET
 ```
 
 `wallet-dump` reports transactions signed by the selected wallet. It does not
