@@ -2078,7 +2078,7 @@ async fn handle_info(_req: Request, ctx: RouteContext<()>) -> Result<Response> {
         info["public_get_block"] = json!({ "enabled": true, "free": true });
     }
     if !get_only {
-        info["transaction_rpc"] = json!({ "route": "POST /", "method": "getTransaction", "encodings": ["json", "base64", "base58"] });
+        info["transaction_rpc"] = json!({ "route": "POST /", "method": "getTransaction", "encodings": ["json", "base64"] });
     }
     if let Some(generation) = optional_var(&ctx.env, "BZ_RESOLUTION_GENERATION") {
         info["slot_resolution"] = json!({

@@ -38,8 +38,6 @@ impl TransactionRpcError {
 pub enum TransactionEncoding {
     Json,
     Base64,
-    Base58,
-    LegacyBinary,
 }
 
 #[derive(Debug, Clone)]
@@ -124,13 +122,11 @@ fn parse_encoding(encoding: &str) -> Result<TransactionEncoding, TransactionRpcE
     match encoding {
         "json" => Ok(TransactionEncoding::Json),
         "base64" => Ok(TransactionEncoding::Base64),
-        "base58" => Ok(TransactionEncoding::Base58),
-        "binary" => Ok(TransactionEncoding::LegacyBinary),
         "jsonParsed" => Err(TransactionRpcError::invalid(
             "The jsonParsed encoding is not supported by this archive RPC",
         )),
         _ => Err(TransactionRpcError::invalid(
-            "encoding must be json, base64, or base58",
+            "encoding must be json or base64",
         )),
     }
 }
@@ -614,6 +610,7 @@ mod tests {
             assert_eq!(parse_params(Some(&request)).unwrap_err().code, -32602);
         }
         let legacy = params(json!({}));
+        assert_eq!(legacy.encoding, TransactionEncoding::Json);
         assert!(check_version(&json!("legacy"), &legacy).is_ok());
         assert_eq!(check_version(&json!(0), &legacy).unwrap_err().code, -32015);
         assert!(
@@ -641,6 +638,19 @@ mod tests {
             .encoding,
             TransactionEncoding::Base64
         );
+    }
+
+    #[test]
+    fn rejects_base58_binary_encodings_before_lookup() {
+        let signature = bs58::encode([3; 64]).into_string();
+        for encoding in ["base58", "binary"] {
+            for config in [json!(encoding), json!({"encoding": encoding})] {
+                let request = json!([signature, config]);
+                let error = parse_params(Some(&request)).unwrap_err();
+                assert_eq!(error.code, -32602);
+                assert_eq!(error.message, "encoding must be json or base64");
+            }
+        }
     }
 
     #[test]
