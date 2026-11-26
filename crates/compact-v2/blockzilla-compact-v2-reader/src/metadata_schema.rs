@@ -6,6 +6,10 @@
 //! decoder must not infer the grammar from an individual metadata record:
 //! records with `err == None` have the same bytes in both grammars.
 
+use blockzilla_archive_v2::{
+    CURRENT_TYPED_ERRORS_MARKER_BYTES, CURRENT_TYPED_ERRORS_MARKER_FILE,
+    CURRENT_TYPED_ERRORS_MARKER_SHA256, CURRENT_TYPED_ERRORS_MARKER_SIZE,
+};
 use blockzilla_compact::{
     CompactInnerInstructions, CompactLogStream, CompactMetaV1, CompactReturnData, CompactReward,
     CompactTokenBalance, CompactTransactionError,
@@ -115,8 +119,8 @@ pub enum CompactV2MetadataSchemaError {
 
 /// Select one metadata grammar from a published generation manifest.
 ///
-/// A missing marker selects the current typed-error grammar. A present marker
-/// is effective only when the manifest binds its exact name, size, and digest.
+/// A missing marker preserves the current typed-error default. A declared
+/// marker must match the exact manifest binding and object bytes.
 pub fn select_compact_v2_metadata_schema<S: RangeSource>(
     source: &S,
     manifest: &GenerationManifest,
@@ -144,6 +148,12 @@ fn select_metadata_schema<S: RangeSource>(
     let source_size = source.size(COMPACT_V2_LEGACY_METADATA_SCHEMA_MARKER_FILE)?;
     let binding =
         manifest.and_then(|manifest| manifest.file(COMPACT_V2_LEGACY_METADATA_SCHEMA_MARKER_FILE));
+    let current = manifest.and_then(|manifest| manifest.file(CURRENT_TYPED_ERRORS_MARKER_FILE));
+    if binding.is_some() && current.is_some() {
+        return Err(CompactV2MetadataSchemaError::InvalidManifest(
+            "conflicting Compact V2 metadata-schema markers".into(),
+        ));
+    }
 
     match (source_size, binding) {
         (Some(_), None) if manifest.is_some() => {
@@ -153,7 +163,25 @@ fn select_metadata_schema<S: RangeSource>(
             return Err(CompactV2MetadataSchemaError::UnpublishedHistoricalMarker);
         }
         (None, Some(_)) => return Err(CompactV2MetadataSchemaError::BoundMarkerMissing),
-        (None, None) => return Ok(CompactV2MetadataSchema::CurrentTypedError),
+        (None, None) => {
+            if let Some(marker) = current {
+                if marker.size != CURRENT_TYPED_ERRORS_MARKER_SIZE
+                    || marker.sha256 != CURRENT_TYPED_ERRORS_MARKER_SHA256
+                {
+                    return Err(CompactV2MetadataSchemaError::InvalidManifest(format!(
+                        "invalid manifest binding for {CURRENT_TYPED_ERRORS_MARKER_FILE}"
+                    )));
+                }
+                let bytes = source.read_all_bounded(
+                    CURRENT_TYPED_ERRORS_MARKER_FILE,
+                    CURRENT_TYPED_ERRORS_MARKER_SIZE as usize,
+                )?;
+                if bytes.as_slice() != CURRENT_TYPED_ERRORS_MARKER_BYTES {
+                    return Err(CompactV2MetadataSchemaError::MarkerObjectBytes);
+                }
+            }
+            return Ok(CompactV2MetadataSchema::CurrentTypedError);
+        }
         (Some(source_size), Some(binding)) => {
             if binding.size != COMPACT_V2_LEGACY_METADATA_SCHEMA_MARKER_SIZE {
                 return Err(CompactV2MetadataSchemaError::MarkerManifestSize {
@@ -350,6 +378,30 @@ mod tests {
             select_compact_v2_metadata_schema(&source, &manifest(None)).unwrap(),
             CompactV2MetadataSchema::CurrentTypedError
         );
+    }
+
+    #[test]
+    fn bound_current_metadata_marker_checks_object_bytes() {
+        let dir = TempDir::new().unwrap();
+        let source = LocalRangeSource::new(dir.path());
+        let path = dir.path().join(CURRENT_TYPED_ERRORS_MARKER_FILE);
+        let manifest = manifest(Some(GenerationFile {
+            name: CURRENT_TYPED_ERRORS_MARKER_FILE.to_owned(),
+            size: CURRENT_TYPED_ERRORS_MARKER_SIZE,
+            sha256: CURRENT_TYPED_ERRORS_MARKER_SHA256.to_owned(),
+        }));
+        std::fs::write(&path, CURRENT_TYPED_ERRORS_MARKER_BYTES).unwrap();
+        assert_eq!(
+            select_compact_v2_metadata_schema(&source, &manifest).unwrap(),
+            CompactV2MetadataSchema::CurrentTypedError
+        );
+        let mut altered = CURRENT_TYPED_ERRORS_MARKER_BYTES.to_vec();
+        altered[0] ^= 1;
+        std::fs::write(path, altered).unwrap();
+        assert!(matches!(
+            select_compact_v2_metadata_schema(&source, &manifest),
+            Err(CompactV2MetadataSchemaError::MarkerObjectBytes)
+        ));
     }
 
     #[test]

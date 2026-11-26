@@ -738,7 +738,7 @@ impl BorrowedDecodedBlock<'_> {
                     message_bytes,
                     metadata_bytes,
                     consensus_block_id: block.consensus_block_id,
-                    block_markers: block.block_markers,
+                    block_markers: block.block_markers.to_vec(),
                 }
             }
             BorrowedDecodedBlockPayload::CurrentWithoutRewards(_) => {

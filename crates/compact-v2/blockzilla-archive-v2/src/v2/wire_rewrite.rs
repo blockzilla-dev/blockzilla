@@ -22,6 +22,9 @@ type ArchiveV2WireBoundedConfig = wincode::config::Configuration<
     wincode::int_encoding::LittleEndian,
     blockzilla_primitives::Leb128,
 >;
+type HistoricalMetadataConfig = blockzilla_primitives::BoundedHistoricalSourceWincodeLeb128Config<
+    { crate::ARCHIVE_V2_DECODE_PREALLOCATION_LIMIT_BYTES },
+>;
 
 /// Default maximum accepted or produced size for one hot block payload.
 pub const ARCHIVE_V2_WIRE_REWRITE_MAX_FRAME_BYTES: usize = 512 << 20;
@@ -313,18 +316,56 @@ pub fn canonicalize_archive_v2_metadata_owned(
 pub fn normalize_archive_v2_historical_source_metadata_owned(
     input: &[u8],
 ) -> anyhow::Result<(Vec<u8>, ArchiveV2WireMetadataErrorSchema)> {
-    normalize_metadata_owned_with_config(
-        input,
-        blockzilla_primitives::bounded_historical_source_wincode_leb128_config::<
-            { crate::ARCHIVE_V2_DECODE_PREALLOCATION_LIMIT_BYTES },
-        >(),
-    )
+    normalize_metadata_owned_with_config(input, HistoricalMetadataConfig::new())
+}
+
+/// Decode a historical source record with the same ambiguity checks as
+/// [normalize_archive_v2_historical_source_metadata_owned].
+///
+/// Readers that need the metadata value can use it directly, without
+/// serializing it to current-schema bytes and decoding those bytes again.
+pub fn decode_archive_v2_historical_source_metadata_owned(
+    input: &[u8],
+) -> anyhow::Result<(
+    blockzilla_compact::CompactMetaV1,
+    ArchiveV2WireMetadataErrorSchema,
+)> {
+    decode_metadata_owned_with_config(input, HistoricalMetadataConfig::new())
+}
+
+/// Check whether a present transaction error can be read as current typed
+/// metadata without trying the legacy grammar.
+///
+/// The legacy prefix must be impossible. The caller must still validate the
+/// complete record under the current grammar, including the error itself.
+/// A false result requires the usual historical schema selection.
+pub fn archive_v2_historical_source_metadata_can_try_current_only(input: &[u8]) -> bool {
+    input.len() <= crate::ARCHIVE_V2_DECODE_PREALLOCATION_LIMIT_BYTES
+        && input.first() == Some(&1)
+        && !possible_owned_legacy_error::<HistoricalMetadataConfig>(input)
 }
 
 fn normalize_metadata_owned_with_config<C: wincode::config::Config + Copy>(
     input: &[u8],
     config: C,
 ) -> anyhow::Result<(Vec<u8>, ArchiveV2WireMetadataErrorSchema)> {
+    let (value, schema) = decode_metadata_owned_with_config(input, config)?;
+    let output =
+        wincode::config::serialize(&value, blockzilla_primitives::wincode_leb128_config())?;
+    anyhow::ensure!(
+        output.len() <= crate::ARCHIVE_V2_DECODE_PREALLOCATION_LIMIT_BYTES,
+        "canonical metadata output exceeds the Archive V2 owned-fallback limit"
+    );
+    Ok((output, schema))
+}
+
+fn decode_metadata_owned_with_config<C: wincode::config::Config + Copy>(
+    input: &[u8],
+    config: C,
+) -> anyhow::Result<(
+    blockzilla_compact::CompactMetaV1,
+    ArchiveV2WireMetadataErrorSchema,
+)> {
     anyhow::ensure!(
         input.len() <= crate::ARCHIVE_V2_DECODE_PREALLOCATION_LIMIT_BYTES,
         "metadata input exceeds the Archive V2 owned-fallback limit"
@@ -347,9 +388,11 @@ fn normalize_metadata_owned_with_config<C: wincode::config::Config + Copy>(
         )
     };
 
-    let (value, schema) = match (current, legacy) {
-        (Ok(current), None | Some(Err(_))) => (current, ArchiveV2WireMetadataErrorSchema::Current),
-        (Err(_), Some(Ok(legacy))) => (legacy, ArchiveV2WireMetadataErrorSchema::Legacy),
+    match (current, legacy) {
+        (Ok(current), None | Some(Err(_))) => {
+            Ok((current, ArchiveV2WireMetadataErrorSchema::Current))
+        }
+        (Err(_), Some(Ok(legacy))) => Ok((legacy, ArchiveV2WireMetadataErrorSchema::Legacy)),
         (Ok(current), Some(Ok(legacy))) => {
             let current_bytes = wincode::config::serialize(
                 &current,
@@ -363,22 +406,13 @@ fn normalize_metadata_owned_with_config<C: wincode::config::Config + Copy>(
                 current_bytes == legacy_bytes,
                 "ambiguous compact metadata decodes as different current and legacy values"
             );
-            return Ok((current_bytes, ArchiveV2WireMetadataErrorSchema::Current));
+            Ok((current, ArchiveV2WireMetadataErrorSchema::Current))
         }
-        (Err(current), Some(Err(legacy))) => {
-            return Err(anyhow!(
-                "compact metadata is neither current nor legacy: current={current}; legacy={legacy}"
-            ));
-        }
+        (Err(current), Some(Err(legacy))) => Err(anyhow!(
+            "compact metadata is neither current nor legacy: current={current}; legacy={legacy}"
+        )),
         (Err(_), None) => unreachable!("legacy probe is skipped only for valid current metadata"),
-    };
-    let output =
-        wincode::config::serialize(&value, blockzilla_primitives::wincode_leb128_config())?;
-    anyhow::ensure!(
-        output.len() <= crate::ARCHIVE_V2_DECODE_PREALLOCATION_LIMIT_BYTES,
-        "canonical metadata output exceeds the Archive V2 owned-fallback limit"
-    );
-    Ok((output, schema))
+    }
 }
 
 fn possible_owned_legacy_error<C: wincode::config::Config>(input: &[u8]) -> bool {
@@ -388,8 +422,17 @@ fn possible_owned_legacy_error<C: wincode::config::Config>(input: &[u8]) -> bool
     let Ok(len) = C::LengthEncoding::read_prealloc_check::<u8>(&mut tail) else {
         return false;
     };
+    // Stored errors use a four-byte enum tag. An indexed error adds one
+    // byte. InstructionError adds an index and another four-byte enum tag,
+    // with four more bytes for Custom or at least eight for a Borsh string.
+    // Historical unit BorshIoError also fits the nine-byte case.
+    if !matches!(len, 4 | 5 | 9 | 13 | 17..) {
+        return false;
+    }
     tail.get(..len).is_some_and(|stored| {
-        blockzilla_compact::CompactTransactionError::from_stored_wincode_bytes(stored).is_ok()
+        stored[1..4] == [0, 0, 0]
+            && blockzilla_compact::CompactTransactionError::from_stored_wincode_bytes(stored)
+                .is_ok()
     })
 }
 
@@ -3204,6 +3247,9 @@ mod tests {
         let source = [
             1, 4, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         ];
+        assert!(!archive_v2_historical_source_metadata_can_try_current_only(
+            &source
+        ));
         let current: CompactMetaV1 =
             wincode::config::deserialize_exact(&source, wincode_leb128_config()).unwrap();
         let legacy: LegacyArchiveV2CompactMetaV1 =
@@ -3228,6 +3274,12 @@ mod tests {
         let mut padded = source.to_vec();
         padded.splice(7..8, [0x82, 0]);
         assert!(
+            decode_archive_v2_historical_source_metadata_owned(&padded)
+                .unwrap_err()
+                .to_string()
+                .contains("ambiguous")
+        );
+        assert!(
             normalize_archive_v2_historical_source_metadata_owned(&padded)
                 .unwrap_err()
                 .to_string()
@@ -3250,6 +3302,9 @@ mod tests {
                 .len();
             let mut source = canonical.clone();
             source.splice(4..5, [canonical[4] | 0x80, 0]);
+            assert!(archive_v2_historical_source_metadata_can_try_current_only(
+                &source
+            ));
             let selected =
                 validate_archive_v2_historical_source_metadata_error_prefix_for_selected_schema(
                     &source,
@@ -3277,6 +3332,13 @@ mod tests {
                 normalize_archive_v2_historical_source_metadata_owned(&source)
                     .unwrap()
                     .0,
+                canonical
+            );
+            let (decoded, schema) =
+                decode_archive_v2_historical_source_metadata_owned(&source).unwrap();
+            assert_eq!(schema, ArchiveV2WireMetadataErrorSchema::Current);
+            assert_eq!(
+                wincode::config::serialize(&decoded, wincode_leb128_config()).unwrap(),
                 canonical
             );
             let mut output = Vec::new();
@@ -3335,12 +3397,27 @@ mod tests {
             (current, ArchiveV2WireMetadataErrorSchema::Current)
         );
 
-        let stored = wincode::serialize(&StoredTransactionError::AccountInUse).unwrap();
-        let legacy_prefix =
-            wincode::config::serialize(&Some(stored), wincode_leb128_config()).unwrap();
-        assert!(possible_owned_legacy_error::<ArchiveV2WireBoundedConfig>(
-            &legacy_prefix
-        ));
+        for stored in [
+            wincode::serialize(&StoredTransactionError::AccountInUse).unwrap(),
+            wincode::serialize(&StoredTransactionError::DuplicateInstruction(0)).unwrap(),
+            wincode::serialize(&StoredTransactionError::InstructionError(
+                0,
+                StoredInstructionError::Custom(42),
+            ))
+            .unwrap(),
+            wincode::serialize(&StoredTransactionError::InstructionError(
+                0,
+                StoredInstructionError::BorshIoError(String::new()),
+            ))
+            .unwrap(),
+            vec![8, 0, 0, 0, 0, 44, 0, 0, 0], // Historical unit BorshIoError.
+        ] {
+            let legacy_prefix =
+                wincode::config::serialize(&Some(stored), wincode_leb128_config()).unwrap();
+            assert!(!archive_v2_historical_source_metadata_can_try_current_only(
+                &legacy_prefix
+            ));
+        }
         let error = normalize_archive_v2_historical_source_metadata_owned(&[1]).unwrap_err();
         assert!(error.to_string().contains("current="));
         assert!(error.to_string().contains("legacy="));
@@ -3359,6 +3436,9 @@ mod tests {
         let mut source = vec![1, stored.len() as u8 | 0x80, 0];
         source.extend(&stored);
         source.extend(&successful[1..]);
+        assert!(!archive_v2_historical_source_metadata_can_try_current_only(
+            &source
+        ));
         let selected =
             validate_archive_v2_historical_source_metadata_error_prefix_for_selected_schema(
                 &source,
@@ -3383,11 +3463,17 @@ mod tests {
                 blockzilla_compact::CompactInstructionError::BorshIoError("x".repeat(96)),
             ),
         );
+        let canonical = wincode::config::serialize(&expected, wincode_leb128_config()).unwrap();
         assert_eq!(
-            normalize_archive_v2_historical_source_metadata_owned(&source)
-                .unwrap()
-                .0,
-            wincode::config::serialize(&expected, wincode_leb128_config()).unwrap()
+            normalize_archive_v2_historical_source_metadata_owned(&source).unwrap(),
+            (canonical.clone(), ArchiveV2WireMetadataErrorSchema::Legacy)
+        );
+        let (decoded, schema) =
+            decode_archive_v2_historical_source_metadata_owned(&source).unwrap();
+        assert_eq!(schema, ArchiveV2WireMetadataErrorSchema::Legacy);
+        assert_eq!(
+            wincode::config::serialize(&decoded, wincode_leb128_config()).unwrap(),
+            canonical
         );
     }
 

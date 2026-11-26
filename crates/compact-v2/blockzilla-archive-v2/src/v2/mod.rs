@@ -59,6 +59,23 @@ pub const WINCODE_ARCHIVE_V2_FLAG_FIRST_SEEN_REGISTRY: u32 = 1 << 2;
 pub const WINCODE_ARCHIVE_V2_FLAG_ALL_PUBKEY_REF_COUNTS: u32 = 1 << 3;
 pub const ARCHIVE_V2_HOT_TX_ROW_LEN: usize = 28;
 
+/// Manifest marker for the current typed transaction-error encoding.
+pub const CURRENT_TYPED_ERRORS_MARKER_FILE: &str =
+    "archive-v2-metadata-schema-current-typed-errors-v1.marker";
+pub const CURRENT_TYPED_ERRORS_MARKER_BYTES: &[u8] =
+    b"blockzilla/archive-v2-metadata-schema/current-typed-errors/v1\n";
+pub const CURRENT_TYPED_ERRORS_MARKER_SIZE: u64 = CURRENT_TYPED_ERRORS_MARKER_BYTES.len() as u64;
+pub const CURRENT_TYPED_ERRORS_MARKER_SHA256: &str =
+    "f49c05f2021856a66542da4b84e31b2567b653a113acd05e0a0791cd620f0305";
+
+/// Manifest marker for the message grammar with unknown System and Vote fallbacks.
+pub const ARCHIVE_V2_POST_UNKNOWN_FALLBACKS_MARKER_FILE: &str =
+    "archive-v2-message-schema-post-unknown-fallbacks-v1.marker";
+pub const ARCHIVE_V2_POST_UNKNOWN_FALLBACKS_MARKER_BYTES: &[u8] =
+    include_bytes!("../../assets/archive-v2-message-schema-post-unknown-fallbacks-v1.marker");
+pub const ARCHIVE_V2_POST_UNKNOWN_FALLBACKS_MARKER_SHA256: &str =
+    "c870c4b0940b05b7bd18a134fba496c5c376f539ef7668f137112526d5c61edd";
+
 /// Header for the log-only wincode benchmark format.
 ///
 /// This is intentionally not a CAR-equivalent archive header. It only describes
@@ -430,11 +447,11 @@ impl From<ArchiveV2HotBlockBlobLegacyPlain> for ArchiveV2HotBlockBlob {
 pub struct BorrowedArchiveV2HotBlockBlob<'a> {
     pub header: ArchiveV2HotBlockHeader,
     pub tx_count: u32,
-    tx_rows: &'a [[u8; ARCHIVE_V2_HOT_TX_ROW_LEN]],
+    tx_rows: &'a [ArchiveV2HotTxRowWire],
     pub message_bytes: &'a [u8],
     pub metadata_bytes: &'a [u8],
     pub consensus_block_id: Option<[u8; 32]>,
-    pub block_markers: Vec<Vec<u8>>,
+    pub block_markers: BorrowedArchiveV2BlockMarkers<'a>,
 }
 
 /// Replay-oriented zero-copy view of a current hot block.
@@ -447,13 +464,50 @@ pub struct BorrowedArchiveV2HotBlockBlob<'a> {
 pub struct BorrowedArchiveV2HotBlockBlobWithoutRewards<'a> {
     pub header: ArchiveV2HotBlockHeader,
     pub tx_count: u32,
-    tx_rows: &'a [[u8; ARCHIVE_V2_HOT_TX_ROW_LEN]],
+    tx_rows: &'a [ArchiveV2HotTxRowWire],
     pub message_bytes: &'a [u8],
     pub metadata_bytes: &'a [u8],
     rewards_field_bytes: &'a [u8],
     pub consensus_block_id: Option<[u8; 32]>,
-    pub block_markers: Vec<Vec<u8>>,
+    pub block_markers: BorrowedArchiveV2BlockMarkers<'a>,
 }
+
+/// Validated marker records that borrow their exact bytes from one hot block.
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BorrowedArchiveV2BlockMarkers<'a> {
+    records: &'a [u8],
+    count: usize,
+}
+
+impl<'a> BorrowedArchiveV2BlockMarkers<'a> {
+    pub fn len(&self) -> usize {
+        self.count
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.count == 0
+    }
+
+    pub fn iter(&self) -> impl ExactSizeIterator<Item = &'a [u8]> {
+        let mut records = self.records;
+        (0..self.count).map(move |_| {
+            read_block_marker::<HistoricalSourceWincodeLeb128Config>(&mut records)
+                .expect("validated block marker")
+        })
+    }
+
+    pub fn to_vec(&self) -> Vec<Vec<u8>> {
+        self.iter().map(<[u8]>::to_vec).collect()
+    }
+}
+
+impl PartialEq for BorrowedArchiveV2BlockMarkers<'_> {
+    fn eq(&self, other: &Self) -> bool {
+        self.iter().eq(other.iter())
+    }
+}
+
+impl Eq for BorrowedArchiveV2BlockMarkers<'_> {}
 
 impl BorrowedArchiveV2HotBlockBlobWithoutRewards<'_> {
     #[inline]
@@ -492,7 +546,7 @@ impl BorrowedArchiveV2HotBlockBlob<'_> {
 /// Exact iterator over borrowed hot-block transaction-row wire records.
 #[derive(Debug, Clone)]
 pub struct ArchiveV2HotTxRowIter<'a> {
-    rows: core::slice::Iter<'a, [u8; ARCHIVE_V2_HOT_TX_ROW_LEN]>,
+    rows: core::slice::Iter<'a, ArchiveV2HotTxRowWire>,
 }
 
 impl Iterator for ArchiveV2HotTxRowIter<'_> {
@@ -500,7 +554,7 @@ impl Iterator for ArchiveV2HotTxRowIter<'_> {
 
     #[inline]
     fn next(&mut self) -> Option<Self::Item> {
-        self.rows.next().map(ArchiveV2HotTxRow::from_wire_bytes)
+        self.rows.next().map(ArchiveV2HotTxRow::from)
     }
 
     #[inline]
@@ -512,9 +566,7 @@ impl Iterator for ArchiveV2HotTxRowIter<'_> {
 impl DoubleEndedIterator for ArchiveV2HotTxRowIter<'_> {
     #[inline]
     fn next_back(&mut self) -> Option<Self::Item> {
-        self.rows
-            .next_back()
-            .map(ArchiveV2HotTxRow::from_wire_bytes)
+        self.rows.next_back().map(ArchiveV2HotTxRow::from)
     }
 }
 
@@ -670,7 +722,7 @@ pub fn deserialize_archive_v2_hot_block_blob(bytes: &[u8]) -> ReadResult<Archive
         }
         let mut block = ArchiveV2HotBlockBlob::from(block);
         block.consensus_block_id = consensus_block_id;
-        block.block_markers = block_markers;
+        block.block_markers = block_markers.to_vec();
         return Ok(block);
     }
     match wincode::config::deserialize::<ArchiveV2HotBlockBlobLegacyShredding, _>(
@@ -727,7 +779,7 @@ fn read_borrowed_hot_block<'a, C: Config>(
         <(
             ArchiveV2HotBlockHeader,
             u32,
-            &[[u8; ARCHIVE_V2_HOT_TX_ROW_LEN]],
+            &[ArchiveV2HotTxRowWire],
             &[u8],
             &[u8],
         ) as SchemaRead<C>>::get(remaining.by_ref())?;
@@ -808,10 +860,10 @@ pub fn deserialize_archive_v2_hot_block_blob_borrowed_current_without_rewards(
 
     let (tx_count, tx_rows, message_bytes, metadata_bytes): (
         u32,
-        &[[u8; ARCHIVE_V2_HOT_TX_ROW_LEN]],
+        &[ArchiveV2HotTxRowWire],
         &[u8],
         &[u8],
-    ) = <(u32, &[[u8; ARCHIVE_V2_HOT_TX_ROW_LEN]], &[u8], &[u8]) as SchemaRead<
+    ) = <(u32, &[ArchiveV2HotTxRowWire], &[u8], &[u8]) as SchemaRead<
         HistoricalSourceWincodeLeb128Config,
     >>::get(remaining.by_ref())?;
     let (consensus_block_id, block_markers) =
@@ -841,13 +893,26 @@ pub fn deserialize_archive_v2_hot_block_blob_borrowed_current_without_rewards(
 
 fn read_optional_consensus_tail<'a, C: Config>(
     bytes: &mut &'a [u8],
-) -> ReadResult<(Option<[u8; 32]>, Vec<Vec<u8>>)> {
+) -> ReadResult<(Option<[u8; 32]>, BorrowedArchiveV2BlockMarkers<'a>)> {
     if bytes.is_empty() {
-        return Ok((None, Vec::new()));
+        return Ok((None, BorrowedArchiveV2BlockMarkers::default()));
     }
     let consensus_block_id = <Option<[u8; 32]> as SchemaRead<'a, C>>::get(bytes.by_ref())?;
-    let block_markers = <Vec<Vec<u8>> as SchemaRead<'a, C>>::get(bytes.by_ref())?;
-    Ok((consensus_block_id, block_markers))
+    let count = C::LengthEncoding::read_prealloc_check::<Vec<u8>>(bytes.by_ref())?;
+    let start = *bytes;
+    for _ in 0..count {
+        read_block_marker::<C>(bytes)?;
+    }
+    let records = &start[..start.len() - bytes.len()];
+    Ok((
+        consensus_block_id,
+        BorrowedArchiveV2BlockMarkers { records, count },
+    ))
+}
+
+fn read_block_marker<'a, C: Config>(bytes: &mut &'a [u8]) -> ReadResult<&'a [u8]> {
+    let len = C::LengthEncoding::read_prealloc_check::<u8>(bytes.by_ref())?;
+    Ok(bytes.take_borrowed(len)?)
 }
 
 #[cfg(test)]
@@ -924,7 +989,7 @@ mod hot_block_slot_time_tests {
         assert_eq!(replay.message_bytes, owned.message_bytes);
         assert_eq!(replay.metadata_bytes, owned.metadata_bytes);
         assert_eq!(replay.consensus_block_id, owned.consensus_block_id);
-        assert_eq!(replay.block_markers, owned.block_markers);
+        assert_eq!(replay.block_markers.to_vec(), owned.block_markers);
     }
 
     fn assert_exact_rewards_field(block: ArchiveV2HotBlockBlob) {
@@ -993,18 +1058,22 @@ mod hot_block_slot_time_tests {
         assert_eq!(decoded.tx_count, block.tx_count);
         let borrowed = deserialize_archive_v2_hot_block_blob_borrowed_current(&bytes).unwrap();
         assert_eq!(borrowed.consensus_block_id, Some([0x21; 32]));
-        assert_eq!(borrowed.block_markers, block.block_markers);
+        assert_eq!(borrowed.block_markers.to_vec(), block.block_markers);
+        for marker in borrowed.block_markers.iter() {
+            assert!(marker.as_ptr() >= bytes.as_ptr());
+            assert!(marker.as_ptr_range().end <= bytes.as_ptr_range().end);
+        }
         let replay =
             deserialize_archive_v2_hot_block_blob_borrowed_current_without_rewards(&bytes).unwrap();
         assert_eq!(replay.consensus_block_id, Some([0x21; 32]));
-        assert_eq!(replay.block_markers, block.block_markers);
+        assert_eq!(replay.block_markers.to_vec(), block.block_markers);
         let exact =
             deserialize_archive_v2_hot_block_blob_borrowed_current_with_preallocation_limit::<
                 { ARCHIVE_V2_DECODE_PREALLOCATION_LIMIT_BYTES },
             >(&bytes)
             .unwrap();
         assert_eq!(exact.consensus_block_id, Some([0x21; 32]));
-        assert_eq!(exact.block_markers, block.block_markers);
+        assert_eq!(exact.block_markers.to_vec(), block.block_markers);
         let tail = wincode::config::serialize(
             &(block.consensus_block_id, block.block_markers.clone()),
             historical_source_wincode_leb128_config(),
@@ -1563,18 +1632,35 @@ pub struct ArchiveV2HotTxRow {
     pub reserved: [u8; 3],
 }
 
-impl ArchiveV2HotTxRow {
+#[repr(C)]
+#[derive(Debug, SchemaRead, SchemaWrite)]
+#[wincode(assert_zero_copy)]
+struct ArchiveV2HotTxRowWire {
+    tx_index: [u8; 4],
+    flags: [u8; 4],
+    message_offset: [u8; 4],
+    message_len: [u8; 4],
+    metadata_offset: [u8; 4],
+    metadata_len: [u8; 4],
+    signature_count: u8,
+    reserved: [u8; 3],
+}
+
+const _: () = assert!(core::mem::size_of::<ArchiveV2HotTxRowWire>() == ARCHIVE_V2_HOT_TX_ROW_LEN);
+const _: () = assert!(core::mem::align_of::<ArchiveV2HotTxRowWire>() == 1);
+
+impl From<&ArchiveV2HotTxRowWire> for ArchiveV2HotTxRow {
     #[inline]
-    fn from_wire_bytes(bytes: &[u8; ARCHIVE_V2_HOT_TX_ROW_LEN]) -> Self {
+    fn from(wire: &ArchiveV2HotTxRowWire) -> Self {
         Self {
-            tx_index: u32::from_le_bytes([bytes[0], bytes[1], bytes[2], bytes[3]]),
-            flags: u32::from_le_bytes([bytes[4], bytes[5], bytes[6], bytes[7]]),
-            message_offset: u32::from_le_bytes([bytes[8], bytes[9], bytes[10], bytes[11]]),
-            message_len: u32::from_le_bytes([bytes[12], bytes[13], bytes[14], bytes[15]]),
-            metadata_offset: u32::from_le_bytes([bytes[16], bytes[17], bytes[18], bytes[19]]),
-            metadata_len: u32::from_le_bytes([bytes[20], bytes[21], bytes[22], bytes[23]]),
-            signature_count: bytes[24],
-            reserved: [bytes[25], bytes[26], bytes[27]],
+            tx_index: u32::from_le_bytes(wire.tx_index),
+            flags: u32::from_le_bytes(wire.flags),
+            message_offset: u32::from_le_bytes(wire.message_offset),
+            message_len: u32::from_le_bytes(wire.message_len),
+            metadata_offset: u32::from_le_bytes(wire.metadata_offset),
+            metadata_len: u32::from_le_bytes(wire.metadata_len),
+            signature_count: wire.signature_count,
+            reserved: wire.reserved,
         }
     }
 }
@@ -1605,9 +1691,12 @@ unsafe impl<'de, C: wincode::config::ConfigCore> SchemaRead<'de, C> for ArchiveV
     type Dst = Self;
 
     #[inline]
-    fn read(mut reader: impl Reader<'de>, dst: &mut MaybeUninit<Self::Dst>) -> ReadResult<()> {
-        let bytes = reader.take_array::<ARCHIVE_V2_HOT_TX_ROW_LEN>()?;
-        dst.write(Self::from_wire_bytes(&bytes));
+    fn read(reader: impl Reader<'de>, dst: &mut MaybeUninit<Self::Dst>) -> ReadResult<()> {
+        // The wire struct contains only bytes and byte arrays.
+        let wire = <ArchiveV2HotTxRowWire as SchemaRead<HistoricalSourceWincodeLeb128Config>>::get(
+            reader,
+        )?;
+        dst.write(Self::from(&wire));
         Ok(())
     }
 }

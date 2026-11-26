@@ -5,10 +5,11 @@
 //! exact enum order. Readers must never infer this choice from message data.
 
 use blockzilla_archive_v2::{
-    ArchiveV2ComputeBudgetInstructionData, ArchiveV2HotInstruction, ArchiveV2HotInstructionData,
-    ArchiveV2HotLegacyMessage, ArchiveV2HotMessagePayload, ArchiveV2HotV0Message,
-    ArchiveV2SystemInstructionData, ArchiveV2VoteHashRef, ArchiveV2VoteStateUpdate,
-    ArchiveV2VoteTowerSync,
+    ARCHIVE_V2_POST_UNKNOWN_FALLBACKS_MARKER_BYTES, ARCHIVE_V2_POST_UNKNOWN_FALLBACKS_MARKER_FILE,
+    ARCHIVE_V2_POST_UNKNOWN_FALLBACKS_MARKER_SHA256, ArchiveV2ComputeBudgetInstructionData,
+    ArchiveV2HotInstruction, ArchiveV2HotInstructionData, ArchiveV2HotLegacyMessage,
+    ArchiveV2HotMessagePayload, ArchiveV2HotV0Message, ArchiveV2SystemInstructionData,
+    ArchiveV2VoteHashRef, ArchiveV2VoteStateUpdate, ArchiveV2VoteTowerSync,
 };
 use blockzilla_compact::{
     CompactMessageHeader, OwnedCompactAddressTableLookup, OwnedCompactRecentBlockhash,
@@ -193,8 +194,8 @@ pub enum CompactV2MessageSchemaError {
 
 /// Select one grammar from a published generation manifest and its bytes.
 ///
-/// Exactly one present marker is effective only when the manifest binds its
-/// exact name, size, and digest. The object bytes are checked independently.
+/// A marker is effective when the manifest binds its exact name, size, and
+/// digest. The object bytes are checked independently.
 pub fn select_compact_v2_message_schema<S: RangeSource>(
     source: &S,
     manifest: &GenerationManifest,
@@ -230,6 +231,8 @@ fn select_message_schema<S: RangeSource>(
         manifest.and_then(|manifest| manifest.file(COMPACT_V2_MAY24_MESSAGE_SCHEMA_MARKER_FILE));
     let current_binding =
         manifest.and_then(|manifest| manifest.file(COMPACT_V2_CURRENT_MESSAGE_SCHEMA_MARKER_FILE));
+    let post_binding =
+        manifest.and_then(|manifest| manifest.file(ARCHIVE_V2_POST_UNKNOWN_FALLBACKS_MARKER_FILE));
 
     let may24_active = validate_marker_presence(
         manifest.is_some(),
@@ -244,7 +247,7 @@ fn select_message_schema<S: RangeSource>(
         current_binding,
     )?;
 
-    if may24_active && current_active {
+    if may24_active && (current_active || post_binding.is_some()) {
         return Err(CompactV2MessageSchemaError::MessageSchemaMarkerConflict);
     }
     if may24_active {
@@ -269,6 +272,22 @@ fn select_message_schema<S: RangeSource>(
             COMPACT_V2_CURRENT_MESSAGE_SCHEMA_MARKER_SHA256,
             COMPACT_V2_CURRENT_MESSAGE_SCHEMA_MARKER_BYTES,
         )?;
+    }
+    if let Some(binding) = post_binding {
+        let size = source
+            .size(ARCHIVE_V2_POST_UNKNOWN_FALLBACKS_MARKER_FILE)?
+            .ok_or(CompactV2MessageSchemaError::BoundCurrentMarkerMissing)?;
+        validate_marker_object(
+            source,
+            size,
+            binding,
+            ARCHIVE_V2_POST_UNKNOWN_FALLBACKS_MARKER_FILE,
+            ARCHIVE_V2_POST_UNKNOWN_FALLBACKS_MARKER_BYTES.len() as u64,
+            ARCHIVE_V2_POST_UNKNOWN_FALLBACKS_MARKER_SHA256,
+            ARCHIVE_V2_POST_UNKNOWN_FALLBACKS_MARKER_BYTES,
+        )?;
+    }
+    if current_active || post_binding.is_some() {
         return Ok(CompactV2MessageSchema::Current);
     }
     if cluster_id == "mainnet-beta" && MAY24_MAINNET_EPOCHS.contains(&epoch) {

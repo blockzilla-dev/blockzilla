@@ -24,9 +24,9 @@ use blockzilla_archive_v2::{
     WINCODE_ARCHIVE_V2_FLAG_ALL_PUBKEY_REF_COUNTS, WINCODE_ARCHIVE_V2_FLAG_FIRST_SEEN_REGISTRY,
     WINCODE_ARCHIVE_V2_FLAG_LEB128, WINCODE_ARCHIVE_V2_FLAG_NO_REGISTRY,
     WINCODE_ARCHIVE_V2_HOT_BLOCK_VERSION, WincodeArchiveV2Footer, WincodeArchiveV2Genesis,
-    deserialize_archive_v2_hot_block_blob, deserialize_archive_v2_hot_block_blob_borrowed_current,
+    decode_archive_v2_historical_source_metadata_owned, deserialize_archive_v2_hot_block_blob,
+    deserialize_archive_v2_hot_block_blob_borrowed_current,
     deserialize_archive_v2_hot_block_blob_borrowed_current_without_rewards,
-    normalize_archive_v2_historical_source_metadata_owned,
 };
 use blockzilla_compact::CompactMetaV1;
 use blockzilla_primitives::{CompactPubkey, bounded_historical_source_wincode_leb128_config};
@@ -4325,33 +4325,28 @@ fn metadata_state(
         row.tx_index,
         slot,
     )?;
-    let canonical = match metadata_wire_profile {
-        ArchiveV2MetadataWireProfile::CurrentTypedErrorsV1 => None,
+    let metadata = match metadata_wire_profile {
         ArchiveV2MetadataWireProfile::UnmarkedHistoricalCompatibility
-            if bytes.first() == Some(&0) =>
+            if bytes.first() != Some(&0) =>
         {
-            None
-        }
-        ArchiveV2MetadataWireProfile::UnmarkedHistoricalCompatibility => Some(
-            normalize_archive_v2_historical_source_metadata_owned(bytes)
+            decode_archive_v2_historical_source_metadata_owned(bytes)
                 .map_err(|error| Error::InvalidBlock {
                     slot,
                     message: format!("select metadata schema for tx {}: {error}", row.tx_index),
                 })?
-                .0,
-        ),
+                .0
+        }
+        _ => wincode::config::deserialize_exact(
+            bytes,
+            bounded_historical_source_wincode_leb128_config::<
+                ARCHIVE_V2_DECODE_PREALLOCATION_LIMIT_BYTES,
+            >(),
+        )
+        .map_err(|error| Error::InvalidBlock {
+            slot,
+            message: format!("decode metadata for tx {}: {error}", row.tx_index),
+        })?,
     };
-    let decode_bytes = canonical.as_deref().unwrap_or(bytes);
-    let metadata = wincode::config::deserialize_exact(
-        decode_bytes,
-        bounded_historical_source_wincode_leb128_config::<
-            ARCHIVE_V2_DECODE_PREALLOCATION_LIMIT_BYTES,
-        >(),
-    )
-    .map_err(|error| Error::InvalidBlock {
-        slot,
-        message: format!("decode metadata for tx {}: {error}", row.tx_index),
-    })?;
     Ok(MetadataState::Decoded(Box::new(metadata)))
 }
 

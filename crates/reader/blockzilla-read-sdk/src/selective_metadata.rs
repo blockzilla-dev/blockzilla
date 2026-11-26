@@ -7,6 +7,7 @@
 
 use blockzilla_archive_v2::{
     ArchiveV2WireMetadataErrorIndex, ArchiveV2WireMetadataErrorSchema,
+    archive_v2_historical_source_metadata_can_try_current_only,
     normalize_archive_v2_historical_source_metadata_owned,
     validate_archive_v2_historical_source_metadata_error_prefix_for_selected_schema,
 };
@@ -2275,16 +2276,22 @@ pub fn validate_archive_v2_metadata_exact(
     limits: ArchiveV2MetadataProjectionLimits,
     registry_entries: u32,
 ) -> ReadResult<ProjectedArchiveV2MetadataPrefix> {
-    if bytes.first() != Some(&0) {
-        let (normalized, _schema) = normalize_archive_v2_historical_source_metadata_owned(bytes)
-            .map_err(|_| {
-                wincode::error::invalid_value(
-                    "transaction metadata is neither one unambiguous current nor legacy record",
-                )
-            })?;
-        return validate_archive_v2_current_metadata_exact(&normalized, limits, registry_entries);
+    if bytes.first() == Some(&0) {
+        return validate_archive_v2_current_metadata_exact(bytes, limits, registry_entries);
     }
-    validate_archive_v2_current_metadata_exact(bytes, limits, registry_entries)
+    if archive_v2_historical_source_metadata_can_try_current_only(bytes)
+        && let Ok(projected) =
+            validate_archive_v2_current_metadata_exact(bytes, limits, registry_entries)
+    {
+        return Ok(projected);
+    }
+    let (normalized, _schema) = normalize_archive_v2_historical_source_metadata_owned(bytes)
+        .map_err(|_| {
+            wincode::error::invalid_value(
+                "transaction metadata is neither one unambiguous current nor legacy record",
+            )
+        })?;
+    validate_archive_v2_current_metadata_exact(&normalized, limits, registry_entries)
 }
 
 /// Validate one complete current typed-error metadata record. This function
@@ -2950,6 +2957,33 @@ mod tests {
 
         let projected = validate_archive_v2_metadata_exact(&legacy, limits, 100).unwrap();
         assert!(projected.has_error);
+    }
+
+    #[test]
+    fn exact_metadata_validation_borrows_unambiguous_current_errors() {
+        let mut value = metadata(None);
+        value.err = Some(CompactTransactionError::InstructionError(
+            0,
+            blockzilla_compact::CompactInstructionError::Custom(42),
+        ));
+        value.loaded_writable_addresses.clear();
+        value.loaded_readonly_addresses.clear();
+        let bytes = wincode::config::serialize(&value, wincode_leb128_config()).unwrap();
+        assert_eq!(&bytes[..2], &[1, 8]);
+        let (projected, allocations) =
+            crate::test_allocations::count_current_thread_allocations(|| {
+                validate_archive_v2_metadata_exact(
+                    &bytes,
+                    ArchiveV2MetadataProjectionLimits {
+                        total_message_accounts: 3,
+                        top_level_instruction_count: 1,
+                    },
+                    100,
+                )
+                .unwrap()
+            });
+        assert!(projected.has_error);
+        assert_eq!(allocations, 0);
     }
 
     #[test]

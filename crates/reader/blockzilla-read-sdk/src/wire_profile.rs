@@ -12,6 +12,15 @@ use std::{fmt, str::FromStr};
 
 use serde::{Deserialize, Serialize};
 
+use blockzilla_archive_v2::ARCHIVE_V2_POST_UNKNOWN_FALLBACKS_MARKER_BYTES as POST_UNKNOWN_INSTRUCTION_FALLBACKS_MARKER_BYTES;
+pub use blockzilla_archive_v2::{
+    ARCHIVE_V2_POST_UNKNOWN_FALLBACKS_MARKER_FILE as POST_UNKNOWN_INSTRUCTION_FALLBACKS_MARKER_FILE,
+    ARCHIVE_V2_POST_UNKNOWN_FALLBACKS_MARKER_SHA256 as POST_UNKNOWN_INSTRUCTION_FALLBACKS_MARKER_SHA256,
+};
+
+pub const POST_UNKNOWN_INSTRUCTION_FALLBACKS_MARKER_SIZE: u64 =
+    POST_UNKNOWN_INSTRUCTION_FALLBACKS_MARKER_BYTES.len() as u64;
+
 use crate::{
     Error, Result,
     manifest::{GenerationFile, GenerationManifest},
@@ -28,18 +37,8 @@ pub const PRE_UNKNOWN_INSTRUCTION_FALLBACKS_MARKER_SIZE: u64 = 87;
 pub const PRE_UNKNOWN_INSTRUCTION_FALLBACKS_MARKER_SHA256: &str =
     "2a3aa5808085bc7b869c7536508227f19e6b9d9e3f5fb34b65ebda9936bf0206";
 
-/// Explicit binding for the post-fallback message grammar. New producers
-/// should publish this object instead of relying on the legacy no-marker rule.
-pub const POST_UNKNOWN_INSTRUCTION_FALLBACKS_MARKER_FILE: &str =
-    "archive-v2-message-schema-post-unknown-fallbacks-v1.marker";
-pub const POST_UNKNOWN_INSTRUCTION_FALLBACKS_MARKER_SIZE: u64 = 77;
-pub const POST_UNKNOWN_INSTRUCTION_FALLBACKS_MARKER_SHA256: &str =
-    "c870c4b0940b05b7bd18a134fba496c5c376f539ef7668f137112526d5c61edd";
-
 const PRE_UNKNOWN_INSTRUCTION_FALLBACKS_MARKER_BYTES: &[u8] =
     include_bytes!("../assets/archive-v2-message-schema-may24-pre-unknown-fallbacks-v1.marker");
-const POST_UNKNOWN_INSTRUCTION_FALLBACKS_MARKER_BYTES: &[u8] =
-    include_bytes!("../assets/archive-v2-message-schema-post-unknown-fallbacks-v1.marker");
 
 /// Return the exact object bytes a producer must publish for `profile`.
 ///
