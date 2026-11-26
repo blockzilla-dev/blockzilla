@@ -100,10 +100,7 @@ fn validate(r: &Receipt) -> Result<()> {
         "unsupported Agave source revision"
     );
     for value in [&r.genesis_hash, &r.node_identity] {
-        ensure!(
-            bs58::decode(value).into_vec()?.len() == 32,
-            "invalid source identity"
-        );
+        five8::decode_32(value, &mut [0; 32]).context("invalid source identity")?;
     }
     ensure!(
         (1..=4096).contains(&r.blocks.len()) && r.start_slot < r.end_slot_exclusive,
