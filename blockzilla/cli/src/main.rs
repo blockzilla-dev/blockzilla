@@ -8,7 +8,7 @@ use std::path::PathBuf;
 
 mod archive_v2;
 mod compare_sdk_rpc;
-mod dump_tokens;
+mod token_dump;
 mod first_seen_finalization;
 mod progress;
 mod stream;
@@ -37,7 +37,7 @@ enum Commands {
     /// Stream an archive epoch as ordered JSON block summaries.
     Stream(stream::StreamArgs),
     /// Export recorded token balances from an archive epoch.
-    TokenDump(dump_tokens::DumpTokensArgs),
+    TokenDump(token_dump::TokenDumpArgs),
     /// Export transactions that the selected wallet signed.
     WalletDump(blockzilla::archive_dump::Args),
     /// Export recorded outer and inner calls of one program.
@@ -66,7 +66,7 @@ fn main() -> Result<()> {
     match Cli::parse().command {
         Commands::CompareSdkRpc(args) => compare_sdk_rpc::run(args),
         Commands::Stream(args) => stream::run(args),
-        Commands::TokenDump(args) => dump_tokens::run(args),
+        Commands::TokenDump(args) => token_dump::run(args),
         Commands::WalletDump(args) => {
             blockzilla::archive_dump::execute(blockzilla::archive_dump::Kind::Wallet, args)
         }

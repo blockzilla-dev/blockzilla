@@ -22,7 +22,7 @@ RUSTFLAGS="-C target-cpu=native" cargo run --locked -p blockzilla -- \
   stream --epoch 200 --max-blocks 5
 ```
 
-This reads five block rows from the public sample archive. No API key is needed.
+This reads five block rows from the public Foundation archive. No API key is needed.
 Use `--help` to see the commands, or start with the [small examples](examples).
 
 ## In this repository

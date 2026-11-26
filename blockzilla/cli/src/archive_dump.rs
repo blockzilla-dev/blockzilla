@@ -13,15 +13,6 @@ use std::{
     path::PathBuf,
 };
 
-/// Public Foundation Compact V2 bucket. The epoch directory is
-/// `{PUBLIC_ARCHIVE_BASE}/epoch-<epoch>`.
-const PUBLIC_ARCHIVE_BASE: &str =
-    "https://pub-97348740d6ef467aa2f1b4b62daa98dc.r2.dev/compact-v2/blockzilla-20261004";
-
-fn public_epoch_url(epoch: u64) -> String {
-    format!("{PUBLIC_ARCHIVE_BASE}/epoch-{epoch}")
-}
-
 #[derive(Clone, Copy)]
 pub enum Kind {
     Wallet,
@@ -221,7 +212,7 @@ pub fn execute(kind: Kind, args: Args) -> Result<()> {
             args.read_concurrency,
         )?,
         (None, url) => {
-            let url = url.unwrap_or_else(|| public_epoch_url(args.epoch));
+            let url = url.unwrap_or_else(|| crate::public_epoch_url(args.epoch));
             let cache_dir = absolute_cache_dir(args.cache_dir)?;
             eprintln!("Source: {url}");
             match args.s3_region {
@@ -440,7 +431,7 @@ mod tests {
         assert!(foundation.args.url.is_none());
         assert!(foundation.args.cache_dir.is_none());
         assert_eq!(
-            public_epoch_url(1094),
+            crate::public_epoch_url(1094),
             "https://pub-97348740d6ef467aa2f1b4b62daa98dc.r2.dev/compact-v2/blockzilla-20261004/epoch-1094"
         );
 

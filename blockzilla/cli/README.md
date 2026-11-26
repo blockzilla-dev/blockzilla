@@ -23,9 +23,12 @@ blockzilla program-dump --epoch 1094 --key PROGRAM
 blockzilla inspect --epoch 900
 ```
 
-`token-dump` uses the same source options as `stream`. It writes one JSON line
-per recorded token balance and stops when execution status or token data is
-missing. Pass `--archive-url` to read the public Foundation epoch directory.
+`token-dump` uses the same source options as `stream`. With no `--archive-url`,
+`--origin`, or `--archive-dir`, it reads the public Foundation directory
+`https://pub-97348740d6ef467aa2f1b4b62daa98dc.r2.dev/compact-v2/blockzilla-20261004/epoch-<EPOCH>`.
+It writes one JSON line per recorded token balance. Each line includes the
+transaction signature. The command stops when execution status or token data
+is missing.
 `wallet-dump` and `program-dump` take the same arguments as the example
 binaries in `examples/`. Omit `--url` to read the public Foundation archive at
 `https://pub-97348740d6ef467aa2f1b4b62daa98dc.r2.dev/compact-v2/blockzilla-20261004/epoch-<EPOCH>`.

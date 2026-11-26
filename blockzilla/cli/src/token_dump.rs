@@ -16,7 +16,7 @@ use sha2::{Digest, Sha256};
 use crate::stream::{self, EpochSourceArgs};
 
 #[derive(Args, Debug)]
-pub(crate) struct DumpTokensArgs {
+pub(crate) struct TokenDumpArgs {
     #[command(flatten)]
     pub source: EpochSourceArgs,
     /// Select one base58 mint. Unknown mint identities remain visible as null.
@@ -67,6 +67,18 @@ impl<W: Write> TokenSink<W> {
         self.output.write_all(text.as_bytes())
     }
 
+    /// A JSON string with the base58 transaction signature, or `null`.
+    fn signature(&mut self, signature: Option<&[u8; 64]>) -> io::Result<()> {
+        let Some(signature) = signature else {
+            return self.output.write_all(b"null");
+        };
+        let mut text = [0u8; five8::BASE58_ENCODED_64_MAX_LEN];
+        let length = usize::from(five8::encode_64(signature, &mut text));
+        self.output.write_all(b"\"")?;
+        self.output.write_all(&text[..length])?;
+        self.output.write_all(b"\"")
+    }
+
     /// A JSON string with the base58 key, or `null`.
     fn key(&mut self, key: Option<&[u8; 32]>) -> io::Result<()> {
         let Some(key) = key else {
@@ -88,6 +100,7 @@ impl<W: Write> TokenSink<W> {
         block_ordinal: u32,
         slot: u64,
         tx_index: u32,
+        signature: Option<&[u8; 64]>,
         status: &'static [u8],
         balance: &blockzilla_model::RecordedTokenBalance,
     ) -> io::Result<()> {
@@ -99,6 +112,8 @@ impl<W: Write> TokenSink<W> {
         self.number(slot)?;
         self.output.write_all(b",\"tx_index\":")?;
         self.number(tx_index)?;
+        self.output.write_all(b",\"signature\":")?;
+        self.signature(signature)?;
         self.output.write_all(b",\"execution_status\":\"")?;
         self.output.write_all(status)?;
         self.output.write_all(match balance.side {
@@ -148,6 +163,7 @@ impl<W: Write> BlockSink for TokenSink<W> {
                     block.header.block_ordinal,
                     block.header.slot,
                     tx.header.tx_index,
+                    tx.primary_signature,
                     status,
                     balance,
                 )
@@ -168,12 +184,11 @@ impl<W: Write> BlockSink for TokenSink<W> {
     }
 }
 
-pub(crate) fn run(args: DumpTokensArgs) -> Result<()> {
+pub(crate) fn run(args: TokenDumpArgs) -> Result<()> {
     let started = Instant::now();
     let mut archive = stream::open(&args.source)?;
     let request = stream::request(&archive, &args.source)?
         .without_instructions()
-        .without_primary_signatures()
         .without_required_signers();
     let request = match args.mint {
         Some(mint) => request.with_token_balances_for([mint]),
@@ -226,7 +241,7 @@ mod tests {
                 ),
                 cpi_coverage: CpiCoverage::NotRecorded,
             },
-            primary_signature: None,
+            primary_signature: Some([5; 64]),
             required_signers: Vec::new(),
             instructions: Vec::new(),
             token_balance_coverage: TokenBalanceCoverage::Complete,
@@ -255,6 +270,7 @@ mod tests {
         block_ordinal: u32,
         slot: u64,
         tx_index: u32,
+        signature: Option<String>,
         execution_status: &'static str,
         side: TokenBalanceSide,
         balance_index: u32,
@@ -281,6 +297,9 @@ mod tests {
             key
         };
         let text = |key: Option<[u8; 32]>| key.map(|key| bs58::encode(key).into_string());
+        let signature_text = |signature: Option<[u8; 64]>| {
+            signature.map(|signature| bs58::encode(signature).into_string())
+        };
         for source_id in ["source-test", "a\"b\\c\u{1}"] {
             let mut sink = TokenSink::new(Vec::new(), source_id);
             let mut expected = Vec::new();
@@ -299,6 +318,12 @@ mod tests {
                     amount: [0, 1, u64::MAX, 123_456_789][index as usize % 4],
                     decimals: [0, 6, 9, u8::MAX][index as usize % 4],
                 };
+                let signature = (index % 4 != 0).then(|| {
+                    let mut signature = [0u8; 64];
+                    signature[..32].copy_from_slice(&key(index));
+                    signature[32..].copy_from_slice(&key(index + 7));
+                    signature
+                });
                 let (status, status_text) = if index % 3 == 0 {
                     (&b"failed"[..], "failed")
                 } else {
@@ -318,6 +343,7 @@ mod tests {
                         block_ordinal: ordinal,
                         slot,
                         tx_index,
+                        signature: signature_text(signature),
                         execution_status: status_text,
                         side: balance.side,
                         balance_index: balance.balance_index,
@@ -331,8 +357,16 @@ mod tests {
                 )
                 .unwrap();
                 expected.push(b'\n');
-                sink.row(epoch, ordinal, slot, tx_index, status, &balance)
-                    .unwrap();
+                sink.row(
+                    epoch,
+                    ordinal,
+                    slot,
+                    tx_index,
+                    signature.as_ref(),
+                    status,
+                    &balance,
+                )
+                .unwrap();
             }
             assert_eq!(
                 String::from_utf8(sink.output).unwrap(),
@@ -361,6 +395,7 @@ mod tests {
         let row: serde_json::Value = serde_json::from_slice(&sink.output).unwrap();
         assert_eq!(row["amount"], u64::MAX.to_string());
         assert_eq!(row["mint"], serde_json::Value::Null);
+        assert_eq!(row["signature"], bs58::encode([5; 64]).into_string());
         assert_eq!(row["execution_status"], "failed");
         assert_eq!(row["balance_index"], 9);
         assert_eq!(row["account_index"], 4);
